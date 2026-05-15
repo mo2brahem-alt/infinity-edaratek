@@ -1,0 +1,86 @@
+<?php
+
+return [
+    'course_offerings' => [
+        'enforce_for_scheduling' => env('FEATURE_ENFORCE_COURSE_OFFERINGS', false),
+    ],
+    'api' => [
+        'system_rate_limit_per_minute' => env('FEATURE_SYSTEM_API_RATE_LIMIT', 60),
+        'school_rate_limit_per_minute' => env('FEATURE_SCHOOL_API_RATE_LIMIT', 120),
+    ],
+    'shared_ui' => [
+        'cache_enabled' => env('FEATURE_SHARED_UI_CACHE', false),
+        'cache_ttl_seconds' => env('FEATURE_SHARED_UI_CACHE_TTL', 300),
+    ],
+    'uploads' => [
+        'strict_validation_enabled' => env('FEATURE_STRICT_UPLOAD_VALIDATION', true),
+        'strict_student_leave_attachment_validation' => env('FEATURE_STRICT_STUDENT_LEAVE_ATTACHMENT_VALIDATION', true),
+        'strict_student_attendance_attachment_validation' => env('FEATURE_STRICT_STUDENT_ATTENDANCE_ATTACHMENT_VALIDATION', true),
+        'strict_school_attachment_validation' => env('FEATURE_STRICT_SCHOOL_ATTACHMENT_VALIDATION', true),
+        'media_mime_types' => [
+            'image/jpeg',
+            'image/png',
+            'image/webp',
+            'image/gif',
+            'image/svg+xml',
+            'video/mp4',
+            'video/webm',
+            'video/quicktime',
+            'video/ogg',
+        ],
+        'ticket_attachment_mime_types' => [
+            'application/pdf',
+            'image/jpeg',
+            'image/png',
+            'image/webp',
+            'text/plain',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ],
+        'student_leave_attachment_mime_types' => [
+            'application/pdf',
+            'image/jpeg',
+            'image/png',
+            'image/webp',
+            'text/plain',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ],
+        'student_attendance_attachment_mime_types' => [
+            'application/pdf',
+            'image/jpeg',
+            'image/png',
+            'image/webp',
+            'image/heic',
+            'image/heif',
+        ],
+        'school_attachment_mime_types' => [
+            'application/pdf',
+            'image/jpeg',
+            'image/png',
+            'image/webp',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ],
+    ],
+    'student_leaves' => [
+        'enabled' => env('FEATURE_STUDENT_LEAVES', true),
+        'retroactive_max_days' => env('FEATURE_STUDENT_LEAVES_RETROACTIVE_MAX_DAYS', 30),
+        'retroactive_grace_days' => env('FEATURE_STUDENT_LEAVES_RETROACTIVE_GRACE_DAYS', 30),
+        'attachment_grace_days' => env('FEATURE_STUDENT_LEAVES_ATTACHMENT_GRACE_DAYS', 7),
+        'enforce_attendance_leave_state' => env('FEATURE_STUDENT_LEAVES_ENFORCE_ATTENDANCE', true),
+    ],
+    'attendance' => [
+        'daily_initialization_enabled' => env('FEATURE_ATTENDANCE_DAILY_INIT_ENABLED', true),
+        'daily_initialization_time' => env('FEATURE_ATTENDANCE_DAILY_INIT_TIME', '06:00'),
+    ],
+    'rbac' => [
+        'system_role_api_enabled' => env('FEATURE_SYSTEM_ROLE_API', true),
+        'school_role_assignment_enabled' => env('FEATURE_SCHOOL_ROLE_ASSIGNMENT', true),
+        'manager_assigns_structure_permissions' => env('FEATURE_MANAGER_ASSIGNS_STRUCTURE_PERMISSIONS', true),
+    ],
+];

@@ -1,0 +1,557 @@
+﻿<script setup>
+import { nextTick, ref, watch } from 'vue';
+import axios from 'axios';
+import { Head, useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { ShieldCheck, Briefcase, Plus, Pencil, Trash2, Power, X } from 'lucide-vue-next';
+import { useActionDialog } from '@/composables/useActionDialog';
+
+const props = defineProps({
+    roles: {
+        type: Array,
+        default: () => [],
+    },
+    orgStructureRoleTemplates: {
+        type: Array,
+        default: () => [],
+    },
+});
+
+const isUserRoleModalOpen = ref(false);
+const actionDialog = useActionDialog();
+const isUserRoleEditing = ref(false);
+const userRoleEditId = ref(null);
+
+const userRoleForm = useForm({
+    name: '',
+});
+
+const isOrgTemplateModalOpen = ref(false);
+const isOrgTemplateEditing = ref(false);
+const orgTemplateEditId = ref(null);
+const orgTemplateNameInput = ref(null);
+const orgTemplateApiProcessing = ref(false);
+const orgTemplateToggleProcessingId = ref(null);
+const orgTemplateFlash = ref('');
+const orgTemplateFlashType = ref('success');
+const orgTemplateFlashTimer = ref(null);
+const orgTemplateItems = ref([...(props.orgStructureRoleTemplates || [])]);
+
+const orgTemplateForm = useForm({
+    name: '',
+    code: '',
+    is_active: true,
+});
+
+watch(
+    () => props.orgStructureRoleTemplates,
+    (items) => {
+        orgTemplateItems.value = [...(items || [])];
+    }
+);
+
+const focusOrgTemplateName = () => {
+    nextTick(() => {
+        orgTemplateNameInput.value?.focus?.();
+    });
+};
+
+const setOrgTemplateFlash = (message, type = 'success') => {
+    orgTemplateFlash.value = message;
+    orgTemplateFlashType.value = type;
+
+    if (orgTemplateFlashTimer.value) {
+        clearTimeout(orgTemplateFlashTimer.value);
+    }
+
+    orgTemplateFlashTimer.value = setTimeout(() => {
+        orgTemplateFlash.value = '';
+        orgTemplateFlashTimer.value = null;
+    }, 3000);
+};
+
+const openCreateUserRoleModal = () => {
+    isUserRoleEditing.value = false;
+    userRoleEditId.value = null;
+    userRoleForm.reset();
+    userRoleForm.clearErrors();
+    isUserRoleModalOpen.value = true;
+};
+
+const openEditUserRoleModal = (role) => {
+    isUserRoleEditing.value = true;
+    userRoleEditId.value = role.id;
+    userRoleForm.name = role.name || '';
+    userRoleForm.clearErrors();
+    isUserRoleModalOpen.value = true;
+};
+
+const submitUserRole = () => {
+    if (isUserRoleEditing.value) {
+        userRoleForm.put(route('roles.update', userRoleEditId.value), {
+            onSuccess: () => {
+                isUserRoleModalOpen.value = false;
+            },
+        });
+
+        return;
+    }
+
+    userRoleForm.post(route('roles.store'), {
+        onSuccess: () => {
+            isUserRoleModalOpen.value = false;
+        },
+    });
+};
+
+const deleteUserRole = async (id) => {
+    const confirmed = await actionDialog.confirm({
+        title: 'حذف دور المستخدم',
+        message: 'قد يؤثر حذف هذا الدور على ربط الصلاحيات بالمستخدمين الحاليين. هل تريد المتابعة؟',
+        confirmText: 'نعم، احذف الدور',
+        cancelText: 'إلغاء',
+        variant: 'danger',
+    });
+    if (!confirmed) return;
+    useForm({}).delete(route('roles.destroy', id));
+};
+
+const openCreateOrgTemplateModal = () => {
+    isOrgTemplateEditing.value = false;
+    orgTemplateEditId.value = null;
+    orgTemplateForm.reset();
+    orgTemplateForm.name = '';
+    orgTemplateForm.code = '';
+    orgTemplateForm.is_active = true;
+    orgTemplateForm.clearErrors();
+    isOrgTemplateModalOpen.value = true;
+    focusOrgTemplateName();
+};
+
+const openEditOrgTemplateModal = (template) => {
+    isOrgTemplateEditing.value = true;
+    orgTemplateEditId.value = template.id;
+    orgTemplateForm.name = template.name || '';
+    orgTemplateForm.code = template.code || '';
+    orgTemplateForm.is_active = Boolean(template.is_active);
+    orgTemplateForm.clearErrors();
+    isOrgTemplateModalOpen.value = true;
+    focusOrgTemplateName();
+};
+
+const normalizeOrgTemplatePayload = () => ({
+    name: orgTemplateForm.name,
+    code: orgTemplateForm.code ? orgTemplateForm.code : null,
+    is_active: Boolean(orgTemplateForm.is_active),
+});
+
+const mapOrgTemplateErrors = (error) => {
+    orgTemplateForm.clearErrors();
+
+    const status = error?.response?.status;
+    const errors = error?.response?.data?.errors || {};
+
+    if (status === 422 && typeof errors === 'object') {
+        Object.keys(errors).forEach((field) => {
+            const fieldMessages = errors[field];
+            const message = Array.isArray(fieldMessages) ? fieldMessages[0] : String(fieldMessages || '');
+            if (!message) return;
+            orgTemplateForm.setError(field, message);
+        });
+        return;
+    }
+
+    orgTemplateForm.setError('general', 'تعذر حفظ قالب الدور حاليًا. حاول مرة أخرى.');
+};
+
+const resetOrgTemplateFormForQuickAdd = () => {
+    isOrgTemplateEditing.value = false;
+    orgTemplateEditId.value = null;
+    orgTemplateForm.reset();
+    orgTemplateForm.name = '';
+    orgTemplateForm.code = '';
+    orgTemplateForm.is_active = true;
+    orgTemplateForm.clearErrors();
+    focusOrgTemplateName();
+};
+
+const upsertOrgTemplateItem = (template) => {
+    if (!template || typeof template !== 'object') return;
+
+    const item = { ...template };
+    const index = orgTemplateItems.value.findIndex((row) => Number(row.id) === Number(item.id));
+
+    if (index === -1) {
+        orgTemplateItems.value = [item, ...orgTemplateItems.value];
+        orgTemplateItems.value.sort((a, b) => Number(b.id) - Number(a.id));
+        return;
+    }
+
+    orgTemplateItems.value[index] = item;
+    orgTemplateItems.value = [...orgTemplateItems.value];
+};
+
+const submitOrgTemplate = async () => {
+    if (orgTemplateApiProcessing.value) return;
+
+    orgTemplateForm.clearErrors();
+    orgTemplateApiProcessing.value = true;
+
+    try {
+        if (isOrgTemplateEditing.value) {
+            const response = await axios.put(route('admin.org_structure_roles.update', orgTemplateEditId.value), normalizeOrgTemplatePayload(), {
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
+
+            upsertOrgTemplateItem(response?.data?.data || null);
+            isOrgTemplateModalOpen.value = false;
+            setOrgTemplateFlash('تم تحديث قالب الدور بنجاح.');
+            return;
+        }
+
+        const response = await axios.post(route('admin.org_structure_roles.store'), normalizeOrgTemplatePayload(), {
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+
+        const createdTemplate = response?.data?.data || null;
+        upsertOrgTemplateItem(createdTemplate);
+        resetOrgTemplateFormForQuickAdd();
+
+        const generatedCodeText = createdTemplate?.code ? ` (الكود: ${createdTemplate.code})` : '';
+        setOrgTemplateFlash(`تمت إضافة قالب الدور بنجاح${generatedCodeText}.`);
+    } catch (error) {
+        mapOrgTemplateErrors(error);
+    } finally {
+        orgTemplateApiProcessing.value = false;
+    }
+};
+
+const disableOrgTemplate = async (template) => {
+    if (!template?.is_active) return;
+    if (orgTemplateToggleProcessingId.value !== null) return;
+    const confirmed = await actionDialog.confirm({
+        title: 'تعطيل قالب الدور',
+        message: 'لن يظهر هذا القالب للاختيار مستقبلاً داخل الهيكل الإداري. هل تريد المتابعة؟',
+        confirmText: 'نعم، عطّل القالب',
+        cancelText: 'إلغاء',
+        variant: 'warning',
+    });
+    if (!confirmed) return;
+
+    orgTemplateToggleProcessingId.value = Number(template.id);
+
+    try {
+        const response = await axios.post(
+            route('admin.org_structure_roles.disable', template.id),
+            {},
+            {
+                headers: {
+                    Accept: 'application/json',
+                },
+            }
+        );
+
+        upsertOrgTemplateItem(response?.data?.data || { ...template, is_active: false });
+        setOrgTemplateFlash('تم تعطيل قالب الدور بنجاح.');
+    } catch {
+        setOrgTemplateFlash('تعذر تعطيل قالب الدور حاليًا. حاول مرة أخرى.', 'error');
+    } finally {
+        orgTemplateToggleProcessingId.value = null;
+    }
+};
+</script>
+
+<template>
+    <Head title="إدارة أدوار المستخدمين" />
+
+    <AdminLayout>
+        <div class="space-y-8">
+            <section>
+                <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <h1 class="flex items-center gap-2 text-2xl font-bold text-white">
+                        <ShieldCheck class="h-6 w-6 text-blue-500" />
+                        إدارة أدوار المستخدمين
+                    </h1>
+                    <button
+                        @click="openCreateUserRoleModal"
+                        class="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-bold text-white transition hover:bg-blue-700"
+                    >
+                        <Plus class="h-4 w-4" />
+                        إضافة دور مستخدم
+                    </button>
+                </div>
+
+                <div class="ui-mobile-card-list">
+                    <article v-for="role in roles" :key="`role-mobile-${role.id}`" class="ui-mobile-row-card space-y-4 text-right">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <h3 class="font-bold text-white">{{ role.name }}</h3>
+                                <p class="mt-1 text-xs text-slate-400">{{ new Date(role.created_at).toLocaleDateString('ar-EG') }}</p>
+                            </div>
+                            <span class="rounded bg-gray-700 px-2 py-1 text-xs text-gray-300">0 مستخدم</span>
+                        </div>
+                        <div class="flex flex-wrap justify-end gap-2">
+                            <button
+                                type="button"
+                                class="ui-icon-button"
+                                :aria-label="`تعديل دور المستخدم ${role.name}`"
+                                @click="openEditUserRoleModal(role)"
+                            >
+                                <Pencil class="h-4 w-4" />
+                            </button>
+                            <button
+                                type="button"
+                                class="ui-icon-button"
+                                :aria-label="`حذف دور المستخدم ${role.name}`"
+                                @click="deleteUserRole(role.id)"
+                            >
+                                <Trash2 class="h-4 w-4" />
+                            </button>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="hidden overflow-hidden rounded-xl border border-gray-700 bg-gray-800 shadow-lg lg:block">
+                    <table class="w-full text-right text-gray-300">
+                        <thead class="bg-gray-900/50 text-xs font-bold uppercase text-gray-400">
+                            <tr>
+                                <th class="px-6 py-4">اسم الدور</th>
+                                <th class="px-6 py-4">عدد المستخدمين</th>
+                                <th class="px-6 py-4">تاريخ الإنشاء</th>
+                                <th class="px-6 py-4 text-left">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-700">
+                            <tr v-for="role in roles" :key="role.id" class="transition hover:bg-gray-700/50">
+                                <td class="px-6 py-4 font-bold text-white">{{ role.name }}</td>
+                                <td class="px-6 py-4">
+                                    <span class="rounded bg-gray-700 px-2 py-1 text-xs text-gray-300">0 مستخدم</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm">{{ new Date(role.created_at).toLocaleDateString('ar-EG') }}</td>
+                                <td class="flex justify-end gap-3 px-6 py-4">
+                                    <button type="button" :aria-label="`تعديل دور المستخدم ${role.name}`" @click="openEditUserRoleModal(role)" class="rounded-lg p-2 text-blue-400 transition hover:bg-blue-500/10">
+                                        <Pencil class="h-4 w-4" />
+                                    </button>
+                                    <button type="button" :aria-label="`حذف دور المستخدم ${role.name}`" @click="deleteUserRole(role.id)" class="rounded-lg p-2 text-red-400 transition hover:bg-red-500/10">
+                                        <Trash2 class="h-4 w-4" />
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr v-if="roles.length === 0">
+                                <td colspan="4" class="py-8 text-center text-gray-500">لا توجد أدوار مستخدمين مضافة بعد.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section>
+                <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <h2 class="flex items-center gap-2 text-2xl font-bold text-white">
+                        <Briefcase class="h-6 w-6 text-purple-500" />
+                        قوالب أدوار الهيكل الإداري
+                    </h2>
+                    <button
+                        @click="openCreateOrgTemplateModal"
+                        class="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 font-bold text-white transition hover:bg-purple-700"
+                    >
+                        <Plus class="h-4 w-4" />
+                        إضافة قالب دور هيكلي
+                    </button>
+                </div>
+
+                <div
+                    v-if="orgTemplateFlash"
+                    :class="orgTemplateFlashType === 'error' ? 'border-red-500/30 bg-red-500/10 text-red-200' : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'"
+                    class="mb-4 rounded border px-3 py-2 text-sm"
+                >
+                    {{ orgTemplateFlash }}
+                </div>
+
+                <div class="ui-mobile-card-list">
+                    <article v-for="template in orgTemplateItems" :key="`template-mobile-${template.id}`" class="ui-mobile-row-card space-y-4 text-right">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <h3 class="font-bold text-white">{{ template.name }}</h3>
+                                <p class="mt-1 text-sm text-slate-400">الكود: {{ template.code || '-' }}</p>
+                            </div>
+                            <span
+                                :class="template.is_active ? 'bg-emerald-500/20 text-emerald-200' : 'bg-red-500/20 text-red-200'"
+                                class="rounded px-2 py-1 text-xs"
+                            >
+                                {{ template.is_active ? 'مفعل' : 'معطل' }}
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                                <p class="ui-mobile-row-label">مرات الاستخدام</p>
+                                <p class="mt-1 text-slate-200">{{ template.department_roles_count || 0 }}</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap justify-end gap-2">
+                            <button
+                                type="button"
+                                class="ui-icon-button"
+                                :aria-label="`تعديل قالب الدور ${template.name}`"
+                                @click="openEditOrgTemplateModal(template)"
+                            >
+                                <Pencil class="h-4 w-4" />
+                            </button>
+                            <button
+                                type="button"
+                                class="ui-icon-button"
+                                :aria-label="`تعطيل قالب الدور ${template.name}`"
+                                :disabled="!template.is_active || Number(orgTemplateToggleProcessingId) === Number(template.id)"
+                                @click="disableOrgTemplate(template)"
+                            >
+                                <Power class="h-4 w-4" />
+                            </button>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="hidden overflow-hidden rounded-xl border border-gray-700 bg-gray-800 shadow-lg lg:block">
+                    <table class="w-full text-right text-gray-300">
+                        <thead class="bg-gray-900/50 text-xs font-bold uppercase text-gray-400">
+                            <tr>
+                                <th class="px-6 py-4">الاسم</th>
+                                <th class="px-6 py-4">الكود</th>
+                                <th class="px-6 py-4">الحالة</th>
+                                <th class="px-6 py-4">مرات الاستخدام</th>
+                                <th class="px-6 py-4 text-left">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-700">
+                            <tr v-for="template in orgTemplateItems" :key="template.id" class="transition hover:bg-gray-700/50">
+                                <td class="px-6 py-4 font-bold text-white">{{ template.name }}</td>
+                                <td class="px-6 py-4">{{ template.code || '-' }}</td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        :class="template.is_active ? 'bg-emerald-500/20 text-emerald-200' : 'bg-red-500/20 text-red-200'"
+                                        class="rounded px-2 py-1 text-xs"
+                                    >
+                                        {{ template.is_active ? 'مفعل' : 'معطل' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="rounded bg-gray-700 px-2 py-1 text-xs text-gray-300">{{ template.department_roles_count || 0 }}</span>
+                                </td>
+                                <td class="flex justify-end gap-3 px-6 py-4">
+                                    <button type="button" :aria-label="`تعديل قالب الدور ${template.name}`" @click="openEditOrgTemplateModal(template)" class="rounded-lg p-2 text-blue-400 transition hover:bg-blue-500/10">
+                                        <Pencil class="h-4 w-4" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        @click="disableOrgTemplate(template)"
+                                        :disabled="!template.is_active || Number(orgTemplateToggleProcessingId) === Number(template.id)"
+                                        :aria-label="`تعطيل قالب الدور ${template.name}`"
+                                        class="rounded-lg p-2 text-amber-300 transition hover:bg-amber-500/10 disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        <Power class="h-4 w-4" />
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr v-if="orgTemplateItems.length === 0">
+                                <td colspan="5" class="py-8 text-center text-gray-500">لا توجد قوالب أدوار هيكل إداري بعد.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <div v-if="isUserRoleModalOpen" class="ui-theme-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div class="ui-theme-modal-panel w-full max-w-md rounded-2xl border border-white/10 bg-gray-900 p-5 shadow-2xl sm:p-6">
+                <div class="mb-6 flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-white">{{ isUserRoleEditing ? 'تعديل دور المستخدم' : 'إضافة دور مستخدم' }}</h3>
+                    <button @click="isUserRoleModalOpen = false" class="text-gray-400 hover:text-white"><X class="h-5 w-5" /></button>
+                </div>
+
+                <form @submit.prevent="submitUserRole" class="space-y-4">
+                    <div>
+                        <label class="mb-1 block text-sm text-gray-400">اسم الدور</label>
+                        <input
+                            v-model="userRoleForm.name"
+                            type="text"
+                            placeholder="مثال: معلم"
+                            class="w-full rounded-lg border-gray-700 bg-gray-800 text-white focus:border-blue-500 focus:ring-blue-500"
+                            dir="ltr"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">يفضل استخدام الإنجليزية للأدوار التقنية.</p>
+                        <p v-if="userRoleForm.errors.name" class="mt-1 text-xs text-red-500">{{ userRoleForm.errors.name }}</p>
+                    </div>
+
+                    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+                        <button type="button" @click="isUserRoleModalOpen = false" class="flex-1 rounded-lg bg-gray-800 py-2.5 text-white transition hover:bg-gray-700">
+                            إلغاء
+                        </button>
+                        <button type="submit" :disabled="userRoleForm.processing" class="flex-1 rounded-lg bg-blue-600 py-2.5 font-bold text-white transition hover:bg-blue-700">
+                            {{ isUserRoleEditing ? 'حفظ التعديلات' : 'إنشاء الدور' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div v-if="isOrgTemplateModalOpen" class="ui-theme-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div class="ui-theme-modal-panel w-full max-w-md rounded-2xl border border-white/10 bg-gray-900 p-5 shadow-2xl sm:p-6">
+                <div class="mb-6 flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-white">{{ isOrgTemplateEditing ? 'تعديل قالب الدور الهيكلي' : 'إضافة قالب دور هيكلي' }}</h3>
+                    <button @click="isOrgTemplateModalOpen = false" class="text-gray-400 hover:text-white"><X class="h-5 w-5" /></button>
+                </div>
+
+                <form @submit.prevent="submitOrgTemplate" class="space-y-4">
+                    <div>
+                        <label class="mb-1 block text-sm text-gray-400">اسم القالب</label>
+                        <input
+                            ref="orgTemplateNameInput"
+                            v-model="orgTemplateForm.name"
+                            type="text"
+                            placeholder="مثال: موظف شؤون الطلاب"
+                            class="w-full rounded-lg border-gray-700 bg-gray-800 text-white focus:border-purple-500 focus:ring-purple-500"
+                        />
+                        <p v-if="orgTemplateForm.errors.name" class="mt-1 text-xs text-red-500">{{ orgTemplateForm.errors.name }}</p>
+                    </div>
+
+                    <div>
+                        <label class="mb-1 block text-sm text-gray-400">الكود (اختياري)</label>
+                        <input
+                            v-model="orgTemplateForm.code"
+                            type="text"
+                            placeholder="اتركه فارغًا لتوليده تلقائيًا"
+                            class="w-full rounded-lg border-gray-700 bg-gray-800 text-white focus:border-purple-500 focus:ring-purple-500"
+                            dir="ltr"
+                        />
+                        <p class="mt-1 text-xs text-gray-500">سيتم توليد الكود تلقائيًا من الخادم عند ترك هذا الحقل فارغًا.</p>
+                        <p v-if="orgTemplateForm.errors.code" class="mt-1 text-xs text-red-500">{{ orgTemplateForm.errors.code }}</p>
+                    </div>
+
+                    <label class="inline-flex items-center gap-2 text-sm text-gray-300">
+                        <input
+                            v-model="orgTemplateForm.is_active"
+                            type="checkbox"
+                            class="rounded border-gray-600 bg-gray-800 text-purple-500"
+                        />
+                        <span>مفعل</span>
+                    </label>
+
+                    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+                        <button type="button" @click="isOrgTemplateModalOpen = false" class="flex-1 rounded-lg bg-gray-800 py-2.5 text-white transition hover:bg-gray-700">
+                            إلغاء
+                        </button>
+                        <button type="submit" :disabled="orgTemplateApiProcessing" class="flex-1 rounded-lg bg-purple-600 py-2.5 font-bold text-white transition hover:bg-purple-700 disabled:opacity-60">
+                            {{ isOrgTemplateEditing ? 'حفظ التعديلات' : 'إنشاء القالب' }}
+                        </button>
+                    </div>
+
+                    <p v-if="orgTemplateForm.errors.general" class="text-xs text-red-500">{{ orgTemplateForm.errors.general }}</p>
+                </form>
+            </div>
+        </div>
+    </AdminLayout>
+</template>
+
