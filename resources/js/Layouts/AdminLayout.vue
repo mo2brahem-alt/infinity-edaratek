@@ -271,7 +271,7 @@ onBeforeUnmount(() => {
 
                                 <Link :href="route('departments.index')" :class="adminSubLinkClass('departments.*', 'violet')">
                                     <Building2 class="h-4 w-4" />
-                                    <span class="admin-sidebar-submenu-label">الهيكل الإداري</span>
+                                    <span class="admin-sidebar-submenu-label">الهيكل ححححححححح</span>
                                 </Link>
                             </div>
                         </div>
