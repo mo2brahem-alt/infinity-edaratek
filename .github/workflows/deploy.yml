@@ -35,4 +35,4 @@ jobs:
             # تنظيف الكاش الخاص بلارافيل
             php artisan optimize:clear
             
-            echo "Deployment Successful!"
+            echo "Deployment Successful!"  
