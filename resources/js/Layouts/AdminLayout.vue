@@ -253,7 +253,7 @@ onBeforeUnmount(() => {
                             >
                                 <span class="flex min-w-0 items-center gap-3">
                                     <Users class="h-4 w-4" />
-                                    <span class="admin-sidebar-submenu-label">إدارة المستخpppppppppدمين</span>
+                                    <span class="admin-sidebar-submenu-label">إدارة المستخدمين</span>
                                 </span>
                                 <ChevronDown class="h-4 w-4 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': isUsersMenuOpen }" />
                             </button>
