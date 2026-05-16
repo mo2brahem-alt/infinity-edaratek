@@ -58,4 +58,43 @@ class SchoolExportDocumentServiceTest extends TestCase
         $this->assertStringEndsWith('.csv', $filename);
         $this->assertDoesNotMatchRegularExpression('/[\\\\\\/]/', $filename);
     }
+
+    public function test_word_headers_use_utf8_and_attachment_download(): void
+    {
+        $headers = app(SchoolExportDocumentService::class)->wordHeaders('attendance-report.doc');
+
+        $this->assertSame('application/msword; charset=UTF-8', $headers['Content-Type']);
+        $this->assertStringContainsString('attendance-report.doc', $headers['Content-Disposition']);
+        $this->assertSame('nosniff', $headers['X-Content-Type-Options']);
+    }
+
+    public function test_report_dataset_view_declares_utf8_rtl_and_arabic_content(): void
+    {
+        $school = School::query()->create([
+            'name' => 'مدرسة البيان',
+            'school_id' => 'SCH-UTF-001',
+        ]);
+
+        $html = view('exports.school.report-datasets', [
+            'school' => $school,
+            'schoolLogoImage' => null,
+            'documentTitle' => 'تقرير حضور الطلاب',
+            'documentSubtitle' => 'تقرير رسمي',
+            'generatedAt' => now(),
+            'exportedBy' => null,
+            'details' => ['الفصل' => 'الأول'],
+            'datasets' => [[
+                'title' => 'تفاصيل الحضور',
+                'columns' => [['key' => 'student_name', 'label' => 'اسم الطالب']],
+                'rows' => [['student_name' => 'أحمد']],
+                'total' => 1,
+            ]],
+        ])->render();
+
+        $this->assertStringContainsString('charset="utf-8"', $html);
+        $this->assertStringContainsString('dir="rtl"', $html);
+        $this->assertStringContainsString('مدرسة البيان', $html);
+        $this->assertStringContainsString('اسم الطالب', $html);
+        $this->assertStringContainsString('تم إنشاء هذا المستند بواسطة منصة إدارتك.', $html);
+    }
 }

@@ -28,6 +28,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StudentAttendanceController extends Controller
@@ -598,7 +599,7 @@ class StudentAttendanceController extends Controller
         ));
     }
 
-    public function exportReportCsv(Request $request): StreamedResponse
+    public function exportReportCsv(Request $request): SymfonyResponse
     {
         $schoolId = $this->resolveSchoolId($request);
         $validated = $request->validate([
@@ -620,6 +621,7 @@ class StudentAttendanceController extends Controller
                 'nullable',
                 Rule::exists('school_leave_types', 'id')->where(fn ($query) => $query->where('school_id', $schoolId)),
             ],
+            'format' => ['nullable', Rule::in(['csv', 'excel', 'pdf', 'word'])],
         ]);
 
         $stageId = (int) ($validated['school_stage_id'] ?? 0);
@@ -667,41 +669,23 @@ class StudentAttendanceController extends Controller
             $reportFilters
         );
 
-        $fileName = $this->exportDocuments->safeFileName(
-            'attendance-report',
-            $school,
-            'csv',
-            [$classroom->name, $reportRange['from'], $reportRange['to']]
-        );
+        $format = (string) ($validated['format'] ?? 'csv');
+        $columns = [
+            ['key' => 'student_name', 'label' => 'اسم الطالب'],
+            ['key' => 'student_code', 'label' => 'كود الطالب'],
+            ['key' => 'leave_days', 'label' => 'أيام الإجازة'],
+            ['key' => 'unexcused_absence_days', 'label' => 'غياب بدون عذر'],
+            ['key' => 'present_days', 'label' => 'أيام الحضور'],
+            ['key' => 'excused_days', 'label' => 'أيام الإذن'],
+            ['key' => 'recorded_days', 'label' => 'الأيام المسجلة'],
+        ];
 
-        return response()->streamDownload(function () use ($request, $school, $classroom, $students, $perStudent, $totals, $reportRange, $reportFilters): void {
-            $stream = fopen('php://output', 'w');
-            if ($stream === false) {
-                return;
-            }
+        $rowsByStudent = collect($perStudent)
+            ->keyBy(fn (array $row): int => (int) ($row['school_student_id'] ?? 0));
 
-            $this->exportDocuments->writeCsvPreamble($stream, $school, 'تقرير حضور الطلاب', $request->user(), [
-                'الفصل' => (string) $classroom->name,
-                'الفترة من' => $reportRange['from'],
-                'الفترة إلى' => $reportRange['to'],
-            ]);
-
-            $this->exportDocuments->putCsvRow($stream, [
-                'اسم الطالب',
-                'كود الطالب',
-                'أيام الإجازة',
-                'غياب بدون عذر',
-                'أيام الحضور',
-                'أيام الإذن',
-                'الأيام المسجلة',
-            ]);
-
-            $rowsByStudent = collect($perStudent)
-                ->keyBy(fn (array $row): int => (int) ($row['school_student_id'] ?? 0));
-
-            foreach ($students as $student) {
-                $studentId = (int) $student->id;
-                $row = $rowsByStudent->get($studentId, [
+        $reportRows = $students
+            ->map(function (SchoolStudent $student) use ($rowsByStudent): array {
+                $row = $rowsByStudent->get((int) $student->id, [
                     'leave_days' => 0,
                     'unexcused_absence_days' => 0,
                     'present_days' => 0,
@@ -709,30 +693,91 @@ class StudentAttendanceController extends Controller
                     'recorded_days' => 0,
                 ]);
 
-                $this->exportDocuments->putCsvRow($stream, [
-                    (string) $student->full_name,
-                    (string) ($student->student_code ?? ''),
-                    (int) ($row['leave_days'] ?? 0),
-                    (int) ($row['unexcused_absence_days'] ?? 0),
-                    (int) ($row['present_days'] ?? 0),
-                    (int) ($row['excused_days'] ?? 0),
-                    (int) ($row['recorded_days'] ?? 0),
-                ]);
+                return [
+                    'student_name' => (string) $student->full_name,
+                    'student_code' => (string) ($student->student_code ?? ''),
+                    'leave_days' => (int) ($row['leave_days'] ?? 0),
+                    'unexcused_absence_days' => (int) ($row['unexcused_absence_days'] ?? 0),
+                    'present_days' => (int) ($row['present_days'] ?? 0),
+                    'excused_days' => (int) ($row['excused_days'] ?? 0),
+                    'recorded_days' => (int) ($row['recorded_days'] ?? 0),
+                ];
+            })
+            ->values()
+            ->all();
+
+        $details = [
+            'الفصل' => (string) $classroom->name,
+            'الفترة من' => $reportRange['from'],
+            'الفترة إلى' => $reportRange['to'],
+            'إجمالي أيام الإجازة' => (int) $totals['leave_days'],
+            'إجمالي الغياب بدون عذر' => (int) $totals['unexcused_absence_days'],
+            'إجمالي أيام الحضور' => (int) $totals['present_days'],
+            'إجمالي أيام الإذن' => (int) $totals['excused_days'],
+            'إجمالي الأيام المسجلة' => (int) $totals['recorded_days'],
+            'نوع اليوم' => (string) ($reportFilters['day_type'] ?? ''),
+            'اسم العطلة' => (string) ($reportFilters['holiday_name'] ?? ''),
+            'نوع الإجازة' => (string) ($reportFilters['leave_type_id'] ?? ''),
+        ];
+
+        if (in_array($format, ['pdf', 'word'], true)) {
+            $html = view('exports.school.report-datasets', [
+                'school' => $school,
+                'schoolLogoImage' => $this->exportDocuments->schoolLogoDataUri($school),
+                'documentTitle' => 'تقرير حضور الطلاب',
+                'documentSubtitle' => 'تقرير رسمي يوضح مؤشرات حضور وغياب الطلاب داخل الفصل المحدد.',
+                'generatedAt' => now(),
+                'exportedBy' => $request->user(),
+                'details' => $details,
+                'datasets' => [[
+                    'title' => 'تفاصيل حضور الطلاب',
+                    'columns' => $columns,
+                    'rows' => $reportRows,
+                    'total' => count($reportRows),
+                ]],
+            ])->render();
+
+            $fileName = $this->exportDocuments->safeFileName(
+                'attendance-report',
+                $school,
+                $format === 'word' ? 'doc' : 'pdf',
+                [$classroom->name, $reportRange['from'], $reportRange['to']]
+            );
+
+            if ($format === 'word') {
+                return response($html, 200, $this->exportDocuments->wordHeaders($fileName));
             }
 
-            $this->exportDocuments->putCsvRow($stream, []);
-            $this->exportDocuments->putCsvRow($stream, ['إجمالي أيام الإجازة', (int) $totals['leave_days']]);
-            $this->exportDocuments->putCsvRow($stream, ['إجمالي الغياب بدون عذر', (int) $totals['unexcused_absence_days']]);
-            $this->exportDocuments->putCsvRow($stream, ['إجمالي أيام الحضور', (int) $totals['present_days']]);
-            $this->exportDocuments->putCsvRow($stream, ['إجمالي أيام الإذن', (int) $totals['excused_days']]);
-            $this->exportDocuments->putCsvRow($stream, ['إجمالي الأيام المسجلة', (int) $totals['recorded_days']]);
-            $this->exportDocuments->putCsvRow($stream, ['نوع اليوم', (string) ($reportFilters['day_type'] ?? '')]);
-            $this->exportDocuments->putCsvRow($stream, ['اسم العطلة', (string) ($reportFilters['holiday_name'] ?? '')]);
-            $this->exportDocuments->putCsvRow($stream, ['نوع الإجازة', (string) ($reportFilters['leave_type_id'] ?? '')]);
-            $this->exportDocuments->writeCsvFooter($stream, $school, $request->user());
+            return $this->exportDocuments->downloadPdfFromHtml($html, $fileName, 'landscape');
+        }
+
+        $delimiter = $format === 'excel' ? "\t" : ',';
+        $contentType = $format === 'excel' ? 'application/vnd.ms-excel; charset=UTF-8' : 'text/csv; charset=UTF-8';
+        $extension = $format === 'excel' ? 'xls' : 'csv';
+        $fileName = $this->exportDocuments->safeFileName(
+            'attendance-report',
+            $school,
+            $extension,
+            [$classroom->name, $reportRange['from'], $reportRange['to']]
+        );
+
+        return response()->streamDownload(function () use ($request, $school, $columns, $reportRows, $details, $delimiter): void {
+            $stream = fopen('php://output', 'w');
+            if ($stream === false) {
+                return;
+            }
+
+            $this->exportDocuments->writeCsvPreamble($stream, $school, 'تقرير حضور الطلاب', $request->user(), $details, $delimiter);
+            $this->exportDocuments->putCsvRow($stream, collect($columns)->pluck('label')->all(), $delimiter);
+
+            foreach ($reportRows as $row) {
+                $this->exportDocuments->putCsvRow($stream, collect($columns)->map(fn (array $column): mixed => $row[$column['key']] ?? '')->all(), $delimiter);
+            }
+
+            $this->exportDocuments->writeCsvFooter($stream, $school, $request->user(), $delimiter);
 
             fclose($stream);
-        }, $fileName, $this->exportDocuments->csvHeaders());
+        }, $fileName, $this->exportDocuments->csvHeaders($contentType));
     }
 
     private function resolveSchoolId(Request $request): int

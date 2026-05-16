@@ -814,6 +814,8 @@ const reportFiltersHintClass = computed(() => {
     return 'text-gray-400';
 });
 
+const exportReportFormat = ref('pdf');
+
 const exportReport = () => {
     if (!canExportReport.value) {
         return;
@@ -829,6 +831,7 @@ const exportReport = () => {
         report_day_type: filterForm.value.report_day_type || undefined,
         report_holiday_name: filterForm.value.report_holiday_name || undefined,
         report_leave_type_id: filterForm.value.report_leave_type_id || undefined,
+        format: exportReportFormat.value || 'pdf',
     });
 
     window.location.assign(href);
@@ -1508,12 +1511,22 @@ const closeDailyAttendanceModal = () => {
                         <p class="text-xs text-gray-400">
                             {{ (props.attendanceReport?.range?.from || '-') }} إلى {{ (props.attendanceReport?.range?.to || '-') }}
                         </p>
+                        <select
+                            v-model="exportReportFormat"
+                            class="rounded border border-gray-700 bg-gray-800 px-2 py-1 text-xs text-gray-100"
+                            aria-label="صيغة تصدير تقرير الحضور"
+                        >
+                            <option value="pdf">PDF</option>
+                            <option value="word">Word</option>
+                            <option value="excel">Excel</option>
+                            <option value="csv">CSV</option>
+                        </select>
                         <button
                             class="rounded bg-emerald-700 px-3 py-1 text-xs font-bold hover:bg-emerald-600 disabled:opacity-50"
                             :disabled="!canExportReport"
                             @click="exportReport"
                         >
-                            تصدير CSV
+                            تصدير
                         </button>
                     </div>
                 </div>

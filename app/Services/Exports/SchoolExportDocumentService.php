@@ -4,6 +4,7 @@ namespace App\Services\Exports;
 
 use App\Models\School;
 use App\Models\User;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -112,6 +113,65 @@ class SchoolExportDocumentService
         ];
     }
 
+    public function downloadPdfFromHtml(string $html, string $filename, string $orientation = 'portrait')
+    {
+        $orientation = in_array($orientation, ['portrait', 'landscape'], true) ? $orientation : 'portrait';
+
+        if (app()->bound('dompdf.wrapper')) {
+            $pdf = app('dompdf.wrapper');
+            $pdf->loadHTML($html, 'UTF-8');
+            $pdf->setPaper('a4', $orientation);
+
+            return $pdf->download($filename);
+        }
+
+        $browserBinary = $this->resolveHeadlessBrowserBinary();
+        if ($browserBinary === null) {
+            abort(500, 'تعذر تصدير PDF لعدم توفر محرك توليد PDF على هذه البيئة.');
+        }
+
+        $directory = storage_path('app/temp/report-exports');
+        if (! is_dir($directory) && ! mkdir($directory, 0775, true) && ! is_dir($directory)) {
+            abort(500, 'تعذر تجهيز مجلد التصدير المؤقت.');
+        }
+
+        $token = uniqid('report-export-', true);
+        $htmlPath = $directory . DIRECTORY_SEPARATOR . $token . '.html';
+        $pdfPath = $directory . DIRECTORY_SEPARATOR . $token . '.pdf';
+
+        file_put_contents($htmlPath, $html);
+
+        try {
+            $htmlUrl = 'file:///' . str_replace('\\', '/', $htmlPath);
+            $result = Process::timeout(90)->run([
+                $browserBinary,
+                '--headless=new',
+                '--disable-gpu',
+                '--no-sandbox',
+                '--disable-dev-shm-usage',
+                '--no-first-run',
+                '--no-default-browser-check',
+                '--allow-file-access-from-files',
+                '--print-to-pdf=' . $pdfPath,
+                $htmlUrl,
+            ]);
+
+            if (! $result->successful() || ! is_file($pdfPath)) {
+                @unlink($pdfPath);
+                abort(500, 'تعذر إنشاء ملف PDF. يرجى التأكد من توفر محرك PDF على الخادم.');
+            }
+
+            return response()
+                ->download($pdfPath, $filename, [
+                    'Content-Type' => 'application/pdf',
+                    'X-Content-Type-Options' => 'nosniff',
+                ])
+                ->deleteFileAfterSend(true);
+        } finally {
+            @unlink($htmlPath);
+        }
+    }
+
     public function schoolLogoDataUri(?School $school): ?string
     {
         if (! $school) {
@@ -150,5 +210,31 @@ class SchoolExportDocumentService
         }
 
         return $path;
+    }
+
+    private function resolveHeadlessBrowserBinary(): ?string
+    {
+        $candidates = [
+            env('HEADLESS_BROWSER_BINARY'),
+            env('CHROME_BIN'),
+            env('CHROMIUM_PATH'),
+            'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+            'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+            'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+            '/usr/bin/google-chrome-stable',
+            '/usr/bin/google-chrome',
+            '/usr/bin/chromium',
+            '/usr/bin/chromium-browser',
+            '/snap/bin/chromium',
+        ];
+
+        foreach ($candidates as $candidate) {
+            $path = trim((string) $candidate);
+            if ($path !== '' && is_file($path)) {
+                return $path;
+            }
+        }
+
+        return null;
     }
 }

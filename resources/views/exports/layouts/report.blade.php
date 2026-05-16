@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>{{ $documentTitle ?? 'تقرير رسمي' }}</title>
     <style>
         @page { size: A4 landscape; margin: 14mm; }

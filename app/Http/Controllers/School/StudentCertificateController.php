@@ -21,10 +21,10 @@ use App\Models\User;
 use App\Services\Certificates\CertificateIssuingService;
 use App\Services\Certificates\CertificateRenderingService;
 use App\Services\Certificates\CertificateTemplateService;
+use App\Services\Exports\SchoolExportDocumentService;
 use App\Support\CertificateOptionLibrary;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -37,6 +37,7 @@ class StudentCertificateController extends Controller
         private readonly CertificateTemplateService $templateService,
         private readonly CertificateIssuingService $issuingService,
         private readonly CertificateRenderingService $renderingService,
+        private readonly SchoolExportDocumentService $exportDocuments,
     ) {
     }
 
@@ -215,15 +216,25 @@ class StudentCertificateController extends Controller
         $schoolId = $this->resolveSchoolId($request);
         $this->assertCertificateBelongsToSchool($studentCertificate, $schoolId);
 
-        $disk = (string) ($studentCertificate->pdf_disk ?: CertificateRenderingService::DISK);
-        $path = (string) $studentCertificate->pdf_path;
-        if ($path === '' || !Storage::disk($disk)->exists($path)) {
-            $path = $this->renderingService->storePrintableHtml($studentCertificate);
-            $studentCertificate->forceFill(['pdf_disk' => CertificateRenderingService::DISK, 'pdf_path' => $path])->save();
-            $disk = CertificateRenderingService::DISK;
+        $format = (string) $request->query('format', 'pdf');
+        if (! in_array($format, ['pdf', 'word'], true)) {
+            $format = 'pdf';
         }
 
-        return Storage::disk($disk)->download($path, $studentCertificate->certificate_number . '.html');
+        $studentCertificate->loadMissing('template');
+        $html = $this->renderingService->renderHtml($studentCertificate);
+        $filenameBase = Str::slug((string) $studentCertificate->certificate_number, '-');
+        if ($filenameBase === '') {
+            $filenameBase = 'certificate-' . (int) $studentCertificate->id;
+        }
+
+        if ($format === 'word') {
+            return response($html, 200, $this->exportDocuments->wordHeaders($filenameBase . '.doc'));
+        }
+
+        $orientation = (string) ($studentCertificate->template?->orientation ?? 'landscape');
+
+        return $this->exportDocuments->downloadPdfFromHtml($html, $filenameBase . '.pdf', $orientation);
     }
 
     public function cancel(CancelStudentCertificateRequest $request, StudentCertificate $studentCertificate): RedirectResponse
@@ -431,7 +442,8 @@ class StudentCertificateController extends Controller
             'issued_by' => (string) ($certificate->issuer?->name ?? ''),
             'issued_at' => optional($certificate->issued_at)->format('Y-m-d H:i'),
             'print_url' => ($permissions['can_print_certificates'] ?? false) ? route('school.certificates.print', $certificate, false) : null,
-            'download_url' => ($permissions['can_print_certificates'] ?? false) ? route('school.certificates.download', $certificate, false) : null,
+            'download_url' => ($permissions['can_print_certificates'] ?? false) ? route('school.certificates.download', ['studentCertificate' => $certificate, 'format' => 'pdf'], false) : null,
+            'download_word_url' => ($permissions['can_print_certificates'] ?? false) ? route('school.certificates.download', ['studentCertificate' => $certificate, 'format' => 'word'], false) : null,
             'verify_url' => route('certificates.verify', ['token' => (string) $certificate->verification_token], false),
         ];
     }

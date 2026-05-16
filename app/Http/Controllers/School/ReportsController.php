@@ -15,19 +15,18 @@ use App\Models\User;
 use App\Services\Exports\SchoolExportDocumentService;
 use App\Services\Support\AuditLogger;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class ReportsController extends Controller
 {
     private const ENTITIES = ['students', 'stages', 'grades', 'classrooms', 'teachers', 'attendance', 'leaves'];
-    private const EXPORTS = ['csv', 'json', 'excel'];
+    private const EXPORTS = ['csv', 'json', 'excel', 'pdf', 'word'];
     private const MAX_EXPORT_ROWS = 10000;
 
     public function __construct(
@@ -82,6 +81,8 @@ class ReportsController extends Controller
                     ['value' => 'inactive', 'label' => 'غير نشط فقط'],
                 ],
                 'exportFormats' => [
+                    ['value' => 'pdf', 'label' => 'PDF'],
+                    ['value' => 'word', 'label' => 'Word'],
                     ['value' => 'csv', 'label' => 'CSV'],
                     ['value' => 'json', 'label' => 'JSON'],
                     ['value' => 'excel', 'label' => 'Excel'],
@@ -93,7 +94,7 @@ class ReportsController extends Controller
         ]);
     }
 
-    public function export(Request $request): JsonResponse|StreamedResponse
+    public function export(Request $request): SymfonyResponse
     {
         $schoolId = $this->resolveSchoolId($request);
         $user = $request->user();
@@ -141,22 +142,49 @@ class ReportsController extends Controller
         }
 
         $school = $this->exportDocuments->schoolForExport($schoolId);
+        $details = [
+            'نطاق التقرير' => $filters['entity'],
+            'عدد السجلات' => $totalRows,
+            'من تاريخ' => $filters['date_from'] ?: '',
+            'إلى تاريخ' => $filters['date_to'] ?: '',
+            'البحث' => $filters['search'] ?: '',
+        ];
+
+        if (in_array($filters['format'], ['pdf', 'word'], true)) {
+            $html = view('exports.school.report-datasets', [
+                'school' => $school,
+                'schoolLogoImage' => $this->exportDocuments->schoolLogoDataUri($school),
+                'documentTitle' => 'تقرير المدرسة',
+                'documentSubtitle' => 'تصدير رسمي من بيانات المدرسة داخل منصة إدارتك.',
+                'generatedAt' => now(),
+                'exportedBy' => $request->user(),
+                'details' => $details,
+                'datasets' => $datasets,
+            ])->render();
+
+            $extension = $filters['format'] === 'word' ? 'doc' : 'pdf';
+            $fileName = $this->exportDocuments->safeFileName('school-reports', $school, $extension, [$filters['entity']]);
+
+            if ($filters['format'] === 'word') {
+                return response($html, 200, $this->exportDocuments->wordHeaders($fileName));
+            }
+
+            return $this->exportDocuments->downloadPdfFromHtml($html, $fileName, 'landscape');
+        }
+
         $delimiter = $filters['format'] === 'excel' ? "\t" : ',';
         $contentType = $filters['format'] === 'excel' ? 'application/vnd.ms-excel; charset=UTF-8' : 'text/csv; charset=UTF-8';
         $extension = $filters['format'] === 'excel' ? 'xls' : 'csv';
         $fileName = $this->exportDocuments->safeFileName('school-reports', $school, $extension, [$filters['entity']]);
 
-        return response()->streamDownload(function () use ($request, $school, $datasets, $filters, $totalRows, $delimiter): void {
+        return response()->streamDownload(function () use ($request, $school, $datasets, $filters, $totalRows, $details, $delimiter): void {
             $stream = fopen('php://output', 'w');
             if ($stream === false) {
                 return;
             }
             $this->exportDocuments->writeCsvPreamble($stream, $school, 'تقرير المدرسة', $request->user(), [
-                'نطاق التقرير' => $filters['entity'],
-                'عدد السجلات' => $totalRows,
+                ...$details,
                 'الصيغة' => $filters['format'],
-                'من تاريخ' => $filters['date_from'] ?: '',
-                'إلى تاريخ' => $filters['date_to'] ?: '',
             ], $delimiter);
 
             foreach ($datasets as $index => $dataset) {

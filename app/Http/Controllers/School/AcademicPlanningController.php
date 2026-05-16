@@ -1736,26 +1736,15 @@ class AcademicPlanningController extends Controller
             classroomName: (string) $classroom->name
         );
 
-        if ($format === 'word') {
-            $html = view('exports.school.weekly-timetable', $payload)->render();
+        $html = view('exports.school.weekly-timetable', $payload)->render();
 
+        if ($format === 'word') {
             return response($html, 200, [
                 ...$this->exportDocuments->wordHeaders($filenameBase . '.doc'),
             ]);
         }
 
-        if (app()->bound('dompdf.wrapper')) {
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadView('exports.school.weekly-timetable', $payload);
-            $pdf->setPaper('a4', 'landscape');
-
-            return $pdf->download($filenameBase . '.pdf');
-        }
-
-        return $this->downloadWeeklyGridPdfViaHeadlessBrowser(
-            html: view('exports.school.weekly-timetable', $payload)->render(),
-            filenameBase: $filenameBase
-        );
+        return $this->exportDocuments->downloadPdfFromHtml($html, $filenameBase . '.pdf', 'landscape');
     }
 
     private function downloadWeeklyGridPdfViaHeadlessBrowser(string $html, string $filenameBase)

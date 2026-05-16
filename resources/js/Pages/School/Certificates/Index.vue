@@ -493,7 +493,8 @@ const submitCancelCertificate = () => {
                                 <td class="p-3">
                                     <div class="flex flex-wrap gap-2">
                                         <a v-if="certificate.print_url" :href="certificate.print_url" target="_blank" class="ui-secondary-button inline-flex items-center gap-1"><Printer class="h-4 w-4" /> طباعة</a>
-                                        <a v-if="certificate.download_url" :href="certificate.download_url" class="ui-secondary-button inline-flex items-center gap-1"><Download class="h-4 w-4" /> تحميل</a>
+                                        <a v-if="certificate.download_url" :href="certificate.download_url" class="ui-secondary-button inline-flex items-center gap-1"><Download class="h-4 w-4" /> PDF</a>
+                                        <a v-if="certificate.download_word_url" :href="certificate.download_word_url" class="ui-secondary-button inline-flex items-center gap-1"><FileText class="h-4 w-4" /> Word</a>
                                         <Link :href="certificate.verify_url" target="_blank" class="ui-secondary-button inline-flex items-center gap-1"><FileText class="h-4 w-4" /> تحقق</Link>
                                         <button v-if="permissions.can_cancel_certificates && certificate.status !== 'cancelled'" type="button" class="rounded-lg bg-red-500/15 px-3 py-2 text-sm font-bold text-red-200" @click="cancelCertificate(certificate)">إلغاء</button>
                                     </div>

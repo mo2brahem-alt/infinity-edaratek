@@ -10,6 +10,7 @@ import {
     FileText,
     Layers3,
     RotateCcw,
+    Search,
     Users,
     UserRound,
 } from 'lucide-vue-next';
@@ -54,7 +55,7 @@ const form = ref({
     per_page: props.filters.per_page || 25,
 });
 
-const exportFormat = ref('csv');
+const exportFormat = ref('pdf');
 
 watch(
     () => props.filters,
