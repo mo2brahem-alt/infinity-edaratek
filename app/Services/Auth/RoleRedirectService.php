@@ -51,9 +51,7 @@ class RoleRedirectService
                 ->whereKey($schoolId)
                 ->first(['id', 'status', 'supervision_status', 'manager_user_id', 'supervisor_id']);
 
-            $isAssociationActive = $school ? SchoolAssociationState::isActiveAssociation($school) : false;
-
-            if (!$isAssociationActive) {
+            if (!$school || !SchoolAssociationState::allowsOperationalAccessFor($user, $school)) {
                 return 'dashboard';
             }
 

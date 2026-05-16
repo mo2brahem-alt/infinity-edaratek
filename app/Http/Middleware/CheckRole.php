@@ -28,15 +28,19 @@ class CheckRole
         if ($role === 'staff') {
             $schoolId = (int) ($user->school_id ?? 0);
             if ($schoolId <= 0) {
-                abort(403, 'School context is required.');
+                abort(403, SchoolAssociationState::STAFF_SCHOOL_REQUIRED_MESSAGE);
             }
 
             $school = School::query()
                 ->whereKey($schoolId)
                 ->first(['id', 'status', 'supervision_status', 'manager_user_id', 'supervisor_id']);
 
-            if (!$school || !SchoolAssociationState::isActiveAssociation($school)) {
-                abort(403, SchoolAssociationState::LOCKED_MESSAGE);
+            if (!$school) {
+                abort(403, __('messages.school_context_invalid'));
+            }
+
+            if (!SchoolAssociationState::allowsOperationalAccessFor($user, $school)) {
+                abort(403, SchoolAssociationState::operationalAccessDeniedMessageFor($user, $school));
             }
         }
 

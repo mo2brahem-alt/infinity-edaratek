@@ -74,7 +74,7 @@ class ActiveSchoolAssociationMiddlewareTest extends TestCase
             ->assertOk();
     }
 
-    public function test_staff_is_blocked_from_school_modules_when_association_is_not_active(): void
+    public function test_staff_can_access_dashboard_and_delegated_modules_when_school_is_active_without_supervisor_association(): void
     {
         Role::firstOrCreate(['name' => 'staff', 'guard_name' => 'web']);
 
@@ -116,7 +116,105 @@ class ActiveSchoolAssociationMiddlewareTest extends TestCase
 
         $this->actingAs($staff)
             ->get(route('staff.dashboard'))
-            ->assertForbidden();
+            ->assertOk();
+
+        $this->actingAs($staff)
+            ->get(route('school.student_structure.index'))
+            ->assertOk();
+    }
+
+    public function test_staff_is_blocked_when_school_is_suspended_even_if_role_is_valid(): void
+    {
+        Role::firstOrCreate(['name' => 'staff', 'guard_name' => 'web']);
+
+        $region = EducationalDirectorate::create([
+            'name' => 'Suspended Staff Region',
+            'governorate' => 'Jeddah',
+        ]);
+
+        $school = School::create([
+            'directorate_id' => $region->id,
+            'name' => 'Suspended Staff School',
+            'school_id' => 'SCH-AG-0006',
+            'phone' => '0500011006',
+            'status' => School::STATUS_SUSPENDED,
+            'supervision_status' => School::SUPERVISION_STATUS_WAITING_SUPERVISOR_CONFIRM,
+        ]);
+
+        $staff = User::factory()->create([
+            'role' => 'staff',
+            'school_id' => $school->id,
+            'school_staff_type' => Department::STAFF_TYPE_ADMINISTRATIVE,
+        ]);
+        $staff->assignRole('staff');
+
+        $this->actingAs($staff)
+            ->getJson(route('staff.dashboard'))
+            ->assertForbidden()
+            ->assertJsonPath('message', 'تم إيقاف المدرسة مؤقتًا. يرجى التواصل مع إدارة المنصة.');
+    }
+
+    public function test_staff_without_school_is_blocked_with_clear_arabic_message(): void
+    {
+        Role::firstOrCreate(['name' => 'staff', 'guard_name' => 'web']);
+
+        $staff = User::factory()->create([
+            'role' => 'staff',
+            'school_id' => null,
+            'school_staff_type' => Department::STAFF_TYPE_ADMINISTRATIVE,
+        ]);
+        $staff->assignRole('staff');
+
+        $this->actingAs($staff)
+            ->getJson(route('staff.dashboard'))
+            ->assertForbidden()
+            ->assertJsonPath('message', 'حسابك غير مرتبط بمدرسة نشطة. يرجى التواصل مع إدارة المدرسة.');
+    }
+
+    public function test_staff_still_cannot_access_module_without_delegated_permission(): void
+    {
+        Role::firstOrCreate(['name' => 'staff', 'guard_name' => 'web']);
+
+        $region = EducationalDirectorate::create([
+            'name' => 'Staff Permission Region',
+            'governorate' => 'Jeddah',
+        ]);
+
+        $school = School::create([
+            'directorate_id' => $region->id,
+            'name' => 'Staff Permission School',
+            'school_id' => 'SCH-AG-0007',
+            'phone' => '0500011007',
+            'status' => School::STATUS_ACTIVE,
+            'supervision_status' => School::SUPERVISION_STATUS_WAITING_SUPERVISOR_CONFIRM,
+        ]);
+
+        $department = Department::create([
+            'name' => 'Administrative Affairs',
+            'staff_type' => Department::STAFF_TYPE_ADMINISTRATIVE,
+            'school_id' => null,
+        ]);
+
+        $departmentRole = DepartmentRole::create([
+            'department_id' => $department->id,
+            'name' => 'Readonly Officer',
+            'is_active' => true,
+            'can_manage_student_structure' => false,
+        ]);
+
+        $staff = User::factory()->create([
+            'role' => 'staff',
+            'school_id' => $school->id,
+            'department_id' => $department->id,
+            'department_role_id' => $departmentRole->id,
+            'school_staff_type' => Department::STAFF_TYPE_ADMINISTRATIVE,
+            'can_manage_student_structure' => false,
+        ]);
+        $staff->assignRole('staff');
+
+        $this->actingAs($staff)
+            ->get(route('staff.dashboard'))
+            ->assertOk();
 
         $this->actingAs($staff)
             ->get(route('school.student_structure.index'))

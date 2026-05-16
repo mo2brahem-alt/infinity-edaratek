@@ -41,8 +41,8 @@ class EnsureSchoolReportsAccess
             return $next($request);
         }
 
-        if (!SchoolAssociationState::isActiveAssociation($school)) {
-            abort(403, SchoolAssociationState::LOCKED_MESSAGE);
+        if (!SchoolAssociationState::allowsOperationalAccessFor($user, $school)) {
+            abort(403, SchoolAssociationState::operationalAccessDeniedMessageFor($user, $school));
         }
 
         if (!$user->canManageSchoolReports()) {

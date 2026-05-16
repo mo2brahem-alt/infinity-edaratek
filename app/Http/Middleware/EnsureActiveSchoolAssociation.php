@@ -26,7 +26,7 @@ class EnsureActiveSchoolAssociation
                 return $this->sendManagerSetupResponse($request, __('messages.manager_school_required'), 409);
             }
 
-            abort(403, 'School context is required.');
+            abort(403, SchoolAssociationState::STAFF_SCHOOL_REQUIRED_MESSAGE);
         }
 
         $school = School::query()
@@ -38,7 +38,7 @@ class EnsureActiveSchoolAssociation
                 return $this->sendManagerSetupResponse($request, __('messages.school_context_invalid'), 409);
             }
 
-            abort(403, 'School context is invalid.');
+            abort(403, __('messages.school_context_invalid'));
         }
 
         if ($user->hasSystemRole('school_manager') && (int) $school->manager_user_id !== (int) $user->id) {
@@ -51,13 +51,13 @@ class EnsureActiveSchoolAssociation
             return $next($request);
         }
 
-        if (SchoolAssociationState::isActiveAssociation($school)) {
+        if (SchoolAssociationState::allowsOperationalAccessFor($user, $school)) {
             $request->attributes->set('school_context_id', $schoolId);
 
             return $next($request);
         }
 
-        $message = SchoolAssociationState::LOCKED_MESSAGE;
+        $message = SchoolAssociationState::operationalAccessDeniedMessageFor($user, $school);
 
         if ($request->expectsJson() || $request->is('api/*')) {
             abort(403, $message);
