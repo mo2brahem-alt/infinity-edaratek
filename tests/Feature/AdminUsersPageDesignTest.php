@@ -17,6 +17,9 @@ class AdminUsersPageDesignTest extends TestCase
         $this->assertStringContainsString("import { useActionDialog } from '@/composables/useActionDialog';", $content);
         $this->assertStringContainsString('ui-page-shell', $content);
         $this->assertStringContainsString('ui-page-hero', $content);
+        $this->assertStringContainsString('<Head title="إدارة الحسابات"', $content);
+        $this->assertStringContainsString('المستخدمون', $content);
+        $this->assertStringContainsString('المدارس', $content);
         $this->assertStringContainsString('<AppFilterBar', $content);
         $this->assertStringContainsString('<AppSearchField', $content);
         $this->assertStringContainsString('ui-table-shell', $content);

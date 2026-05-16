@@ -313,6 +313,60 @@ class AccountApprovalFlowTest extends TestCase
             );
     }
 
+    public function test_super_admin_users_index_exposes_school_account_overview(): void
+    {
+        $this->createRole('super_admin');
+        $this->createRole('school_manager');
+        $this->createRole('supervisor');
+
+        $admin = $this->createSuperAdmin();
+        $manager = User::factory()->create([
+            'name' => 'مدير المدرسة التجريبية',
+            'email' => 'manager.accounts@example.com',
+            'role' => 'school_manager',
+            'is_active' => true,
+            'approval_status' => User::APPROVAL_APPROVED,
+        ]);
+        $manager->assignRole('school_manager');
+        $supervisor = User::factory()->create([
+            'name' => 'المشرف التجريبي',
+            'email' => 'supervisor.accounts@example.com',
+            'role' => 'supervisor',
+            'is_active' => true,
+            'approval_status' => User::APPROVAL_APPROVED,
+        ]);
+        $supervisor->assignRole('supervisor');
+        $region = EducationalDirectorate::query()->create([
+            'name' => 'نطاق الحسابات',
+            'governorate' => 'الرياض',
+        ]);
+        $school = School::query()->create([
+            'directorate_id' => $region->id,
+            'name' => 'مدرسة الحسابات',
+            'school_id' => 'SCH-ACC-0001',
+            'school_type' => School::TYPE_MIXED,
+            'phone' => '0500005001',
+            'status' => School::STATUS_ACTIVE,
+            'supervision_status' => School::SUPERVISION_STATUS_WAITING_SUPERVISOR_CONFIRM,
+            'manager_user_id' => $manager->id,
+            'supervisor_id' => $supervisor->id,
+        ]);
+        $manager->update(['school_id' => $school->id]);
+
+        $this->actingAs($admin)
+            ->get(route('users.index'))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Admin/Users/Index')
+                ->has('schools', 1)
+                ->where('schools.0.name', 'مدرسة الحسابات')
+                ->where('schools.0.status', School::STATUS_ACTIVE)
+                ->where('schools.0.manager.name', 'مدير المدرسة التجريبية')
+                ->where('schools.0.supervisor.name', 'المشرف التجريبي')
+                ->where('schools.0.users_count', 1)
+            );
+    }
+
     public function test_welcome_page_exposes_pending_registration_notice_when_query_flag_is_present(): void
     {
         $this->get(route('welcome', ['registration' => 'pending-approval']))

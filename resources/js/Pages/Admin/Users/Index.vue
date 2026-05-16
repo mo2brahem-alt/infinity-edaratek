@@ -10,6 +10,7 @@ import {
     Pencil,
     Phone,
     Plus,
+    School,
     Shield,
     Trash2,
     UserPlus,
@@ -40,6 +41,10 @@ const props = defineProps({
         default: () => [],
     },
     departments: {
+        type: Array,
+        default: () => [],
+    },
+    schools: {
         type: Array,
         default: () => [],
     },
@@ -81,6 +86,68 @@ const approvalStatusLabel = (status) => {
 
     return 'غير معروف';
 };
+
+const formatDate = (value) => {
+    if (!value) return '-';
+
+    return new Date(value).toLocaleDateString('ar-EG', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    });
+};
+
+const schoolTypeLabel = (type) => {
+    if (type === 'boys') return 'بنين';
+    if (type === 'girls') return 'بنات';
+    if (type === 'mixed') return 'مختلطة';
+
+    return 'غير محدد';
+};
+
+const schoolStatusMeta = (status) => {
+    if (status === 'ACTIVE') {
+        return {
+            label: 'مفعلة',
+            className: 'border-emerald-400/25 bg-emerald-400/10 text-emerald-200',
+        };
+    }
+
+    if (status === 'SUSPENDED') {
+        return {
+            label: 'معلقة',
+            className: 'border-amber-400/25 bg-amber-400/10 text-amber-200',
+        };
+    }
+
+    return {
+        label: status || 'غير محددة',
+        className: 'border-slate-500/25 bg-slate-500/10 text-slate-300',
+    };
+};
+
+const supervisionStatusLabel = (status) => {
+    if (status === 'ACTIVE_ASSOCIATION') return 'ارتباط نشط';
+    if (status === 'WAITING_SUPERVISOR_CONFIRM') return 'بانتظار تأكيد المشرف';
+    if (status === 'WAITING_MANAGER_APPROVAL') return 'بانتظار موافقة المدير';
+    if (status === 'SUSPENDED') return 'غير مرتبط';
+
+    return status || 'غير محددة';
+};
+
+const schoolLocationLabel = (school) => {
+    const parts = [
+        school?.directorate?.country,
+        school?.directorate?.governorate,
+        school?.directorate?.name,
+    ].filter(Boolean);
+
+    return parts.length > 0 ? parts.join(' / ') : 'غير محدد';
+};
+
+const activeSchoolsCount = computed(() => props.schools.filter((school) => school.status === 'ACTIVE').length);
+const linkedSchoolsCount = computed(() => props.schools.filter((school) => school.manager).length);
+const schoolUsersCount = computed(() => props.schools.reduce((total, school) => total + Number(school.users_count || 0), 0));
 
 const filteredUsers = computed(() => {
     const normalizedSearch = search.value.trim().toLowerCase();
@@ -228,7 +295,7 @@ const rejectPendingUser = async (user) => {
 </script>
 
 <template>
-    <Head title="إدارة المستخدمين" />
+    <Head title="إدارة الحسابات" />
 
     <AdminLayout>
         <div class="ui-page-shell">
@@ -237,11 +304,11 @@ const rejectPendingUser = async (user) => {
                     <div class="ui-page-heading text-right">
                         <span class="ui-page-kicker">
                             <Users class="h-4 w-4" />
-                            <span>إدارة فرق النظام</span>
+                            <span>إدارة حسابات المنصة</span>
                         </span>
-                        <h1 class="ui-page-title">إدارة المستخدمين والموظفين</h1>
+                        <h1 class="ui-page-title">إدارة الحسابات</h1>
                         <p class="ui-page-copy">
-                            أنشئ الحسابات، حدّد الدور الإداري، وراجع توزيع المستخدمين على الإدارات من واجهة أوضح وأكثر قابلية للاستخدام.
+                            راجع حسابات المستخدمين والمدارس المرتبطة بها من مكان واحد، مع الحفاظ على أدوات الاعتماد والبحث والتعديل الحالية.
                         </p>
                     </div>
 
@@ -266,24 +333,33 @@ const rejectPendingUser = async (user) => {
                     <article class="ui-stat-card">
                         <div class="ui-stat-meta">
                             <div class="text-right">
-                                <p class="ui-stat-label">الأدوار المتاحة</p>
-                                <h2 class="ui-stat-value">{{ roles.length }}</h2>
+                                <p class="ui-stat-label">المدارس المفعلة</p>
+                                <h2 class="ui-stat-value">{{ activeSchoolsCount }}</h2>
                             </div>
-                            <div class="ui-stat-icon"><Shield class="h-5 w-5" /></div>
+                            <div class="ui-stat-icon"><School class="h-5 w-5" /></div>
                         </div>
-                        <p class="text-sm leading-7 text-slate-400">أدوار إدارية قابلة للإسناد من دون حسابات السوبر أدمن.</p>
+                        <p class="text-sm leading-7 text-slate-400">من أصل {{ schools.length }} مدرسة مسجلة داخل النظام.</p>
                     </article>
 
                     <article class="ui-stat-card">
                         <div class="ui-stat-meta">
                             <div class="text-right">
-                                <p class="ui-stat-label">الإدارات المتاحة</p>
-                                <h2 class="ui-stat-value">{{ departments.length }}</h2>
+                                <p class="ui-stat-label">مدارس لها مدير</p>
+                                <h2 class="ui-stat-value">{{ linkedSchoolsCount }}</h2>
                             </div>
                             <div class="ui-stat-icon"><Building2 class="h-5 w-5" /></div>
                         </div>
-                        <p class="text-sm leading-7 text-slate-400">يمكنك ربط المستخدم مباشرة بالقسم المناسب منذ لحظة الإنشاء.</p>
+                        <p class="text-sm leading-7 text-slate-400">إجمالي المستخدمين المرتبطين بالمدارس: {{ schoolUsersCount }}.</p>
                     </article>
+                </div>
+            </section>
+
+            <section class="ui-section-header">
+                <div class="ui-section-heading text-right">
+                    <h2 class="ui-section-title">المستخدمون</h2>
+                    <p class="ui-section-subtitle">
+                        هذا القسم يحتفظ بتجربة المستخدمين الحالية: الاعتماد، البحث، الفلترة، الإضافة، التعديل والحذف.
+                    </p>
                 </div>
             </section>
 
@@ -582,6 +658,160 @@ const rejectPendingUser = async (user) => {
                                 <div class="sm:col-span-2">
                                     <p class="ui-mobile-row-label">الإدارة</p>
                                     <p class="mt-1 text-sm text-slate-300">{{ departmentNameForUser(user) }}</p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </template>
+            </section>
+
+            <section class="ui-table-shell">
+                <div class="ui-table-header">
+                    <div class="ui-section-header !mb-0">
+                        <div class="ui-section-heading text-right">
+                            <h2 class="ui-section-title">المدارس</h2>
+                            <p class="ui-section-subtitle">
+                                عرض موجز لكل المدارس المضافة مع المدير والمشرف وحالة التشغيل، دون نقل إدارة المدارس أو تغيير مساراتها الحالية.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="ui-chip">{{ schools.length }} مدرسة</span>
+                            <span class="ui-chip">{{ activeSchoolsCount }} مفعلة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="schools.length === 0" class="p-4 md:p-6">
+                    <AppStatePanel
+                        variant="empty"
+                        title="لا توجد مدارس مسجلة بعد"
+                        description="ستظهر المدارس هنا بعد إضافتها من تهيئة مدير المدرسة أو من مسارات الإدارة المعتمدة."
+                        compact
+                    />
+                </div>
+
+                <template v-else>
+                    <div class="hidden lg:block ui-table-container">
+                        <table class="ui-data-table min-w-[1180px]">
+                            <thead>
+                                <tr>
+                                    <th>المدرسة</th>
+                                    <th>النطاق التعليمي</th>
+                                    <th>مدير المدرسة</th>
+                                    <th>المشرف التربوي</th>
+                                    <th>الحالات</th>
+                                    <th>الأعداد</th>
+                                    <th>تاريخ التسجيل</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="school in schools" :key="school.id">
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <div class="ui-avatar shrink-0">
+                                                <School class="h-5 w-5" />
+                                            </div>
+                                            <div class="min-w-0 text-right">
+                                                <p class="truncate font-black text-white">{{ school.name }}</p>
+                                                <p class="text-xs text-slate-400">
+                                                    الكود: <span dir="ltr">{{ school.school_id || '-' }}</span>
+                                                </p>
+                                                <p class="text-xs text-slate-500">النوع: {{ schoolTypeLabel(school.school_type) }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="space-y-1 text-right text-sm">
+                                            <p class="text-slate-200">{{ schoolLocationLabel(school) }}</p>
+                                            <p class="text-xs text-slate-500">
+                                                {{ school.directorate?.education_type || 'نوع التعليم غير محدد' }}
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="space-y-1 text-right">
+                                            <p class="font-semibold text-slate-100">{{ school.manager?.name || 'غير مرتبط' }}</p>
+                                            <p v-if="school.manager?.email" class="text-xs text-slate-500" dir="ltr">{{ school.manager.email }}</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="space-y-1 text-right">
+                                            <p class="font-semibold text-slate-100">{{ school.supervisor?.name || 'لا يوجد مشرف' }}</p>
+                                            <p v-if="school.supervisor?.email" class="text-xs text-slate-500" dir="ltr">{{ school.supervisor.email }}</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="flex flex-col items-start gap-2">
+                                            <span class="ui-chip" :class="schoolStatusMeta(school.status).className">
+                                                {{ schoolStatusMeta(school.status).label }}
+                                            </span>
+                                            <span class="ui-chip">{{ supervisionStatusLabel(school.supervision_status) }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="space-y-2 text-right text-sm text-slate-300">
+                                            <p>المستخدمون: {{ school.users_count || 0 }}</p>
+                                            <p>الطلاب: {{ school.students_count || 0 }}</p>
+                                        </div>
+                                    </td>
+                                    <td class="text-slate-300">{{ formatDate(school.created_at) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="ui-mobile-card-list">
+                        <article v-for="school in schools" :key="school.id" class="ui-mobile-row-card text-right">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex min-w-0 items-center gap-3">
+                                    <div class="ui-avatar shrink-0">
+                                        <School class="h-5 w-5" />
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="truncate text-base font-black text-white">{{ school.name }}</p>
+                                        <p class="truncate text-xs text-slate-400">
+                                            {{ school.school_id || 'بدون كود' }} · {{ schoolTypeLabel(school.school_type) }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <span class="ui-chip shrink-0" :class="schoolStatusMeta(school.status).className">
+                                    {{ schoolStatusMeta(school.status).label }}
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <div>
+                                    <p class="ui-mobile-row-label">النطاق التعليمي</p>
+                                    <p class="mt-1 text-sm text-slate-300">{{ schoolLocationLabel(school) }}</p>
+                                </div>
+                                <div>
+                                    <p class="ui-mobile-row-label">نوع التعليم</p>
+                                    <p class="mt-1 text-sm text-slate-300">{{ school.directorate?.education_type || 'غير محدد' }}</p>
+                                </div>
+                                <div>
+                                    <p class="ui-mobile-row-label">مدير المدرسة</p>
+                                    <p class="mt-1 text-sm text-slate-300">{{ school.manager?.name || 'غير مرتبط' }}</p>
+                                    <p v-if="school.manager?.email" class="mt-1 truncate text-xs text-slate-500" dir="ltr">{{ school.manager.email }}</p>
+                                </div>
+                                <div>
+                                    <p class="ui-mobile-row-label">المشرف التربوي</p>
+                                    <p class="mt-1 text-sm text-slate-300">{{ school.supervisor?.name || 'لا يوجد مشرف' }}</p>
+                                    <p v-if="school.supervisor?.email" class="mt-1 truncate text-xs text-slate-500" dir="ltr">{{ school.supervisor.email }}</p>
+                                </div>
+                                <div>
+                                    <p class="ui-mobile-row-label">حالة الإشراف</p>
+                                    <p class="mt-1 text-sm text-slate-300">{{ supervisionStatusLabel(school.supervision_status) }}</p>
+                                </div>
+                                <div>
+                                    <p class="ui-mobile-row-label">الأعداد</p>
+                                    <p class="mt-1 text-sm text-slate-300">
+                                        {{ school.users_count || 0 }} مستخدم · {{ school.students_count || 0 }} طالب
+                                    </p>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <p class="ui-mobile-row-label">تاريخ التسجيل</p>
+                                    <p class="mt-1 text-sm text-slate-300">{{ formatDate(school.created_at) }}</p>
                                 </div>
                             </div>
                         </article>

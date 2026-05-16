@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\HandlesUserIdentityUniqueness;
 use App\Http\Controllers\Concerns\NormalizesSaudiPhoneInputs;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
+use App\Models\School;
 use App\Models\User;
 use App\Rules\SaudiMobile;
 use App\Services\Auth\UserApprovalService;
@@ -60,6 +61,7 @@ class UserController extends Controller
             'departments' => $departments,
             'pendingApprovals' => $pendingApprovals,
             'approvalStats' => $this->approvalStats($approvalScopedUsers),
+            'schools' => $this->accountSchools(),
         ]);
     }
 
@@ -204,5 +206,68 @@ class UserController extends Controller
             'approved' => $users->where('approval_status', User::APPROVAL_APPROVED)->count(),
             'rejected' => $users->where('approval_status', User::APPROVAL_REJECTED)->count(),
         ];
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, array<string, mixed>>
+     */
+    private function accountSchools(): Collection
+    {
+        return School::query()
+            ->with([
+                'manager:id,name,email',
+                'supervisor:id,name,email',
+                'directorate:id,name,governorate,country_id,governorate_id,education_type_id',
+                'directorate.country:id,name',
+                'directorate.governorateModel:id,name',
+                'directorate.educationType:id,name',
+            ])
+            ->withCount(['users', 'students'])
+            ->latest('id')
+            ->get([
+                'id',
+                'directorate_id',
+                'manager_user_id',
+                'supervisor_id',
+                'name',
+                'school_id',
+                'school_type',
+                'phone',
+                'email',
+                'status',
+                'supervision_status',
+                'created_at',
+            ])
+            ->map(fn (School $school): array => [
+                'id' => (int) $school->id,
+                'name' => $school->name,
+                'school_id' => $school->school_id,
+                'school_type' => $school->school_type,
+                'phone' => $school->phone,
+                'email' => $school->email,
+                'status' => $school->status,
+                'supervision_status' => $school->supervision_status,
+                'created_at' => $school->created_at?->toISOString(),
+                'users_count' => (int) ($school->users_count ?? 0),
+                'students_count' => (int) ($school->students_count ?? 0),
+                'manager' => $school->manager ? [
+                    'id' => (int) $school->manager->id,
+                    'name' => $school->manager->name,
+                    'email' => $school->manager->email,
+                ] : null,
+                'supervisor' => $school->supervisor ? [
+                    'id' => (int) $school->supervisor->id,
+                    'name' => $school->supervisor->name,
+                    'email' => $school->supervisor->email,
+                ] : null,
+                'directorate' => $school->directorate ? [
+                    'id' => (int) $school->directorate->id,
+                    'name' => $school->directorate->name,
+                    'governorate' => $school->directorate->governorateModel?->name
+                        ?: $school->directorate->governorate,
+                    'country' => $school->directorate->country?->name,
+                    'education_type' => $school->directorate->educationType?->name,
+                ] : null,
+            ]);
     }
 }

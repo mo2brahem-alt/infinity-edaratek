@@ -248,12 +248,12 @@ onBeforeUnmount(() => {
                                 type="button"
                                 :class="[adminSubgroupToggleClass, 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900']"
                                 :aria-expanded="isUsersMenuOpen"
-                                aria-label="فتح أو إغلاق قسم إدارة المستخدمين"
+                                aria-label="فتح أو إغلاق قسم إدارة الحسابات"
                                 @click="isUsersMenuOpen = !isUsersMenuOpen"
                             >
                                 <span class="flex min-w-0 items-center gap-3">
                                     <Users class="h-4 w-4" />
-                                    <span class="admin-sidebar-submenu-label">إدارة المستخدمين</span>
+                                    <span class="admin-sidebar-submenu-label">إدارة الحسابات</span>
                                 </span>
                                 <ChevronDown class="h-4 w-4 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': isUsersMenuOpen }" />
                             </button>

@@ -14,13 +14,13 @@ class AdminSidebarLayoutTest extends TestCase
         $this->assertStringContainsString('نظرة عامة', $layout);
         $this->assertStringNotContainsString('الإعدادات العامة', $layout);
         $this->assertStringContainsString('القوالب الافتراضية', $layout);
-        $this->assertStringContainsString('إدارة المستخدمين', $layout);
+        $this->assertStringContainsString('إدارة الحسابات', $layout);
         $this->assertStringContainsString('إدارة الاشتراكات', $layout);
         $this->assertStringContainsString('مظهر الموقع', $layout);
 
         $this->assertBefore($layout, "route('admin.dashboard')", "route('admin.school_defaults.index')");
-        $this->assertBefore($layout, "route('admin.school_defaults.index')", 'إدارة المستخدمين');
-        $this->assertBefore($layout, 'إدارة المستخدمين', "route('admin.plans.index')");
+        $this->assertBefore($layout, "route('admin.school_defaults.index')", 'إدارة الحسابات');
+        $this->assertBefore($layout, 'إدارة الحسابات', "route('admin.plans.index')");
         $this->assertBefore($layout, "route('admin.plans.index')", "route('admin.settings.index')");
     }
 
