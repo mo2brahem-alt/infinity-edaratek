@@ -12,6 +12,7 @@ use App\Models\SchoolStage;
 use App\Models\SchoolStudent;
 use App\Models\SchoolStudentAttendance;
 use App\Models\SchoolStudentLeaveRequest;
+use App\Services\Exports\SchoolExportDocumentService;
 use App\Services\School\DailyAttendanceInitializerService;
 use App\Services\School\SchoolCalendarService;
 use App\Services\School\StudentLeaveService;
@@ -36,6 +37,7 @@ class StudentAttendanceController extends Controller
         private readonly SchoolCalendarService $schoolCalendarService,
         private readonly StudentLeaveService $studentLeaveService,
         private readonly AuditLogger $auditLogger,
+        private readonly SchoolExportDocumentService $exportDocuments,
     ) {
     }
 
@@ -630,6 +632,7 @@ class StudentAttendanceController extends Controller
             ->where('school_id', $schoolId)
             ->whereKey($classroomId)
             ->firstOrFail();
+        $school = $this->exportDocuments->schoolForExport($schoolId);
 
         if ($stageId > 0 && (int) $classroom->school_stage_id !== $stageId) {
             throw ValidationException::withMessages([
@@ -664,20 +667,34 @@ class StudentAttendanceController extends Controller
             $reportFilters
         );
 
-        $fileName = sprintf(
-            'attendance-report-%d-%s-to-%s.csv',
-            $classroomId,
-            $reportRange['from'],
-            $reportRange['to']
+        $fileName = $this->exportDocuments->safeFileName(
+            'attendance-report',
+            $school,
+            'csv',
+            [$classroom->name, $reportRange['from'], $reportRange['to']]
         );
 
-        return response()->streamDownload(function () use ($students, $perStudent, $totals, $reportRange, $reportFilters): void {
+        return response()->streamDownload(function () use ($request, $school, $classroom, $students, $perStudent, $totals, $reportRange, $reportFilters): void {
             $stream = fopen('php://output', 'w');
             if ($stream === false) {
                 return;
             }
 
-            fputcsv($stream, ['student_name', 'student_code', 'leave_days', 'unexcused_absence_days', 'present_days', 'excused_days', 'recorded_days']);
+            $this->exportDocuments->writeCsvPreamble($stream, $school, 'تقرير حضور الطلاب', $request->user(), [
+                'الفصل' => (string) $classroom->name,
+                'الفترة من' => $reportRange['from'],
+                'الفترة إلى' => $reportRange['to'],
+            ]);
+
+            $this->exportDocuments->putCsvRow($stream, [
+                'اسم الطالب',
+                'كود الطالب',
+                'أيام الإجازة',
+                'غياب بدون عذر',
+                'أيام الحضور',
+                'أيام الإذن',
+                'الأيام المسجلة',
+            ]);
 
             $rowsByStudent = collect($perStudent)
                 ->keyBy(fn (array $row): int => (int) ($row['school_student_id'] ?? 0));
@@ -692,7 +709,7 @@ class StudentAttendanceController extends Controller
                     'recorded_days' => 0,
                 ]);
 
-                fputcsv($stream, [
+                $this->exportDocuments->putCsvRow($stream, [
                     (string) $student->full_name,
                     (string) ($student->student_code ?? ''),
                     (int) ($row['leave_days'] ?? 0),
@@ -703,22 +720,19 @@ class StudentAttendanceController extends Controller
                 ]);
             }
 
-            fputcsv($stream, []);
-            fputcsv($stream, ['range_from', $reportRange['from']]);
-            fputcsv($stream, ['range_to', $reportRange['to']]);
-            fputcsv($stream, ['filter_day_type', (string) ($reportFilters['day_type'] ?? '')]);
-            fputcsv($stream, ['filter_holiday_name', (string) ($reportFilters['holiday_name'] ?? '')]);
-            fputcsv($stream, ['filter_leave_type_id', (string) ($reportFilters['leave_type_id'] ?? '')]);
-            fputcsv($stream, ['total_leave_days', (int) $totals['leave_days']]);
-            fputcsv($stream, ['total_unexcused_absence_days', (int) $totals['unexcused_absence_days']]);
-            fputcsv($stream, ['total_present_days', (int) $totals['present_days']]);
-            fputcsv($stream, ['total_excused_days', (int) $totals['excused_days']]);
-            fputcsv($stream, ['total_recorded_days', (int) $totals['recorded_days']]);
+            $this->exportDocuments->putCsvRow($stream, []);
+            $this->exportDocuments->putCsvRow($stream, ['إجمالي أيام الإجازة', (int) $totals['leave_days']]);
+            $this->exportDocuments->putCsvRow($stream, ['إجمالي الغياب بدون عذر', (int) $totals['unexcused_absence_days']]);
+            $this->exportDocuments->putCsvRow($stream, ['إجمالي أيام الحضور', (int) $totals['present_days']]);
+            $this->exportDocuments->putCsvRow($stream, ['إجمالي أيام الإذن', (int) $totals['excused_days']]);
+            $this->exportDocuments->putCsvRow($stream, ['إجمالي الأيام المسجلة', (int) $totals['recorded_days']]);
+            $this->exportDocuments->putCsvRow($stream, ['نوع اليوم', (string) ($reportFilters['day_type'] ?? '')]);
+            $this->exportDocuments->putCsvRow($stream, ['اسم العطلة', (string) ($reportFilters['holiday_name'] ?? '')]);
+            $this->exportDocuments->putCsvRow($stream, ['نوع الإجازة', (string) ($reportFilters['leave_type_id'] ?? '')]);
+            $this->exportDocuments->writeCsvFooter($stream, $school, $request->user());
 
             fclose($stream);
-        }, $fileName, [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-        ]);
+        }, $fileName, $this->exportDocuments->csvHeaders());
     }
 
     private function resolveSchoolId(Request $request): int

@@ -21,6 +21,7 @@ use App\Models\SchoolTeacherAvailability;
 use App\Models\SchoolTimetableVersion;
 use App\Models\SchoolTerm;
 use App\Models\User;
+use App\Services\Exports\SchoolExportDocumentService;
 use App\Services\School\AcademicPlanningValidationService;
 use App\Services\School\SchoolCalendarService;
 use App\Services\School\SchoolDefaultDataProvisioningService;
@@ -52,6 +53,7 @@ class AcademicPlanningController extends Controller
         private readonly StudentLeaveService $studentLeaveService,
         private readonly SchoolDefaultDataProvisioningService $schoolDefaultDataProvisioningService,
         private readonly AttachmentService $attachmentService,
+        private readonly SchoolExportDocumentService $exportDocuments,
     ) {
     }
 
@@ -1644,7 +1646,7 @@ class AcademicPlanningController extends Controller
             ->where('school_id', $schoolId)
             ->whereKey((int) $validated['school_stage_id'])
             ->firstOrFail(['id', 'name']);
-        $school = School::query()->whereKey($schoolId)->firstOrFail(['id', 'name']);
+        $school = School::query()->whereKey($schoolId)->firstOrFail(['id', 'name', 'school_id', 'phone', 'email', 'logo_path']);
         $calendarSettings = $this->schoolCalendarService->getOrCreateSettings($schoolId);
         $weeklyOffDays = $this->schoolCalendarService->normalizeWeeklyOffDays($calendarSettings->weekly_off_days);
         $weekDays = collect($this->weekDayOptions())
@@ -1722,6 +1724,10 @@ class AcademicPlanningController extends Controller
                 ->pluck('label')
                 ->values(),
             'generatedAt' => now(),
+            'exportedBy' => $request->user(),
+            'schoolLogoImage' => $this->exportDocuments->schoolLogoDataUri($school),
+            'documentTitle' => 'الجدول الدراسي الأسبوعي',
+            'documentSubtitle' => 'تصدير رسمي من بيانات الجدول المحفوظة داخل منصة إدارتك.',
         ];
 
         $filenameBase = $this->weeklyGridExportFileName(
@@ -1734,8 +1740,7 @@ class AcademicPlanningController extends Controller
             $html = view('exports.school.weekly-timetable', $payload)->render();
 
             return response($html, 200, [
-                'Content-Type' => 'application/msword; charset=UTF-8',
-                'Content-Disposition' => sprintf('attachment; filename="%s.doc"', $filenameBase),
+                ...$this->exportDocuments->wordHeaders($filenameBase . '.doc'),
             ]);
         }
 

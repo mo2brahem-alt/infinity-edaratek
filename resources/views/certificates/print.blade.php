@@ -85,6 +85,19 @@
         .signature-title { font-weight: 800; margin-top: 2mm; }
         .signature-image, .stamp-image { max-height: 22mm; max-width: 50mm; object-fit: contain; }
         .verify { margin-top: 8mm; font-size: 11px; color: #64748b; text-align: center; direction: ltr; }
+        .certificate-document-footer {
+            position: absolute;
+            right: 20mm;
+            left: 20mm;
+            bottom: 6mm;
+            display: flex;
+            justify-content: space-between;
+            gap: 12mm;
+            color: #64748b;
+            font-size: 10px;
+            border-top: 1px solid rgba(100, 116, 139, .28);
+            padding-top: 3mm;
+        }
         .actions { position: fixed; top: 16px; left: 16px; display: flex; gap: 8px; }
         .actions button {
             border: 0;
@@ -141,6 +154,10 @@
                     <div>{{ $signature?->title ?? 'المسؤول المعتمد' }}</div>
                 </div>
             </footer>
+            <div class="certificate-document-footer">
+                <span>{{ $school?->name }} - {{ $certificate->certificate_number }}</span>
+                <span>تم إنشاء هذا المستند بواسطة منصة إدارتك.</span>
+            </div>
         </section>
     </main>
 </body>

@@ -11,6 +11,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -113,6 +114,7 @@ class AttachmentService
             foreach ($normalizedFiles as $file) {
                 $originalName = trim((string) $file->getClientOriginalName());
                 $extension = strtolower((string) ($file->guessExtension() ?: $file->clientExtension() ?: 'bin'));
+                $this->assertSafeExtension($extension, strtolower((string) $file->clientExtension()));
                 $storedName = Str::uuid()->toString() . ($extension !== '' ? '.' . $extension : '');
                 $path = Storage::disk($disk)->putFileAs($baseDirectory, $file, $storedName);
 
@@ -289,5 +291,19 @@ class AttachmentService
         $normalized = trim((string) ($value ?? ''));
 
         return $normalized !== '' ? $normalized : null;
+    }
+
+    private function assertSafeExtension(string $guessedExtension, string $clientExtension): void
+    {
+        $blocked = ['php', 'phtml', 'js', 'html', 'htm', 'exe', 'sh', 'bat', 'svg'];
+        $extensions = array_filter([$guessedExtension, $clientExtension]);
+
+        if (array_intersect($blocked, $extensions) === []) {
+            return;
+        }
+
+        throw ValidationException::withMessages([
+            'attachments' => 'نوع الملف غير مسموح لأسباب أمنية.',
+        ]);
     }
 }

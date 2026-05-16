@@ -12,6 +12,7 @@ use App\Models\SchoolStudent;
 use App\Models\SchoolStudentAttendance;
 use App\Models\SchoolStudentLeaveRequest;
 use App\Models\User;
+use App\Services\Exports\SchoolExportDocumentService;
 use App\Services\Support\AuditLogger;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -31,6 +32,7 @@ class ReportsController extends Controller
 
     public function __construct(
         private readonly AuditLogger $auditLogger,
+        private readonly SchoolExportDocumentService $exportDocuments,
     ) {
     }
 
@@ -138,33 +140,44 @@ class ReportsController extends Controller
             ], 200, [], JSON_UNESCAPED_UNICODE);
         }
 
+        $school = $this->exportDocuments->schoolForExport($schoolId);
         $delimiter = $filters['format'] === 'excel' ? "\t" : ',';
         $contentType = $filters['format'] === 'excel' ? 'application/vnd.ms-excel; charset=UTF-8' : 'text/csv; charset=UTF-8';
         $extension = $filters['format'] === 'excel' ? 'xls' : 'csv';
+        $fileName = $this->exportDocuments->safeFileName('school-reports', $school, $extension, [$filters['entity']]);
 
-        return response()->streamDownload(function () use ($datasets, $delimiter): void {
+        return response()->streamDownload(function () use ($request, $school, $datasets, $filters, $totalRows, $delimiter): void {
             $stream = fopen('php://output', 'w');
             if ($stream === false) {
                 return;
             }
+            $this->exportDocuments->writeCsvPreamble($stream, $school, 'تقرير المدرسة', $request->user(), [
+                'نطاق التقرير' => $filters['entity'],
+                'عدد السجلات' => $totalRows,
+                'الصيغة' => $filters['format'],
+                'من تاريخ' => $filters['date_from'] ?: '',
+                'إلى تاريخ' => $filters['date_to'] ?: '',
+            ], $delimiter);
+
             foreach ($datasets as $index => $dataset) {
                 if ($index > 0) {
-                    fputcsv($stream, [], $delimiter);
+                    $this->exportDocuments->putCsvRow($stream, [], $delimiter);
                 }
-                fputcsv($stream, ['report_entity', (string) ($dataset['title'] ?? $dataset['entity'])], $delimiter);
-                fputcsv($stream, collect($dataset['columns'] ?? [])->pluck('label')->all(), $delimiter);
+                $this->exportDocuments->putCsvRow($stream, ['نوع التقرير', (string) ($dataset['title'] ?? $dataset['entity'])], $delimiter);
+                $this->exportDocuments->putCsvRow($stream, collect($dataset['columns'] ?? [])->pluck('label')->all(), $delimiter);
                 foreach (($dataset['rows'] ?? []) as $row) {
                     $line = [];
                     foreach (($dataset['columns'] ?? []) as $column) {
                         $key = (string) ($column['key'] ?? '');
                         $line[] = is_scalar($row[$key] ?? '') ? (string) ($row[$key] ?? '') : '';
                     }
-                    fputcsv($stream, $line, $delimiter);
+                    $this->exportDocuments->putCsvRow($stream, $line, $delimiter);
                 }
-                fputcsv($stream, ['total_rows', (string) ((int) ($dataset['total'] ?? 0))], $delimiter);
+                $this->exportDocuments->putCsvRow($stream, ['إجمالي السجلات', (string) ((int) ($dataset['total'] ?? 0))], $delimiter);
             }
+            $this->exportDocuments->writeCsvFooter($stream, $school, $request->user(), $delimiter);
             fclose($stream);
-        }, sprintf('school-reports-%s.%s', now()->format('Ymd_His'), $extension), ['Content-Type' => $contentType]);
+        }, $fileName, $this->exportDocuments->csvHeaders($contentType));
     }
 
     private function resolveSchoolId(Request $request): int
