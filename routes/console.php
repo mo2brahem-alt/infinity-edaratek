@@ -2,7 +2,9 @@
 
 use App\Models\User;
 use App\Models\School;
+use App\Models\Subscription;
 use App\Services\School\DailyAttendanceInitializerService;
+use App\Services\Subscription\SubscriptionService;
 use App\Support\SchoolAssociationState;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -105,6 +107,153 @@ if (config('features.attendance.daily_initialization_enabled', true)) {
         ->dailyAt((string) config('features.attendance.daily_initialization_time', '06:00'))
         ->withoutOverlapping();
 }
+
+Artisan::command(
+    'schools:activate-approved {--dry-run : Preview eligible schools without changing data}',
+    function (SubscriptionService $subscriptionService): int {
+        $dryRun = (bool) $this->option('dry-run');
+        $now = now();
+
+        $schools = School::query()
+            ->with([
+                'manager' => fn ($query) => $query
+                    ->select(['id', 'name', 'email', 'school_id', 'is_active', 'approval_status'])
+                    ->with([
+                        'subscriptions' => fn ($subscriptionQuery) => $subscriptionQuery
+                            ->select(['id', 'user_id', 'school_id', 'status', 'starts_at', 'ends_at'])
+                            ->where('status', Subscription::STATUS_ACTIVE)
+                            ->where(function ($dateQuery) use ($now): void {
+                                $dateQuery->whereNull('starts_at')
+                                    ->orWhere('starts_at', '<=', $now);
+                            })
+                            ->whereNotNull('ends_at')
+                            ->where('ends_at', '>', $now)
+                            ->orderByDesc('id'),
+                    ]),
+            ])
+            ->where('status', School::STATUS_SUSPENDED)
+            ->whereNotNull('manager_user_id')
+            ->orderBy('id')
+            ->get(['id', 'name', 'school_id', 'status', 'supervision_status', 'manager_user_id']);
+
+        $eligible = [];
+
+        foreach ($schools as $school) {
+            $manager = $school->manager;
+
+            if (! $manager) {
+                continue;
+            }
+
+            if (
+                (string) ($manager->approval_status ?? User::APPROVAL_APPROVED) !== User::APPROVAL_APPROVED
+                || ! (bool) $manager->is_active
+            ) {
+                continue;
+            }
+
+            $subscription = $manager->subscriptions
+                ->first(fn (Subscription $subscription): bool => $subscription->isCurrentForSchool((int) $school->id, $now));
+
+            if (! $subscription) {
+                continue;
+            }
+
+            $eligible[] = [
+                'school_id' => (int) $school->id,
+                'school_name' => (string) $school->name,
+                'school_code' => (string) ($school->school_id ?? ''),
+                'manager_id' => (int) $manager->id,
+                'manager_name' => (string) $manager->name,
+                'subscription_id' => (int) $subscription->id,
+            ];
+        }
+
+        $mode = $dryRun ? 'DRY-RUN' : 'APPLY';
+        $this->info("Approved school activation [{$mode}]");
+        $this->line('Inspected suspended schools with managers: ' . $schools->count());
+        $this->line('Eligible schools: ' . count($eligible));
+
+        if ($eligible === []) {
+            $this->warn('No eligible schools found.');
+            return Command::SUCCESS;
+        }
+
+        foreach ($eligible as $item) {
+            $code = $item['school_code'] !== '' ? " ({$item['school_code']})" : '';
+            $this->line("- #{$item['school_id']} {$item['school_name']}{$code} | manager #{$item['manager_id']} {$item['manager_name']} | subscription #{$item['subscription_id']}");
+        }
+
+        if ($dryRun) {
+            $this->comment('Dry-run mode: no school status has been changed.');
+            return Command::SUCCESS;
+        }
+
+        $activated = [];
+
+        foreach ($eligible as $item) {
+            $activatedSchool = DB::transaction(function () use ($item, $subscriptionService): ?School {
+                $school = School::query()
+                    ->whereKey((int) $item['school_id'])
+                    ->lockForUpdate()
+                    ->first(['id', 'name', 'school_id', 'status', 'manager_user_id']);
+
+                if (! $school || (string) $school->status !== School::STATUS_SUSPENDED) {
+                    return null;
+                }
+
+                $manager = User::query()
+                    ->whereKey((int) $school->manager_user_id)
+                    ->lockForUpdate()
+                    ->first(['id', 'name', 'school_id', 'is_active', 'approval_status']);
+
+                if (
+                    ! $manager
+                    || (string) ($manager->approval_status ?? User::APPROVAL_APPROVED) !== User::APPROVAL_APPROVED
+                    || ! (bool) $manager->is_active
+                ) {
+                    return null;
+                }
+
+                $hasCurrentSubscription = $manager->subscriptions()
+                    ->currentForSchool((int) $school->id)
+                    ->exists();
+
+                if (! $hasCurrentSubscription) {
+                    return null;
+                }
+
+                if ((int) ($manager->school_id ?? 0) !== (int) $school->id) {
+                    $manager->forceFill([
+                        'school_id' => (int) $school->id,
+                    ])->save();
+                }
+
+                $subscriptionService->syncSchoolContextForUser($manager, (int) $school->id);
+
+                $school->forceFill([
+                    'status' => School::STATUS_ACTIVE,
+                ])->save();
+
+                return $school->refresh();
+            });
+
+            if ($activatedSchool) {
+                $activated[] = [
+                    'id' => (int) $activatedSchool->id,
+                    'name' => (string) $activatedSchool->name,
+                ];
+            }
+        }
+
+        $this->info('Activated schools: ' . count($activated));
+        foreach ($activated as $school) {
+            $this->line("- #{$school['id']} {$school['name']}");
+        }
+
+        return Command::SUCCESS;
+    }
+)->purpose('Activate suspended schools whose approved active managers have current active subscriptions.');
 
 Artisan::command(
     'system:purge-school-and-accounts-data {--force : Execute destructive purge} {--dry-run : Preview purge scope without deleting data} {--keep-super-admin-email=* : Additional super admin emails to keep}',

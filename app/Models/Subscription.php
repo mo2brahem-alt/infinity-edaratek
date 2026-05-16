@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class Subscription extends Model
 {
@@ -43,6 +45,43 @@ class Subscription extends Model
     public function school()
     {
         return $this->belongsTo(School::class, 'school_id');
+    }
+
+    public function isCurrentForSchool(int $schoolId, ?Carbon $now = null): bool
+    {
+        $now ??= now();
+
+        if ((string) $this->status !== self::STATUS_ACTIVE) {
+            return false;
+        }
+
+        if ($this->starts_at && $this->starts_at->gt($now)) {
+            return false;
+        }
+
+        if (! $this->ends_at || $this->ends_at->lte($now)) {
+            return false;
+        }
+
+        return $this->school_id === null || (int) $this->school_id === $schoolId;
+    }
+
+    public function scopeCurrentForSchool(Builder $query, int $schoolId, ?Carbon $now = null): Builder
+    {
+        $now ??= now();
+
+        return $query
+            ->where('status', self::STATUS_ACTIVE)
+            ->where(function (Builder $scope) use ($schoolId): void {
+                $scope->where('school_id', $schoolId)
+                    ->orWhereNull('school_id');
+            })
+            ->where(function (Builder $scope) use ($now): void {
+                $scope->whereNull('starts_at')
+                    ->orWhere('starts_at', '<=', $now);
+            })
+            ->whereNotNull('ends_at')
+            ->where('ends_at', '>', $now);
     }
 
     public function userAddons()

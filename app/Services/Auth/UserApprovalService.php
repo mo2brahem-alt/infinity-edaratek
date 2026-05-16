@@ -98,7 +98,7 @@ class UserApprovalService
                 ->orderByDesc('id')
                 ->first();
 
-            if ($latestSubscription && $latestSubscription->status !== Subscription::STATUS_ACTIVE) {
+            if ($latestSubscription && $latestSubscription->status === Subscription::STATUS_PENDING) {
                 $this->subscriptionService->activate(
                     $latestSubscription,
                     (int) $actor->id,
@@ -227,7 +227,6 @@ class UserApprovalService
 
         $school->forceFill([
             'manager_user_id' => (int) $user->id,
-            'status' => School::STATUS_ACTIVE,
         ])->save();
 
         if ((int) ($user->school_id ?? 0) !== (int) $school->id) {
@@ -237,5 +236,18 @@ class UserApprovalService
         }
 
         $this->subscriptionService->syncSchoolContextForUser($user, (int) $school->id);
+
+        if ($this->managerHasCurrentSubscriptionForSchool($user, (int) $school->id)) {
+            $school->forceFill([
+                'status' => School::STATUS_ACTIVE,
+            ])->save();
+        }
+    }
+
+    private function managerHasCurrentSubscriptionForSchool(User $user, int $schoolId): bool
+    {
+        return $user->subscriptions()
+            ->currentForSchool($schoolId)
+            ->exists();
     }
 }

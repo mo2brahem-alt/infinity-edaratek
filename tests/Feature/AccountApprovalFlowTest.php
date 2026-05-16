@@ -192,6 +192,16 @@ class AccountApprovalFlowTest extends TestCase
             'supervision_status' => School::SUPERVISION_STATUS_WAITING_SUPERVISOR_CONFIRM,
         ]);
         $user->update(['school_id' => $school->id]);
+        $plan = $this->makePlan(Plan::ROLE_SCHOOL_MANAGER, 'Manager School Activation Plan');
+        Subscription::create([
+            'user_id' => $user->id,
+            'plan_id' => $plan->id,
+            'status' => Subscription::STATUS_PENDING,
+            'billing_cycle' => Plan::BILLING_MONTHLY,
+            'starts_at' => null,
+            'ends_at' => null,
+            'meta' => ['source' => 'test'],
+        ]);
 
         $response = $this->actingAs($admin)
             ->from(route('users.index'))
@@ -209,6 +219,176 @@ class AccountApprovalFlowTest extends TestCase
         $this->assertSame(School::STATUS_ACTIVE, $school->status);
         $this->assertSame($user->id, (int) $school->manager_user_id);
         $this->assertSame(School::SUPERVISION_STATUS_WAITING_SUPERVISOR_CONFIRM, $school->supervision_status);
+        $this->assertDatabaseHas('subscriptions', [
+            'user_id' => $user->id,
+            'school_id' => $school->id,
+            'status' => Subscription::STATUS_ACTIVE,
+        ]);
+    }
+
+    public function test_super_admin_approval_keeps_manager_school_suspended_without_current_subscription(): void
+    {
+        $this->createRole('super_admin');
+        $this->createRole('school_manager');
+
+        $admin = $this->createSuperAdmin();
+        $user = $this->makePendingUser('school_manager', 'approve.manager.no.subscription@example.com');
+        $region = EducationalDirectorate::query()->create([
+            'name' => 'No Subscription Region',
+            'governorate' => 'Riyadh',
+        ]);
+        $school = School::query()->create([
+            'directorate_id' => $region->id,
+            'name' => 'Suspended No Subscription School',
+            'school_id' => 'SCH-APP-0002',
+            'phone' => '0500002002',
+            'status' => School::STATUS_SUSPENDED,
+            'supervision_status' => School::SUPERVISION_STATUS_WAITING_SUPERVISOR_CONFIRM,
+        ]);
+        $user->update(['school_id' => $school->id]);
+
+        $response = $this->actingAs($admin)
+            ->from(route('users.index'))
+            ->post(route('users.approve', $user), [
+                'reason' => 'reviewed',
+            ]);
+
+        $response->assertRedirect(route('users.index', absolute: false));
+
+        $user->refresh();
+        $school->refresh();
+
+        $this->assertTrue((bool) $user->is_active);
+        $this->assertSame(User::APPROVAL_APPROVED, $user->approval_status);
+        $this->assertSame(School::STATUS_SUSPENDED, $school->status);
+        $this->assertSame($user->id, (int) $school->manager_user_id);
+        $this->assertSame(School::SUPERVISION_STATUS_WAITING_SUPERVISOR_CONFIRM, $school->supervision_status);
+    }
+
+    public function test_activate_approved_schools_command_dry_run_does_not_change_data(): void
+    {
+        $this->createRole('school_manager');
+
+        $manager = User::factory()->create([
+            'role' => 'school_manager',
+            'is_active' => true,
+            'approval_status' => User::APPROVAL_APPROVED,
+        ]);
+        $manager->assignRole('school_manager');
+        $region = EducationalDirectorate::query()->create([
+            'name' => 'Dry Run Region',
+            'governorate' => 'Riyadh',
+        ]);
+        $school = School::query()->create([
+            'directorate_id' => $region->id,
+            'name' => 'Dry Run Suspended School',
+            'school_id' => 'SCH-DRY-0001',
+            'status' => School::STATUS_SUSPENDED,
+            'supervision_status' => School::SUPERVISION_STATUS_WAITING_SUPERVISOR_CONFIRM,
+            'manager_user_id' => $manager->id,
+        ]);
+        $manager->update(['school_id' => $school->id]);
+        $plan = $this->makePlan(Plan::ROLE_SCHOOL_MANAGER, 'Dry Run Manager Plan');
+        Subscription::create([
+            'user_id' => $manager->id,
+            'plan_id' => $plan->id,
+            'school_id' => $school->id,
+            'status' => Subscription::STATUS_ACTIVE,
+            'billing_cycle' => Plan::BILLING_MONTHLY,
+            'starts_at' => now()->subDay(),
+            'ends_at' => now()->addMonth(),
+        ]);
+
+        $this->artisan('schools:activate-approved', ['--dry-run' => true])
+            ->assertExitCode(0);
+
+        $this->assertSame(School::STATUS_SUSPENDED, $school->refresh()->status);
+    }
+
+    public function test_activate_approved_schools_command_activates_matching_schools_only(): void
+    {
+        $this->createRole('school_manager');
+
+        $plan = $this->makePlan(Plan::ROLE_SCHOOL_MANAGER, 'Retro Manager Plan');
+        $eligibleManager = User::factory()->create([
+            'role' => 'school_manager',
+            'is_active' => true,
+            'approval_status' => User::APPROVAL_APPROVED,
+        ]);
+        $eligibleManager->assignRole('school_manager');
+        $pendingManager = User::factory()->create([
+            'role' => 'school_manager',
+            'is_active' => false,
+            'approval_status' => User::APPROVAL_PENDING,
+        ]);
+        $pendingManager->assignRole('school_manager');
+        $noSubscriptionManager = User::factory()->create([
+            'role' => 'school_manager',
+            'is_active' => true,
+            'approval_status' => User::APPROVAL_APPROVED,
+        ]);
+        $noSubscriptionManager->assignRole('school_manager');
+
+        $region = EducationalDirectorate::query()->create([
+            'name' => 'Retro Region',
+            'governorate' => 'Riyadh',
+        ]);
+        $eligibleSchool = School::query()->create([
+            'directorate_id' => $region->id,
+            'name' => 'Eligible Retro School',
+            'school_id' => 'SCH-RETRO-0001',
+            'status' => School::STATUS_SUSPENDED,
+            'supervision_status' => School::SUPERVISION_STATUS_WAITING_MANAGER_APPROVAL,
+            'manager_user_id' => $eligibleManager->id,
+        ]);
+        $pendingManagerSchool = School::query()->create([
+            'directorate_id' => $region->id,
+            'name' => 'Pending Manager Retro School',
+            'school_id' => 'SCH-RETRO-0002',
+            'status' => School::STATUS_SUSPENDED,
+            'supervision_status' => School::SUPERVISION_STATUS_WAITING_MANAGER_APPROVAL,
+            'manager_user_id' => $pendingManager->id,
+        ]);
+        $noSubscriptionSchool = School::query()->create([
+            'directorate_id' => $region->id,
+            'name' => 'No Subscription Retro School',
+            'school_id' => 'SCH-RETRO-0003',
+            'status' => School::STATUS_SUSPENDED,
+            'supervision_status' => School::SUPERVISION_STATUS_WAITING_MANAGER_APPROVAL,
+            'manager_user_id' => $noSubscriptionManager->id,
+        ]);
+
+        Subscription::create([
+            'user_id' => $eligibleManager->id,
+            'plan_id' => $plan->id,
+            'school_id' => null,
+            'status' => Subscription::STATUS_ACTIVE,
+            'billing_cycle' => Plan::BILLING_MONTHLY,
+            'starts_at' => now()->subDay(),
+            'ends_at' => now()->addMonth(),
+        ]);
+        Subscription::create([
+            'user_id' => $noSubscriptionManager->id,
+            'plan_id' => $plan->id,
+            'school_id' => $noSubscriptionSchool->id,
+            'status' => Subscription::STATUS_EXPIRED,
+            'billing_cycle' => Plan::BILLING_MONTHLY,
+            'starts_at' => now()->subMonths(2),
+            'ends_at' => now()->subMonth(),
+        ]);
+
+        $this->artisan('schools:activate-approved')
+            ->assertExitCode(0);
+
+        $this->assertSame(School::STATUS_ACTIVE, $eligibleSchool->refresh()->status);
+        $this->assertSame($eligibleSchool->id, $eligibleManager->refresh()->school_id);
+        $this->assertDatabaseHas('subscriptions', [
+            'user_id' => $eligibleManager->id,
+            'school_id' => $eligibleSchool->id,
+            'status' => Subscription::STATUS_ACTIVE,
+        ]);
+        $this->assertSame(School::STATUS_SUSPENDED, $pendingManagerSchool->refresh()->status);
+        $this->assertSame(School::STATUS_SUSPENDED, $noSubscriptionSchool->refresh()->status);
     }
 
     public function test_super_admin_can_reject_pending_account_and_keep_it_blocked(): void
