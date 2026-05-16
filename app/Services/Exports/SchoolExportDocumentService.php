@@ -118,28 +118,34 @@ class SchoolExportDocumentService
         $orientation = in_array($orientation, ['portrait', 'landscape'], true) ? $orientation : 'portrait';
 
         if (app()->bound('dompdf.wrapper')) {
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadHTML($html, 'UTF-8');
-            $pdf->setPaper('a4', $orientation);
+            try {
+                $pdf = app('dompdf.wrapper');
+                $pdf->loadHTML($html, 'UTF-8');
+                $pdf->setPaper('a4', $orientation);
 
-            return $pdf->download($filename);
+                return $pdf->download($filename);
+            } catch (\Throwable $throwable) {
+                report($throwable);
+            }
         }
 
         $browserBinary = $this->resolveHeadlessBrowserBinary();
         if ($browserBinary === null) {
-            abort(500, 'تعذر تصدير PDF لعدم توفر محرك توليد PDF على هذه البيئة.');
+            return $this->printablePdfFallback($html, $filename);
         }
 
         $directory = storage_path('app/temp/report-exports');
         if (! is_dir($directory) && ! mkdir($directory, 0775, true) && ! is_dir($directory)) {
-            abort(500, 'تعذر تجهيز مجلد التصدير المؤقت.');
+            return $this->printablePdfFallback($html, $filename);
         }
 
         $token = uniqid('report-export-', true);
         $htmlPath = $directory . DIRECTORY_SEPARATOR . $token . '.html';
         $pdfPath = $directory . DIRECTORY_SEPARATOR . $token . '.pdf';
 
-        file_put_contents($htmlPath, $html);
+        if (file_put_contents($htmlPath, $html) === false) {
+            return $this->printablePdfFallback($html, $filename);
+        }
 
         try {
             $htmlUrl = 'file:///' . str_replace('\\', '/', $htmlPath);
@@ -157,8 +163,14 @@ class SchoolExportDocumentService
             ]);
 
             if (! $result->successful() || ! is_file($pdfPath)) {
+                logger()->warning('PDF export failed through headless browser.', [
+                    'browser' => $browserBinary,
+                    'exit_code' => $result->exitCode(),
+                    'error_output' => $result->errorOutput(),
+                ]);
                 @unlink($pdfPath);
-                abort(500, 'تعذر إنشاء ملف PDF. يرجى التأكد من توفر محرك PDF على الخادم.');
+
+                return $this->printablePdfFallback($html, $filename);
             }
 
             return response()
@@ -167,6 +179,11 @@ class SchoolExportDocumentService
                     'X-Content-Type-Options' => 'nosniff',
                 ])
                 ->deleteFileAfterSend(true);
+        } catch (\Throwable $throwable) {
+            report($throwable);
+            @unlink($pdfPath);
+
+            return $this->printablePdfFallback($html, $filename);
         } finally {
             @unlink($htmlPath);
         }
@@ -236,5 +253,73 @@ class SchoolExportDocumentService
         }
 
         return null;
+    }
+
+    private function printablePdfFallback(string $html, string $filename)
+    {
+        $fallbackFilename = preg_replace('/\.pdf$/i', '.html', $filename) ?: ($filename . '.html');
+        $toolbar = <<<'HTML'
+<div class="pdf-fallback-toolbar" dir="rtl">
+    <strong>تعذر توليد PDF مباشرة من الخادم.</strong>
+    <span>يمكنك حفظ التقرير كملف PDF من نافذة الطباعة.</span>
+    <button type="button" onclick="window.print()">حفظ PDF</button>
+</div>
+<script>
+    window.addEventListener('load', function () {
+        setTimeout(function () { window.print(); }, 350);
+    });
+</script>
+HTML;
+
+        $style = <<<'HTML'
+<style>
+    .pdf-fallback-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border-bottom: 1px solid #dbe4ef;
+        background: #f8fafc;
+        color: #0f172a;
+        font-family: "Cairo", "Tajawal", Arial, sans-serif;
+        font-size: 13px;
+    }
+    .pdf-fallback-toolbar button {
+        border: 0;
+        border-radius: 8px;
+        padding: 8px 12px;
+        background: #0f766e;
+        color: white;
+        cursor: pointer;
+        font-weight: 700;
+    }
+    @media print {
+        .pdf-fallback-toolbar { display: none !important; }
+    }
+</style>
+HTML;
+
+        if (stripos($html, '</head>') !== false) {
+            $html = preg_replace('/<\/head>/i', $style . "\n</head>", $html, 1) ?? $html;
+        } else {
+            $html = $style . $html;
+        }
+
+        if (preg_match('/<body\b[^>]*>/i', $html)) {
+            $html = preg_replace('/(<body\b[^>]*>)/i', '$1' . "\n" . $toolbar, $html, 1) ?? ($toolbar . $html);
+        } else {
+            $html = $toolbar . $html;
+        }
+
+        return response($html, 200, [
+            'Content-Type' => 'text/html; charset=UTF-8',
+            'Content-Disposition' => sprintf('inline; filename="%s"', $fallbackFilename),
+            'X-Content-Type-Options' => 'nosniff',
+            'X-Edaratek-Pdf-Fallback' => 'browser-print',
+        ]);
     }
 }
