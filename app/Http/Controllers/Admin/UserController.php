@@ -215,14 +215,41 @@ class UserController extends Controller
     {
         return School::query()
             ->with([
-                'manager:id,name,email',
-                'supervisor:id,name,email',
+                'manager:id,name,email,mobile,role,approval_status,is_active',
+                'supervisor:id,name,email,mobile,role,approval_status,is_active',
                 'directorate:id,name,governorate,country_id,governorate_id,education_type_id',
                 'directorate.country:id,name',
                 'directorate.governorateModel:id,name',
                 'directorate.educationType:id,name',
+                'defaultDataImporter:id,name,email',
+                'stages' => fn ($query) => $query
+                    ->select(['id', 'school_id', 'name', 'code', 'sort_order', 'is_active'])
+                    ->with([
+                        'grades:id,school_id,school_stage_id,name,sort_order,is_active',
+                        'classrooms:id,school_id,school_stage_id,name,grade_name,code,sort_order,is_active',
+                    ])
+                    ->orderBy('sort_order')
+                    ->orderBy('name'),
+                'academicYears' => fn ($query) => $query
+                    ->select(['id', 'school_id', 'name', 'starts_on', 'ends_on', 'is_active'])
+                    ->orderByDesc('starts_on')
+                    ->orderByDesc('id'),
+                'terms' => fn ($query) => $query
+                    ->select(['id', 'school_id', 'name', 'start_date', 'end_date', 'is_active'])
+                    ->orderByDesc('start_date')
+                    ->orderByDesc('id'),
             ])
-            ->withCount(['users', 'students'])
+            ->withCount([
+                'users',
+                'students',
+                'stages',
+                'classrooms',
+                'subjects',
+                'academicYears',
+                'terms',
+                'exams',
+                'subscriptions',
+            ])
             ->latest('id')
             ->get([
                 'id',
@@ -234,9 +261,17 @@ class UserController extends Controller
                 'school_type',
                 'phone',
                 'email',
+                'address',
+                'notes',
+                'logo_path',
                 'status',
                 'supervision_status',
+                'default_data_imported_at',
+                'default_data_imported_by',
+                'default_template_key',
+                'default_template_name',
                 'created_at',
+                'updated_at',
             ])
             ->map(fn (School $school): array => [
                 'id' => (int) $school->id,
@@ -245,20 +280,47 @@ class UserController extends Controller
                 'school_type' => $school->school_type,
                 'phone' => $school->phone,
                 'email' => $school->email,
+                'address' => $school->address,
+                'notes' => $school->notes,
+                'logo_path' => $school->logo_path,
                 'status' => $school->status,
                 'supervision_status' => $school->supervision_status,
+                'default_data_imported_at' => $school->default_data_imported_at?->toISOString(),
+                'default_template_key' => $school->default_template_key,
+                'default_template_name' => $school->default_template_name,
                 'created_at' => $school->created_at?->toISOString(),
+                'updated_at' => $school->updated_at?->toISOString(),
                 'users_count' => (int) ($school->users_count ?? 0),
                 'students_count' => (int) ($school->students_count ?? 0),
+                'stages_count' => (int) ($school->stages_count ?? 0),
+                'classrooms_count' => (int) ($school->classrooms_count ?? 0),
+                'subjects_count' => (int) ($school->subjects_count ?? 0),
+                'academic_years_count' => (int) ($school->academic_years_count ?? 0),
+                'terms_count' => (int) ($school->terms_count ?? 0),
+                'exams_count' => (int) ($school->exams_count ?? 0),
+                'subscriptions_count' => (int) ($school->subscriptions_count ?? 0),
                 'manager' => $school->manager ? [
                     'id' => (int) $school->manager->id,
                     'name' => $school->manager->name,
                     'email' => $school->manager->email,
+                    'mobile' => $school->manager->mobile,
+                    'role' => $school->manager->role,
+                    'approval_status' => $school->manager->approval_status,
+                    'is_active' => (bool) $school->manager->is_active,
                 ] : null,
                 'supervisor' => $school->supervisor ? [
                     'id' => (int) $school->supervisor->id,
                     'name' => $school->supervisor->name,
                     'email' => $school->supervisor->email,
+                    'mobile' => $school->supervisor->mobile,
+                    'role' => $school->supervisor->role,
+                    'approval_status' => $school->supervisor->approval_status,
+                    'is_active' => (bool) $school->supervisor->is_active,
+                ] : null,
+                'default_data_importer' => $school->defaultDataImporter ? [
+                    'id' => (int) $school->defaultDataImporter->id,
+                    'name' => $school->defaultDataImporter->name,
+                    'email' => $school->defaultDataImporter->email,
                 ] : null,
                 'directorate' => $school->directorate ? [
                     'id' => (int) $school->directorate->id,
@@ -268,6 +330,46 @@ class UserController extends Controller
                     'country' => $school->directorate->country?->name,
                     'education_type' => $school->directorate->educationType?->name,
                 ] : null,
+                'structure' => [
+                    'stages' => $school->stages->map(fn ($stage): array => [
+                        'id' => (int) $stage->id,
+                        'name' => $stage->name,
+                        'code' => $stage->code,
+                        'is_active' => (bool) $stage->is_active,
+                        'grades' => $stage->grades
+                            ->sortBy([['sort_order', 'asc'], ['name', 'asc']])
+                            ->map(fn ($grade): array => [
+                                'id' => (int) $grade->id,
+                                'name' => $grade->name,
+                                'is_active' => (bool) $grade->is_active,
+                            ])
+                            ->values(),
+                        'classrooms' => $stage->classrooms
+                            ->sortBy([['sort_order', 'asc'], ['name', 'asc']])
+                            ->map(fn ($classroom): array => [
+                                'id' => (int) $classroom->id,
+                                'name' => $classroom->name,
+                                'grade_name' => $classroom->grade_name,
+                                'code' => $classroom->code,
+                                'is_active' => (bool) $classroom->is_active,
+                            ])
+                            ->values(),
+                    ])->values(),
+                    'academic_years' => $school->academicYears->map(fn ($year): array => [
+                        'id' => (int) $year->id,
+                        'name' => $year->name,
+                        'starts_on' => $year->starts_on?->format('Y-m-d'),
+                        'ends_on' => $year->ends_on?->format('Y-m-d'),
+                        'is_active' => (bool) $year->is_active,
+                    ])->values(),
+                    'terms' => $school->terms->map(fn ($term): array => [
+                        'id' => (int) $term->id,
+                        'name' => $term->name,
+                        'start_date' => $term->start_date?->format('Y-m-d'),
+                        'end_date' => $term->end_date?->format('Y-m-d'),
+                        'is_active' => (bool) $term->is_active,
+                    ])->values(),
+                ],
             ]);
     }
 }

@@ -22,6 +22,10 @@ class AdminUsersPageDesignTest extends TestCase
         $this->assertStringContainsString('المدارس', $content);
         $this->assertStringContainsString('id="users-section"', $content);
         $this->assertStringContainsString('id="schools-section"', $content);
+        $this->assertStringContainsString('const selectedSchool = ref(null);', $content);
+        $this->assertStringContainsString('openSchoolDetails(school)', $content);
+        $this->assertStringContainsString('closeSchoolDetails', $content);
+        $this->assertStringContainsString('selectedSchool.structure?.stages', $content);
         $this->assertStringContainsString('<AppFilterBar', $content);
         $this->assertStringContainsString('<AppSearchField', $content);
         $this->assertStringContainsString('ui-table-shell', $content);
