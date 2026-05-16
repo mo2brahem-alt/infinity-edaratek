@@ -13,12 +13,17 @@ use App\Models\SchoolCalendarSetting;
 use App\Models\SchoolClassroom;
 use App\Models\SchoolClassSchedule;
 use App\Models\SchoolCourseOffering;
+use App\Models\SchoolCoursePlanLesson;
+use App\Models\SchoolCoursePlanTopic;
+use App\Models\SchoolCoursePlanUnit;
 use App\Models\SchoolExam;
 use App\Models\SchoolExamSetting;
 use App\Models\SchoolExamStudentScore;
 use App\Models\SchoolExamTemplate;
 use App\Models\SchoolHoliday;
 use App\Models\SchoolLeaveType;
+use App\Models\SchoolQuestionBankItem;
+use App\Models\SchoolQuestionOption;
 use App\Models\SchoolStage;
 use App\Models\SchoolStageGrade;
 use App\Models\SchoolStageGradeTerm;
@@ -129,6 +134,7 @@ class AlRiyadaDemoSchoolSeeder extends Seeder
                 teachersBySubject: $teachersBySubject,
             );
 
+            $this->ensureQuestionBankForCourseOfferings($school, $manager, $courseContext['offerings']);
             $this->ensureAttendance($school, $manager, $studentsByClassroom);
             $this->ensureStudentLeaves($school, $manager, $allStudents);
             $this->ensureExamsAndScores(
@@ -1041,6 +1047,219 @@ class AlRiyadaDemoSchoolSeeder extends Seeder
         }
 
         return ['offerings' => $offerings];
+    }
+
+    /**
+     * @param array<int, SchoolCourseOffering> $offerings
+     */
+    private function ensureQuestionBankForCourseOfferings(School $school, User $manager, array $offerings): void
+    {
+        if (
+            ! Schema::hasTable('school_question_bank_items')
+            || ! Schema::hasTable('school_question_options')
+            || ! Schema::hasTable('school_course_plan_units')
+            || ! Schema::hasTable('school_course_plan_lessons')
+            || ! Schema::hasTable('school_course_plan_topics')
+        ) {
+            return;
+        }
+
+        foreach ($offerings as $offering) {
+            $offering->loadMissing(['subject', 'stage', 'term', 'classroom']);
+
+            if (! $offering->subject || ! $offering->stage || ! $offering->term || ! $offering->classroom) {
+                continue;
+            }
+
+            [$unit, $lesson, $topics] = $this->ensureCoursePlanSlice($school, $manager, $offering);
+            $mainTopic = $topics[0] ?? null;
+            $practiceTopic = $topics[1] ?? $mainTopic;
+
+            if (! $mainTopic || ! $practiceTopic) {
+                continue;
+            }
+
+            $subjectName = (string) $offering->subject->name;
+            $classroomName = (string) $offering->classroom->name;
+            $stageName = (string) $offering->stage->name;
+
+            $multipleChoice = $this->ensureQuestionBankItem($school, $manager, $offering, [
+                'unit_name' => (string) $unit->name,
+                'chapter_name' => (string) $mainTopic->name,
+                'lesson_name' => (string) $lesson->name,
+                'question_text' => "ما المفهوم الرئيس في مقرر {$subjectName} لصف {$classroomName}؟",
+                'question_type' => SchoolQuestionBankItem::TYPE_MULTIPLE_CHOICE,
+                'question_score' => 4,
+                'selection_mode' => SchoolQuestionBankItem::SELECTION_REQUIRED,
+                'difficulty' => SchoolQuestionBankItem::DIFFICULTY_MEDIUM,
+                'learning_outcome' => "يقيس فهم الطالب للمفهوم الأساسي في {$subjectName}.",
+                'model_answer' => 'الإجابة الصحيحة هي الاختيار الأول.',
+                'answer_explanation' => 'تم اختيار هذا البديل لأنه يطابق الهدف التعليمي للدرس.',
+                'tags' => ['مدرسة الريادة', $subjectName, $stageName, 'اختيار من متعدد'],
+            ]);
+
+            $this->ensureQuestionOptions($multipleChoice, [
+                ['option_text' => "المفهوم الأساسي في {$subjectName}", 'is_correct' => true, 'sort_order' => 1],
+                ['option_text' => 'تفصيل جانبي لا يمثل الهدف الرئيس', 'is_correct' => false, 'sort_order' => 2],
+                ['option_text' => 'معلومة من مقرر آخر', 'is_correct' => false, 'sort_order' => 3],
+                ['option_text' => 'إجابة غير مرتبطة بسياق الدرس', 'is_correct' => false, 'sort_order' => 4],
+            ]);
+
+            $trueFalse = $this->ensureQuestionBankItem($school, $manager, $offering, [
+                'unit_name' => (string) $unit->name,
+                'chapter_name' => (string) $practiceTopic->name,
+                'lesson_name' => (string) $lesson->name,
+                'question_text' => "يجب ربط أمثلة مقرر {$subjectName} بسياق الحياة اليومية للطلاب.",
+                'question_type' => SchoolQuestionBankItem::TYPE_TRUE_FALSE,
+                'question_score' => 2,
+                'selection_mode' => SchoolQuestionBankItem::SELECTION_REQUIRED,
+                'difficulty' => SchoolQuestionBankItem::DIFFICULTY_EASY,
+                'learning_outcome' => "يتحقق من إدراك الطالب للتطبيق العملي في {$subjectName}.",
+                'model_answer' => 'صح',
+                'answer_explanation' => 'ربط التعلم بالحياة اليومية يساعد على ترسيخ المفاهيم.',
+                'tags' => ['مدرسة الريادة', $subjectName, $stageName, 'صح وخطأ'],
+            ]);
+
+            $this->ensureQuestionOptions($trueFalse, [
+                ['option_text' => 'صح', 'is_correct' => true, 'sort_order' => 1],
+                ['option_text' => 'خطأ', 'is_correct' => false, 'sort_order' => 2],
+            ]);
+
+            $this->ensureQuestionBankItem($school, $manager, $offering, [
+                'unit_name' => (string) $unit->name,
+                'chapter_name' => (string) $practiceTopic->name,
+                'lesson_name' => (string) $lesson->name,
+                'question_text' => "اذكر مثالًا تطبيقيًا واحدًا من مقرر {$subjectName} يناسب طلاب {$classroomName}.",
+                'question_type' => SchoolQuestionBankItem::TYPE_SHORT_ANSWER,
+                'question_score' => 5,
+                'selection_mode' => SchoolQuestionBankItem::SELECTION_REQUIRED,
+                'difficulty' => SchoolQuestionBankItem::DIFFICULTY_HARD,
+                'learning_outcome' => "يقيس قدرة الطالب على تطبيق تعلم {$subjectName}.",
+                'model_answer' => 'يقبل أي مثال صحيح مرتبط بالمفهوم ومناسب لسياق الدرس.',
+                'answer_explanation' => 'السؤال مفتوح لتقييم الفهم والتطبيق، وليس الحفظ فقط.',
+                'tags' => ['مدرسة الريادة', $subjectName, $stageName, 'إجابة قصيرة'],
+            ]);
+        }
+    }
+
+    /**
+     * @return array{0: SchoolCoursePlanUnit, 1: SchoolCoursePlanLesson, 2: array<int, SchoolCoursePlanTopic>}
+     */
+    private function ensureCoursePlanSlice(School $school, User $manager, SchoolCourseOffering $offering): array
+    {
+        $branchName = 'الفرع الرئيسي';
+        $subjectName = (string) $offering->subject->name;
+
+        $unit = SchoolCoursePlanUnit::query()->firstOrNew([
+            'school_id' => (int) $school->id,
+            'school_course_offering_id' => (int) $offering->id,
+            'name' => 'الوحدة الأولى: مدخل إلى ' . $subjectName,
+        ]);
+
+        $this->saveModel($unit, [
+            'school_id' => (int) $school->id,
+            'school_course_offering_id' => (int) $offering->id,
+            'branch_name' => $branchName,
+            'name' => 'الوحدة الأولى: مدخل إلى ' . $subjectName,
+            'sort_order' => 1,
+            'start_date' => now()->copy()->subDays(20)->toDateString(),
+            'end_date' => now()->copy()->addDays(20)->toDateString(),
+            'notes' => 'خطة مختصرة تم إنشاؤها لربط بنك الأسئلة بالمقرر.',
+            'created_by' => (int) $manager->id,
+            'updated_by' => (int) $manager->id,
+        ]);
+
+        $lesson = SchoolCoursePlanLesson::query()->firstOrNew([
+            'school_id' => (int) $school->id,
+            'school_course_plan_unit_id' => (int) $unit->id,
+            'name' => 'الدرس الأول: المفاهيم الأساسية',
+        ]);
+
+        $this->saveModel($lesson, [
+            'school_id' => (int) $school->id,
+            'school_course_plan_unit_id' => (int) $unit->id,
+            'name' => 'الدرس الأول: المفاهيم الأساسية',
+            'sort_order' => 1,
+            'description' => 'درس تجريبي لاختبار بنك الأسئلة.',
+        ]);
+
+        $topics = [];
+        foreach (['المفهوم الأساسي', 'تطبيقات الدرس'] as $index => $topicName) {
+            $topic = SchoolCoursePlanTopic::query()->firstOrNew([
+                'school_id' => (int) $school->id,
+                'school_course_plan_lesson_id' => (int) $lesson->id,
+                'name' => $topicName,
+            ]);
+
+            $this->saveModel($topic, [
+                'school_id' => (int) $school->id,
+                'school_course_plan_lesson_id' => (int) $lesson->id,
+                'name' => $topicName,
+                'sort_order' => $index + 1,
+                'description' => 'موضوع تجريبي ضمن خطة المقرر.',
+            ]);
+
+            $topics[] = $topic->refresh();
+        }
+
+        return [$unit->refresh(), $lesson->refresh(), $topics];
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function ensureQuestionBankItem(School $school, User $manager, SchoolCourseOffering $offering, array $data): SchoolQuestionBankItem
+    {
+        $question = SchoolQuestionBankItem::query()->firstOrNew([
+            'school_id' => (int) $school->id,
+            'school_course_offering_id' => (int) $offering->id,
+            'question_text' => (string) $data['question_text'],
+        ]);
+
+        $this->saveModel($question, [
+            'school_id' => (int) $school->id,
+            'school_course_offering_id' => (int) $offering->id,
+            'school_subject_id' => (int) $offering->school_subject_id,
+            'school_stage_id' => (int) $offering->school_stage_id,
+            'school_term_id' => (int) $offering->school_term_id,
+            'unit_name' => $data['unit_name'],
+            'chapter_name' => $data['chapter_name'],
+            'lesson_name' => $data['lesson_name'],
+            'question_text' => $data['question_text'],
+            'question_type' => $data['question_type'],
+            'question_score' => $data['question_score'],
+            'selection_mode' => $data['selection_mode'],
+            'difficulty' => $data['difficulty'],
+            'learning_outcome' => $data['learning_outcome'],
+            'model_answer' => $data['model_answer'],
+            'answer_explanation' => $data['answer_explanation'],
+            'status' => SchoolQuestionBankItem::STATUS_ACTIVE,
+            'tags' => $data['tags'],
+            'created_by' => (int) $manager->id,
+            'updated_by' => (int) $manager->id,
+        ]);
+
+        return $question->refresh();
+    }
+
+    /**
+     * @param array<int, array{option_text: string, is_correct: bool, sort_order: int}> $options
+     */
+    private function ensureQuestionOptions(SchoolQuestionBankItem $question, array $options): void
+    {
+        foreach ($options as $option) {
+            SchoolQuestionOption::query()->updateOrCreate(
+                [
+                    'school_id' => (int) $question->school_id,
+                    'school_question_bank_item_id' => (int) $question->id,
+                    'sort_order' => (int) $option['sort_order'],
+                ],
+                $this->onlyColumns('school_question_options', [
+                    'option_text' => $option['option_text'],
+                    'is_correct' => (bool) $option['is_correct'],
+                ]),
+            );
+        }
     }
 
     /**
