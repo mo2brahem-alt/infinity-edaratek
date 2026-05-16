@@ -20,6 +20,8 @@ class AdminUsersPageDesignTest extends TestCase
         $this->assertStringContainsString('<Head title="إدارة الحسابات"', $content);
         $this->assertStringContainsString('المستخدمون', $content);
         $this->assertStringContainsString('المدارس', $content);
+        $this->assertStringContainsString('id="users-section"', $content);
+        $this->assertStringContainsString('id="schools-section"', $content);
         $this->assertStringContainsString('<AppFilterBar', $content);
         $this->assertStringContainsString('<AppSearchField', $content);
         $this->assertStringContainsString('ui-table-shell', $content);

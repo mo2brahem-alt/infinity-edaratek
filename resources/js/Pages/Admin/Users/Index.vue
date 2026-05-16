@@ -354,7 +354,7 @@ const rejectPendingUser = async (user) => {
                 </div>
             </section>
 
-            <section class="ui-section-header">
+            <section id="users-section" class="ui-section-header scroll-mt-24">
                 <div class="ui-section-heading text-right">
                     <h2 class="ui-section-title">المستخدمون</h2>
                     <p class="ui-section-subtitle">
@@ -363,7 +363,7 @@ const rejectPendingUser = async (user) => {
                 </div>
             </section>
 
-            <section class="ui-table-shell">
+            <section id="schools-section" class="ui-table-shell scroll-mt-24">
                 <div class="ui-table-header">
                     <div class="ui-section-header !mb-0">
                         <div class="ui-section-heading text-right">

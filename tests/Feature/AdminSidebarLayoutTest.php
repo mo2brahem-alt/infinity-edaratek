@@ -54,6 +54,8 @@ class AdminSidebarLayoutTest extends TestCase
         $this->assertStringNotContainsString("route('admin.schools.index')", $layout);
         $this->assertStringContainsString("route('admin.school_defaults.index')", $layout);
         $this->assertStringContainsString("route('users.index')", $layout);
+        $this->assertStringContainsString('#users-section', $layout);
+        $this->assertStringContainsString('#schools-section', $layout);
         $this->assertStringContainsString("route('roles.index')", $layout);
         $this->assertStringContainsString("route('departments.index')", $layout);
         $this->assertStringContainsString("route('admin.plans.index')", $layout);

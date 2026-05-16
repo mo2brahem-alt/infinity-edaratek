@@ -118,6 +118,17 @@ const adminSubLinkClass = (pattern, tone = 'slate') =>
         ? `admin-sidebar-submenu-link admin-sidebar-submenu-link--active admin-sidebar-submenu-link--${tone}`
         : 'admin-sidebar-submenu-link admin-sidebar-submenu-link--idle';
 
+const adminAccountsSubLinkClass = (section, tone = 'slate') => {
+    const url = String(page.url || '');
+    const isUsersRoute = route().current('users.*');
+    const schoolsSectionActive = url.includes('#schools-section');
+    const isActive = isUsersRoute && (section === 'schools' ? schoolsSectionActive : !schoolsSectionActive);
+
+    return isActive
+        ? `admin-sidebar-submenu-link admin-sidebar-submenu-link--active admin-sidebar-submenu-link--${tone}`
+        : 'admin-sidebar-submenu-link admin-sidebar-submenu-link--idle';
+};
+
 const adminSubgroupToggleClass = computed(() =>
     isUsersSectionActive.value
         ? 'admin-sidebar-subgroup-toggle admin-sidebar-subgroup-toggle--active'
@@ -259,9 +270,14 @@ onBeforeUnmount(() => {
                             </button>
 
                             <div v-show="isUsersMenuOpen" class="admin-sidebar-subgroup-children">
-                                <Link :href="route('users.index')" :class="adminSubLinkClass('users.*', 'emerald')">
+                                <Link :href="`${route('users.index')}#users-section`" :class="adminAccountsSubLinkClass('users', 'emerald')">
                                     <UserPlus class="h-4 w-4" />
                                     <span class="admin-sidebar-submenu-label">المستخدمون</span>
+                                </Link>
+
+                                <Link :href="`${route('users.index')}#schools-section`" :class="adminAccountsSubLinkClass('schools', 'blue')">
+                                    <School class="h-4 w-4" />
+                                    <span class="admin-sidebar-submenu-label">المدارس</span>
                                 </Link>
 
                                 <Link :href="route('roles.index')" :class="adminSubLinkClass('roles.*', 'blue')">
