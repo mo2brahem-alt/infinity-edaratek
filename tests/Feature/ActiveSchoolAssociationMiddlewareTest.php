@@ -16,7 +16,7 @@ class ActiveSchoolAssociationMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_manager_can_access_dashboard_when_association_is_not_active(): void
+    public function test_manager_can_access_dashboard_when_school_is_active_without_supervisor_association(): void
     {
         Role::firstOrCreate(['name' => 'school_manager', 'guard_name' => 'web']);
 
@@ -33,7 +33,7 @@ class ActiveSchoolAssociationMiddlewareTest extends TestCase
             'name' => 'Pending Association School',
             'school_id' => 'SCH-AG-0001',
             'phone' => '0500011001',
-            'status' => School::STATUS_SUSPENDED,
+            'status' => School::STATUS_ACTIVE,
             'supervision_status' => School::SUPERVISION_STATUS_WAITING_MANAGER_APPROVAL,
             'manager_user_id' => $manager->id,
         ]);
@@ -43,6 +43,36 @@ class ActiveSchoolAssociationMiddlewareTest extends TestCase
         $this->actingAs($manager)
             ->get(route('manager.dashboard'))
             ->assertOk();
+    }
+
+    public function test_manager_is_blocked_from_operational_routes_when_school_is_suspended(): void
+    {
+        Role::firstOrCreate(['name' => 'school_manager', 'guard_name' => 'web']);
+
+        $region = EducationalDirectorate::create([
+            'name' => 'Suspended Manager Region',
+            'governorate' => 'Riyadh',
+        ]);
+
+        $manager = User::factory()->create(['role' => 'school_manager']);
+        $manager->assignRole('school_manager');
+
+        $school = School::create([
+            'directorate_id' => $region->id,
+            'name' => 'Suspended Manager School',
+            'school_id' => 'SCH-AG-0008',
+            'phone' => '0500011008',
+            'status' => School::STATUS_SUSPENDED,
+            'supervision_status' => School::SUPERVISION_STATUS_WAITING_MANAGER_APPROVAL,
+            'manager_user_id' => $manager->id,
+        ]);
+
+        $manager->update(['school_id' => $school->id]);
+
+        $this->actingAs($manager)
+            ->getJson(route('manager.dashboard'))
+            ->assertForbidden()
+            ->assertJsonPath('message', 'تم إيقاف المدرسة مؤقتًا. يرجى التواصل مع إدارة المنصة.');
     }
 
     public function test_manager_can_access_requests_page_before_association_activation(): void
@@ -271,7 +301,7 @@ class ActiveSchoolAssociationMiddlewareTest extends TestCase
             'name' => 'Mutual Approval School',
             'school_id' => 'SCH-AG-0005',
             'phone' => '0500011005',
-            'status' => School::STATUS_SUSPENDED,
+            'status' => School::STATUS_ACTIVE,
             'supervision_status' => School::SUPERVISION_STATUS_WAITING_SUPERVISOR_CONFIRM,
             'manager_user_id' => $manager->id,
             'supervisor_id' => $supervisor->id,

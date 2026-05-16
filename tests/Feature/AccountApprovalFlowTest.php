@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Department;
+use App\Models\EducationalDirectorate;
 use App\Models\Plan;
+use App\Models\School;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Services\Auth\UserApprovalService;
@@ -168,6 +170,45 @@ class AccountApprovalFlowTest extends TestCase
             'user_id' => $user->id,
             'type' => 'user.approval.approved',
         ]);
+    }
+
+    public function test_super_admin_approval_activates_linked_school_manager_school(): void
+    {
+        $this->createRole('super_admin');
+        $this->createRole('school_manager');
+
+        $admin = $this->createSuperAdmin();
+        $user = $this->makePendingUser('school_manager', 'approve.manager.school@example.com');
+        $region = EducationalDirectorate::query()->create([
+            'name' => 'Approval Region',
+            'governorate' => 'Riyadh',
+        ]);
+        $school = School::query()->create([
+            'directorate_id' => $region->id,
+            'name' => 'Pending Manager School',
+            'school_id' => 'SCH-APP-0001',
+            'phone' => '0500002001',
+            'status' => School::STATUS_SUSPENDED,
+            'supervision_status' => School::SUPERVISION_STATUS_WAITING_SUPERVISOR_CONFIRM,
+        ]);
+        $user->update(['school_id' => $school->id]);
+
+        $response = $this->actingAs($admin)
+            ->from(route('users.index'))
+            ->post(route('users.approve', $user), [
+                'reason' => 'مراجعة مكتملة',
+            ]);
+
+        $response->assertRedirect(route('users.index', absolute: false));
+
+        $user->refresh();
+        $school->refresh();
+
+        $this->assertTrue((bool) $user->is_active);
+        $this->assertSame(User::APPROVAL_APPROVED, $user->approval_status);
+        $this->assertSame(School::STATUS_ACTIVE, $school->status);
+        $this->assertSame($user->id, (int) $school->manager_user_id);
+        $this->assertSame(School::SUPERVISION_STATUS_WAITING_SUPERVISOR_CONFIRM, $school->supervision_status);
     }
 
     public function test_super_admin_can_reject_pending_account_and_keep_it_blocked(): void

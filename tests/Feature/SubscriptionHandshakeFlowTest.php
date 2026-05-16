@@ -320,7 +320,7 @@ class SubscriptionHandshakeFlowTest extends TestCase
 
         $createdSchool = School::query()->findOrFail($createdSchoolId);
         $this->assertSame($manager->id, (int) $createdSchool->manager_user_id);
-        $this->assertSame(School::STATUS_SUSPENDED, $createdSchool->status);
+        $this->assertSame(School::STATUS_ACTIVE, $createdSchool->status);
         $this->assertSame(School::SUPERVISION_STATUS_SUSPENDED, $createdSchool->supervision_status);
 
         $supervisor = User::factory()->create(['role' => 'supervisor']);

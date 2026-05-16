@@ -91,7 +91,7 @@ const schoolLogoAlt = (school) => `شعار ${school?.name || 'المدرسة'}`
 const schoolStatusMeta = (school) => {
     if (school.status === 'ACTIVE') {
         return {
-            label: 'نشطة',
+            label: 'مفعلة',
             className: 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300',
         };
     }

@@ -292,7 +292,10 @@ class OnboardingController extends Controller
 
             $manager->update($this->buildManagerLinkUpdates($school->id, (int) $validated['region_id']));
             $this->subscriptionService->syncSchoolContextForUser($manager, (int) $school->id);
-            $school->update(['manager_user_id' => $manager->id]);
+            $school->update([
+                'manager_user_id' => $manager->id,
+                'status' => School::STATUS_ACTIVE,
+            ]);
 
             $pendingRequests = SchoolSupervisionRequest::query()
                 ->where('school_id', $school->id)
@@ -406,7 +409,7 @@ class OnboardingController extends Controller
                     'address' => $validated['address'] ?? null,
                     'notes' => $validated['notes'] ?? null,
                     'logo_path' => $storedLogoPath,
-                    'status' => School::STATUS_SUSPENDED,
+                    'status' => School::STATUS_ACTIVE,
                     'supervision_status' => School::SUPERVISION_STATUS_SUSPENDED,
                     'manager_user_id' => $manager->id,
                     'default_template_key' => $selectedTemplate['key'] ?? null,
@@ -1044,5 +1047,4 @@ class OnboardingController extends Controller
         };
     }
 }
-
 

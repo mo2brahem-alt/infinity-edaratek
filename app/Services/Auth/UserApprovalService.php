@@ -2,6 +2,7 @@
 
 namespace App\Services\Auth;
 
+use App\Models\School;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Services\Subscription\SubscriptionService;
@@ -105,6 +106,8 @@ class UserApprovalService
                 );
             }
 
+            $this->activateLinkedSchoolForApprovedManager($user);
+
             return $user->refresh();
         });
 
@@ -192,5 +195,47 @@ class UserApprovalService
         $normalized = trim((string) $note);
 
         return $normalized === '' ? null : $normalized;
+    }
+
+    private function activateLinkedSchoolForApprovedManager(User $user): void
+    {
+        if (! $user->hasSystemRole('school_manager')) {
+            return;
+        }
+
+        $school = School::query()
+            ->where(function ($query) use ($user): void {
+                $query->where('manager_user_id', (int) $user->id);
+
+                if ((int) ($user->school_id ?? 0) > 0) {
+                    $query->orWhereKey((int) $user->school_id);
+                }
+            })
+            ->orderByRaw('CASE WHEN manager_user_id = ? THEN 0 ELSE 1 END', [(int) $user->id])
+            ->lockForUpdate()
+            ->first();
+
+        if (! $school) {
+            return;
+        }
+
+        if ((int) ($school->manager_user_id ?? 0) > 0 && (int) $school->manager_user_id !== (int) $user->id) {
+            throw ValidationException::withMessages([
+                'school' => 'المدرسة المرتبطة بالحساب مرتبطة بمدير آخر.',
+            ]);
+        }
+
+        $school->forceFill([
+            'manager_user_id' => (int) $user->id,
+            'status' => School::STATUS_ACTIVE,
+        ])->save();
+
+        if ((int) ($user->school_id ?? 0) !== (int) $school->id) {
+            $user->forceFill([
+                'school_id' => (int) $school->id,
+            ])->save();
+        }
+
+        $this->subscriptionService->syncSchoolContextForUser($user, (int) $school->id);
     }
 }

@@ -46,6 +46,10 @@ class EnsureActiveSchoolAssociation
         }
 
         if ($user->hasSystemRole('school_manager')) {
+            if (! SchoolAssociationState::isSchoolActive($school)) {
+                abort(403, SchoolAssociationState::SCHOOL_SUSPENDED_MESSAGE);
+            }
+
             $request->attributes->set('school_context_id', $schoolId);
 
             return $next($request);
