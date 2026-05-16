@@ -477,7 +477,7 @@ onMounted(async () => {
 
     <RoleLayout title="لوحة مدير المدرسة" role="SCHOOL_MANAGER" :animate-background="true">
         <div class="ui-page-shell manager-dashboard-shell space-y-6">
-            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white/95 shadow-sm dark:border-slate-800 dark:bg-slate-950/90">
+            <section class="manager-analytics-panel overflow-hidden rounded-2xl border border-slate-200 bg-white/95 shadow-sm dark:border-slate-800 dark:bg-slate-950/90">
                 <div class="border-b border-slate-200 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-900/70 sm:p-5">
                     <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                         <div>
@@ -1137,3 +1137,118 @@ onMounted(async () => {
         </div>
     </RoleLayout>
 </template>
+
+<style>
+html.theme-dark .manager-analytics-panel {
+    border-color: rgba(51, 65, 85, 0.82) !important;
+    background:
+        radial-gradient(circle at top right, rgba(14, 165, 233, 0.16), transparent 32rem),
+        linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.96)) !important;
+    color: rgb(226, 232, 240);
+    box-shadow: 0 24px 70px rgba(2, 6, 23, 0.42);
+}
+
+html.theme-dark .manager-analytics-panel [class*='bg-white'],
+html.theme-dark .manager-analytics-panel [class*='bg-slate-50'] {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(2, 6, 23, 0.88)) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='bg-slate-100'] {
+    background-color: rgba(30, 41, 59, 0.82) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='border-slate-200'],
+html.theme-dark .manager-analytics-panel [class*='border-slate-300'] {
+    border-color: rgba(71, 85, 105, 0.72) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='text-slate-950'],
+html.theme-dark .manager-analytics-panel [class*='text-slate-900'] {
+    color: rgb(248, 250, 252) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='text-slate-700'],
+html.theme-dark .manager-analytics-panel [class*='text-slate-600'] {
+    color: rgb(203, 213, 225) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='text-slate-500'],
+html.theme-dark .manager-analytics-panel [class*='text-slate-400'] {
+    color: rgb(148, 163, 184) !important;
+}
+
+html.theme-dark .manager-analytics-panel select {
+    border-color: rgba(71, 85, 105, 0.82) !important;
+    background-color: rgba(15, 23, 42, 0.96) !important;
+    color: rgb(241, 245, 249) !important;
+}
+
+html.theme-dark .manager-analytics-panel option {
+    background-color: rgb(15, 23, 42);
+    color: rgb(241, 245, 249);
+}
+
+html.theme-dark .manager-analytics-panel button:not([class*='bg-blue-700']) {
+    border-color: rgba(71, 85, 105, 0.75) !important;
+}
+
+html.theme-dark .manager-analytics-panel button:not([class*='bg-blue-700']):hover {
+    background-color: rgba(30, 41, 59, 0.9) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='bg-emerald-500'] {
+    background-color: rgba(16, 185, 129, 0.13) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='bg-red-500'] {
+    background-color: rgba(239, 68, 68, 0.13) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='bg-amber-500'] {
+    background-color: rgba(245, 158, 11, 0.14) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='bg-blue-500'] {
+    background-color: rgba(59, 130, 246, 0.14) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='bg-cyan-500'] {
+    background-color: rgba(6, 182, 212, 0.14) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='bg-violet-500'] {
+    background-color: rgba(139, 92, 246, 0.14) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='text-emerald-700'] {
+    color: rgb(167, 243, 208) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='text-red-700'],
+html.theme-dark .manager-analytics-panel [class*='text-red-600'] {
+    color: rgb(252, 165, 165) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='text-amber-700'],
+html.theme-dark .manager-analytics-panel [class*='text-amber-600'] {
+    color: rgb(252, 211, 77) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='text-blue-800'],
+html.theme-dark .manager-analytics-panel [class*='text-blue-700'],
+html.theme-dark .manager-analytics-panel [class*='text-blue-600'] {
+    color: rgb(147, 197, 253) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='text-cyan-700'] {
+    color: rgb(103, 232, 249) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='text-violet-700'] {
+    color: rgb(196, 181, 253) !important;
+}
+
+html.theme-dark .manager-analytics-panel [class*='border-dashed'] {
+    border-color: rgba(71, 85, 105, 0.8) !important;
+}
+</style>
