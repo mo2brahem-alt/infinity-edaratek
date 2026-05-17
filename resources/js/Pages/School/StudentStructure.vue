@@ -120,11 +120,23 @@ const normalizeGradeName = (value) => {
 
 const stageAccent = (stageId, stageName = '') => stageAccentStyle(stageId, stageName);
 
-const stageOptions = computed(() => props.stages.map((stage) => ({ id: stage.id, name: stage.name })));
+const safeRoute = (name, params = undefined, fallback = '#') => {
+    try {
+        return params === undefined ? route(name) : route(name, params);
+    } catch (error) {
+        console.error(`Missing or unavailable route: ${name}`, error);
+        return fallback;
+    }
+};
+
+const stageRows = computed(() => (Array.isArray(props.stages) ? props.stages : []));
+const studentImportTemplateUrl = computed(() => safeRoute('school.student_structure.students.import_template'));
+
+const stageOptions = computed(() => stageRows.value.map((stage) => ({ id: stage.id, name: stage.name })));
 const defaultStageId = computed(() => stageOptions.value[0]?.id || '');
 
 const classroomOptions = computed(() =>
-    props.stages.flatMap((stage) =>
+    stageRows.value.flatMap((stage) =>
         (stage.classrooms || []).map((classroom) => ({
             ...classroom,
             stage_name: stage.name,
@@ -136,7 +148,7 @@ const classroomOptions = computed(() =>
 
 const stageGradeOptionsMap = computed(() =>
     new Map(
-        props.stages.map((stage) => {
+        stageRows.value.map((stage) => {
             const stageGrades = (stage.grades || [])
                 .map((grade) => normalizeGradeName(grade.name));
 
@@ -219,7 +231,7 @@ const expandedGrades = ref({});
 const expandedClassrooms = ref({});
 const classroomStageGrades = computed(() => uniqueGradesForStage(classroomForm.school_stage_id));
 const gradeTermStageGrades = computed(() =>
-    (props.stages.find((stage) => Number(stage.id) === Number(gradeTermForm.school_stage_id || 0))?.grades || [])
+    (stageRows.value.find((stage) => Number(stage.id) === Number(gradeTermForm.school_stage_id || 0))?.grades || [])
         .map((grade) => ({ id: grade.id, name: normalizeGradeName(grade.name) }))
 );
 
@@ -363,7 +375,7 @@ watch(
 const studentRows = computed(() => {
     const rows = [];
 
-    for (const stage of props.stages) {
+    for (const stage of stageRows.value) {
         for (const classroom of stage.classrooms || []) {
             for (const student of classroom.students || []) {
                 rows.push({
@@ -457,7 +469,7 @@ const classroomStudents = (stage, classroom) =>
     }));
 
 const studentStructureTree = computed(() =>
-    props.stages
+    stageRows.value
         .filter((stage) => !studentFilterStageId.value || Number(stage.id) === Number(studentFilterStageId.value))
         .map((stage) => {
             const gradeNames = [
@@ -532,8 +544,8 @@ const studentStructureTree = computed(() =>
 );
 
 const structureSummary = computed(() => ({
-    stages: props.stages.length,
-    grades: [...new Set(props.stages.flatMap((stage) => [
+    stages: stageRows.value.length,
+    grades: [...new Set(stageRows.value.flatMap((stage) => [
         ...(stage.grades || []).map((grade) => `${stage.id}:${normalizeGradeName(grade.name)}`),
         ...(stage.classrooms || []).map((classroom) => `${stage.id}:${normalizeGradeName(classroom.grade_name)}`),
     ]))].length,
@@ -565,7 +577,7 @@ const clearStructureFilters = () => {
 };
 
 const stageTermRows = computed(() =>
-    props.stages
+    stageRows.value
         .flatMap((stage) =>
             (stage.stage_terms || []).map((term) => ({
                 ...term,
@@ -582,7 +594,7 @@ const stageTermRows = computed(() =>
 );
 
 const gradeTermRows = computed(() =>
-    props.stages
+    stageRows.value
         .flatMap((stage) =>
             (stage.grades || []).flatMap((grade) =>
                 (grade.grade_terms || []).map((term) => ({
@@ -714,8 +726,9 @@ const resetClassroomForm = (preferredStageId = null, preferredGradeName = null, 
     classroomForm.reset();
 
     const availableStageIds = stageOptions.value.map((stage) => String(stage.id));
+    const isValidPreferredStage = ['string', 'number'].includes(typeof preferredStageId);
     classroomForm.school_stage_id =
-        preferredStageId && availableStageIds.includes(String(preferredStageId))
+        isValidPreferredStage && preferredStageId && availableStageIds.includes(String(preferredStageId))
             ? preferredStageId
             : defaultStageId.value;
 
@@ -744,9 +757,12 @@ const editClassroom = (classroom) => {
 };
 
 const openCreateClassroomModal = (preferredStageId = null, preferredGradeName = null) => {
+    const normalizedStageId = ['string', 'number'].includes(typeof preferredStageId) ? preferredStageId : null;
+    const normalizedGradeName = ['string', 'number'].includes(typeof preferredGradeName) ? preferredGradeName : null;
+
     isClassroomModalOpen.value = true;
     nextTick(() => {
-        resetClassroomForm(preferredStageId, preferredGradeName);
+        resetClassroomForm(normalizedStageId, normalizedGradeName);
     });
 };
 
@@ -1122,7 +1138,7 @@ focusInput(studentNameInput);
                     </h2>
                     <div class="flex flex-wrap items-center justify-end gap-2">
                         <a
-                            :href="route('school.student_structure.students.import_template')"
+                            :href="studentImportTemplateUrl"
                             class="inline-flex items-center gap-1 rounded bg-gray-800 px-3 py-1.5 text-xs font-semibold text-gray-100 ring-1 ring-gray-700 transition hover:bg-gray-700"
                         >
                             <FileDown class="h-3.5 w-3.5" />
@@ -1140,7 +1156,7 @@ focusInput(studentNameInput);
                             <UserRound class="h-3.5 w-3.5" />
                             <span>طالب جديد</span>
                         </button>
-                        <button type="button" class="inline-flex items-center gap-1 rounded bg-gray-700 px-3 py-1.5 text-xs hover:bg-gray-600" @click="openCreateClassroomModal">
+                        <button type="button" class="inline-flex items-center gap-1 rounded bg-gray-700 px-3 py-1.5 text-xs hover:bg-gray-600" @click="openCreateClassroomModal()">
                             <PlusCircle class="h-3.5 w-3.5" />
                             <span>فصل جديد</span>
                         </button>
@@ -1538,7 +1554,7 @@ focusInput(studentNameInput);
                     </h2>
                     <div class="flex flex-wrap items-center justify-end gap-2">
                         <a
-                            :href="route('school.student_structure.students.import_template')"
+                            :href="studentImportTemplateUrl"
                             class="inline-flex items-center gap-1 rounded bg-gray-800 px-3 py-1.5 text-xs font-semibold text-gray-100 ring-1 ring-gray-700 transition hover:bg-gray-700"
                         >
                             <FileDown class="h-3.5 w-3.5" />
@@ -1584,7 +1600,7 @@ focusInput(studentNameInput);
 
                             <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                                 <a
-                                    :href="route('school.student_structure.students.import_template')"
+                                    :href="studentImportTemplateUrl"
                                     class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm font-bold text-gray-100 transition hover:border-blue-400/70 hover:bg-gray-800"
                                 >
                                     <FileDown class="h-4 w-4 text-blue-300" />
