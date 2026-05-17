@@ -5589,11 +5589,11 @@ onMounted(async () => {
                 v-if="canManagePlanning && isSectionVisible('subjects')"
                 ref="offeringSectionRef"
                 style="order: 6;"
-                class="rounded-xl border border-cyan-500/70 bg-cyan-900/20 p-4"
+                class="academic-tree-section academic-tree-section--courses rounded-xl border border-cyan-500/70 bg-cyan-900/20 p-4"
             >
                 <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h2 class="flex items-center gap-2 text-lg font-bold">
+                        <h2 class="academic-tree-section-title flex items-center gap-2 text-lg font-bold">
                             <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-100">
                                 <svg viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="4" y="5" width="16" height="14" rx="2" />
@@ -5603,14 +5603,14 @@ onMounted(async () => {
                             </span>
                             <span>6) المقررات المعتمدة حسب المرحلة والصف</span>
                         </h2>
-                        <p class="mt-1 text-xs text-cyan-100/80">
+                        <p class="academic-tree-section-copy mt-1 text-xs text-cyan-100/80">
                             أضف المقررات على مستوى الترم والمرحلة والصف ثم فعّل استخدامها في الاختبارات.
                         </p>
                     </div>
                     <button class="rounded-lg bg-gray-700 px-3 py-1.5 text-xs font-semibold hover:bg-gray-600" @click="resetCourseOfferingForm">جديد</button>
                 </div>
 
-                <form class="mb-4 rounded border border-gray-700 bg-gray-800 p-3" @submit.prevent="submitCourseOffering">
+                <form class="academic-tree-editor mb-4 rounded border border-gray-700 bg-gray-800 p-3" @submit.prevent="submitCourseOffering">
                     <div class="grid grid-cols-1 gap-3 md:grid-cols-8">
                         <div>
                             <label class="mb-1 block text-xs text-gray-400">الترم</label>
@@ -5956,7 +5956,7 @@ onMounted(async () => {
                 </div>
 
                 <div class="space-y-4">
-                    <div class="rounded-2xl border border-cyan-200 bg-white/90 p-3 text-slate-900 shadow-sm dark:border-cyan-500/30 dark:bg-gray-950/60 dark:text-gray-100">
+                    <div class="academic-tree-filter academic-tree-filter--cyan rounded-2xl border border-cyan-200 bg-white/90 p-3 text-slate-900 shadow-sm dark:border-cyan-500/30 dark:bg-gray-950/60 dark:text-gray-100">
                         <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
                             <div class="flex items-center gap-2 text-sm font-bold text-cyan-800 dark:text-cyan-100">
                                 <Filter class="h-4 w-4" />
@@ -6055,7 +6055,7 @@ onMounted(async () => {
                         <div
                             v-for="stage in approvedCoursesTreeForDisplay"
                             :key="`approved-stage-${stage.key}`"
-                            class="stage-row-accent overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-950/70"
+                            class="academic-tree-stage-card stage-row-accent overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-950/70"
                             :style="stageAccent(stage.id, stage.name)"
                         >
                             <button
@@ -6090,7 +6090,7 @@ onMounted(async () => {
                                 <div
                                     v-for="grade in stage.grades"
                                     :key="`approved-grade-${grade.key}`"
-                                    class="overflow-hidden rounded-xl border border-slate-200 bg-slate-50/80 dark:border-gray-800 dark:bg-gray-900/70"
+                                    class="academic-tree-branch-card overflow-hidden rounded-xl border border-slate-200 bg-slate-50/80 dark:border-gray-800 dark:bg-gray-900/70"
                                 >
                                     <button
                                         type="button"
@@ -6119,7 +6119,7 @@ onMounted(async () => {
                                         <div
                                             v-for="term in grade.terms"
                                             :key="`approved-term-${term.key}`"
-                                            class="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-800 dark:bg-gray-950/70"
+                                            class="academic-tree-term-card overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-800 dark:bg-gray-950/70"
                                         >
                                             <button
                                                 type="button"
@@ -6149,7 +6149,7 @@ onMounted(async () => {
                                                     <article
                                                         v-for="course in term.courses"
                                                         :key="`approved-course-${course.id}`"
-                                                        class="stage-row-accent rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm dark:border-gray-800 dark:bg-gray-900/80"
+                                                        class="academic-tree-course-card stage-row-accent rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm dark:border-gray-800 dark:bg-gray-900/80"
                                                         :style="stageAccent(course.school_stage_id || stage.id, course.stage_name || stage.name)"
                                                     >
                                                         <div class="flex flex-wrap items-start justify-between gap-3">
@@ -6209,25 +6209,25 @@ onMounted(async () => {
                                                         </div>
                                                     </article>
                                                 </div>
-                                                <div v-else class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
+                                                <div v-else class="academic-tree-empty rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
                                                     لا توجد مقررات داخل هذا الفصل الدراسي.
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div v-if="grade.terms.length === 0" class="rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-950/50 dark:text-gray-300">
+                                        <div v-if="grade.terms.length === 0" class="academic-tree-empty rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-950/50 dark:text-gray-300">
                                             لا توجد مقررات داخل هذا الصف.
                                         </div>
                                     </div>
                                 </div>
 
-                                <div v-if="stage.grades.length === 0" class="rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
+                                <div v-if="stage.grades.length === 0" class="academic-tree-empty rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
                                     لا توجد صفوف داخل هذه المرحلة.
                                 </div>
                             </div>
                         </div>
 
-                        <div v-if="approvedCoursesTreeForDisplay.length === 0" class="rounded-2xl border border-dashed border-gray-700 bg-gray-800/70 p-5 text-sm text-gray-300">
+                        <div v-if="approvedCoursesTreeForDisplay.length === 0" class="academic-tree-empty rounded-2xl border border-dashed border-gray-700 bg-gray-800/70 p-5 text-sm text-gray-300">
                             {{ hasApprovedCourseFilters ? 'لا توجد نتائج مطابقة للفلاتر الحالية.' : 'لا توجد مقررات معتمدة بعد. أضف المقررات الدراسية أولًا ثم اسندها للمعلمين.' }}
                         </div>
                     </div>
@@ -6238,11 +6238,11 @@ onMounted(async () => {
                 v-if="canManageTeachingAssignments && isSectionVisible('subjects')"
                 ref="teachingAssignmentSectionRef"
                 style="order: 7;"
-                class="rounded-xl border border-emerald-500/70 bg-emerald-900/25 p-4"
+                class="academic-tree-section academic-tree-section--assignments rounded-xl border border-emerald-500/70 bg-emerald-900/25 p-4"
             >
                 <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h2 class="flex items-center gap-2 text-lg font-bold">
+                        <h2 class="academic-tree-section-title flex items-center gap-2 text-lg font-bold">
                             <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-100">
                                 <svg viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="9" cy="8" r="3" />
@@ -6252,7 +6252,7 @@ onMounted(async () => {
                             </span>
                             <span>7) إسناد المقررات وصلاحيات الاختبارات</span>
                         </h2>
-                        <p class="mt-1 text-xs text-emerald-100/80">
+                        <p class="academic-tree-section-copy mt-1 text-xs text-emerald-100/80">
                             خصص المعلم لكل مقرر ثم فعّل الصلاحيات التشغيلية للاختبارات ضمن نفس المدرسة.
                         </p>
                     </div>
@@ -6260,7 +6260,7 @@ onMounted(async () => {
                 </div>
 
                 <div class="space-y-4">
-                    <div class="rounded-2xl border border-emerald-200 bg-white/90 p-3 text-slate-900 shadow-sm dark:border-emerald-500/30 dark:bg-gray-950/60 dark:text-gray-100">
+                    <div class="academic-tree-filter academic-tree-filter--emerald rounded-2xl border border-emerald-200 bg-white/90 p-3 text-slate-900 shadow-sm dark:border-emerald-500/30 dark:bg-gray-950/60 dark:text-gray-100">
                         <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
                             <div class="flex items-center gap-2 text-sm font-bold text-emerald-800 dark:text-emerald-100">
                                 <Filter class="h-4 w-4" />
@@ -6377,7 +6377,7 @@ onMounted(async () => {
                         <div
                             v-for="stage in courseAssignmentsTreeForDisplay"
                             :key="`assignment-stage-${stage.key}`"
-                            class="stage-row-accent overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-950/70"
+                            class="academic-tree-stage-card stage-row-accent overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-950/70"
                             :style="stageAccent(stage.id, stage.name)"
                         >
                             <button
@@ -6412,7 +6412,7 @@ onMounted(async () => {
                                 <div
                                     v-for="grade in stage.grades"
                                     :key="`assignment-grade-${grade.key}`"
-                                    class="overflow-hidden rounded-xl border border-slate-200 bg-slate-50/80 dark:border-gray-800 dark:bg-gray-900/70"
+                                    class="academic-tree-branch-card overflow-hidden rounded-xl border border-slate-200 bg-slate-50/80 dark:border-gray-800 dark:bg-gray-900/70"
                                 >
                                     <button
                                         type="button"
@@ -6444,7 +6444,7 @@ onMounted(async () => {
                                         <div
                                             v-for="term in grade.terms"
                                             :key="`assignment-term-${term.key}`"
-                                            class="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-800 dark:bg-gray-950/70"
+                                            class="academic-tree-term-card overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-800 dark:bg-gray-950/70"
                                         >
                                             <button
                                                 type="button"
@@ -6474,7 +6474,7 @@ onMounted(async () => {
                                                     <article
                                                         v-for="course in term.courses"
                                                         :key="`assignment-course-${course.id}`"
-                                                        class="stage-row-accent overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm dark:border-gray-800 dark:bg-gray-900/80"
+                                                        class="academic-tree-course-card stage-row-accent overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm dark:border-gray-800 dark:bg-gray-900/80"
                                                         :style="stageAccent(course.school_stage_id || stage.id, course.stage_name || stage.name)"
                                                     >
                                                         <div class="p-3">
@@ -6542,18 +6542,18 @@ onMounted(async () => {
                                                             </div>
                                                         </div>
 
-                                                        <div v-if="isCourseAssignmentOpen(course)" class="border-t border-slate-200 bg-white/80 p-3 text-xs dark:border-gray-800 dark:bg-gray-950/50">
+                                                        <div v-if="isCourseAssignmentOpen(course)" class="academic-tree-detail-panel border-t border-slate-200 bg-white/80 p-3 text-xs dark:border-gray-800 dark:bg-gray-950/50">
                                                             <div class="grid grid-cols-1 gap-2 md:grid-cols-2">
-                                                                <div class="rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-gray-800 dark:bg-gray-900">
+                                                                <div class="academic-tree-detail-card rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-gray-800 dark:bg-gray-900">
                                                                     <p class="font-bold text-slate-700 dark:text-gray-200">المعلم المسند</p>
                                                                     <p class="mt-1 text-slate-600 dark:text-gray-400">{{ course.teacher_name }}</p>
                                                                 </div>
-                                                                <div class="rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-gray-800 dark:bg-gray-900">
+                                                                <div class="academic-tree-detail-card rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-gray-800 dark:bg-gray-900">
                                                                     <p class="font-bold text-slate-700 dark:text-gray-200">الفصول والشعب</p>
                                                                     <p class="mt-1 text-slate-600 dark:text-gray-400">{{ assignmentClassroomsLabel(course) }}</p>
                                                                 </div>
                                                             </div>
-                                                            <div class="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-gray-800 dark:bg-gray-900">
+                                                            <div class="academic-tree-detail-card mt-2 rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-gray-800 dark:bg-gray-900">
                                                                 <p class="font-bold text-slate-700 dark:text-gray-200">صلاحيات الاختبارات</p>
                                                                 <div class="mt-2 flex flex-wrap gap-1">
                                                                     <span
@@ -6574,25 +6574,25 @@ onMounted(async () => {
                                                         </div>
                                                     </article>
                                                 </div>
-                                                <div v-else class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
+                                                <div v-else class="academic-tree-empty rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
                                                     لا توجد مقررات قابلة للإسناد داخل هذا الفصل الدراسي.
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div v-if="grade.terms.length === 0" class="rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-950/50 dark:text-gray-300">
+                                        <div v-if="grade.terms.length === 0" class="academic-tree-empty rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-950/50 dark:text-gray-300">
                                             لا توجد إسنادات داخل هذا الصف.
                                         </div>
                                     </div>
                                 </div>
 
-                                <div v-if="stage.grades.length === 0" class="rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
+                                <div v-if="stage.grades.length === 0" class="academic-tree-empty rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
                                     لا توجد صفوف داخل هذه المرحلة.
                                 </div>
                             </div>
                         </div>
 
-                        <div v-if="courseAssignmentsTreeForDisplay.length === 0" class="rounded-2xl border border-dashed border-gray-700 bg-gray-800/70 p-5 text-sm text-gray-300">
+                        <div v-if="courseAssignmentsTreeForDisplay.length === 0" class="academic-tree-empty rounded-2xl border border-dashed border-gray-700 bg-gray-800/70 p-5 text-sm text-gray-300">
                             {{ hasCourseAssignmentFilters ? 'لا توجد نتائج مطابقة لفلاتر الإسناد الحالية.' : 'لا توجد مقررات نشطة ومفعلة للاختبارات بعد. أضف المقررات أو فعّل خيار استخدامها في الاختبارات أولًا.' }}
                         </div>
                     </div>
@@ -7474,6 +7474,184 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.academic-tree-section {
+    --academic-tree-section-bg: linear-gradient(180deg, rgba(8, 47, 73, 0.34), rgba(2, 6, 23, 0.46));
+    --academic-tree-section-border: rgba(34, 211, 238, 0.54);
+    --academic-tree-title: rgb(248 250 252);
+    --academic-tree-copy: rgba(207, 250, 254, 0.78);
+    --academic-tree-filter-bg: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.9));
+    --academic-tree-filter-border: rgba(71, 85, 105, 0.9);
+    --academic-tree-card-bg: rgba(15, 23, 42, 0.94);
+    --academic-tree-card-bg-strong: rgba(2, 6, 23, 0.92);
+    --academic-tree-branch-bg: rgba(15, 23, 42, 0.82);
+    --academic-tree-term-bg: rgba(2, 6, 23, 0.68);
+    --academic-tree-detail-bg: rgba(15, 23, 42, 0.72);
+    --academic-tree-border-soft: rgba(51, 65, 85, 0.88);
+    --academic-tree-text: rgb(248 250 252);
+    --academic-tree-muted: rgb(148 163 184);
+    --academic-tree-muted-strong: rgb(203 213 225);
+    --academic-tree-control-bg: rgba(15, 23, 42, 0.96);
+    --academic-tree-control-border: rgba(71, 85, 105, 0.94);
+    --academic-tree-control-text: rgb(248 250 252);
+    --academic-tree-control-placeholder: rgb(100 116 139);
+    background: var(--academic-tree-section-bg);
+    border-color: var(--academic-tree-section-border);
+    color: var(--academic-tree-text);
+}
+
+.academic-tree-section--assignments {
+    --academic-tree-section-bg: linear-gradient(180deg, rgba(6, 78, 59, 0.32), rgba(2, 6, 23, 0.48));
+    --academic-tree-section-border: rgba(16, 185, 129, 0.52);
+    --academic-tree-copy: rgba(209, 250, 229, 0.78);
+}
+
+.academic-tree-section-title {
+    color: var(--academic-tree-title);
+}
+
+.academic-tree-section-copy {
+    color: var(--academic-tree-copy);
+}
+
+.academic-tree-filter {
+    background: var(--academic-tree-filter-bg) !important;
+    border-color: var(--academic-tree-filter-border) !important;
+    color: var(--academic-tree-text) !important;
+}
+
+.academic-tree-editor {
+    background: var(--academic-tree-branch-bg) !important;
+    border-color: var(--academic-tree-border-soft) !important;
+    color: var(--academic-tree-text);
+}
+
+.academic-tree-editor label {
+    color: var(--academic-tree-muted-strong) !important;
+}
+
+.academic-tree-filter :is(input, select),
+.academic-tree-editor :is(input, select, textarea) {
+    background: var(--academic-tree-control-bg) !important;
+    border-color: var(--academic-tree-control-border) !important;
+    color: var(--academic-tree-control-text) !important;
+}
+
+.academic-tree-filter input::placeholder,
+.academic-tree-editor input::placeholder,
+.academic-tree-editor textarea::placeholder {
+    color: var(--academic-tree-control-placeholder) !important;
+}
+
+.academic-tree-filter option,
+.academic-tree-editor option {
+    background: var(--academic-tree-control-bg);
+    color: var(--academic-tree-control-text);
+}
+
+.academic-tree-stage-card,
+.academic-tree-course-card {
+    position: relative;
+    background: linear-gradient(
+        90deg,
+        hsl(var(--stage-h, 208) 82% 58% / 0.14) 0%,
+        var(--academic-tree-card-bg) 42%,
+        var(--academic-tree-card-bg-strong) 100%
+    ) !important;
+    border-color: hsl(var(--stage-h, 208) 66% 60% / 0.38) !important;
+    color: var(--academic-tree-text);
+}
+
+.academic-tree-stage-card::before,
+.academic-tree-course-card::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    width: 4px;
+    background: hsl(var(--stage-h, 208) 84% 62% / 0.82);
+}
+
+.academic-tree-branch-card {
+    background: var(--academic-tree-branch-bg) !important;
+    border-color: var(--academic-tree-border-soft) !important;
+}
+
+.academic-tree-term-card {
+    background: var(--academic-tree-term-bg) !important;
+    border-color: var(--academic-tree-border-soft) !important;
+}
+
+.academic-tree-detail-panel,
+.academic-tree-detail-card,
+.academic-tree-empty {
+    background: var(--academic-tree-detail-bg) !important;
+    border-color: var(--academic-tree-border-soft) !important;
+    color: var(--academic-tree-muted-strong) !important;
+}
+
+.academic-tree-section .text-slate-900,
+.academic-tree-section .text-slate-800,
+.academic-tree-section .text-slate-700 {
+    color: var(--academic-tree-text) !important;
+}
+
+.academic-tree-section .text-slate-600,
+.academic-tree-section .text-slate-500,
+.academic-tree-section .text-slate-400 {
+    color: var(--academic-tree-muted) !important;
+}
+
+.academic-tree-section button[class*='hover:bg-slate']:hover,
+.academic-tree-section button[class*='hover:bg-white']:hover,
+.academic-tree-section button[class*='dark:hover:bg-gray']:hover {
+    background-color: rgba(30, 41, 59, 0.72);
+}
+
+:global(html.theme-light) .academic-tree-section {
+    --academic-tree-section-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(239, 249, 255, 0.96));
+    --academic-tree-section-border: rgba(6, 182, 212, 0.36);
+    --academic-tree-title: #0f172a;
+    --academic-tree-copy: #475569;
+    --academic-tree-filter-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.99));
+    --academic-tree-filter-border: rgba(186, 199, 214, 0.92);
+    --academic-tree-card-bg: rgba(255, 255, 255, 0.99);
+    --academic-tree-card-bg-strong: rgba(248, 250, 252, 0.99);
+    --academic-tree-branch-bg: rgba(248, 250, 252, 0.98);
+    --academic-tree-term-bg: rgba(255, 255, 255, 0.99);
+    --academic-tree-detail-bg: rgba(248, 250, 252, 0.98);
+    --academic-tree-border-soft: rgba(203, 213, 225, 0.95);
+    --academic-tree-text: #0f172a;
+    --academic-tree-muted: #64748b;
+    --academic-tree-muted-strong: #334155;
+    --academic-tree-control-bg: #ffffff;
+    --academic-tree-control-border: rgba(203, 213, 225, 0.98);
+    --academic-tree-control-text: #0f172a;
+    --academic-tree-control-placeholder: #94a3b8;
+    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.07);
+}
+
+:global(html.theme-light) .academic-tree-section--assignments {
+    --academic-tree-section-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(240, 253, 244, 0.96));
+    --academic-tree-section-border: rgba(16, 185, 129, 0.34);
+}
+
+:global(html.theme-light) .academic-tree-stage-card,
+:global(html.theme-light) .academic-tree-course-card {
+    background: linear-gradient(
+        90deg,
+        hsl(var(--stage-h, 208) 84% 96% / 0.98) 0%,
+        var(--academic-tree-card-bg) 44%,
+        var(--academic-tree-card-bg-strong) 100%
+    ) !important;
+    border-color: hsl(var(--stage-h, 208) 64% 48% / 0.25) !important;
+}
+
+:global(html.theme-light) .academic-tree-section button[class*='hover:bg-slate']:hover,
+:global(html.theme-light) .academic-tree-section button[class*='hover:bg-white']:hover,
+:global(html.theme-light) .academic-tree-section button[class*='dark:hover:bg-gray']:hover {
+    background-color: rgba(241, 245, 249, 0.92);
+}
+
 .weekly-grid-section {
     --weekly-grid-section-bg: linear-gradient(180deg, rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0.66));
     --weekly-grid-section-border: rgba(34, 211, 238, 0.48);
