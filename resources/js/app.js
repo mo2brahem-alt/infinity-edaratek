@@ -6,6 +6,8 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const lazyPages = import.meta.glob('./Pages/**/*.vue');
+const eagerPages = import.meta.glob('./Pages/School/StudentStructure.vue', { eager: true });
 
 const reportBootError = (error, context = 'boot') => {
     console.error(`Edaratek ${context} error`, error);
@@ -39,12 +41,17 @@ const reportBootError = (error, context = 'boot') => {
         document.body.appendChild(panel);
     }
 
-    if (!import.meta.env.DEV) {
-        panel.textContent = 'تعذر تحميل الواجهة الآن. يرجى تحديث الصفحة، وإذا استمرت المشكلة فتأكد من تنفيذ npm run build و php artisan optimize:clear على الخادم.';
-        return;
-    }
+    panel.textContent = import.meta.env.DEV
+        ? `تعذر تشغيل الواجهة الآن.\n${context}: ${message}`
+        : `تعذر تحميل الواجهة الآن.\nالموضع: ${context}\nالخطأ: ${message}\nيرجى تنفيذ npm run build و php artisan optimize:clear على الخادم، ثم تحديث الصفحة.`;
+};
 
-    panel.textContent = `تعذر تشغيل الواجهة الآن.\n${context}: ${message}`;
+const logOptionalBootError = (error, context) => {
+    console.error(`Edaratek optional ${context} error`, error);
+
+    if (import.meta.env.DEV) {
+        reportBootError(error, context);
+    }
 };
 
 if (typeof window !== 'undefined') {
@@ -69,45 +76,52 @@ const resolveRouteHelper = () => {
     return null;
 };
 
+const resolveInertiaPage = (name) => {
+    const path = `./Pages/${name}.vue`;
+    const eagerPage = eagerPages[path];
+
+    if (eagerPage) {
+        return eagerPage.default ?? eagerPage;
+    }
+
+    return resolvePageComponent(path, lazyPages);
+};
+
 const initializeRuntimeEnhancements = async () => {
     try {
         const themeModule = await import('./composables/useThemeMode');
         themeModule.ensureThemeMode?.();
     } catch (error) {
-        reportBootError(error, 'theme');
+        logOptionalBootError(error, 'theme');
     }
 
     try {
         const inputGuardModule = await import('./utils/installInputGuards');
         inputGuardModule.installInputGuards?.();
     } catch (error) {
-        reportBootError(error, 'input-guards');
+        logOptionalBootError(error, 'input-guards');
     }
 };
 
 const bootApp = async () => {
     await initializeRuntimeEnhancements();
 
-    let ziggyPlugin = null;
+    const routeHelper = resolveRouteHelper();
     let actionDialogComponent = null;
 
-    try {
-        ziggyPlugin = (await import('../../vendor/tightenco/ziggy')).ZiggyVue ?? null;
-    } catch (error) {
-        reportBootError(error, 'ziggy');
+    if (!routeHelper) {
+        reportBootError(new Error('Ziggy route helper is unavailable from Blade @routes.'), 'ziggy');
     }
 
     try {
         actionDialogComponent = (await import('./Components/AppActionDialog.vue')).default ?? null;
     } catch (error) {
-        reportBootError(error, 'action-dialog');
+        logOptionalBootError(error, 'action-dialog');
     }
-
-    const routeHelper = resolveRouteHelper();
 
     createInertiaApp({
         title: (title) => `${title} - ${appName}`,
-        resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
+        resolve: resolveInertiaPage,
         defaults: {
             visitOptions: (href, options) => {
                 const method = String(options?.method || 'get').toLowerCase();
@@ -134,9 +148,7 @@ const bootApp = async () => {
 
             app.use(plugin);
 
-            if (ziggyPlugin) {
-                app.use(ziggyPlugin);
-            } else if (routeHelper) {
+            if (routeHelper) {
                 app.config.globalProperties.route = routeHelper;
                 app.provide('route', routeHelper);
             }
