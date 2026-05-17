@@ -118,6 +118,12 @@ const normalizeGradeName = (value) => {
     return normalized !== '' ? normalized : 'غير محدد';
 };
 
+const safeArray = (value) => (Array.isArray(value) ? value : []);
+const safeExpandedState = (store) => {
+    const value = store?.value;
+    return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+};
+
 const stageAccent = (stageId, stageName = '') => stageAccentStyle(stageId, stageName);
 
 const safeRoute = (name, params = undefined, fallback = '#') => {
@@ -137,7 +143,7 @@ const defaultStageId = computed(() => stageOptions.value[0]?.id || '');
 
 const classroomOptions = computed(() =>
     stageRows.value.flatMap((stage) =>
-        (stage.classrooms || []).map((classroom) => ({
+        safeArray(stage.classrooms).map((classroom) => ({
             ...classroom,
             stage_name: stage.name,
             school_stage_id: stage.id,
@@ -149,7 +155,7 @@ const classroomOptions = computed(() =>
 const stageGradeOptionsMap = computed(() =>
     new Map(
         stageRows.value.map((stage) => {
-            const stageGrades = (stage.grades || [])
+            const stageGrades = safeArray(stage.grades)
                 .map((grade) => normalizeGradeName(grade.name));
 
             return [Number(stage.id), [...new Set(stageGrades)]];
@@ -231,7 +237,7 @@ const expandedGrades = ref({});
 const expandedClassrooms = ref({});
 const classroomStageGrades = computed(() => uniqueGradesForStage(classroomForm.school_stage_id));
 const gradeTermStageGrades = computed(() =>
-    (stageRows.value.find((stage) => Number(stage.id) === Number(gradeTermForm.school_stage_id || 0))?.grades || [])
+    safeArray(stageRows.value.find((stage) => Number(stage.id) === Number(gradeTermForm.school_stage_id || 0))?.grades)
         .map((grade) => ({ id: grade.id, name: normalizeGradeName(grade.name) }))
 );
 
@@ -376,8 +382,8 @@ const studentRows = computed(() => {
     const rows = [];
 
     for (const stage of stageRows.value) {
-        for (const classroom of stage.classrooms || []) {
-            for (const student of classroom.students || []) {
+        for (const classroom of safeArray(stage.classrooms)) {
+            for (const student of safeArray(classroom.students)) {
                 rows.push({
                     ...student,
                     stage_id: stage.id,
@@ -427,7 +433,7 @@ const classroomRows = computed(() =>
     classroomOptions.value
         .map((classroom) => ({
             ...classroom,
-            students_count: (classroom.students || []).length || 0,
+            students_count: safeArray(classroom.students).length || 0,
         }))
         .sort((a, b) => {
             if (Number(a.school_stage_id) !== Number(b.school_stage_id)) return Number(a.school_stage_id) - Number(b.school_stage_id);
@@ -459,7 +465,7 @@ const statusMatches = (student) => {
 };
 
 const classroomStudents = (stage, classroom) =>
-    (classroom.students || []).map((student) => ({
+    safeArray(classroom.students).map((student) => ({
         ...student,
         stage_id: stage.id,
         stage_name: stage.name,
@@ -473,15 +479,15 @@ const studentStructureTree = computed(() =>
         .filter((stage) => !studentFilterStageId.value || Number(stage.id) === Number(studentFilterStageId.value))
         .map((stage) => {
             const gradeNames = [
-                ...(stage.grades || []).map((grade) => normalizeGradeName(grade.name)),
-                ...(stage.classrooms || []).map((classroom) => normalizeGradeName(classroom.grade_name)),
+                ...safeArray(stage.grades).map((grade) => normalizeGradeName(grade.name)),
+                ...safeArray(stage.classrooms).map((classroom) => normalizeGradeName(classroom.grade_name)),
             ];
             const uniqueGradeNames = [...new Set(gradeNames)].filter((gradeName) => gradeName !== '');
 
             const grades = uniqueGradeNames
                 .filter((gradeName) => !studentFilterGradeName.value || normalizeGradeName(studentFilterGradeName.value) === gradeName)
                 .map((gradeName) => {
-                    const classrooms = (stage.classrooms || [])
+                    const classrooms = safeArray(stage.classrooms)
                         .filter((classroom) => normalizeGradeName(classroom.grade_name) === gradeName)
                         .filter((classroom) => !studentFilterClassroomId.value || Number(classroom.id) === Number(studentFilterClassroomId.value))
                         .map((classroom) => {
@@ -508,8 +514,8 @@ const studentStructureTree = computed(() =>
                         })
                         .filter((classroom) => classroom.should_show);
 
-                    const allClassrooms = (stage.classrooms || []).filter((classroom) => normalizeGradeName(classroom.grade_name) === gradeName);
-                    const totalStudents = allClassrooms.reduce((total, classroom) => total + (classroom.students || []).length, 0);
+                    const allClassrooms = safeArray(stage.classrooms).filter((classroom) => normalizeGradeName(classroom.grade_name) === gradeName);
+                    const totalStudents = allClassrooms.reduce((total, classroom) => total + safeArray(classroom.students).length, 0);
                     const gradeMatches = normalizedStructureSearch.value ? matchesText([stage.name, gradeName]) : false;
                     const shouldShowGrade = !hasStructureFilters.value || gradeMatches || classrooms.length > 0;
 
@@ -525,8 +531,8 @@ const studentStructureTree = computed(() =>
                 })
                 .filter((grade) => grade.should_show);
 
-            const classroomsCount = (stage.classrooms || []).length;
-            const studentsCount = (stage.classrooms || []).reduce((total, classroom) => total + (classroom.students || []).length, 0);
+            const classroomsCount = safeArray(stage.classrooms).length;
+            const studentsCount = safeArray(stage.classrooms).reduce((total, classroom) => total + safeArray(classroom.students).length, 0);
             const stageMatches = normalizedStructureSearch.value ? matchesText([stage.name, stage.code]) : false;
             const shouldShowStage = !hasStructureFilters.value || stageMatches || grades.length > 0;
 
@@ -546,19 +552,20 @@ const studentStructureTree = computed(() =>
 const structureSummary = computed(() => ({
     stages: stageRows.value.length,
     grades: [...new Set(stageRows.value.flatMap((stage) => [
-        ...(stage.grades || []).map((grade) => `${stage.id}:${normalizeGradeName(grade.name)}`),
-        ...(stage.classrooms || []).map((classroom) => `${stage.id}:${normalizeGradeName(classroom.grade_name)}`),
+        ...safeArray(stage.grades).map((grade) => `${stage.id}:${normalizeGradeName(grade.name)}`),
+        ...safeArray(stage.classrooms).map((classroom) => `${stage.id}:${normalizeGradeName(classroom.grade_name)}`),
     ]))].length,
     classrooms: classroomRows.value.length,
     students: studentRows.value.length,
 }));
 
-const isExpanded = (store, key) => Boolean(store.value[String(key)]);
+const isExpanded = (store, key) => Boolean(safeExpandedState(store)[String(key)]);
 const toggleExpanded = (store, key) => {
     const normalizedKey = String(key);
+    const currentState = safeExpandedState(store);
     store.value = {
-        ...store.value,
-        [normalizedKey]: !store.value[normalizedKey],
+        ...currentState,
+        [normalizedKey]: !currentState[normalizedKey],
     };
 };
 
@@ -579,7 +586,7 @@ const clearStructureFilters = () => {
 const stageTermRows = computed(() =>
     stageRows.value
         .flatMap((stage) =>
-            (stage.stage_terms || []).map((term) => ({
+            safeArray(stage.stage_terms).map((term) => ({
                 ...term,
                 stage_id: stage.id,
                 stage_name: stage.name,
@@ -596,8 +603,8 @@ const stageTermRows = computed(() =>
 const gradeTermRows = computed(() =>
     stageRows.value
         .flatMap((stage) =>
-            (stage.grades || []).flatMap((grade) =>
-                (grade.grade_terms || []).map((term) => ({
+            safeArray(stage.grades).flatMap((grade) =>
+                safeArray(grade.grade_terms).map((term) => ({
                     ...term,
                     stage_id: stage.id,
                     stage_name: stage.name,

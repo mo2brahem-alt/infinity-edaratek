@@ -38,6 +38,43 @@ class StudentStructureTreeViewTest extends TestCase
             );
     }
 
+    public function test_student_structure_returns_empty_stage_array_for_school_without_structure(): void
+    {
+        [$manager] = $this->createManagerWithSchool('SCH-847003');
+
+        $this->actingAs($manager)
+            ->get(route('school.student_structure.index'))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('School/StudentStructure')
+                ->has('stages', 0)
+            );
+    }
+
+    public function test_student_structure_returns_empty_child_arrays_for_stage_without_children(): void
+    {
+        [$manager, $school] = $this->createManagerWithSchool('SCH-847004');
+
+        SchoolStage::query()->create([
+            'school_id' => $school->id,
+            'name' => 'Stage Without Children',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($manager)
+            ->get(route('school.student_structure.index'))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('School/StudentStructure')
+                ->has('stages', 1)
+                ->where('stages.0.name', 'Stage Without Children')
+                ->has('stages.0.stage_terms', 0)
+                ->has('stages.0.grades', 0)
+                ->has('stages.0.classrooms', 0)
+            );
+    }
+
     /**
      * @return array{0: User, 1: School}
      */

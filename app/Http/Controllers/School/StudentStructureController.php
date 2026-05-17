@@ -87,7 +87,27 @@ class StudentStructureController extends Controller
             ])
             ->orderBy('sort_order')
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->values()
+            ->map(function (SchoolStage $stage): SchoolStage {
+                $stage->setRelation('stageTerms', ($stage->stageTerms ?? collect())->values());
+                $stage->setRelation('grades', ($stage->grades ?? collect())->values()->map(function (SchoolStageGrade $grade): SchoolStageGrade {
+                    $grade->setRelation('gradeTerms', ($grade->gradeTerms ?? collect())->values());
+
+                    return $grade;
+                }));
+                $stage->setRelation('classrooms', ($stage->classrooms ?? collect())->values()->map(function (SchoolClassroom $classroom): SchoolClassroom {
+                    $classroom->setRelation('students', ($classroom->students ?? collect())->values()->map(function (SchoolStudent $student): SchoolStudent {
+                        $student->setRelation('attachments', ($student->attachments ?? collect())->values());
+
+                        return $student;
+                    }));
+
+                    return $classroom;
+                }));
+
+                return $stage;
+            });
 
         return Inertia::render('School/StudentStructure', [
             'school' => $school,
