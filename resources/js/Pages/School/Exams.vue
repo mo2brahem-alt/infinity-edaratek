@@ -5,12 +5,17 @@ import {
     Award,
     BookOpenText,
     CalendarDays,
+    ChevronDown,
+    ChevronLeft,
     Clock3,
+    Filter,
+    FileQuestion,
     FileSpreadsheet,
     LayoutTemplate,
     Pencil,
     PlusCircle,
     Save,
+    Search,
     School,
     Settings2,
     ShieldCheck,
@@ -36,6 +41,7 @@ const props = defineProps({
     exams: { type: Array, default: () => [] },
     questionBankCourseOfferings: { type: Array, default: () => [] },
     questionBank: { type: Array, default: () => [] },
+    questionBankTree: { type: Array, default: () => [] },
     selectedExamId: { type: Number, default: null },
     selectedExamQuestions: { type: Array, default: () => [] },
     selectedExamScores: { type: Array, default: () => [] },
@@ -66,6 +72,18 @@ const canEnterExamScores = computed(() => Boolean(props.permissions?.can_enter_e
 const canEditExamScores = computed(() => Boolean(props.permissions?.can_edit_exam_scores ?? props.permissions?.can_record_exam_scores));
 const canManageQuestionBank = computed(() => canUseQuestionBank.value);
 const canRecordExamScores = computed(() => canEnterExamScores.value || canEditExamScores.value);
+const safeArray = (value) => (Array.isArray(value) ? value : []);
+const safeObject = (value) => (value && typeof value === 'object' && !Array.isArray(value) ? value : {});
+const safeExpandedState = (store) => safeObject(store?.value);
+const isExpanded = (store, key) => Boolean(safeExpandedState(store)[String(key)]);
+const toggleExpanded = (store, key) => {
+    const normalizedKey = String(key);
+    const currentState = safeExpandedState(store);
+    store.value = {
+        ...currentState,
+        [normalizedKey]: !currentState[normalizedKey],
+    };
+};
 
 const examSectionKeys = ['settings', 'scheduling', 'selected', 'question-bank'];
 const requestedExamSection = computed(() => {
@@ -598,6 +616,21 @@ const questionBankTopicsForSelectedOffering = computed(() =>
     selectedQuestionCourseLesson.value?.topics || []
 );
 
+const questionTypeLabel = (type) =>
+    safeArray(props.questionTypes).find((item) => item.value === type)?.label || type || 'غير مصنف';
+
+const questionDifficultyLabel = (difficulty) =>
+    safeArray(props.questionDifficulties).find((item) => item.value === difficulty)?.label || difficulty || '-';
+
+const questionStatusLabel = (status) =>
+    questionStatusOptions.find((item) => item.value === status)?.label || status || '-';
+
+const questionShortText = (text, length = 140) => {
+    const value = String(text || '').trim();
+    if (value.length <= length) return value;
+    return `${value.slice(0, length)}...`;
+};
+
 const syncQuestionScopeFromCourseOffering = () => {
     const offering = selectedQuestionCourseOffering.value;
     if (!offering) return;
@@ -839,10 +872,14 @@ watch(
 );
 
 const questionFilters = ref({
+    search: '',
     course_offering_id: '',
+    stage_id: '',
     subject_id: '',
     type: '',
     difficulty: '',
+    status: '',
+    used_state: '',
     unit_name: '',
     chapter_name: '',
     lesson_name: '',
@@ -852,10 +889,14 @@ const questionFilters = ref({
 
 const resetQuestionFilters = () => {
     questionFilters.value = {
+        search: '',
         course_offering_id: '',
+        stage_id: '',
         subject_id: '',
         type: '',
         difficulty: '',
+        status: '',
+        used_state: '',
         unit_name: '',
         chapter_name: '',
         lesson_name: '',
@@ -865,21 +906,42 @@ const resetQuestionFilters = () => {
 };
 
 const filteredQuestionBank = computed(() => {
+    const search = String(questionFilters.value.search || '').trim().toLowerCase();
     const offeringId = Number(questionFilters.value.course_offering_id || 0);
+    const stageId = Number(questionFilters.value.stage_id || 0);
     const subjectId = Number(questionFilters.value.subject_id || 0);
     const type = String(questionFilters.value.type || '').trim();
     const difficulty = String(questionFilters.value.difficulty || '').trim();
+    const status = String(questionFilters.value.status || '').trim();
+    const usedState = String(questionFilters.value.used_state || '').trim();
     const unitName = String(questionFilters.value.unit_name || '').trim().toLowerCase();
     const chapterName = String(questionFilters.value.chapter_name || '').trim().toLowerCase();
     const lessonName = String(questionFilters.value.lesson_name || '').trim().toLowerCase();
     const tag = String(questionFilters.value.tag || '').trim().toLowerCase();
     const learningOutcome = String(questionFilters.value.learning_outcome || '').trim().toLowerCase();
 
-    return (props.questionBank || []).filter((question) => {
+    return safeArray(props.questionBank).filter((question) => {
+        if (search !== '') {
+            const tags = Array.isArray(question.tags) ? question.tags.join(' ') : String(question.tags || '');
+            const haystack = [
+                question.question_text,
+                question.subject?.name,
+                question.unit_name,
+                question.lesson_name,
+                question.chapter_name,
+                question.learning_outcome,
+                tags,
+            ].map((item) => String(item || '').toLowerCase()).join(' ');
+            if (!haystack.includes(search)) return false;
+        }
         if (offeringId > 0 && Number(question.school_course_offering_id) !== offeringId) return false;
+        if (stageId > 0 && Number(question.school_stage_id) !== stageId) return false;
         if (subjectId > 0 && Number(question.school_subject_id) !== subjectId) return false;
         if (type !== '' && String(question.question_type) !== type) return false;
         if (difficulty !== '' && String(question.difficulty) !== difficulty) return false;
+        if (status !== '' && String(question.status) !== status) return false;
+        if (usedState === 'used' && Number(question.exam_questions_count || 0) <= 0) return false;
+        if (usedState === 'unused' && Number(question.exam_questions_count || 0) > 0) return false;
         if (unitName !== '' && !String(question.unit_name || '').toLowerCase().includes(unitName)) return false;
         if (chapterName !== '' && !String(question.chapter_name || '').toLowerCase().includes(chapterName)) return false;
         if (lessonName !== '' && !String(question.lesson_name || '').toLowerCase().includes(lessonName)) return false;
@@ -896,6 +958,96 @@ const filteredQuestionBank = computed(() => {
         return true;
     });
 });
+
+const hasQuestionFilters = computed(() =>
+    Object.values(questionFilters.value).some((value) => String(value || '').trim() !== '')
+);
+
+const filteredQuestionIds = computed(() =>
+    new Set(filteredQuestionBank.value.map((question) => Number(question.id)).filter((id) => id > 0))
+);
+
+const openQuestionStages = ref({});
+const openQuestionGrades = ref({});
+const openQuestionSubjects = ref({});
+const openQuestionGroups = ref({});
+
+const filterQuestionGroup = (group) => {
+    const questions = safeArray(group?.questions)
+        .filter((question) => filteredQuestionIds.value.has(Number(question.id)));
+
+    return {
+        ...group,
+        questions,
+        questions_count: questions.length,
+        active_questions_count: questions.filter((question) => String(question.status || '') === 'active').length,
+        used_questions_count: questions.filter((question) => Number(question.exam_questions_count || 0) > 0).length,
+        unused_questions_count: questions.filter((question) => Number(question.exam_questions_count || 0) <= 0).length,
+    };
+};
+
+const questionBankTreeForDisplay = computed(() =>
+    safeArray(props.questionBankTree)
+        .map((stage) => {
+            const grades = safeArray(stage?.grades)
+                .map((grade) => {
+                    const subjects = safeArray(grade?.subjects)
+                        .map((subject) => {
+                            const groups = safeArray(subject?.groups)
+                                .map(filterQuestionGroup)
+                                .filter((group) => group.questions_count > 0);
+                            const questionsCount = groups.reduce((total, group) => total + Number(group.questions_count || 0), 0);
+
+                            if (hasQuestionFilters.value && questionsCount === 0) return null;
+
+                            return {
+                                ...subject,
+                                groups,
+                                questions_count: hasQuestionFilters.value ? questionsCount : Number(subject?.questions_count || 0),
+                                active_questions_count: hasQuestionFilters.value
+                                    ? groups.reduce((total, group) => total + Number(group.active_questions_count || 0), 0)
+                                    : Number(subject?.active_questions_count || 0),
+                                used_questions_count: hasQuestionFilters.value
+                                    ? groups.reduce((total, group) => total + Number(group.used_questions_count || 0), 0)
+                                    : Number(subject?.used_questions_count || 0),
+                                unused_questions_count: hasQuestionFilters.value
+                                    ? groups.reduce((total, group) => total + Number(group.unused_questions_count || 0), 0)
+                                    : Number(subject?.unused_questions_count || 0),
+                            };
+                        })
+                        .filter(Boolean);
+                    const questionsCount = subjects.reduce((total, subject) => total + Number(subject.questions_count || 0), 0);
+
+                    if (hasQuestionFilters.value && subjects.length === 0) return null;
+
+                    return {
+                        ...grade,
+                        subjects,
+                        subjects_count: subjects.length,
+                        questions_count: hasQuestionFilters.value ? questionsCount : Number(grade?.questions_count || 0),
+                        active_questions_count: hasQuestionFilters.value
+                            ? subjects.reduce((total, subject) => total + Number(subject.active_questions_count || 0), 0)
+                            : Number(grade?.active_questions_count || 0),
+                    };
+                })
+                .filter(Boolean);
+            const questionsCount = grades.reduce((total, grade) => total + Number(grade.questions_count || 0), 0);
+
+            if (hasQuestionFilters.value && grades.length === 0) return null;
+
+            return {
+                ...stage,
+                grades,
+                grades_count: grades.length,
+                subjects_count: grades.reduce((total, grade) => total + Number(grade.subjects_count || 0), 0),
+                questions_count: hasQuestionFilters.value ? questionsCount : Number(stage?.questions_count || 0),
+                active_questions_count: hasQuestionFilters.value
+                    ? grades.reduce((total, grade) => total + Number(grade.active_questions_count || 0), 0)
+                    : Number(stage?.active_questions_count || 0),
+            };
+        })
+        .filter(Boolean)
+);
 
 const selectedExam = computed(() =>
     (props.exams || []).find((exam) => Number(exam.id) === Number(selectedExamId.value || 0)) || null
@@ -1541,12 +1693,22 @@ watch(
 
                 <div class="mt-4 rounded border border-gray-700 bg-gray-800 p-3">
                     <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
-                        <h3 class="text-sm font-semibold text-gray-200">فلاتر بنك الأسئلة</h3>
-                        <button type="button" class="rounded bg-gray-700 px-2 py-1 text-xs hover:bg-gray-600" @click="resetQuestionFilters">
+                        <h3 class="inline-flex items-center gap-2 text-sm font-semibold text-gray-200">
+                            <Filter class="h-4 w-4 text-blue-300" />
+                            فلاتر بنك الأسئلة
+                        </h3>
+                        <button type="button" class="rounded bg-gray-700 px-3 py-1.5 text-xs hover:bg-gray-600" @click="resetQuestionFilters">
                             مسح الفلاتر
                         </button>
                     </div>
                     <div class="grid grid-cols-1 gap-2 md:grid-cols-8">
+                        <label class="space-y-1 text-xs text-gray-400 md:col-span-2">
+                            <span class="inline-flex items-center gap-1">
+                                <Search class="h-3.5 w-3.5 text-blue-300" />
+                                بحث سريع
+                            </span>
+                            <input v-model="questionFilters.search" class="w-full rounded border border-gray-700 bg-gray-900 p-2 text-sm" placeholder="نص السؤال، المادة، الوحدة، الدرس أو الوسم" />
+                        </label>
                         <label class="space-y-1 text-xs text-gray-400 md:col-span-2">
                             <span class="block">المقرر</span>
                             <select v-model="questionFilters.course_offering_id" class="w-full rounded border border-gray-700 bg-gray-900 p-2 text-sm">
@@ -1554,6 +1716,13 @@ watch(
                                 <option v-for="row in questionBankCourseOfferingOptions" :key="`filter-offering-${row.id}`" :value="row.id">
                                     {{ row.label }}
                                 </option>
+                            </select>
+                        </label>
+                        <label class="space-y-1 text-xs text-gray-400">
+                            <span class="block">المرحلة</span>
+                            <select v-model="questionFilters.stage_id" class="w-full rounded border border-gray-700 bg-gray-900 p-2 text-sm">
+                                <option value="">كل المراحل</option>
+                                <option v-for="row in stages" :key="`filter-stage-${row.id}`" :value="row.id">{{ row.name }}</option>
                             </select>
                         </label>
                         <label class="space-y-1 text-xs text-gray-400">
@@ -1575,6 +1744,21 @@ watch(
                             <select v-model="questionFilters.difficulty" class="w-full rounded border border-gray-700 bg-gray-900 p-2 text-sm">
                                 <option value="">كل مستويات الصعوبة</option>
                                 <option v-for="row in questionDifficulties" :key="`filter-difficulty-${row.value}`" :value="row.value">{{ row.label }}</option>
+                            </select>
+                        </label>
+                        <label class="space-y-1 text-xs text-gray-400">
+                            <span class="block">الحالة</span>
+                            <select v-model="questionFilters.status" class="w-full rounded border border-gray-700 bg-gray-900 p-2 text-sm">
+                                <option value="">كل الحالات</option>
+                                <option v-for="row in questionStatusOptions" :key="`filter-question-status-${row.value}`" :value="row.value">{{ row.label }}</option>
+                            </select>
+                        </label>
+                        <label class="space-y-1 text-xs text-gray-400">
+                            <span class="block">استخدام السؤال</span>
+                            <select v-model="questionFilters.used_state" class="w-full rounded border border-gray-700 bg-gray-900 p-2 text-sm">
+                                <option value="">الكل</option>
+                                <option value="used">مستخدم في اختبار</option>
+                                <option value="unused">غير مستخدم</option>
                             </select>
                         </label>
                         <label class="space-y-1 text-xs text-gray-400">
@@ -1600,39 +1784,192 @@ watch(
                     </div>
                 </div>
 
-                <div class="mt-3 space-y-2">
-                    <div
-                        v-for="question in filteredQuestionBank"
-                        :key="question.id"
-                        class="stage-row-accent rounded border border-gray-700 bg-gray-800 p-2 text-sm"
-                        :style="stageAccent(question.school_stage_id, stageNameForQuestion(question))"
+                <div class="mt-3 space-y-3">
+                    <article
+                        v-for="stage in questionBankTreeForDisplay"
+                        :key="`question-stage-${stage.key}`"
+                        class="overflow-hidden rounded-2xl border border-gray-700 bg-gray-900/80"
                     >
-                        <p class="font-semibold">{{ question.question_text }}</p>
-                        <p class="text-xs text-gray-400">
-                            {{ questionBankCourseOfferingLabelById(question.school_course_offering_id) }}
-                        </p>
-                        <p v-if="stageNameForQuestion(question)" class="mt-1">
-                            <span class="stage-badge" :style="stageAccent(question.school_stage_id, stageNameForQuestion(question))">
-                                {{ stageNameForQuestion(question) }}
+                        <button
+                            type="button"
+                            class="flex w-full flex-col gap-3 p-4 text-right transition hover:bg-gray-800/80 md:flex-row md:items-center md:justify-between"
+                            @click="toggleExpanded(openQuestionStages, stage.key)"
+                        >
+                            <span class="flex items-center gap-3">
+                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-200 ring-1 ring-emerald-400/30">
+                                    <School class="h-5 w-5" />
+                                </span>
+                                <span>
+                                    <span class="block text-base font-black text-white">{{ stage.name }}</span>
+                                    <span class="text-xs text-gray-400">مرحلة تعليمية ضمن بنك الأسئلة</span>
+                                </span>
                             </span>
-                        </p>
-                        <p class="text-xs text-gray-400">
-                            {{ question.subject?.name || '-' }} |
-                            {{ question.question_score }} |
-                            {{ questionTypes.find((item) => item.value === question.question_type)?.label || question.question_type }}
-                        </p>
-                        <p class="text-xs text-gray-400">
-                            {{ resolveQuestionBranchName(question) || 'بدون فرع' }} /
-                            {{ question.unit_name || 'بدون وحدة' }} /
-                            {{ question.lesson_name || 'بدون درس' }} /
-                            {{ question.chapter_name || 'بدون موضوع' }}
-                        </p>
-                        <div class="mt-2 flex flex-wrap justify-end gap-2">
-                            <button v-if="canManageQuestionBank" class="rounded bg-blue-700 px-2 py-1 text-xs hover:bg-blue-600" @click="editQuestion(question)">تعديل</button>
-                            <button v-if="canManageQuestionBank" class="rounded bg-red-700 px-2 py-1 text-xs hover:bg-red-600" @click="deleteQuestion(question.id)">حذف</button>
+                            <span class="flex flex-wrap items-center gap-2 text-xs">
+                                <span class="rounded-full bg-gray-800 px-3 py-1 text-gray-200">{{ stage.grades_count }} صف</span>
+                                <span class="rounded-full bg-gray-800 px-3 py-1 text-gray-200">{{ stage.subjects_count }} مادة</span>
+                                <span class="rounded-full bg-blue-500/10 px-3 py-1 text-blue-100">{{ stage.questions_count }} سؤال</span>
+                                <ChevronDown v-if="isExpanded(openQuestionStages, stage.key)" class="h-4 w-4 text-gray-300" />
+                                <ChevronLeft v-else class="h-4 w-4 text-gray-300" />
+                            </span>
+                        </button>
+
+                        <div v-if="isExpanded(openQuestionStages, stage.key)" class="space-y-3 border-t border-gray-800 p-3">
+                            <div v-if="stage.grades.length === 0" class="rounded-xl border border-dashed border-gray-700 p-4 text-center text-sm text-gray-400">
+                                لا توجد صفوف داخل هذه المرحلة.
+                            </div>
+
+                            <article
+                                v-for="grade in stage.grades"
+                                :key="`question-grade-${grade.key}`"
+                                class="overflow-hidden rounded-xl border border-gray-700 bg-gray-950/60"
+                            >
+                                <button
+                                    type="button"
+                                    class="flex w-full flex-col gap-3 p-3 text-right transition hover:bg-gray-900 md:flex-row md:items-center md:justify-between"
+                                    @click="toggleExpanded(openQuestionGrades, grade.key)"
+                                >
+                                    <span class="flex items-center gap-3">
+                                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-200 ring-1 ring-cyan-400/30">
+                                            <BookOpenText class="h-4 w-4" />
+                                        </span>
+                                        <span>
+                                            <span class="block font-bold text-white">{{ grade.name }}</span>
+                                            <span class="text-xs text-gray-400">صف داخل {{ stage.name }}</span>
+                                        </span>
+                                    </span>
+                                    <span class="flex flex-wrap items-center gap-2 text-xs">
+                                        <span class="rounded-full bg-gray-800 px-3 py-1 text-gray-200">{{ grade.subjects_count }} مادة</span>
+                                        <span class="rounded-full bg-blue-500/10 px-3 py-1 text-blue-100">{{ grade.questions_count }} سؤال</span>
+                                        <ChevronDown v-if="isExpanded(openQuestionGrades, grade.key)" class="h-4 w-4 text-gray-300" />
+                                        <ChevronLeft v-else class="h-4 w-4 text-gray-300" />
+                                    </span>
+                                </button>
+
+                                <div v-if="isExpanded(openQuestionGrades, grade.key)" class="space-y-3 border-t border-gray-800 p-3">
+                                    <div v-if="grade.subjects.length === 0" class="rounded-xl border border-dashed border-gray-700 p-4 text-center text-sm text-gray-400">
+                                        لا توجد مواد داخل هذا الصف.
+                                    </div>
+
+                                    <article
+                                        v-for="subject in grade.subjects"
+                                        :key="`question-subject-${subject.key}`"
+                                        class="overflow-hidden rounded-xl border border-gray-700 bg-gray-900"
+                                    >
+                                        <div class="flex flex-col gap-3 p-3 md:flex-row md:items-center md:justify-between">
+                                            <button
+                                                type="button"
+                                                class="flex min-w-0 flex-1 items-center gap-3 rounded-lg text-right transition hover:bg-gray-800/80"
+                                                @click="toggleExpanded(openQuestionSubjects, subject.key)"
+                                            >
+                                                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-200 ring-1 ring-blue-400/30">
+                                                    <FileSpreadsheet class="h-4 w-4" />
+                                                </span>
+                                                <span class="min-w-0 flex-1">
+                                                    <span class="block font-bold text-white">{{ subject.name }}</span>
+                                                    <span class="text-xs text-gray-400">{{ subject.code || 'بدون كود' }}</span>
+                                                </span>
+                                                <ChevronDown v-if="isExpanded(openQuestionSubjects, subject.key)" class="h-4 w-4 shrink-0 text-gray-300" />
+                                                <ChevronLeft v-else class="h-4 w-4 shrink-0 text-gray-300" />
+                                            </button>
+                                            <div class="flex flex-wrap items-center gap-2 text-xs">
+                                                <span class="rounded-full bg-blue-500/10 px-3 py-1 text-blue-100">{{ subject.questions_count }} سؤال</span>
+                                                <span class="rounded-full bg-emerald-500/10 px-3 py-1 text-emerald-100">{{ subject.active_questions_count }} فعال</span>
+                                                <span class="rounded-full bg-violet-500/10 px-3 py-1 text-violet-100">{{ subject.used_questions_count }} مستخدم</span>
+                                                <button
+                                                    v-if="canManageQuestionBank"
+                                                    type="button"
+                                                    class="rounded-full bg-gray-800 px-3 py-1 text-gray-100 hover:bg-gray-700"
+                                                    @click="questionFilters.subject_id = subject.id || ''"
+                                                >
+                                                    تصفية المادة
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="isExpanded(openQuestionSubjects, subject.key)" class="space-y-3 border-t border-gray-800 p-3">
+                                            <div v-if="subject.groups.length === 0" class="rounded-xl border border-dashed border-gray-700 p-4 text-center text-sm text-gray-400">
+                                                لا توجد أسئلة داخل هذه المادة.
+                                            </div>
+
+                                            <article
+                                                v-for="group in subject.groups"
+                                                :key="`question-group-${group.key}`"
+                                                class="overflow-hidden rounded-xl border border-gray-700 bg-gray-950/70"
+                                            >
+                                                <button
+                                                    type="button"
+                                                    class="flex w-full flex-col gap-3 p-3 text-right transition hover:bg-gray-900 md:flex-row md:items-center md:justify-between"
+                                                    @click="toggleExpanded(openQuestionGroups, group.key)"
+                                                >
+                                                    <span class="flex items-center gap-3">
+                                                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-200 ring-1 ring-amber-400/30">
+                                                            <FileQuestion class="h-4 w-4" />
+                                                        </span>
+                                                        <span>
+                                                            <span class="block font-bold text-white">{{ group.label }}</span>
+                                                            <span class="text-xs text-gray-400">{{ group.kind === 'taxonomy' ? 'وحدة / درس / موضوع' : 'نوع سؤال' }}</span>
+                                                        </span>
+                                                    </span>
+                                                    <span class="flex flex-wrap items-center gap-2 text-xs">
+                                                        <span class="rounded-full bg-blue-500/10 px-3 py-1 text-blue-100">{{ group.questions_count }} سؤال</span>
+                                                        <span class="rounded-full bg-violet-500/10 px-3 py-1 text-violet-100">{{ group.used_questions_count }} مستخدم</span>
+                                                        <ChevronDown v-if="isExpanded(openQuestionGroups, group.key)" class="h-4 w-4 text-gray-300" />
+                                                        <ChevronLeft v-else class="h-4 w-4 text-gray-300" />
+                                                    </span>
+                                                </button>
+
+                                                <div v-if="isExpanded(openQuestionGroups, group.key)" class="border-t border-gray-800 p-3">
+                                                    <div v-if="group.questions.length === 0" class="rounded-xl border border-dashed border-gray-700 p-4 text-center text-sm text-gray-400">
+                                                        لا توجد أسئلة مطابقة داخل هذا التصنيف.
+                                                    </div>
+
+                                                    <div v-else class="grid grid-cols-1 gap-3 xl:grid-cols-2">
+                                                        <article
+                                                            v-for="question in group.questions"
+                                                            :key="`question-card-${question.id}`"
+                                                            class="stage-row-accent rounded-xl border border-gray-700 bg-gray-900 p-3 text-sm"
+                                                            :style="stageAccent(question.school_stage_id, stageNameForQuestion(question))"
+                                                        >
+                                                            <div class="mb-2 flex flex-wrap items-start justify-between gap-2">
+                                                                <p class="font-semibold text-gray-100">{{ questionShortText(question.question_text) }}</p>
+                                                                <span class="rounded-full px-2 py-1 text-xs" :class="String(question.status || '') === 'active' ? 'bg-emerald-500/10 text-emerald-100' : 'bg-gray-700 text-gray-200'">
+                                                                    {{ question.status_label || questionStatusLabel(question.status) }}
+                                                                </span>
+                                                            </div>
+                                                            <p class="text-xs text-gray-400">{{ questionBankCourseOfferingLabelById(question.school_course_offering_id) }}</p>
+                                                            <div class="mt-2 flex flex-wrap gap-2 text-xs">
+                                                                <span class="rounded-full bg-gray-800 px-2 py-1 text-gray-200">{{ question.question_type_label || questionTypeLabel(question.question_type) }}</span>
+                                                                <span class="rounded-full bg-gray-800 px-2 py-1 text-gray-200">الصعوبة: {{ question.difficulty_label || questionDifficultyLabel(question.difficulty) }}</span>
+                                                                <span class="rounded-full bg-gray-800 px-2 py-1 text-gray-200">الدرجة: {{ question.question_score }}</span>
+                                                                <span class="rounded-full bg-violet-500/10 px-2 py-1 text-violet-100">
+                                                                    {{ Number(question.exam_questions_count || 0) > 0 ? `مستخدم ${question.exam_questions_count} مرة` : 'غير مستخدم' }}
+                                                                </span>
+                                                            </div>
+                                                            <p class="mt-2 text-xs text-gray-400">
+                                                                {{ resolveQuestionBranchName(question) || 'بدون فرع' }} /
+                                                                {{ question.unit_name || 'بدون وحدة' }} /
+                                                                {{ question.lesson_name || 'بدون درس' }} /
+                                                                {{ question.chapter_name || 'بدون موضوع' }}
+                                                            </p>
+                                                            <div class="mt-3 flex flex-wrap justify-end gap-2">
+                                                                <button v-if="canManageQuestionBank" class="rounded bg-blue-700 px-2 py-1 text-xs hover:bg-blue-600" @click="editQuestion(question)">تعديل</button>
+                                                                <button v-if="canManageQuestionBank" class="rounded bg-red-700 px-2 py-1 text-xs hover:bg-red-600" @click="deleteQuestion(question.id)">حذف</button>
+                                                                <button v-if="selectedExamId && canUpdateExam && canUseQuestionBank" class="rounded bg-indigo-700 px-2 py-1 text-xs hover:bg-indigo-600" @click="addQuestionToExam(question)">إضافة للاختبار</button>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </div>
+                                    </article>
+                                </div>
+                            </article>
                         </div>
+                    </article>
+
+                    <div v-if="questionBankTreeForDisplay.length === 0" class="rounded border border-gray-700 bg-gray-800 p-4 text-center text-gray-500">
+                        لا توجد نتائج مطابقة للبحث أو الفلاتر الحالية.
                     </div>
-                    <div v-if="filteredQuestionBank.length === 0" class="rounded border border-gray-700 bg-gray-800 p-4 text-center text-gray-500">لا توجد أسئلة مطابقة للفلاتر الحالية.</div>
                 </div>
             </section>
 
@@ -1770,7 +2107,4 @@ watch(
         </div>
     </RoleLayout>
 </template>
-
-
-
 

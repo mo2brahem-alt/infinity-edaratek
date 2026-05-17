@@ -460,6 +460,7 @@ class SchoolExamController extends Controller
             ->with([
                 'term:id,name',
                 'stage:id,name',
+                'stageGrade:id,name',
                 'classroom:id,name,grade_name',
                 'subject:id,name,code',
                 'studyPlanUnits' => fn ($query) => $query
@@ -505,6 +506,7 @@ class SchoolExamController extends Controller
                 'school_id',
                 'school_term_id',
                 'school_stage_id',
+                'school_stage_grade_id',
                 'school_classroom_id',
                 'school_subject_id',
                 'is_active',
@@ -525,6 +527,9 @@ class SchoolExamController extends Controller
                 'term:id,name',
                 'courseOffering:id,school_id,school_term_id,school_stage_id,school_classroom_id,school_subject_id',
                 'options:id,school_id,school_question_bank_item_id,option_text,is_correct,sort_order',
+            ])
+            ->withCount([
+                'examQuestions as exam_questions_count' => fn ($query) => $query->where('school_id', $schoolId),
             ])
             ->orderByDesc('id')
             ->limit(400)
@@ -552,6 +557,8 @@ class SchoolExamController extends Controller
                 'created_by',
                 'updated_by',
             ]);
+
+        $questionBankTree = $this->buildQuestionBankTree($questionBankCourseOfferings, $questionBank);
 
         $selectedExamId = (int) $request->query('exam_id', 0);
         if ($selectedExamId <= 0 && $exams->isNotEmpty()) {
@@ -657,6 +664,7 @@ class SchoolExamController extends Controller
             'exams' => $exams,
             'questionBankCourseOfferings' => $questionBankCourseOfferings,
             'questionBank' => $questionBank,
+            'questionBankTree' => $questionBankTree,
             'selectedExamId' => $selectedExamId > 0 ? $selectedExamId : null,
             'selectedExamQuestions' => $selectedExamQuestions,
             'selectedExamScores' => $selectedExamScores,
@@ -689,6 +697,191 @@ class SchoolExamController extends Controller
             'isManager' => $user?->hasSystemRole('school_manager') ?? false,
             'permissions' => $permissions,
         ]);
+    }
+
+    private function buildQuestionBankTree($courseOfferings, $questions): array
+    {
+        $tree = [];
+        $offeringIndex = [];
+
+        $normalizeName = fn ($value, string $fallback = 'غير محدد'): string => trim((string) ($value ?? '')) !== ''
+            ? trim((string) $value)
+            : $fallback;
+
+        $ensureStage = function (int $stageId, string $stageName) use (&$tree): string {
+            $stageKey = $stageId > 0 ? (string) $stageId : 'stage:unknown';
+
+            if (!isset($tree[$stageKey])) {
+                $tree[$stageKey] = [
+                    'id' => $stageId > 0 ? $stageId : null,
+                    'key' => $stageKey,
+                    'name' => $stageName,
+                    'grades_count' => 0,
+                    'subjects_count' => 0,
+                    'questions_count' => 0,
+                    'active_questions_count' => 0,
+                    'grades' => [],
+                ];
+            }
+
+            return $stageKey;
+        };
+
+        $ensureGrade = function (string $stageKey, string $gradeName) use (&$tree): string {
+            $gradeKey = $gradeName !== '' ? $gradeName : 'غير محدد';
+
+            if (!isset($tree[$stageKey]['grades'][$gradeKey])) {
+                $tree[$stageKey]['grades'][$gradeKey] = [
+                    'key' => $tree[$stageKey]['key'].':'.$gradeKey,
+                    'name' => $gradeName,
+                    'subjects_count' => 0,
+                    'questions_count' => 0,
+                    'active_questions_count' => 0,
+                    'subjects' => [],
+                ];
+            }
+
+            return $gradeKey;
+        };
+
+        $ensureSubject = function (string $stageKey, string $gradeKey, int $subjectId, string $subjectName, ?string $subjectCode = null) use (&$tree): string {
+            $subjectKey = $subjectId > 0 ? (string) $subjectId : 'subject:'.$subjectName;
+
+            if (!isset($tree[$stageKey]['grades'][$gradeKey]['subjects'][$subjectKey])) {
+                $tree[$stageKey]['grades'][$gradeKey]['subjects'][$subjectKey] = [
+                    'id' => $subjectId > 0 ? $subjectId : null,
+                    'key' => $tree[$stageKey]['grades'][$gradeKey]['key'].':'.$subjectKey,
+                    'name' => $subjectName,
+                    'code' => $subjectCode,
+                    'questions_count' => 0,
+                    'active_questions_count' => 0,
+                    'used_questions_count' => 0,
+                    'unused_questions_count' => 0,
+                    'type_counts' => [],
+                    'groups' => [],
+                ];
+            }
+
+            return $subjectKey;
+        };
+
+        foreach (($courseOfferings ?? collect()) as $offering) {
+            $stageId = (int) ($offering->school_stage_id ?? $offering->stage?->id ?? 0);
+            $stageName = $normalizeName($offering->stage?->name ?? null);
+            $gradeName = $normalizeName($offering->classroom?->grade_name ?? $offering->stageGrade?->name ?? null);
+            $subjectId = (int) ($offering->school_subject_id ?? $offering->subject?->id ?? 0);
+            $subjectName = $normalizeName($offering->subject?->name ?? null);
+            $subjectCode = $offering->subject?->code;
+
+            $stageKey = $ensureStage($stageId, $stageName);
+            $gradeKey = $ensureGrade($stageKey, $gradeName);
+            $subjectKey = $ensureSubject($stageKey, $gradeKey, $subjectId, $subjectName, $subjectCode);
+
+            $offeringIndex[(int) $offering->id] = [$stageKey, $gradeKey, $subjectKey];
+        }
+
+        foreach (($questions ?? collect()) as $question) {
+            $offeringId = (int) ($question->school_course_offering_id ?? 0);
+
+            if (isset($offeringIndex[$offeringId])) {
+                [$stageKey, $gradeKey, $subjectKey] = $offeringIndex[$offeringId];
+            } else {
+                $stageId = (int) ($question->school_stage_id ?? $question->stage?->id ?? 0);
+                $stageName = $normalizeName($question->stage?->name ?? null);
+                $subjectId = (int) ($question->school_subject_id ?? $question->subject?->id ?? 0);
+                $subjectName = $normalizeName($question->subject?->name ?? null);
+
+                $stageKey = $ensureStage($stageId, $stageName);
+                $gradeKey = $ensureGrade($stageKey, 'غير محدد');
+                $subjectKey = $ensureSubject($stageKey, $gradeKey, $subjectId, $subjectName, $question->subject?->code);
+            }
+
+            $unitName = $normalizeName($question->unit_name ?? null, '');
+            $lessonName = $normalizeName($question->lesson_name ?? null, '');
+            $topicName = $normalizeName($question->chapter_name ?? null, '');
+            $questionType = (string) ($question->question_type ?? '');
+            $isUsed = (int) ($question->exam_questions_count ?? 0) > 0;
+            $isActive = (string) ($question->status ?? '') === SchoolQuestionBankItem::STATUS_ACTIVE;
+
+            if ($unitName !== '' || $lessonName !== '' || $topicName !== '') {
+                $groupKey = 'taxonomy:'.$unitName.'|'.$lessonName.'|'.$topicName;
+                $groupLabel = collect([$unitName, $lessonName, $topicName])
+                    ->filter(fn ($value) => trim((string) $value) !== '')
+                    ->implode(' / ');
+                $groupKind = 'taxonomy';
+            } else {
+                $groupKey = 'type:'.$questionType;
+                $groupLabel = $this->questionTypeLabel($questionType);
+                $groupKind = 'type';
+            }
+
+            if (!isset($tree[$stageKey]['grades'][$gradeKey]['subjects'][$subjectKey]['groups'][$groupKey])) {
+                $tree[$stageKey]['grades'][$gradeKey]['subjects'][$subjectKey]['groups'][$groupKey] = [
+                    'key' => $tree[$stageKey]['grades'][$gradeKey]['subjects'][$subjectKey]['key'].':'.$groupKey,
+                    'label' => $groupLabel !== '' ? $groupLabel : 'غير مصنف',
+                    'kind' => $groupKind,
+                    'questions_count' => 0,
+                    'active_questions_count' => 0,
+                    'used_questions_count' => 0,
+                    'unused_questions_count' => 0,
+                    'questions' => [],
+                ];
+            }
+
+            $payload = $question->toArray();
+            $payload['question_type_label'] = $this->questionTypeLabel($questionType);
+            $payload['difficulty_label'] = $this->difficultyLabel((string) ($question->difficulty ?? ''));
+            $payload['status_label'] = $this->questionStatusLabel((string) ($question->status ?? ''));
+            $payload['exam_questions_count'] = (int) ($question->exam_questions_count ?? 0);
+            $payload['is_used_in_exam'] = $isUsed;
+
+            $subject = &$tree[$stageKey]['grades'][$gradeKey]['subjects'][$subjectKey];
+            $group = &$subject['groups'][$groupKey];
+
+            $group['questions'][] = $payload;
+            $group['questions_count']++;
+            $group['active_questions_count'] += $isActive ? 1 : 0;
+            $group['used_questions_count'] += $isUsed ? 1 : 0;
+            $group['unused_questions_count'] += $isUsed ? 0 : 1;
+
+            $subject['questions_count']++;
+            $subject['active_questions_count'] += $isActive ? 1 : 0;
+            $subject['used_questions_count'] += $isUsed ? 1 : 0;
+            $subject['unused_questions_count'] += $isUsed ? 0 : 1;
+            $subject['type_counts'][$questionType] = (int) ($subject['type_counts'][$questionType] ?? 0) + 1;
+
+            unset($subject, $group);
+        }
+
+        foreach ($tree as &$stage) {
+            foreach ($stage['grades'] as &$grade) {
+                foreach ($grade['subjects'] as &$subject) {
+                    $subject['groups'] = array_values($subject['groups']);
+                    $subject['type_counts'] = collect($subject['type_counts'])
+                        ->map(fn ($count, $type) => [
+                            'type' => $type,
+                            'label' => $this->questionTypeLabel((string) $type),
+                            'count' => (int) $count,
+                        ])
+                        ->values()
+                        ->all();
+                }
+
+                $grade['subjects'] = array_values($grade['subjects']);
+                $grade['subjects_count'] = count($grade['subjects']);
+                $grade['questions_count'] = array_sum(array_column($grade['subjects'], 'questions_count'));
+                $grade['active_questions_count'] = array_sum(array_column($grade['subjects'], 'active_questions_count'));
+            }
+
+            $stage['grades'] = array_values($stage['grades']);
+            $stage['grades_count'] = count($stage['grades']);
+            $stage['subjects_count'] = array_sum(array_column($stage['grades'], 'subjects_count'));
+            $stage['questions_count'] = array_sum(array_column($stage['grades'], 'questions_count'));
+            $stage['active_questions_count'] = array_sum(array_column($stage['grades'], 'active_questions_count'));
+        }
+        unset($stage, $grade, $subject);
+
+        return array_values($tree);
     }
 
     public function updateSettings(Request $request): RedirectResponse
@@ -3301,6 +3494,16 @@ class SchoolExamController extends Controller
         };
     }
 
+    private function questionStatusLabel(string $value): string
+    {
+        return match ($value) {
+            SchoolQuestionBankItem::STATUS_DRAFT => 'مسودة',
+            SchoolQuestionBankItem::STATUS_ACTIVE => 'فعال',
+            SchoolQuestionBankItem::STATUS_ARCHIVED => 'أرشيف',
+            default => $value,
+        };
+    }
+
     private function examStatusLabel(string $value): string
     {
         return match ($value) {
@@ -3409,4 +3612,3 @@ class SchoolExamController extends Controller
         return $normalized === '' ? null : $normalized;
     }
 }
-

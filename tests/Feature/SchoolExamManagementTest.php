@@ -306,6 +306,68 @@ class SchoolExamManagementTest extends TestCase
         ]);
     }
 
+    public function test_question_bank_index_returns_school_scoped_hierarchical_tree(): void
+    {
+        $contextA = $this->createExamContext('SCH-991004QBTREEA');
+        $contextB = $this->createExamContext('SCH-991004QBTREEB');
+
+        $localQuestion = SchoolQuestionBankItem::query()->create([
+            'school_id' => $contextA['school']->id,
+            'school_course_offering_id' => $contextA['courseOffering']->id,
+            'school_subject_id' => $contextA['subjectA']->id,
+            'school_stage_id' => $contextA['stage']->id,
+            'school_term_id' => $contextA['term']->id,
+            'unit_name' => 'الوحدة الأولى',
+            'lesson_name' => 'الدرس الأول',
+            'chapter_name' => 'الموضوع الأول',
+            'question_text' => 'سؤال شجرة بنك الأسئلة المحلي',
+            'question_type' => SchoolQuestionBankItem::TYPE_SHORT_ANSWER,
+            'question_score' => 5,
+            'selection_mode' => SchoolQuestionBankItem::SELECTION_REQUIRED,
+            'difficulty' => SchoolQuestionBankItem::DIFFICULTY_MEDIUM,
+            'status' => SchoolQuestionBankItem::STATUS_ACTIVE,
+        ]);
+
+        $foreignQuestion = SchoolQuestionBankItem::query()->create([
+            'school_id' => $contextB['school']->id,
+            'school_course_offering_id' => $contextB['courseOffering']->id,
+            'school_subject_id' => $contextB['subjectA']->id,
+            'school_stage_id' => $contextB['stage']->id,
+            'school_term_id' => $contextB['term']->id,
+            'unit_name' => 'الوحدة الأولى',
+            'lesson_name' => 'الدرس الأول',
+            'chapter_name' => 'الموضوع الأول',
+            'question_text' => 'سؤال من مدرسة أخرى لا يظهر',
+            'question_type' => SchoolQuestionBankItem::TYPE_SHORT_ANSWER,
+            'question_score' => 5,
+            'selection_mode' => SchoolQuestionBankItem::SELECTION_REQUIRED,
+            'difficulty' => SchoolQuestionBankItem::DIFFICULTY_MEDIUM,
+            'status' => SchoolQuestionBankItem::STATUS_ACTIVE,
+        ]);
+
+        $this->actingAs($contextA['manager'])
+            ->get(route('school.exams.index', ['section' => 'question-bank']))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('School/Exams')
+                ->where('questionBankTree', function ($tree) use ($contextA, $localQuestion, $foreignQuestion): bool {
+                    $stage = collect($tree)->firstWhere('id', $contextA['stage']->id);
+                    $grade = collect(data_get($stage, 'grades', []))->firstWhere('name', 'الصف الأول');
+                    $subject = collect(data_get($grade, 'subjects', []))->firstWhere('id', $contextA['subjectA']->id);
+                    $questions = collect(data_get($subject, 'groups', []))
+                        ->flatMap(fn ($group) => data_get($group, 'questions', []));
+
+                    return is_array($tree)
+                        && is_array(data_get($stage, 'grades'))
+                        && is_array(data_get($grade, 'subjects'))
+                        && is_array(data_get($subject, 'groups'))
+                        && (int) data_get($subject, 'questions_count') === 1
+                        && $questions->contains(fn ($question) => (int) data_get($question, 'id') === (int) $localQuestion->id)
+                        && ! $questions->contains(fn ($question) => (int) data_get($question, 'id') === (int) $foreignQuestion->id);
+                })
+            );
+    }
+
     public function test_question_bank_item_requires_unit_chapter_and_lesson_when_course_offering_is_selected(): void
     {
         $context = $this->createExamContext('SCH-991004QBSTRUCTREQ');
