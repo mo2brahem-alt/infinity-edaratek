@@ -5,16 +5,21 @@ import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import {
     BookOpenText,
     CalendarDays,
+    ChevronDown,
+    ChevronLeft,
     Clock3,
     FileSpreadsheet,
+    Filter,
     LayoutTemplate,
     Pencil,
     PlusCircle,
     Save,
     School,
+    Search,
     Settings2,
     Trash2,
     UserRound,
+    Users,
     X,
 } from 'lucide-vue-next';
 import AttachmentPanel from '@/Components/AttachmentPanel.vue';
@@ -75,6 +80,10 @@ const props = defineProps({
         default: () => [],
     },
     courseOfferings: {
+        type: Array,
+        default: () => [],
+    },
+    approvedCoursesTree: {
         type: Array,
         default: () => [],
     },
@@ -390,8 +399,14 @@ const normalizeGradeName = (value) => {
     return normalized !== '' ? normalized : 'غير محدد';
 };
 
+const safeArray = (value) => (Array.isArray(value) ? value : []);
+const safeText = (value, fallback = 'غير محدد') => {
+    const normalized = String(value ?? '').trim();
+    return normalized !== '' ? normalized : fallback;
+};
+
 const stageOptions = computed(() =>
-    props.stages.map((stage) => ({
+    safeArray(props.stages).map((stage) => ({
         id: stage.id,
         name: stage.name,
         grades: (stage.grades || [])
@@ -424,7 +439,7 @@ const gradeFilterOptions = computed(() =>
 );
 
 const structureStageOptions = computed(() =>
-    props.structureStages.map((stage) => ({
+    safeArray(props.structureStages).map((stage) => ({
         ...stage,
         grades: (stage.grades || []).map((grade) => ({
             ...grade,
@@ -2281,6 +2296,311 @@ const normalizedCourseOfferings = computed(() => {
         return Number(b?.id ?? 0) - Number(a?.id ?? 0);
     });
 });
+
+const approvedCourseFilters = ref({
+    search: '',
+    stage_id: '',
+    grade_id: '',
+    term_id: '',
+    subject_id: '',
+    teacher_id: '',
+    status: '',
+});
+const openApprovedCourseStages = ref({});
+const openApprovedCourseGrades = ref({});
+const openApprovedCourseTerms = ref({});
+
+const resetApprovedCourseFilters = () => {
+    approvedCourseFilters.value = {
+        search: '',
+        stage_id: '',
+        grade_id: '',
+        term_id: '',
+        subject_id: '',
+        teacher_id: '',
+        status: '',
+    };
+};
+
+const hasApprovedCourseFilters = computed(() =>
+    Object.values(approvedCourseFilters.value).some((value) => String(value ?? '').trim() !== '')
+);
+
+const approvedCourseNodeKey = (prefix, node, fallback = '') =>
+    String(node?.key || node?.id || `${prefix}:${fallback || safeText(node?.name, 'unknown')}`);
+
+const isOpenInMap = (state, key) => Boolean(state.value?.[String(key)]);
+const toggleOpenInMap = (state, key) => {
+    const normalizedKey = String(key);
+    state.value = {
+        ...(state.value || {}),
+        [normalizedKey]: !Boolean(state.value?.[normalizedKey]),
+    };
+};
+
+const isApprovedCourseStageOpen = (stage) =>
+    isOpenInMap(openApprovedCourseStages, approvedCourseNodeKey('stage', stage));
+const isApprovedCourseGradeOpen = (grade) =>
+    isOpenInMap(openApprovedCourseGrades, approvedCourseNodeKey('grade', grade));
+const isApprovedCourseTermOpen = (term) =>
+    isOpenInMap(openApprovedCourseTerms, approvedCourseNodeKey('term', term));
+const toggleApprovedCourseStage = (stage) =>
+    toggleOpenInMap(openApprovedCourseStages, approvedCourseNodeKey('stage', stage));
+const toggleApprovedCourseGrade = (grade) =>
+    toggleOpenInMap(openApprovedCourseGrades, approvedCourseNodeKey('grade', grade));
+const toggleApprovedCourseTerm = (term) =>
+    toggleOpenInMap(openApprovedCourseTerms, approvedCourseNodeKey('term', term));
+
+const normalizeApprovedCourse = (course) => {
+    const assignment = course?.teaching_assignment || null;
+
+    return {
+        ...(course || {}),
+        id: Number(course?.id || 0),
+        school_stage_id: Number(course?.school_stage_id || course?.stage?.id || 0),
+        school_stage_grade_id: Number(course?.school_stage_grade_id || course?.stage_grade?.id || 0),
+        school_term_id: Number(course?.school_term_id || course?.term?.id || 0),
+        school_subject_id: Number(course?.school_subject_id || course?.subject?.id || 0),
+        stage_name: safeText(course?.stage_name || course?.stage?.name, 'مرحلة غير محددة'),
+        grade_name: safeText(course?.grade_name || course?.stage_grade?.name || course?.classroom?.grade_name, 'صف غير محدد'),
+        term_name: safeText(course?.term_name || course?.term?.name, 'فصل دراسي غير محدد'),
+        subject_name: safeText(course?.subject_name || course?.subject?.name, 'مقرر غير محدد'),
+        teacher_name: safeText(course?.teacher_name || assignment?.teacher?.name, 'غير مسند'),
+        assigned_classrooms_count: Number(course?.assigned_classrooms_count || 0),
+        teaching_assignment: assignment,
+    };
+};
+
+const courseAssignedClassroomIds = (course) => {
+    const classroomIds = safeArray(course?.teaching_assignment?.classrooms)
+        .map((classroom) => Number(classroom?.id || 0))
+        .filter((id) => id > 0);
+
+    const legacyClassroomId = Number(course?.school_classroom_id || course?.classroom?.id || 0);
+    if (legacyClassroomId > 0) {
+        classroomIds.push(legacyClassroomId);
+    }
+
+    return [...new Set(classroomIds)];
+};
+
+const summarizeApprovedCourses = (courses) => {
+    const safeCourses = safeArray(courses);
+    const subjectIds = new Set();
+    const classroomIds = new Set();
+    const teacherKeys = new Set();
+    let fallbackAssignedClassroomsCount = 0;
+
+    safeCourses.forEach((course) => {
+        const subjectId = Number(course?.school_subject_id || course?.subject?.id || 0);
+        if (subjectId > 0) {
+            subjectIds.add(subjectId);
+        }
+
+        const assignedIds = courseAssignedClassroomIds(course);
+        if (assignedIds.length > 0) {
+            assignedIds.forEach((id) => classroomIds.add(id));
+        } else {
+            fallbackAssignedClassroomsCount += Number(course?.assigned_classrooms_count || 0);
+        }
+
+        const teacherId = Number(course?.teaching_assignment?.teacher_user_id || course?.teaching_assignment?.teacher?.id || 0);
+        if (teacherId > 0) {
+            teacherKeys.add(`id:${teacherId}`);
+        } else if (safeText(course?.teacher_name, '') !== '' && safeText(course?.teacher_name, '') !== 'غير مسند') {
+            teacherKeys.add(`name:${safeText(course.teacher_name)}`);
+        }
+    });
+
+    return {
+        subjects_count: subjectIds.size,
+        courses_count: safeCourses.length,
+        active_courses_count: safeCourses.filter((course) => Boolean(course?.is_active)).length,
+        inactive_courses_count: safeCourses.filter((course) => !Boolean(course?.is_active)).length,
+        assigned_classrooms_count: classroomIds.size + fallbackAssignedClassroomsCount,
+        teachers_count: teacherKeys.size,
+    };
+};
+
+const normalizedApprovedCoursesTree = computed(() =>
+    safeArray(props.approvedCoursesTree).map((stage, stageIndex) => ({
+        ...(stage || {}),
+        id: stage?.id ?? null,
+        key: approvedCourseNodeKey('stage', stage, stageIndex),
+        name: safeText(stage?.name, 'مرحلة غير محددة'),
+        grades: safeArray(stage?.grades).map((grade, gradeIndex) => ({
+            ...(grade || {}),
+            id: grade?.id ?? null,
+            key: approvedCourseNodeKey('grade', grade, `${stageIndex}-${gradeIndex}`),
+            name: safeText(grade?.name, 'صف غير محدد'),
+            terms: safeArray(grade?.terms).map((term, termIndex) => ({
+                ...(term || {}),
+                id: term?.id ?? null,
+                key: approvedCourseNodeKey('term', term, `${stageIndex}-${gradeIndex}-${termIndex}`),
+                name: safeText(term?.name, 'فصل دراسي غير محدد'),
+                courses: safeArray(term?.courses).map((course) => normalizeApprovedCourse(course)),
+            })),
+        })),
+    }))
+);
+
+const approvedCourseStageFilterOptions = computed(() =>
+    normalizedApprovedCoursesTree.value.map((stage) => ({
+        id: stage.id,
+        name: stage.name,
+    })).filter((stage) => Number(stage.id || 0) > 0)
+);
+
+const approvedCourseGradeFilterOptions = computed(() => {
+    const selectedStageId = Number(approvedCourseFilters.value.stage_id || 0);
+    const grades = new Map();
+
+    normalizedApprovedCoursesTree.value
+        .filter((stage) => selectedStageId <= 0 || Number(stage.id || 0) === selectedStageId)
+        .forEach((stage) => {
+            safeArray(stage.grades).forEach((grade) => {
+                const gradeId = Number(grade?.id || 0);
+                if (gradeId > 0 && !grades.has(gradeId)) {
+                    grades.set(gradeId, {
+                        id: gradeId,
+                        name: grade.name,
+                        stage_name: stage.name,
+                    });
+                }
+            });
+        });
+
+    return [...grades.values()];
+});
+
+const approvedCourseMatchesFilters = (offering) => {
+    const course = normalizeApprovedCourse(offering);
+    const filters = approvedCourseFilters.value;
+    const stageId = Number(filters.stage_id || 0);
+    const gradeId = Number(filters.grade_id || 0);
+    const termId = Number(filters.term_id || 0);
+    const subjectId = Number(filters.subject_id || 0);
+    const teacherId = Number(filters.teacher_id || 0);
+
+    if (stageId > 0 && Number(course.school_stage_id || 0) !== stageId) return false;
+    if (gradeId > 0 && Number(course.school_stage_grade_id || 0) !== gradeId) return false;
+    if (termId > 0 && Number(course.school_term_id || 0) !== termId) return false;
+    if (subjectId > 0 && Number(course.school_subject_id || 0) !== subjectId) return false;
+    if (teacherId > 0 && Number(course.teaching_assignment?.teacher_user_id || course.teaching_assignment?.teacher?.id || 0) !== teacherId) return false;
+
+    const status = String(filters.status || '').trim();
+    if (status === 'active' && !Boolean(course.is_active)) return false;
+    if (status === 'inactive' && Boolean(course.is_active)) return false;
+    if (status === 'usable' && !Boolean(course.usable_in_exams ?? true)) return false;
+    if (status === 'not_usable' && Boolean(course.usable_in_exams ?? true)) return false;
+    if (status === 'assigned' && !course.teaching_assignment) return false;
+    if (status === 'unassigned' && course.teaching_assignment) return false;
+
+    const needle = String(filters.search || '').trim().toLowerCase();
+    if (needle === '') return true;
+
+    const haystack = [
+        course.stage_name,
+        course.grade_name,
+        course.term_name,
+        course.subject_name,
+        course.teacher_name,
+        courseOfferingLabel(course),
+        assignmentClassroomsLabel(course),
+    ].join(' ').toLowerCase();
+
+    return haystack.includes(needle);
+};
+
+const filteredApprovedCourseIds = computed(() =>
+    new Set(
+        normalizedCourseOfferings.value
+            .filter((offering) => approvedCourseMatchesFilters(offering))
+            .map((offering) => Number(offering?.id || 0))
+            .filter((id) => id > 0)
+    )
+);
+
+const approvedCoursesTreeForDisplay = computed(() => {
+    const activeIds = filteredApprovedCourseIds.value;
+    const filtersEnabled = hasApprovedCourseFilters.value;
+
+    return normalizedApprovedCoursesTree.value
+        .map((stage) => {
+            const grades = safeArray(stage.grades)
+                .map((grade) => {
+                    const terms = safeArray(grade.terms)
+                        .map((term) => {
+                            const courses = safeArray(term.courses).filter((course) => activeIds.has(Number(course?.id || 0)));
+                            if (filtersEnabled && courses.length === 0) return null;
+
+                            return {
+                                ...term,
+                                ...summarizeApprovedCourses(courses),
+                                courses,
+                            };
+                        })
+                        .filter(Boolean);
+
+                    const gradeCourses = terms.flatMap((term) => safeArray(term.courses));
+                    if (filtersEnabled && gradeCourses.length === 0) return null;
+
+                    return {
+                        ...grade,
+                        ...summarizeApprovedCourses(gradeCourses),
+                        terms_count: terms.length,
+                        terms,
+                    };
+                })
+                .filter(Boolean);
+
+            const stageCourses = grades.flatMap((grade) =>
+                safeArray(grade.terms).flatMap((term) => safeArray(term.courses))
+            );
+            if (filtersEnabled && stageCourses.length === 0) return null;
+
+            return {
+                ...stage,
+                ...summarizeApprovedCourses(stageCourses),
+                grades_count: grades.length,
+                terms_count: grades.reduce((sum, grade) => sum + Number(grade.terms_count || 0), 0),
+                grades,
+            };
+        })
+        .filter(Boolean);
+});
+
+watch(approvedCoursesTreeForDisplay, (tree) => {
+    const stages = safeArray(tree);
+    if (stages.length === 0) return;
+
+    if (hasApprovedCourseFilters.value) {
+        const nextStages = {};
+        const nextGrades = {};
+        const nextTerms = {};
+
+        stages.forEach((stage) => {
+            nextStages[approvedCourseNodeKey('stage', stage)] = true;
+            safeArray(stage.grades).forEach((grade) => {
+                nextGrades[approvedCourseNodeKey('grade', grade)] = true;
+                safeArray(grade.terms).forEach((term) => {
+                    nextTerms[approvedCourseNodeKey('term', term)] = true;
+                });
+            });
+        });
+
+        openApprovedCourseStages.value = nextStages;
+        openApprovedCourseGrades.value = nextGrades;
+        openApprovedCourseTerms.value = nextTerms;
+        return;
+    }
+
+    if (Object.keys(openApprovedCourseStages.value || {}).length === 0) {
+        openApprovedCourseStages.value = {
+            [approvedCourseNodeKey('stage', stages[0])]: true,
+        };
+    }
+}, { immediate: true });
 
 const assignmentCourseOfferings = computed(() =>
     normalizedCourseOfferings.value.filter((offering) => Boolean(offering?.is_active) && Boolean(offering?.usable_in_exams ?? true))
@@ -5337,45 +5657,281 @@ onMounted(async () => {
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <div
-                        v-for="offering in normalizedCourseOfferings"
-                        :key="`offering-row-${offering.id}`"
-                        class="stage-row-accent rounded border border-gray-700 bg-gray-800 p-3"
-                        :style="stageAccent(offering.school_stage_id, offering.stage?.name || offering.stage_name || '')"
-                    >
-                        <div class="flex flex-wrap items-start justify-between gap-2">
-                            <div>
-                                <p class="font-semibold stage-inline-accent" :style="stageAccent(offering.school_stage_id, offering.stage?.name || offering.stage_name || '')">
-                                    <span class="stage-badge" :style="stageAccent(offering.school_stage_id, offering.stage?.name || offering.stage_name || '')">
-                                        {{ offering.stage?.name || offering.stage_name || 'مرحلة غير محددة' }}
-                                    </span>
-                                    <span class="mx-1">{{ courseOfferingLabel(offering) }}</span>
-                                </p>
-                                <p class="mt-1 text-xs text-gray-400">
-                                    المعلّم المسند: {{ offering.teaching_assignment?.teacher?.name || 'غير مسند' }}
-                                </p>
-                                <p class="mt-1 text-xs text-gray-400">
-                                    الفصول المسندة: {{ assignmentClassroomsLabel(offering) }}
-                                </p>
-                                <p v-if="courseOfferingTermAlertMessage(offering)" class="mt-1 text-xs text-amber-300">
-                                    {{ courseOfferingTermAlertMessage(offering) }}
-                                </p>
+                <div class="space-y-4">
+                    <div class="rounded-2xl border border-cyan-200 bg-white/90 p-3 text-slate-900 shadow-sm dark:border-cyan-500/30 dark:bg-gray-950/60 dark:text-gray-100">
+                        <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 text-sm font-bold text-cyan-800 dark:text-cyan-100">
+                                <Filter class="h-4 w-4" />
+                                <span>تصفية المقررات المعتمدة</span>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="rounded px-2 py-1 text-[10px]" :class="offering.is_active ? 'bg-emerald-500/20 text-emerald-200' : 'bg-gray-700 text-gray-300'">
-                                    {{ offering.is_active ? 'نشط' : 'غير نشط' }}
+                            <button
+                                type="button"
+                                class="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                                :disabled="!hasApprovedCourseFilters"
+                                @click="resetApprovedCourseFilters"
+                            >
+                                مسح الفلاتر
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-2 md:grid-cols-3 xl:grid-cols-7">
+                            <label class="space-y-1 md:col-span-2">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">بحث سريع</span>
+                                <span class="relative block">
+                                    <Search class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-gray-500" />
+                                    <input
+                                        v-model="approvedCourseFilters.search"
+                                        type="search"
+                                        class="w-full rounded-xl border border-slate-300 bg-white py-2 pl-3 pr-9 text-sm text-slate-900 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                                        placeholder="اسم المقرر، المعلم، الصف أو الفصل"
+                                    />
                                 </span>
-                                <span class="rounded px-2 py-1 text-[10px]" :class="(offering.usable_in_exams ?? true) ? 'bg-indigo-500/20 text-indigo-200' : 'bg-amber-500/20 text-amber-200'">
-                                    {{ (offering.usable_in_exams ?? true) ? 'متاح للاختبارات' : 'غير متاح للاختبارات' }}
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">المرحلة</span>
+                                <select v-model="approvedCourseFilters.stage_id" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل المراحل</option>
+                                    <option v-for="stage in approvedCourseStageFilterOptions" :key="`approved-filter-stage-${stage.id}`" :value="stage.id">
+                                        {{ stage.name }}
+                                    </option>
+                                </select>
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">الصف</span>
+                                <select v-model="approvedCourseFilters.grade_id" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل الصفوف</option>
+                                    <option v-for="grade in approvedCourseGradeFilterOptions" :key="`approved-filter-grade-${grade.id}`" :value="grade.id">
+                                        {{ grade.name }}
+                                    </option>
+                                </select>
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">الفصل الدراسي</span>
+                                <select v-model="approvedCourseFilters.term_id" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل الفصول</option>
+                                    <option v-for="term in terms" :key="`approved-filter-term-${term.id}`" :value="term.id">
+                                        {{ term.name }}
+                                    </option>
+                                </select>
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">المادة</span>
+                                <select v-model="approvedCourseFilters.subject_id" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل المواد</option>
+                                    <option v-for="subject in activeSubjects" :key="`approved-filter-subject-${subject.id}`" :value="subject.id">
+                                        {{ subject.name }}
+                                    </option>
+                                </select>
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">الحالة</span>
+                                <select v-model="approvedCourseFilters.status" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل الحالات</option>
+                                    <option value="active">نشط</option>
+                                    <option value="inactive">غير نشط</option>
+                                    <option value="usable">متاح للاختبارات</option>
+                                    <option value="not_usable">غير متاح للاختبارات</option>
+                                    <option value="assigned">له معلم مسند</option>
+                                    <option value="unassigned">بلا معلم</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <label class="mt-2 block max-w-sm space-y-1">
+                            <span class="text-xs text-slate-600 dark:text-gray-400">المعلم</span>
+                            <select v-model="approvedCourseFilters.teacher_id" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                <option value="">كل المعلمين</option>
+                                <option v-for="teacher in teachers" :key="`approved-filter-teacher-${teacher.id}`" :value="teacher.id">
+                                    {{ teacher.name }}
+                                </option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div
+                            v-for="stage in approvedCoursesTreeForDisplay"
+                            :key="`approved-stage-${stage.key}`"
+                            class="stage-row-accent overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-950/70"
+                            :style="stageAccent(stage.id, stage.name)"
+                        >
+                            <button
+                                type="button"
+                                class="flex w-full flex-wrap items-center justify-between gap-3 p-4 text-right transition hover:bg-slate-50 dark:hover:bg-gray-900/80"
+                                @click="toggleApprovedCourseStage(stage)"
+                            >
+                                <span class="flex items-center gap-3">
+                                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-700 dark:text-cyan-200">
+                                        <School class="h-5 w-5" />
+                                    </span>
+                                    <span>
+                                        <span class="block text-base font-bold text-slate-900 dark:text-gray-100">{{ stage.name }}</span>
+                                        <span class="text-xs text-slate-500 dark:text-gray-400">
+                                            {{ stage.grades_count }} صفوف، {{ stage.courses_count }} مقررات، {{ stage.teachers_count }} معلمين
+                                        </span>
+                                    </span>
                                 </span>
-                                <button class="rounded bg-blue-700 px-2 py-1 text-xs hover:bg-blue-600" @click="editCourseOffering(offering)">تعديل</button>
-                                <button class="rounded bg-red-700 px-2 py-1 text-xs hover:bg-red-600" @click="removeCourseOffering(offering.id)">حذف</button>
+                                <span class="flex flex-wrap items-center gap-2">
+                                    <span class="rounded-full bg-cyan-500/15 px-2.5 py-1 text-[11px] font-semibold text-cyan-700 dark:text-cyan-200">
+                                        {{ stage.subjects_count }} مواد
+                                    </span>
+                                    <span class="rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-200">
+                                        {{ stage.assigned_classrooms_count }} فصول مسندة
+                                    </span>
+                                    <ChevronDown v-if="isApprovedCourseStageOpen(stage)" class="h-5 w-5 text-slate-500 dark:text-gray-400" />
+                                    <ChevronLeft v-else class="h-5 w-5 text-slate-500 dark:text-gray-400" />
+                                </span>
+                            </button>
+
+                            <div v-if="isApprovedCourseStageOpen(stage)" class="space-y-3 border-t border-slate-200 p-3 dark:border-gray-800">
+                                <div
+                                    v-for="grade in stage.grades"
+                                    :key="`approved-grade-${grade.key}`"
+                                    class="overflow-hidden rounded-xl border border-slate-200 bg-slate-50/80 dark:border-gray-800 dark:bg-gray-900/70"
+                                >
+                                    <button
+                                        type="button"
+                                        class="flex w-full flex-wrap items-center justify-between gap-3 p-3 text-right transition hover:bg-white dark:hover:bg-gray-800"
+                                        @click="toggleApprovedCourseGrade(grade)"
+                                    >
+                                        <span class="flex items-center gap-2">
+                                            <BookOpenText class="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
+                                            <span>
+                                                <span class="block text-sm font-bold text-slate-900 dark:text-gray-100">{{ grade.name }}</span>
+                                                <span class="text-xs text-slate-500 dark:text-gray-400">
+                                                    {{ grade.terms_count }} فصول دراسية، {{ grade.courses_count }} مقررات
+                                                </span>
+                                            </span>
+                                        </span>
+                                        <span class="flex flex-wrap items-center gap-2">
+                                            <span class="rounded-full bg-indigo-500/15 px-2 py-1 text-[11px] text-indigo-700 dark:text-indigo-200">
+                                                {{ grade.active_courses_count }} نشط
+                                            </span>
+                                            <ChevronDown v-if="isApprovedCourseGradeOpen(grade)" class="h-4 w-4 text-slate-500 dark:text-gray-400" />
+                                            <ChevronLeft v-else class="h-4 w-4 text-slate-500 dark:text-gray-400" />
+                                        </span>
+                                    </button>
+
+                                    <div v-if="isApprovedCourseGradeOpen(grade)" class="space-y-2 border-t border-slate-200 p-3 dark:border-gray-800">
+                                        <div
+                                            v-for="term in grade.terms"
+                                            :key="`approved-term-${term.key}`"
+                                            class="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-800 dark:bg-gray-950/70"
+                                        >
+                                            <button
+                                                type="button"
+                                                class="flex w-full flex-wrap items-center justify-between gap-3 p-3 text-right transition hover:bg-slate-50 dark:hover:bg-gray-900"
+                                                @click="toggleApprovedCourseTerm(term)"
+                                            >
+                                                <span class="flex items-center gap-2">
+                                                    <CalendarDays class="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
+                                                    <span>
+                                                        <span class="block text-sm font-bold text-slate-900 dark:text-gray-100">{{ term.name }}</span>
+                                                        <span class="text-xs text-slate-500 dark:text-gray-400">
+                                                            {{ term.courses_count }} مقررات، {{ term.assigned_classrooms_count }} فصول مسندة
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                                <span class="flex flex-wrap items-center gap-2">
+                                                    <span class="rounded-full bg-emerald-500/15 px-2 py-1 text-[11px] text-emerald-700 dark:text-emerald-200">
+                                                        {{ term.teachers_count }} معلمين
+                                                    </span>
+                                                    <ChevronDown v-if="isApprovedCourseTermOpen(term)" class="h-4 w-4 text-slate-500 dark:text-gray-400" />
+                                                    <ChevronLeft v-else class="h-4 w-4 text-slate-500 dark:text-gray-400" />
+                                                </span>
+                                            </button>
+
+                                            <div v-if="isApprovedCourseTermOpen(term)" class="border-t border-slate-200 p-3 dark:border-gray-800">
+                                                <div v-if="term.courses.length > 0" class="grid grid-cols-1 gap-3 xl:grid-cols-2">
+                                                    <article
+                                                        v-for="course in term.courses"
+                                                        :key="`approved-course-${course.id}`"
+                                                        class="stage-row-accent rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm dark:border-gray-800 dark:bg-gray-900/80"
+                                                        :style="stageAccent(course.school_stage_id || stage.id, course.stage_name || stage.name)"
+                                                    >
+                                                        <div class="flex flex-wrap items-start justify-between gap-3">
+                                                            <div class="min-w-0">
+                                                                <p class="stage-inline-accent flex flex-wrap items-center gap-2 font-bold text-slate-900 dark:text-gray-100" :style="stageAccent(course.school_stage_id || stage.id, course.stage_name || stage.name)">
+                                                                    <span class="stage-badge" :style="stageAccent(course.school_stage_id || stage.id, course.stage_name || stage.name)">
+                                                                        {{ course.subject_name }}
+                                                                    </span>
+                                                                    <span class="text-xs font-semibold text-slate-500 dark:text-gray-400">{{ course.grade_name }}</span>
+                                                                </p>
+                                                                <div class="mt-2 grid gap-1 text-xs text-slate-600 dark:text-gray-400 sm:grid-cols-2">
+                                                                    <span class="flex items-center gap-1">
+                                                                        <UserRound class="h-3.5 w-3.5" />
+                                                                        المعلم: {{ course.teacher_name }}
+                                                                    </span>
+                                                                    <span class="flex items-center gap-1">
+                                                                        <Users class="h-3.5 w-3.5" />
+                                                                        الفصول: {{ assignmentClassroomsLabel(course) }}
+                                                                    </span>
+                                                                </div>
+                                                                <p v-if="courseOfferingTermAlertMessage(course)" class="mt-2 text-xs text-amber-600 dark:text-amber-300">
+                                                                    {{ courseOfferingTermAlertMessage(course) }}
+                                                                </p>
+                                                                <div class="mt-2 flex flex-wrap gap-1">
+                                                                    <span class="rounded-full px-2 py-1 text-[10px]" :class="course.is_active ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-200' : 'bg-slate-200 text-slate-600 dark:bg-gray-800 dark:text-gray-300'">
+                                                                        {{ course.is_active ? 'نشط' : 'غير نشط' }}
+                                                                    </span>
+                                                                    <span class="rounded-full px-2 py-1 text-[10px]" :class="(course.usable_in_exams ?? true) ? 'bg-indigo-500/15 text-indigo-700 dark:text-indigo-200' : 'bg-amber-500/15 text-amber-700 dark:text-amber-200'">
+                                                                        {{ (course.usable_in_exams ?? true) ? 'متاح للاختبارات' : 'غير متاح للاختبارات' }}
+                                                                    </span>
+                                                                    <span
+                                                                        v-for="badge in assignmentPermissionBadges(course.teaching_assignment)"
+                                                                        :key="`approved-permission-${course.id}-${badge}`"
+                                                                        class="rounded-full bg-cyan-500/15 px-2 py-1 text-[10px] text-cyan-700 dark:text-cyan-200"
+                                                                    >
+                                                                        {{ badge }}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="flex flex-wrap items-center gap-2">
+                                                                <button type="button" class="rounded-lg bg-blue-700 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-blue-600" @click="editCourseOffering(course)">
+                                                                    تعديل
+                                                                </button>
+                                                                <button
+                                                                    v-if="canManageTeachingAssignments"
+                                                                    type="button"
+                                                                    class="rounded-lg bg-indigo-700 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-indigo-600"
+                                                                    @click="openTeachingAssignmentForm(course)"
+                                                                >
+                                                                    منح الاختبارات
+                                                                </button>
+                                                                <button type="button" class="rounded-lg bg-red-700 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-red-600" @click="removeCourseOffering(course.id)">
+                                                                    حذف
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </article>
+                                                </div>
+                                                <div v-else class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
+                                                    لا توجد مقررات داخل هذا الفصل الدراسي.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="grade.terms.length === 0" class="rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-950/50 dark:text-gray-300">
+                                            لا توجد مقررات داخل هذا الصف.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-if="stage.grades.length === 0" class="rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
+                                    لا توجد صفوف داخل هذه المرحلة.
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div v-if="normalizedCourseOfferings.length === 0" class="rounded border border-gray-700 bg-gray-800/70 p-3 text-sm text-gray-300">
-                        لا توجد مقررات معتمدة بعد. أضف المقررات الدراسية أولًا ثم اسندها للمعلمين.
+
+                        <div v-if="approvedCoursesTreeForDisplay.length === 0" class="rounded-2xl border border-dashed border-gray-700 bg-gray-800/70 p-5 text-sm text-gray-300">
+                            {{ hasApprovedCourseFilters ? 'لا توجد نتائج مطابقة للفلاتر الحالية.' : 'لا توجد مقررات معتمدة بعد. أضف المقررات الدراسية أولًا ثم اسندها للمعلمين.' }}
+                        </div>
                     </div>
                 </div>
             </section>
@@ -6654,9 +7210,4 @@ onMounted(async () => {
     background: #ffffff;
 }
 </style>
-
-
-
-
-
 

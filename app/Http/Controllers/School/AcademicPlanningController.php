@@ -281,6 +281,7 @@ class AcademicPlanningController extends Controller
             ]);
 
         $this->attachTermEndAlertFlags($courseOfferings);
+        $approvedCoursesTree = $this->buildApprovedCoursesTree($courseOfferings);
 
         $teacherAvailabilities = SchoolTeacherAvailability::query()
             ->where('school_id', $schoolId)
@@ -477,6 +478,7 @@ class AcademicPlanningController extends Controller
             'calendarSettings' => $calendarSettings,
             'holidays' => $holidays,
             'courseOfferings' => $courseOfferings,
+            'approvedCoursesTree' => $approvedCoursesTree,
             'timetableVersions' => $timetableVersions,
             'schedules' => $scheduleEntries,
             'selectedTermId' => $selectedTerm?->id,
@@ -524,6 +526,183 @@ class AcademicPlanningController extends Controller
                 'enforce_course_offerings' => config('features.course_offerings.enforce_for_scheduling', false),
             ],
         ]);
+    }
+
+    private function buildApprovedCoursesTree(Collection $courseOfferings): array
+    {
+        $tree = [];
+
+        $normalizeName = fn ($value, string $fallback = 'غير محدد'): string => trim((string) ($value ?? '')) !== ''
+            ? trim((string) $value)
+            : $fallback;
+
+        $ensureStage = function (int $stageId, string $stageName) use (&$tree): string {
+            $stageKey = $stageId > 0 ? (string) $stageId : 'stage:unknown';
+
+            if (!isset($tree[$stageKey])) {
+                $tree[$stageKey] = [
+                    'id' => $stageId > 0 ? $stageId : null,
+                    'key' => $stageKey,
+                    'name' => $stageName,
+                    'grades_count' => 0,
+                    'terms_count' => 0,
+                    'subjects_count' => 0,
+                    'courses_count' => 0,
+                    'active_courses_count' => 0,
+                    'inactive_courses_count' => 0,
+                    'assigned_classrooms_count' => 0,
+                    'teachers_count' => 0,
+                    'grades' => [],
+                    '_subject_ids' => [],
+                    '_classroom_ids' => [],
+                    '_teacher_ids' => [],
+                ];
+            }
+
+            return $stageKey;
+        };
+
+        $ensureGrade = function (string $stageKey, int $gradeId, string $gradeName) use (&$tree): string {
+            $gradeKey = $gradeId > 0 ? (string) $gradeId : 'grade:'.$gradeName;
+
+            if (!isset($tree[$stageKey]['grades'][$gradeKey])) {
+                $tree[$stageKey]['grades'][$gradeKey] = [
+                    'id' => $gradeId > 0 ? $gradeId : null,
+                    'key' => $tree[$stageKey]['key'].':'.$gradeKey,
+                    'name' => $gradeName,
+                    'terms_count' => 0,
+                    'subjects_count' => 0,
+                    'courses_count' => 0,
+                    'active_courses_count' => 0,
+                    'inactive_courses_count' => 0,
+                    'assigned_classrooms_count' => 0,
+                    'teachers_count' => 0,
+                    'terms' => [],
+                    '_subject_ids' => [],
+                    '_classroom_ids' => [],
+                    '_teacher_ids' => [],
+                ];
+            }
+
+            return $gradeKey;
+        };
+
+        $ensureTerm = function (string $stageKey, string $gradeKey, int $termId, string $termName) use (&$tree): string {
+            $termKey = $termId > 0 ? (string) $termId : 'term:'.$termName;
+
+            if (!isset($tree[$stageKey]['grades'][$gradeKey]['terms'][$termKey])) {
+                $tree[$stageKey]['grades'][$gradeKey]['terms'][$termKey] = [
+                    'id' => $termId > 0 ? $termId : null,
+                    'key' => $tree[$stageKey]['grades'][$gradeKey]['key'].':'.$termKey,
+                    'name' => $termName,
+                    'subjects_count' => 0,
+                    'courses_count' => 0,
+                    'active_courses_count' => 0,
+                    'inactive_courses_count' => 0,
+                    'assigned_classrooms_count' => 0,
+                    'teachers_count' => 0,
+                    'courses' => [],
+                    '_subject_ids' => [],
+                    '_classroom_ids' => [],
+                    '_teacher_ids' => [],
+                ];
+            }
+
+            return $termKey;
+        };
+
+        $addCourseStats = function (array &$node, bool $isActive, int $subjectId, int $teacherId, array $assignedClassroomIds): void {
+            $node['courses_count']++;
+            $node['active_courses_count'] += $isActive ? 1 : 0;
+            $node['inactive_courses_count'] += $isActive ? 0 : 1;
+
+            if ($subjectId > 0) {
+                $node['_subject_ids'][$subjectId] = true;
+            }
+
+            if ($teacherId > 0) {
+                $node['_teacher_ids'][$teacherId] = true;
+            }
+
+            foreach ($assignedClassroomIds as $classroomId) {
+                $node['_classroom_ids'][(int) $classroomId] = true;
+            }
+        };
+
+        foreach ($courseOfferings as $offering) {
+            $stageId = (int) ($offering->school_stage_id ?? $offering->stage?->id ?? 0);
+            $stageName = $normalizeName($offering->stage?->name ?? null);
+            $gradeId = (int) ($offering->school_stage_grade_id ?? $offering->stageGrade?->id ?? 0);
+            $gradeName = $normalizeName($offering->stageGrade?->name ?? $offering->classroom?->grade_name ?? null);
+            $termId = (int) ($offering->school_term_id ?? $offering->term?->id ?? 0);
+            $termName = $normalizeName($offering->term?->name ?? null);
+            $subjectId = (int) ($offering->school_subject_id ?? $offering->subject?->id ?? 0);
+            $teacherId = (int) ($offering->teachingAssignment?->teacher_user_id ?? 0);
+            $assignedClassrooms = $offering->teachingAssignment?->classrooms ?? collect();
+            $assignedClassroomIds = $assignedClassrooms
+                ->pluck('id')
+                ->map(fn ($id) => (int) $id)
+                ->filter(fn ($id) => $id > 0)
+                ->unique()
+                ->values()
+                ->all();
+
+            if (empty($assignedClassroomIds) && (int) ($offering->school_classroom_id ?? 0) > 0) {
+                $assignedClassroomIds[] = (int) $offering->school_classroom_id;
+            }
+
+            $stageKey = $ensureStage($stageId, $stageName);
+            $gradeKey = $ensureGrade($stageKey, $gradeId, $gradeName);
+            $termKey = $ensureTerm($stageKey, $gradeKey, $termId, $termName);
+            $isActive = (bool) ($offering->is_active ?? false);
+
+            $course = $offering->toArray();
+            $course['stage_name'] = $stageName;
+            $course['grade_name'] = $gradeName;
+            $course['term_name'] = $termName;
+            $course['subject_name'] = $normalizeName($offering->subject?->name ?? null);
+            $course['teacher_name'] = $normalizeName($offering->teachingAssignment?->teacher?->name ?? null, 'غير مسند');
+            $course['assigned_classrooms_count'] = count($assignedClassroomIds);
+
+            $stage = &$tree[$stageKey];
+            $grade = &$stage['grades'][$gradeKey];
+            $term = &$grade['terms'][$termKey];
+
+            $term['courses'][] = $course;
+            $addCourseStats($stage, $isActive, $subjectId, $teacherId, $assignedClassroomIds);
+            $addCourseStats($grade, $isActive, $subjectId, $teacherId, $assignedClassroomIds);
+            $addCourseStats($term, $isActive, $subjectId, $teacherId, $assignedClassroomIds);
+            unset($stage, $grade, $term);
+        }
+
+        foreach ($tree as &$stage) {
+            foreach ($stage['grades'] as &$grade) {
+                foreach ($grade['terms'] as &$term) {
+                    $term['subjects_count'] = count($term['_subject_ids']);
+                    $term['assigned_classrooms_count'] = count($term['_classroom_ids']);
+                    $term['teachers_count'] = count($term['_teacher_ids']);
+                    unset($term['_subject_ids'], $term['_classroom_ids'], $term['_teacher_ids']);
+                }
+
+                $grade['terms'] = array_values($grade['terms']);
+                $grade['terms_count'] = count($grade['terms']);
+                $grade['subjects_count'] = count($grade['_subject_ids']);
+                $grade['assigned_classrooms_count'] = count($grade['_classroom_ids']);
+                $grade['teachers_count'] = count($grade['_teacher_ids']);
+                unset($grade['_subject_ids'], $grade['_classroom_ids'], $grade['_teacher_ids']);
+            }
+
+            $stage['grades'] = array_values($stage['grades']);
+            $stage['grades_count'] = count($stage['grades']);
+            $stage['terms_count'] = array_sum(array_column($stage['grades'], 'terms_count'));
+            $stage['subjects_count'] = count($stage['_subject_ids']);
+            $stage['assigned_classrooms_count'] = count($stage['_classroom_ids']);
+            $stage['teachers_count'] = count($stage['_teacher_ids']);
+            unset($stage['_subject_ids'], $stage['_classroom_ids'], $stage['_teacher_ids']);
+        }
+        unset($stage, $grade, $term);
+
+        return array_values($tree);
     }
 
     public function storeYear(Request $request): RedirectResponse

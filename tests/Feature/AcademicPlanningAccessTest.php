@@ -8,9 +8,12 @@ use App\Models\EducationalDirectorate;
 use App\Models\School;
 use App\Models\SchoolClassSchedule;
 use App\Models\SchoolClassroom;
+use App\Models\SchoolCourseOffering;
 use App\Models\SchoolStage;
+use App\Models\SchoolStageGrade;
 use App\Models\SchoolSubject;
 use App\Models\SchoolSubjectTeacherAssignment;
+use App\Models\SchoolTeachingAssignment;
 use App\Models\SchoolTerm;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -156,6 +159,199 @@ class AcademicPlanningAccessTest extends TestCase
         $this->actingAs($staff)
             ->get(route('school.academic_planning.index'))
             ->assertForbidden();
+    }
+
+    public function test_approved_courses_tree_contains_current_school_courses_only(): void
+    {
+        Role::firstOrCreate(['name' => 'school_manager', 'guard_name' => 'web']);
+
+        $region = EducationalDirectorate::create([
+            'name' => 'Approved Courses Tree Region',
+            'governorate' => 'Riyadh',
+        ]);
+
+        $managerA = User::factory()->create(['role' => 'school_manager']);
+        $managerA->assignRole('school_manager');
+
+        $managerB = User::factory()->create(['role' => 'school_manager']);
+        $managerB->assignRole('school_manager');
+
+        $schoolA = School::create([
+            'directorate_id' => $region->id,
+            'name' => 'Approved Courses School A',
+            'school_id' => 'SCH-960030',
+            'phone' => '0500009630',
+            'status' => School::STATUS_ACTIVE,
+            'supervision_status' => School::SUPERVISION_STATUS_ACTIVE_ASSOCIATION,
+            'manager_user_id' => $managerA->id,
+        ]);
+
+        $schoolB = School::create([
+            'directorate_id' => $region->id,
+            'name' => 'Approved Courses School B',
+            'school_id' => 'SCH-960031',
+            'phone' => '0500009631',
+            'status' => School::STATUS_ACTIVE,
+            'supervision_status' => School::SUPERVISION_STATUS_ACTIVE_ASSOCIATION,
+            'manager_user_id' => $managerB->id,
+        ]);
+
+        $managerA->update(['school_id' => $schoolA->id]);
+        $managerB->update(['school_id' => $schoolB->id]);
+
+        $teacherA = User::factory()->create([
+            'role' => 'staff',
+            'school_id' => $schoolA->id,
+            'school_staff_type' => Department::STAFF_TYPE_EDUCATIONAL,
+        ]);
+        $teacherA->assignRole('staff');
+
+        $teacherB = User::factory()->create([
+            'role' => 'staff',
+            'school_id' => $schoolB->id,
+            'school_staff_type' => Department::STAFF_TYPE_EDUCATIONAL,
+        ]);
+        $teacherB->assignRole('staff');
+
+        $termA = SchoolTerm::create([
+            'school_id' => $schoolA->id,
+            'name' => 'Term A',
+            'start_date' => '2026-09-01',
+            'end_date' => '2026-12-31',
+            'is_active' => true,
+        ]);
+
+        $termB = SchoolTerm::create([
+            'school_id' => $schoolB->id,
+            'name' => 'Term B',
+            'start_date' => '2026-09-01',
+            'end_date' => '2026-12-31',
+            'is_active' => true,
+        ]);
+
+        $stageA = SchoolStage::create([
+            'school_id' => $schoolA->id,
+            'name' => 'Primary A',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        $stageB = SchoolStage::create([
+            'school_id' => $schoolB->id,
+            'name' => 'Primary B',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        $gradeA = SchoolStageGrade::create([
+            'school_id' => $schoolA->id,
+            'school_stage_id' => $stageA->id,
+            'name' => 'First Grade A',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        $gradeB = SchoolStageGrade::create([
+            'school_id' => $schoolB->id,
+            'school_stage_id' => $stageB->id,
+            'name' => 'First Grade B',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        $classroomA = SchoolClassroom::create([
+            'school_id' => $schoolA->id,
+            'school_stage_id' => $stageA->id,
+            'grade_name' => $gradeA->name,
+            'name' => 'A1',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        $classroomB = SchoolClassroom::create([
+            'school_id' => $schoolB->id,
+            'school_stage_id' => $stageB->id,
+            'grade_name' => $gradeB->name,
+            'name' => 'B1',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        $subjectA = SchoolSubject::create([
+            'school_id' => $schoolA->id,
+            'name' => 'Mathematics A',
+            'code' => 'MATH-A',
+            'is_active' => true,
+        ]);
+
+        $subjectB = SchoolSubject::create([
+            'school_id' => $schoolB->id,
+            'name' => 'Mathematics B',
+            'code' => 'MATH-B',
+            'is_active' => true,
+        ]);
+
+        $offeringA = SchoolCourseOffering::create([
+            'school_id' => $schoolA->id,
+            'school_term_id' => $termA->id,
+            'school_stage_id' => $stageA->id,
+            'school_stage_grade_id' => $gradeA->id,
+            'school_classroom_id' => $classroomA->id,
+            'school_subject_id' => $subjectA->id,
+            'is_active' => true,
+            'usable_in_exams' => true,
+            'sort_order' => 1,
+        ]);
+
+        $offeringB = SchoolCourseOffering::create([
+            'school_id' => $schoolB->id,
+            'school_term_id' => $termB->id,
+            'school_stage_id' => $stageB->id,
+            'school_stage_grade_id' => $gradeB->id,
+            'school_classroom_id' => $classroomB->id,
+            'school_subject_id' => $subjectB->id,
+            'is_active' => true,
+            'usable_in_exams' => true,
+            'sort_order' => 1,
+        ]);
+
+        SchoolTeachingAssignment::create([
+            'school_id' => $schoolA->id,
+            'school_course_offering_id' => $offeringA->id,
+            'teacher_user_id' => $teacherA->id,
+            'is_active' => true,
+            'can_create_exam' => true,
+            'can_update_exam' => true,
+            'can_delete_exam' => false,
+            'can_approve_exam' => false,
+            'can_enter_exam_scores' => true,
+            'can_edit_exam_scores' => true,
+            'can_use_question_bank' => true,
+        ]);
+
+        SchoolTeachingAssignment::create([
+            'school_id' => $schoolB->id,
+            'school_course_offering_id' => $offeringB->id,
+            'teacher_user_id' => $teacherB->id,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($managerA)
+            ->get(route('school.academic_planning.index', ['page' => 'subjects']))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('School/AcademicPlanning')
+                ->has('approvedCoursesTree', 1)
+                ->where('approvedCoursesTree.0.id', $stageA->id)
+                ->where('approvedCoursesTree.0.grades_count', 1)
+                ->where('approvedCoursesTree.0.courses_count', 1)
+                ->where('approvedCoursesTree.0.grades.0.id', $gradeA->id)
+                ->where('approvedCoursesTree.0.grades.0.terms_count', 1)
+                ->where('approvedCoursesTree.0.grades.0.terms.0.id', $termA->id)
+                ->where('approvedCoursesTree.0.grades.0.terms.0.courses.0.id', $offeringA->id)
+                ->where('approvedCoursesTree.0.grades.0.terms.0.courses.0.subject_name', 'Mathematics A')
+                ->where('approvedCoursesTree.0.grades.0.terms.0.courses.0.teacher_name', $teacherA->name)
+            );
     }
 
     public function test_schedule_listing_supports_grade_filter_within_current_school_only(): void
@@ -517,4 +713,3 @@ class AcademicPlanningAccessTest extends TestCase
         ]);
     }
 }
-
