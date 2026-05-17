@@ -10,7 +10,7 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 const reportBootError = (error, context = 'boot') => {
     console.error(`Edaratek ${context} error`, error);
 
-    if (!import.meta.env.DEV || typeof document === 'undefined') {
+    if (typeof document === 'undefined') {
         return;
     }
 
@@ -37,6 +37,11 @@ const reportBootError = (error, context = 'boot') => {
         panel.style.lineHeight = '1.7';
         panel.style.whiteSpace = 'pre-wrap';
         document.body.appendChild(panel);
+    }
+
+    if (!import.meta.env.DEV) {
+        panel.textContent = 'تعذر تحميل الواجهة الآن. يرجى تحديث الصفحة، وإذا استمرت المشكلة فتأكد من تنفيذ npm run build و php artisan optimize:clear على الخادم.';
+        return;
     }
 
     panel.textContent = `تعذر تشغيل الواجهة الآن.\n${context}: ${message}`;
