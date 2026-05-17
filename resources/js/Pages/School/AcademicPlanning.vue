@@ -87,6 +87,10 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    courseAssignmentsTree: {
+        type: Array,
+        default: () => [],
+    },
     timetableVersions: {
         type: Array,
         default: () => [],
@@ -2598,6 +2602,300 @@ watch(approvedCoursesTreeForDisplay, (tree) => {
     if (Object.keys(openApprovedCourseStages.value || {}).length === 0) {
         openApprovedCourseStages.value = {
             [approvedCourseNodeKey('stage', stages[0])]: true,
+        };
+    }
+}, { immediate: true });
+
+const courseAssignmentFilters = ref({
+    search: '',
+    stage_id: '',
+    grade_id: '',
+    term_id: '',
+    subject_id: '',
+    teacher_id: '',
+    assignment_status: '',
+    permission_status: '',
+    course_status: '',
+});
+const openCourseAssignmentStages = ref({});
+const openCourseAssignmentGrades = ref({});
+const openCourseAssignmentTerms = ref({});
+const openCourseAssignments = ref({});
+
+const resetCourseAssignmentFilters = () => {
+    courseAssignmentFilters.value = {
+        search: '',
+        stage_id: '',
+        grade_id: '',
+        term_id: '',
+        subject_id: '',
+        teacher_id: '',
+        assignment_status: '',
+        permission_status: '',
+        course_status: '',
+    };
+};
+
+const hasCourseAssignmentFilters = computed(() =>
+    Object.values(courseAssignmentFilters.value).some((value) => String(value ?? '').trim() !== '')
+);
+
+const courseAssignmentNodeKey = (prefix, node, fallback = '') =>
+    String(node?.key || node?.id || `${prefix}:${fallback || safeText(node?.name, 'unknown')}`);
+const courseAssignmentCourseKey = (course) => `course:${Number(course?.id || 0) || safeText(course?.subject_name || course?.subject?.name, 'unknown')}`;
+const isCourseAssignmentStageOpen = (stage) =>
+    isOpenInMap(openCourseAssignmentStages, courseAssignmentNodeKey('stage', stage));
+const isCourseAssignmentGradeOpen = (grade) =>
+    isOpenInMap(openCourseAssignmentGrades, courseAssignmentNodeKey('grade', grade));
+const isCourseAssignmentTermOpen = (term) =>
+    isOpenInMap(openCourseAssignmentTerms, courseAssignmentNodeKey('term', term));
+const isCourseAssignmentOpen = (course) =>
+    isOpenInMap(openCourseAssignments, courseAssignmentCourseKey(course));
+const toggleCourseAssignmentStage = (stage) =>
+    toggleOpenInMap(openCourseAssignmentStages, courseAssignmentNodeKey('stage', stage));
+const toggleCourseAssignmentGrade = (grade) =>
+    toggleOpenInMap(openCourseAssignmentGrades, courseAssignmentNodeKey('grade', grade));
+const toggleCourseAssignmentTerm = (term) =>
+    toggleOpenInMap(openCourseAssignmentTerms, courseAssignmentNodeKey('term', term));
+const toggleCourseAssignment = (course) =>
+    toggleOpenInMap(openCourseAssignments, courseAssignmentCourseKey(course));
+
+const courseAssignmentPermissionCount = (course) =>
+    assignmentPermissionBadges(course?.teaching_assignment || null).length;
+
+const courseAssignmentStatus = (course) => {
+    const assignment = course?.teaching_assignment || null;
+    const teacherId = Number(assignment?.teacher_user_id || assignment?.teacher?.id || 0);
+    const classroomIds = courseAssignedClassroomIds(course);
+
+    if (!assignment || teacherId <= 0) {
+        return {
+            key: 'no_teacher',
+            label: 'بدون معلم',
+            tone: 'bg-amber-500/15 text-amber-700 dark:text-amber-200',
+        };
+    }
+
+    if (classroomIds.length === 0) {
+        return {
+            key: 'no_classrooms',
+            label: 'بدون فصول',
+            tone: 'bg-orange-500/15 text-orange-700 dark:text-orange-200',
+        };
+    }
+
+    return {
+        key: 'complete',
+        label: 'إسناد مكتمل',
+        tone: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-200',
+    };
+};
+
+const summarizeCourseAssignments = (courses) => {
+    const base = summarizeApprovedCourses(courses);
+    const safeCourses = safeArray(courses);
+    const permissionsCount = safeCourses.reduce((sum, course) => sum + courseAssignmentPermissionCount(course), 0);
+    const completeCount = safeCourses.filter((course) => courseAssignmentStatus(course).key === 'complete').length;
+    const noTeacherCount = safeCourses.filter((course) => courseAssignmentStatus(course).key === 'no_teacher').length;
+    const noClassroomsCount = safeCourses.filter((course) => courseAssignmentStatus(course).key === 'no_classrooms').length;
+
+    return {
+        ...base,
+        assignments_count: safeCourses.length,
+        permissions_count: permissionsCount,
+        complete_assignments_count: completeCount,
+        incomplete_assignments_count: safeCourses.length - completeCount,
+        no_teacher_count: noTeacherCount,
+        no_classrooms_count: noClassroomsCount,
+    };
+};
+
+const normalizedCourseAssignmentsTree = computed(() =>
+    safeArray(props.courseAssignmentsTree).map((stage, stageIndex) => ({
+        ...(stage || {}),
+        id: stage?.id ?? null,
+        key: courseAssignmentNodeKey('stage', stage, stageIndex),
+        name: safeText(stage?.name, 'مرحلة غير محددة'),
+        grades: safeArray(stage?.grades).map((grade, gradeIndex) => ({
+            ...(grade || {}),
+            id: grade?.id ?? null,
+            key: courseAssignmentNodeKey('grade', grade, `${stageIndex}-${gradeIndex}`),
+            name: safeText(grade?.name, 'صف غير محدد'),
+            terms: safeArray(grade?.terms).map((term, termIndex) => ({
+                ...(term || {}),
+                id: term?.id ?? null,
+                key: courseAssignmentNodeKey('term', term, `${stageIndex}-${gradeIndex}-${termIndex}`),
+                name: safeText(term?.name, 'فصل دراسي غير محدد'),
+                courses: safeArray(term?.courses).map((course) => normalizeApprovedCourse(course)),
+            })),
+        })),
+    }))
+);
+
+const courseAssignmentStageFilterOptions = computed(() =>
+    normalizedCourseAssignmentsTree.value.map((stage) => ({
+        id: stage.id,
+        name: stage.name,
+    })).filter((stage) => Number(stage.id || 0) > 0)
+);
+
+const courseAssignmentGradeFilterOptions = computed(() => {
+    const selectedStageId = Number(courseAssignmentFilters.value.stage_id || 0);
+    const grades = new Map();
+
+    normalizedCourseAssignmentsTree.value
+        .filter((stage) => selectedStageId <= 0 || Number(stage.id || 0) === selectedStageId)
+        .forEach((stage) => {
+            safeArray(stage.grades).forEach((grade) => {
+                const gradeId = Number(grade?.id || 0);
+                if (gradeId > 0 && !grades.has(gradeId)) {
+                    grades.set(gradeId, {
+                        id: gradeId,
+                        name: grade.name,
+                        stage_name: stage.name,
+                    });
+                }
+            });
+        });
+
+    return [...grades.values()];
+});
+
+const courseAssignmentMatchesFilters = (offering) => {
+    const course = normalizeApprovedCourse(offering);
+    const filters = courseAssignmentFilters.value;
+    const stageId = Number(filters.stage_id || 0);
+    const gradeId = Number(filters.grade_id || 0);
+    const termId = Number(filters.term_id || 0);
+    const subjectId = Number(filters.subject_id || 0);
+    const teacherId = Number(filters.teacher_id || 0);
+    const assignmentStatus = courseAssignmentStatus(course).key;
+    const permissionCount = courseAssignmentPermissionCount(course);
+
+    if (!Boolean(course.is_active) || !Boolean(course.usable_in_exams ?? true)) return false;
+    if (stageId > 0 && Number(course.school_stage_id || 0) !== stageId) return false;
+    if (gradeId > 0 && Number(course.school_stage_grade_id || 0) !== gradeId) return false;
+    if (termId > 0 && Number(course.school_term_id || 0) !== termId) return false;
+    if (subjectId > 0 && Number(course.school_subject_id || 0) !== subjectId) return false;
+    if (teacherId > 0 && Number(course.teaching_assignment?.teacher_user_id || course.teaching_assignment?.teacher?.id || 0) !== teacherId) return false;
+
+    const selectedAssignmentStatus = String(filters.assignment_status || '').trim();
+    if (selectedAssignmentStatus === 'complete' && assignmentStatus !== 'complete') return false;
+    if (selectedAssignmentStatus === 'incomplete' && assignmentStatus === 'complete') return false;
+    if (selectedAssignmentStatus === 'no_teacher' && assignmentStatus !== 'no_teacher') return false;
+    if (selectedAssignmentStatus === 'no_classrooms' && assignmentStatus !== 'no_classrooms') return false;
+
+    const selectedPermissionStatus = String(filters.permission_status || '').trim();
+    if (selectedPermissionStatus === 'has_permissions' && permissionCount === 0) return false;
+    if (selectedPermissionStatus === 'no_permissions' && permissionCount > 0) return false;
+
+    const selectedCourseStatus = String(filters.course_status || '').trim();
+    if (selectedCourseStatus === 'active' && !Boolean(course.is_active)) return false;
+    if (selectedCourseStatus === 'inactive' && Boolean(course.is_active)) return false;
+
+    const needle = String(filters.search || '').trim().toLowerCase();
+    if (needle === '') return true;
+
+    const haystack = [
+        course.stage_name,
+        course.grade_name,
+        course.term_name,
+        course.subject_name,
+        course.teacher_name,
+        courseOfferingLabel(course),
+        assignmentClassroomsLabel(course),
+        assignmentPermissionBadges(course.teaching_assignment).join(' '),
+    ].join(' ').toLowerCase();
+
+    return haystack.includes(needle);
+};
+
+const filteredCourseAssignmentIds = computed(() =>
+    new Set(
+        normalizedCourseOfferings.value
+            .filter((offering) => courseAssignmentMatchesFilters(offering))
+            .map((offering) => Number(offering?.id || 0))
+            .filter((id) => id > 0)
+    )
+);
+
+const courseAssignmentsTreeForDisplay = computed(() => {
+    const activeIds = filteredCourseAssignmentIds.value;
+    const filtersEnabled = hasCourseAssignmentFilters.value;
+
+    return normalizedCourseAssignmentsTree.value
+        .map((stage) => {
+            const grades = safeArray(stage.grades)
+                .map((grade) => {
+                    const terms = safeArray(grade.terms)
+                        .map((term) => {
+                            const courses = safeArray(term.courses).filter((course) => activeIds.has(Number(course?.id || 0)));
+                            if (filtersEnabled && courses.length === 0) return null;
+
+                            return {
+                                ...term,
+                                ...summarizeCourseAssignments(courses),
+                                courses,
+                            };
+                        })
+                        .filter(Boolean);
+
+                    const gradeCourses = terms.flatMap((term) => safeArray(term.courses));
+                    if (filtersEnabled && gradeCourses.length === 0) return null;
+
+                    return {
+                        ...grade,
+                        ...summarizeCourseAssignments(gradeCourses),
+                        terms_count: terms.length,
+                        terms,
+                    };
+                })
+                .filter(Boolean);
+
+            const stageCourses = grades.flatMap((grade) =>
+                safeArray(grade.terms).flatMap((term) => safeArray(term.courses))
+            );
+            if (filtersEnabled && stageCourses.length === 0) return null;
+
+            return {
+                ...stage,
+                ...summarizeCourseAssignments(stageCourses),
+                grades_count: grades.length,
+                terms_count: grades.reduce((sum, grade) => sum + Number(grade.terms_count || 0), 0),
+                grades,
+            };
+        })
+        .filter(Boolean);
+});
+
+watch(courseAssignmentsTreeForDisplay, (tree) => {
+    const stages = safeArray(tree);
+    if (stages.length === 0) return;
+
+    if (hasCourseAssignmentFilters.value) {
+        const nextStages = {};
+        const nextGrades = {};
+        const nextTerms = {};
+
+        stages.forEach((stage) => {
+            nextStages[courseAssignmentNodeKey('stage', stage)] = true;
+            safeArray(stage.grades).forEach((grade) => {
+                nextGrades[courseAssignmentNodeKey('grade', grade)] = true;
+                safeArray(grade.terms).forEach((term) => {
+                    nextTerms[courseAssignmentNodeKey('term', term)] = true;
+                });
+            });
+        });
+
+        openCourseAssignmentStages.value = nextStages;
+        openCourseAssignmentGrades.value = nextGrades;
+        openCourseAssignmentTerms.value = nextTerms;
+        return;
+    }
+
+    if (Object.keys(openCourseAssignmentStages.value || {}).length === 0) {
+        openCourseAssignmentStages.value = {
+            [courseAssignmentNodeKey('stage', stages[0])]: true,
         };
     }
 }, { immediate: true });
@@ -5961,61 +6259,342 @@ onMounted(async () => {
                     <button class="rounded-lg bg-gray-700 px-3 py-1.5 text-xs font-semibold hover:bg-gray-600" @click="resetTeachingAssignmentForm">إغلاق التعديل</button>
                 </div>
 
-                <div class="space-y-2">
-                    <div
-                        v-for="offering in assignmentCourseOfferings"
-                        :key="offering.id"
-                        class="stage-row-accent rounded border border-gray-700 bg-gray-800 p-3"
-                        :style="stageAccent(offering.school_stage_id, offering.stage?.name || offering.stage_name || '')"
-                    >
-                        <div class="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                                <p class="font-semibold stage-inline-accent" :style="stageAccent(offering.school_stage_id, offering.stage?.name || offering.stage_name || '')">
-                                    <span class="stage-badge" :style="stageAccent(offering.school_stage_id, offering.stage?.name || offering.stage_name || '')">
-                                        {{ offering.stage?.name || offering.stage_name || 'مرحلة غير محددة' }}
-                                    </span>
-                                    <span class="mx-1">{{ courseOfferingLabel(offering) }}</span>
-                                </p>
-                                <p class="mt-1 text-xs text-gray-400">
-                                    المعلم المسند: {{ offering.teaching_assignment?.teacher?.name || 'غير مسند' }}
-                                </p>
-                                <p class="mt-1 text-xs text-gray-400">
-                                    الفصول المسندة: {{ assignmentClassroomsLabel(offering) }}
-                                </p>
-                                <div class="mt-2 flex flex-wrap gap-1">
-                                    <span
-                                        v-for="badge in assignmentPermissionBadges(offering.teaching_assignment)"
-                                        :key="`assignment-badge-${offering.id}-${badge}`"
-                                        class="rounded bg-indigo-500/20 px-2 py-1 text-[10px] text-indigo-200"
-                                    >
-                                        {{ badge }}
-                                    </span>
-                                    <span
-                                        v-if="assignmentPermissionBadges(offering.teaching_assignment).length === 0"
-                                        class="rounded bg-gray-700 px-2 py-1 text-[10px] text-gray-300"
-                                    >
-                                        لا توجد صلاحيات اختبارات مفعلة
-                                    </span>
-                                </div>
+                <div class="space-y-4">
+                    <div class="rounded-2xl border border-emerald-200 bg-white/90 p-3 text-slate-900 shadow-sm dark:border-emerald-500/30 dark:bg-gray-950/60 dark:text-gray-100">
+                        <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 text-sm font-bold text-emerald-800 dark:text-emerald-100">
+                                <Filter class="h-4 w-4" />
+                                <span>تصفية الإسنادات وصلاحيات الاختبارات</span>
                             </div>
+                            <button
+                                type="button"
+                                class="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                                :disabled="!hasCourseAssignmentFilters"
+                                @click="resetCourseAssignmentFilters"
+                            >
+                                مسح الفلاتر
+                            </button>
+                        </div>
 
-                            <div class="flex items-center gap-2">
-                                <button class="rounded bg-indigo-700 px-2 py-1 text-xs hover:bg-indigo-600" @click="openTeachingAssignmentForm(offering)">
-                                    ضبط الإسناد
-                                </button>
-                                <button
-                                    v-if="offering.teaching_assignment"
-                                    class="rounded bg-red-700 px-2 py-1 text-xs hover:bg-red-600"
-                                    @click="clearTeachingAssignment(offering)"
-                                >
-                                    إلغاء الإسناد
-                                </button>
-                            </div>
+                        <div class="grid grid-cols-1 gap-2 md:grid-cols-3 xl:grid-cols-7">
+                            <label class="space-y-1 md:col-span-2">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">بحث سريع</span>
+                                <span class="relative block">
+                                    <Search class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-gray-500" />
+                                    <input
+                                        v-model="courseAssignmentFilters.search"
+                                        type="search"
+                                        class="w-full rounded-xl border border-slate-300 bg-white py-2 pl-3 pr-9 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                                        placeholder="المقرر، المعلم، الصف، الفصل أو صلاحية الاختبار"
+                                    />
+                                </span>
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">المرحلة</span>
+                                <select v-model="courseAssignmentFilters.stage_id" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل المراحل</option>
+                                    <option v-for="stage in courseAssignmentStageFilterOptions" :key="`assignment-filter-stage-${stage.id}`" :value="stage.id">
+                                        {{ stage.name }}
+                                    </option>
+                                </select>
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">الصف</span>
+                                <select v-model="courseAssignmentFilters.grade_id" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل الصفوف</option>
+                                    <option v-for="grade in courseAssignmentGradeFilterOptions" :key="`assignment-filter-grade-${grade.id}`" :value="grade.id">
+                                        {{ grade.name }}
+                                    </option>
+                                </select>
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">الفصل الدراسي</span>
+                                <select v-model="courseAssignmentFilters.term_id" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل الفصول</option>
+                                    <option v-for="term in terms" :key="`assignment-filter-term-${term.id}`" :value="term.id">
+                                        {{ term.name }}
+                                    </option>
+                                </select>
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">المادة</span>
+                                <select v-model="courseAssignmentFilters.subject_id" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل المواد</option>
+                                    <option v-for="subject in activeSubjects" :key="`assignment-filter-subject-${subject.id}`" :value="subject.id">
+                                        {{ subject.name }}
+                                    </option>
+                                </select>
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">حالة الإسناد</span>
+                                <select v-model="courseAssignmentFilters.assignment_status" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل الحالات</option>
+                                    <option value="complete">مكتمل</option>
+                                    <option value="incomplete">غير مكتمل</option>
+                                    <option value="no_teacher">بدون معلم</option>
+                                    <option value="no_classrooms">بدون فصول</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="mt-2 grid grid-cols-1 gap-2 md:grid-cols-3">
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">المعلم</span>
+                                <select v-model="courseAssignmentFilters.teacher_id" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل المعلمين</option>
+                                    <option v-for="teacher in teachers" :key="`assignment-filter-teacher-${teacher.id}`" :value="teacher.id">
+                                        {{ teacher.name }}
+                                    </option>
+                                </select>
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">حالة الصلاحيات</span>
+                                <select v-model="courseAssignmentFilters.permission_status" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل الصلاحيات</option>
+                                    <option value="has_permissions">لديه صلاحيات اختبارات</option>
+                                    <option value="no_permissions">بدون صلاحيات اختبارات</option>
+                                </select>
+                            </label>
+
+                            <label class="space-y-1">
+                                <span class="text-xs text-slate-600 dark:text-gray-400">حالة المقرر</span>
+                                <select v-model="courseAssignmentFilters.course_status" class="w-full rounded-xl border border-slate-300 bg-white p-2 text-sm text-slate-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                    <option value="">كل المقررات</option>
+                                    <option value="active">نشط</option>
+                                    <option value="inactive">غير نشط</option>
+                                </select>
+                            </label>
                         </div>
                     </div>
 
-                    <div v-if="assignmentCourseOfferings.length === 0" class="rounded border border-gray-700 bg-gray-800/70 p-3 text-sm text-gray-300">
-                        لا توجد مقررات نشطة ومفعلة للاختبارات بعد. أضف المقررات أو فعّل خيار استخدامها في الاختبارات أولًا.
+                    <div class="space-y-3">
+                        <div
+                            v-for="stage in courseAssignmentsTreeForDisplay"
+                            :key="`assignment-stage-${stage.key}`"
+                            class="stage-row-accent overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-950/70"
+                            :style="stageAccent(stage.id, stage.name)"
+                        >
+                            <button
+                                type="button"
+                                class="flex w-full flex-wrap items-center justify-between gap-3 p-4 text-right transition hover:bg-slate-50 dark:hover:bg-gray-900/80"
+                                @click="toggleCourseAssignmentStage(stage)"
+                            >
+                                <span class="flex items-center gap-3">
+                                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-700 dark:text-emerald-200">
+                                        <School class="h-5 w-5" />
+                                    </span>
+                                    <span>
+                                        <span class="block text-base font-bold text-slate-900 dark:text-gray-100">{{ stage.name }}</span>
+                                        <span class="text-xs text-slate-500 dark:text-gray-400">
+                                            {{ stage.grades_count }} صفوف، {{ stage.assignments_count }} مقررات، {{ stage.teachers_count }} معلمين
+                                        </span>
+                                    </span>
+                                </span>
+                                <span class="flex flex-wrap items-center gap-2">
+                                    <span class="rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-200">
+                                        {{ stage.assigned_classrooms_count }} فصول مسندة
+                                    </span>
+                                    <span class="rounded-full bg-indigo-500/15 px-2.5 py-1 text-[11px] font-semibold text-indigo-700 dark:text-indigo-200">
+                                        {{ stage.permissions_count }} صلاحيات
+                                    </span>
+                                    <ChevronDown v-if="isCourseAssignmentStageOpen(stage)" class="h-5 w-5 text-slate-500 dark:text-gray-400" />
+                                    <ChevronLeft v-else class="h-5 w-5 text-slate-500 dark:text-gray-400" />
+                                </span>
+                            </button>
+
+                            <div v-if="isCourseAssignmentStageOpen(stage)" class="space-y-3 border-t border-slate-200 p-3 dark:border-gray-800">
+                                <div
+                                    v-for="grade in stage.grades"
+                                    :key="`assignment-grade-${grade.key}`"
+                                    class="overflow-hidden rounded-xl border border-slate-200 bg-slate-50/80 dark:border-gray-800 dark:bg-gray-900/70"
+                                >
+                                    <button
+                                        type="button"
+                                        class="flex w-full flex-wrap items-center justify-between gap-3 p-3 text-right transition hover:bg-white dark:hover:bg-gray-800"
+                                        @click="toggleCourseAssignmentGrade(grade)"
+                                    >
+                                        <span class="flex items-center gap-2">
+                                            <BookOpenText class="h-4 w-4 text-emerald-600 dark:text-emerald-300" />
+                                            <span>
+                                                <span class="block text-sm font-bold text-slate-900 dark:text-gray-100">{{ grade.name }}</span>
+                                                <span class="text-xs text-slate-500 dark:text-gray-400">
+                                                    {{ grade.terms_count }} فصول دراسية، {{ grade.assignments_count }} مقررات قابلة للإسناد
+                                                </span>
+                                            </span>
+                                        </span>
+                                        <span class="flex flex-wrap items-center gap-2">
+                                            <span class="rounded-full bg-emerald-500/15 px-2 py-1 text-[11px] text-emerald-700 dark:text-emerald-200">
+                                                {{ grade.complete_assignments_count }} مكتمل
+                                            </span>
+                                            <span v-if="grade.incomplete_assignments_count > 0" class="rounded-full bg-amber-500/15 px-2 py-1 text-[11px] text-amber-700 dark:text-amber-200">
+                                                {{ grade.incomplete_assignments_count }} يحتاج ضبط
+                                            </span>
+                                            <ChevronDown v-if="isCourseAssignmentGradeOpen(grade)" class="h-4 w-4 text-slate-500 dark:text-gray-400" />
+                                            <ChevronLeft v-else class="h-4 w-4 text-slate-500 dark:text-gray-400" />
+                                        </span>
+                                    </button>
+
+                                    <div v-if="isCourseAssignmentGradeOpen(grade)" class="space-y-2 border-t border-slate-200 p-3 dark:border-gray-800">
+                                        <div
+                                            v-for="term in grade.terms"
+                                            :key="`assignment-term-${term.key}`"
+                                            class="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-800 dark:bg-gray-950/70"
+                                        >
+                                            <button
+                                                type="button"
+                                                class="flex w-full flex-wrap items-center justify-between gap-3 p-3 text-right transition hover:bg-slate-50 dark:hover:bg-gray-900"
+                                                @click="toggleCourseAssignmentTerm(term)"
+                                            >
+                                                <span class="flex items-center gap-2">
+                                                    <CalendarDays class="h-4 w-4 text-emerald-600 dark:text-emerald-300" />
+                                                    <span>
+                                                        <span class="block text-sm font-bold text-slate-900 dark:text-gray-100">{{ term.name }}</span>
+                                                        <span class="text-xs text-slate-500 dark:text-gray-400">
+                                                            {{ term.assignments_count }} مقررات، {{ term.teachers_count }} معلمين، {{ term.permissions_count }} صلاحيات
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                                <span class="flex flex-wrap items-center gap-2">
+                                                    <span class="rounded-full bg-indigo-500/15 px-2 py-1 text-[11px] text-indigo-700 dark:text-indigo-200">
+                                                        {{ term.assigned_classrooms_count }} فصول
+                                                    </span>
+                                                    <ChevronDown v-if="isCourseAssignmentTermOpen(term)" class="h-4 w-4 text-slate-500 dark:text-gray-400" />
+                                                    <ChevronLeft v-else class="h-4 w-4 text-slate-500 dark:text-gray-400" />
+                                                </span>
+                                            </button>
+
+                                            <div v-if="isCourseAssignmentTermOpen(term)" class="border-t border-slate-200 p-3 dark:border-gray-800">
+                                                <div v-if="term.courses.length > 0" class="grid grid-cols-1 gap-3 xl:grid-cols-2">
+                                                    <article
+                                                        v-for="course in term.courses"
+                                                        :key="`assignment-course-${course.id}`"
+                                                        class="stage-row-accent overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm dark:border-gray-800 dark:bg-gray-900/80"
+                                                        :style="stageAccent(course.school_stage_id || stage.id, course.stage_name || stage.name)"
+                                                    >
+                                                        <div class="p-3">
+                                                            <div class="flex flex-wrap items-start justify-between gap-3">
+                                                                <button
+                                                                    type="button"
+                                                                    class="min-w-0 flex-1 text-right"
+                                                                    @click="toggleCourseAssignment(course)"
+                                                                >
+                                                                    <p class="stage-inline-accent flex flex-wrap items-center gap-2 font-bold text-slate-900 dark:text-gray-100" :style="stageAccent(course.school_stage_id || stage.id, course.stage_name || stage.name)">
+                                                                        <span class="stage-badge" :style="stageAccent(course.school_stage_id || stage.id, course.stage_name || stage.name)">
+                                                                            {{ course.subject_name }}
+                                                                        </span>
+                                                                        <span class="text-xs font-semibold text-slate-500 dark:text-gray-400">{{ course.grade_name }}</span>
+                                                                    </p>
+                                                                    <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-gray-400">
+                                                                        <span class="inline-flex items-center gap-1">
+                                                                            <UserRound class="h-3.5 w-3.5" />
+                                                                            {{ course.teacher_name }}
+                                                                        </span>
+                                                                        <span class="inline-flex items-center gap-1">
+                                                                            <Users class="h-3.5 w-3.5" />
+                                                                            {{ assignmentClassroomsLabel(course) }}
+                                                                        </span>
+                                                                    </div>
+                                                                </button>
+
+                                                                <div class="flex flex-wrap items-center gap-2">
+                                                                    <span class="rounded-full px-2 py-1 text-[10px] font-semibold" :class="courseAssignmentStatus(course).tone">
+                                                                        {{ courseAssignmentStatus(course).label }}
+                                                                    </span>
+                                                                    <ChevronDown v-if="isCourseAssignmentOpen(course)" class="h-4 w-4 text-slate-500 dark:text-gray-400" />
+                                                                    <ChevronLeft v-else class="h-4 w-4 text-slate-500 dark:text-gray-400" />
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="mt-3 flex flex-wrap gap-1">
+                                                                <span
+                                                                    v-for="badge in assignmentPermissionBadges(course.teaching_assignment)"
+                                                                    :key="`assignment-tree-badge-${course.id}-${badge}`"
+                                                                    class="rounded-full bg-indigo-500/15 px-2 py-1 text-[10px] text-indigo-700 dark:text-indigo-200"
+                                                                >
+                                                                    {{ badge }}
+                                                                </span>
+                                                                <span
+                                                                    v-if="assignmentPermissionBadges(course.teaching_assignment).length === 0"
+                                                                    class="rounded-full bg-slate-200 px-2 py-1 text-[10px] text-slate-600 dark:bg-gray-800 dark:text-gray-300"
+                                                                >
+                                                                    بدون صلاحيات اختبارات
+                                                                </span>
+                                                            </div>
+
+                                                            <div class="mt-3 flex flex-wrap items-center gap-2">
+                                                                <button type="button" class="rounded-lg bg-indigo-700 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-indigo-600" @click="openTeachingAssignmentForm(course)">
+                                                                    ضبط الإسناد
+                                                                </button>
+                                                                <button
+                                                                    v-if="course.teaching_assignment"
+                                                                    type="button"
+                                                                    class="rounded-lg bg-red-700 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-red-600"
+                                                                    @click="clearTeachingAssignment(course)"
+                                                                >
+                                                                    إلغاء الإسناد
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                        <div v-if="isCourseAssignmentOpen(course)" class="border-t border-slate-200 bg-white/80 p-3 text-xs dark:border-gray-800 dark:bg-gray-950/50">
+                                                            <div class="grid grid-cols-1 gap-2 md:grid-cols-2">
+                                                                <div class="rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-gray-800 dark:bg-gray-900">
+                                                                    <p class="font-bold text-slate-700 dark:text-gray-200">المعلم المسند</p>
+                                                                    <p class="mt-1 text-slate-600 dark:text-gray-400">{{ course.teacher_name }}</p>
+                                                                </div>
+                                                                <div class="rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-gray-800 dark:bg-gray-900">
+                                                                    <p class="font-bold text-slate-700 dark:text-gray-200">الفصول والشعب</p>
+                                                                    <p class="mt-1 text-slate-600 dark:text-gray-400">{{ assignmentClassroomsLabel(course) }}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-gray-800 dark:bg-gray-900">
+                                                                <p class="font-bold text-slate-700 dark:text-gray-200">صلاحيات الاختبارات</p>
+                                                                <div class="mt-2 flex flex-wrap gap-1">
+                                                                    <span
+                                                                        v-for="badge in assignmentPermissionBadges(course.teaching_assignment)"
+                                                                        :key="`assignment-detail-badge-${course.id}-${badge}`"
+                                                                        class="rounded bg-indigo-500/15 px-2 py-1 text-[10px] text-indigo-700 dark:text-indigo-200"
+                                                                    >
+                                                                        {{ badge }}
+                                                                    </span>
+                                                                    <span
+                                                                        v-if="assignmentPermissionBadges(course.teaching_assignment).length === 0"
+                                                                        class="rounded bg-slate-200 px-2 py-1 text-[10px] text-slate-600 dark:bg-gray-800 dark:text-gray-300"
+                                                                    >
+                                                                        لا توجد صلاحيات مفعلة لهذا الإسناد.
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </article>
+                                                </div>
+                                                <div v-else class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
+                                                    لا توجد مقررات قابلة للإسناد داخل هذا الفصل الدراسي.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="grade.terms.length === 0" class="rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-950/50 dark:text-gray-300">
+                                            لا توجد إسنادات داخل هذا الصف.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-if="stage.grades.length === 0" class="rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-300">
+                                    لا توجد صفوف داخل هذه المرحلة.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-if="courseAssignmentsTreeForDisplay.length === 0" class="rounded-2xl border border-dashed border-gray-700 bg-gray-800/70 p-5 text-sm text-gray-300">
+                            {{ hasCourseAssignmentFilters ? 'لا توجد نتائج مطابقة لفلاتر الإسناد الحالية.' : 'لا توجد مقررات نشطة ومفعلة للاختبارات بعد. أضف المقررات أو فعّل خيار استخدامها في الاختبارات أولًا.' }}
+                        </div>
                     </div>
                 </div>
 
@@ -7210,4 +7789,3 @@ onMounted(async () => {
     background: #ffffff;
 }
 </style>
-

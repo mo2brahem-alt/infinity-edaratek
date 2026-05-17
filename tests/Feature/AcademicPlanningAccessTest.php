@@ -351,6 +351,12 @@ class AcademicPlanningAccessTest extends TestCase
                 ->where('approvedCoursesTree.0.grades.0.terms.0.courses.0.id', $offeringA->id)
                 ->where('approvedCoursesTree.0.grades.0.terms.0.courses.0.subject_name', 'Mathematics A')
                 ->where('approvedCoursesTree.0.grades.0.terms.0.courses.0.teacher_name', $teacherA->name)
+                ->has('courseAssignmentsTree', 1)
+                ->where('courseAssignmentsTree.0.id', $stageA->id)
+                ->where('courseAssignmentsTree.0.grades.0.id', $gradeA->id)
+                ->where('courseAssignmentsTree.0.grades.0.terms.0.id', $termA->id)
+                ->where('courseAssignmentsTree.0.grades.0.terms.0.courses.0.id', $offeringA->id)
+                ->where('courseAssignmentsTree.0.grades.0.terms.0.courses.0.teacher_name', $teacherA->name)
             );
     }
 

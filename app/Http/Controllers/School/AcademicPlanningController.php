@@ -282,6 +282,9 @@ class AcademicPlanningController extends Controller
 
         $this->attachTermEndAlertFlags($courseOfferings);
         $approvedCoursesTree = $this->buildApprovedCoursesTree($courseOfferings);
+        $courseAssignmentsTree = $this->buildApprovedCoursesTree(
+            $courseOfferings->filter(fn ($offering) => (bool) ($offering->is_active ?? false) && (bool) ($offering->usable_in_exams ?? true))
+        );
 
         $teacherAvailabilities = SchoolTeacherAvailability::query()
             ->where('school_id', $schoolId)
@@ -479,6 +482,7 @@ class AcademicPlanningController extends Controller
             'holidays' => $holidays,
             'courseOfferings' => $courseOfferings,
             'approvedCoursesTree' => $approvedCoursesTree,
+            'courseAssignmentsTree' => $courseAssignmentsTree,
             'timetableVersions' => $timetableVersions,
             'schedules' => $scheduleEntries,
             'selectedTermId' => $selectedTerm?->id,
