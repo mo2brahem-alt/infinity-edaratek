@@ -12,6 +12,7 @@ use App\Models\SchoolStageTerm;
 use App\Models\SchoolStudent;
 use App\Services\Integrity\IntegrityImpactService;
 use App\Services\School\SchoolDefaultDataProvisioningService;
+use App\Services\School\StudentImportService;
 use App\Services\Support\AttachmentService;
 use App\Services\Support\AuditLogger;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use RuntimeException;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class StudentStructureController extends Controller
 {
@@ -1184,6 +1187,55 @@ class StudentStructureController extends Controller
         return back();
     }
 
+    public function downloadStudentImportTemplate(Request $request, StudentImportService $studentImportService): BinaryFileResponse|RedirectResponse
+    {
+        $this->resolveSchoolId($request);
+
+        try {
+            return $studentImportService->templateResponse();
+        } catch (RuntimeException $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
+    }
+
+    public function importStudents(Request $request, StudentImportService $studentImportService): RedirectResponse
+    {
+        $schoolId = $this->resolveSchoolId($request);
+
+        $request->validate([
+            'students_file' => ['required', 'file', 'mimes:xlsx', 'max:2048'],
+        ], [
+            'students_file.required' => 'يرجى اختيار ملف Excel لاستيراد الطلاب.',
+            'students_file.file' => 'الملف المرفوع غير صالح.',
+            'students_file.mimes' => 'يرجى رفع ملف Excel بصيغة xlsx فقط.',
+            'students_file.max' => 'حجم ملف Excel يجب ألا يتجاوز 2 ميجابايت.',
+        ]);
+
+        $file = $request->file('students_file');
+        if ($file === null) {
+            throw ValidationException::withMessages([
+                'students_file' => 'يرجى اختيار ملف Excel لاستيراد الطلاب.',
+            ]);
+        }
+
+        $result = $studentImportService->import($file, $schoolId);
+        $summary = $result['summary'];
+
+        if (!$result['ok']) {
+            return back()
+                ->withErrors([
+                    'students_file' => 'لم يتم استيراد الطلاب. يرجى مراجعة الأخطاء وتصحيح ملف Excel ثم إعادة رفعه.',
+                ])
+                ->with('student_import_summary', $summary)
+                ->with('student_import_errors', $result['errors']);
+        }
+
+        return back()
+            ->with('success', 'تم استيراد ' . $summary['imported_rows'] . ' طالب بنجاح داخل المدرسة الحالية.')
+            ->with('student_import_summary', $summary)
+            ->with('student_import_errors', []);
+    }
+
     public function updateStudent(Request $request, SchoolStudent $schoolStudent): RedirectResponse
     {
         $schoolId = $this->resolveSchoolId($request);
@@ -1709,4 +1761,3 @@ class StudentStructureController extends Controller
         ];
     }
 }
-

@@ -289,6 +289,8 @@ Route::middleware(['auth', 'active_school_association', 'student_structure_acces
     Route::put('/school/student-structure/classrooms/{schoolClassroom}', [SchoolStudentStructureController::class, 'updateClassroom'])->name('school.student_structure.classrooms.update');
     Route::delete('/school/student-structure/classrooms/{schoolClassroom}', [SchoolStudentStructureController::class, 'destroyClassroom'])->name('school.student_structure.classrooms.destroy');
 
+    Route::get('/school/student-structure/students/import-template', [SchoolStudentStructureController::class, 'downloadStudentImportTemplate'])->name('school.student_structure.students.import_template');
+    Route::post('/school/student-structure/students/import', [SchoolStudentStructureController::class, 'importStudents'])->name('school.student_structure.students.import');
     Route::post('/school/student-structure/students', [SchoolStudentStructureController::class, 'storeStudent'])->name('school.student_structure.students.store');
     Route::put('/school/student-structure/students/{schoolStudent}', [SchoolStudentStructureController::class, 'updateStudent'])->name('school.student_structure.students.update');
     Route::delete('/school/student-structure/students/{schoolStudent}', [SchoolStudentStructureController::class, 'destroyStudent'])->name('school.student_structure.students.destroy');

@@ -55,6 +55,8 @@ class HandleInertiaRequests extends Middleware
                 'warning' => fn () => $request->session()->get('warning'),
                 'info' => fn () => $request->session()->get('info'),
                 'error' => fn () => $request->session()->get('error'),
+                'student_import_summary' => fn () => $request->session()->get('student_import_summary'),
+                'student_import_errors' => fn () => $request->session()->get('student_import_errors', []),
             ],
             'features' => [
                 'student_leaves_enabled' => (bool) config('features.student_leaves.enabled', true),

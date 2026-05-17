@@ -2,15 +2,20 @@
 import { computed, nextTick, ref, watch } from 'vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import {
+    AlertTriangle,
     Building2,
     CalendarDays,
+    CheckCircle2,
     Filter,
+    FileDown,
+    FileSpreadsheet,
     GraduationCap,
     Pencil,
     PlusCircle,
     Save,
     School,
     Trash2,
+    UploadCloud,
     UserRound,
     Users,
     X,
@@ -93,9 +98,11 @@ const importDefaultData = async () => {
 const classroomNameInput = ref(null);
 const stageTermNameInput = ref(null);
 const studentNameInput = ref(null);
+const studentImportFileInput = ref(null);
 const isStageTermModalOpen = ref(false);
 const isClassroomModalOpen = ref(false);
 const isStudentModalOpen = ref(false);
+const isStudentImportModalOpen = ref(false);
 
 const focusInput = (inputRef) => {
     nextTick(() => {
@@ -192,6 +199,12 @@ const studentForm = useForm({
     is_active: true,
     attachments: [],
 });
+const studentImportForm = useForm({
+    students_file: null,
+});
+const studentImportSummary = computed(() => page.props.flash?.student_import_summary || null);
+const studentImportErrors = computed(() => page.props.flash?.student_import_errors || []);
+const selectedStudentImportFileName = computed(() => studentImportForm.students_file?.name || '');
 
 const studentFilterStageId = ref('');
 const studentFilterGradeName = ref('');
@@ -709,6 +722,44 @@ const closeStudentModal = () => {
     resetStudentForm(null, null, null, false);
 };
 
+const openStudentImportModal = () => {
+    isStudentImportModalOpen.value = true;
+    studentImportForm.clearErrors();
+};
+
+const closeStudentImportModal = () => {
+    isStudentImportModalOpen.value = false;
+    studentImportForm.reset();
+    studentImportForm.clearErrors();
+    if (studentImportFileInput.value) {
+        studentImportFileInput.value.value = '';
+    }
+};
+
+const selectStudentImportFile = (event) => {
+    studentImportForm.students_file = event.target.files?.[0] || null;
+    studentImportForm.clearErrors('students_file');
+};
+
+const submitStudentImport = () => {
+    if (!studentImportForm.students_file) {
+        studentImportForm.setError('students_file', 'يرجى اختيار ملف Excel قبل بدء الاستيراد.');
+        return;
+    }
+
+    studentImportForm.post(route('school.student_structure.students.import'), {
+        forceFormData: true,
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => {
+            studentImportForm.reset();
+            if (studentImportFileInput.value) {
+                studentImportFileInput.value.value = '';
+            }
+        },
+    });
+};
+
 const appendStudentAttachmentFiles = (fileList) => {
     const incoming = Array.from(fileList || []).filter((file) => file instanceof File);
     if (incoming.length === 0) return;
@@ -1073,10 +1124,132 @@ focusInput(studentNameInput);
                         <Users class="h-4 w-4 text-blue-300" />
                         <span>2) الطلاب</span>
                     </h2>
-                    <button type="button" class="inline-flex items-center gap-1 rounded bg-gray-700 px-3 py-1 text-xs hover:bg-gray-600" @click="openCreateStudentModal">
-                        <PlusCircle class="h-3.5 w-3.5" />
-                        <span>جديد</span>
-                    </button>
+                    <div class="flex flex-wrap items-center justify-end gap-2">
+                        <a
+                            :href="route('school.student_structure.students.import_template')"
+                            class="inline-flex items-center gap-1 rounded bg-gray-800 px-3 py-1.5 text-xs font-semibold text-gray-100 ring-1 ring-gray-700 transition hover:bg-gray-700"
+                        >
+                            <FileDown class="h-3.5 w-3.5" />
+                            <span>تحميل قالب Excel</span>
+                        </a>
+                        <button
+                            type="button"
+                            class="inline-flex items-center gap-1 rounded bg-blue-700 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-600"
+                            @click="openStudentImportModal"
+                        >
+                            <FileSpreadsheet class="h-3.5 w-3.5" />
+                            <span>استيراد الطلاب من Excel</span>
+                        </button>
+                        <button type="button" class="inline-flex items-center gap-1 rounded bg-gray-700 px-3 py-1.5 text-xs hover:bg-gray-600" @click="openCreateStudentModal">
+                            <PlusCircle class="h-3.5 w-3.5" />
+                            <span>جديد</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    v-if="isStudentImportModalOpen"
+                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+                    @click.self="closeStudentImportModal"
+                >
+                    <div class="w-full max-w-4xl overflow-hidden rounded-2xl border border-blue-500/40 bg-gray-950 text-gray-100 shadow-2xl">
+                        <div class="flex items-center justify-between gap-2 border-b border-gray-800 bg-gray-900/90 p-4">
+                            <h3 class="inline-flex items-center gap-2 text-base font-bold text-blue-100">
+                                <FileSpreadsheet class="h-4 w-4 text-blue-200" />
+                                <span>استيراد الطلاب من Excel</span>
+                            </h3>
+                            <button type="button" class="inline-flex items-center gap-1 rounded bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-700" @click="closeStudentImportModal">
+                                <X class="h-3.5 w-3.5" />
+                                <span>إغلاق</span>
+                            </button>
+                        </div>
+
+                        <form class="max-h-[72vh] space-y-4 overflow-y-auto p-4" @submit.prevent="submitStudentImport">
+                            <div class="rounded-xl border border-blue-500/30 bg-blue-500/10 p-4 text-sm leading-7 text-blue-50">
+                                <p class="font-semibold">قم بتحميل القالب، ثم املأ أسماء المرحلة والصف والفصل كما هي داخل هذه المدرسة. لا تضف school_id داخل الملف.</p>
+                                <p class="text-xs text-blue-100/80">رقم الطالب اختياري، وإذا تركته فارغًا سيولده النظام تلقائيًا. لن يتم حفظ أي طالب إذا وُجدت أخطاء في الملف.</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                <a
+                                    :href="route('school.student_structure.students.import_template')"
+                                    class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm font-bold text-gray-100 transition hover:border-blue-400/70 hover:bg-gray-800"
+                                >
+                                    <FileDown class="h-4 w-4 text-blue-300" />
+                                    <span>تحميل قالب Excel فارغ</span>
+                                </a>
+
+                                <label class="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-gray-600 bg-gray-900 px-4 py-3 text-sm font-bold text-gray-100 transition hover:border-blue-400/70 hover:bg-gray-800">
+                                    <UploadCloud class="h-4 w-4 text-blue-300" />
+                                    <span>{{ selectedStudentImportFileName || 'اختيار ملف الطلاب' }}</span>
+                                    <input
+                                        ref="studentImportFileInput"
+                                        type="file"
+                                        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                        class="sr-only"
+                                        @change="selectStudentImportFile"
+                                    />
+                                </label>
+                            </div>
+
+                            <p v-if="studentImportForm.errors.students_file" class="rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-100">
+                                {{ studentImportForm.errors.students_file }}
+                            </p>
+
+                            <div v-if="studentImportSummary" class="grid grid-cols-2 gap-3 md:grid-cols-4">
+                                <div class="rounded-xl border border-gray-800 bg-gray-900 p-3">
+                                    <p class="text-xs text-gray-400">الصفوف المقروءة</p>
+                                    <p class="text-xl font-black">{{ studentImportSummary.total_rows }}</p>
+                                </div>
+                                <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3">
+                                    <p class="text-xs text-emerald-100/80">الصفوف الصحيحة</p>
+                                    <p class="text-xl font-black text-emerald-100">{{ studentImportSummary.valid_rows }}</p>
+                                </div>
+                                <div class="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3">
+                                    <p class="text-xs text-amber-100/80">صفوف بها أخطاء</p>
+                                    <p class="text-xl font-black text-amber-100">{{ studentImportSummary.failed_rows }}</p>
+                                </div>
+                                <div class="rounded-xl border border-blue-500/30 bg-blue-500/10 p-3">
+                                    <p class="text-xs text-blue-100/80">تم استيرادها</p>
+                                    <p class="text-xl font-black text-blue-100">{{ studentImportSummary.imported_rows }}</p>
+                                </div>
+                            </div>
+
+                            <div v-if="studentImportErrors.length > 0" class="rounded-xl border border-red-500/40 bg-red-500/10 p-4">
+                                <p class="mb-3 inline-flex items-center gap-2 text-sm font-bold text-red-100">
+                                    <AlertTriangle class="h-4 w-4" />
+                                    <span>أخطاء يجب تصحيحها قبل الاستيراد</span>
+                                </p>
+                                <ul class="max-h-48 space-y-2 overflow-y-auto text-sm text-red-50">
+                                    <li v-for="(error, index) in studentImportErrors" :key="`student-import-error-${index}`" class="rounded bg-red-950/40 px-3 py-2">
+                                        {{ error }}
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div v-else-if="studentImportSummary?.imported_rows > 0" class="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm text-emerald-50">
+                                <p class="inline-flex items-center gap-2 font-bold">
+                                    <CheckCircle2 class="h-4 w-4" />
+                                    <span>تم استيراد الطلاب بنجاح داخل المدرسة الحالية.</span>
+                                </p>
+                            </div>
+
+                            <div class="flex flex-wrap items-center justify-end gap-2 border-t border-gray-800 pt-4">
+                                <button type="button" class="inline-flex items-center gap-1 rounded bg-gray-800 px-4 py-2 text-sm hover:bg-gray-700" @click="closeStudentImportModal">
+                                    <X class="h-4 w-4" />
+                                    <span>إلغاء</span>
+                                </button>
+                                <button
+                                    type="submit"
+                                    :disabled="studentImportForm.processing"
+                                    class="inline-flex items-center gap-2 rounded bg-emerald-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                    <UploadCloud class="h-4 w-4" />
+                                    <span>{{ studentImportForm.processing ? 'جاري الاستيراد...' : 'تأكيد الاستيراد' }}</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
                 <div
