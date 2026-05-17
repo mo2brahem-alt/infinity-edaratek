@@ -5,6 +5,8 @@ import {
     AlertTriangle,
     Building2,
     CalendarDays,
+    ChevronDown,
+    ChevronLeft,
     CheckCircle2,
     Filter,
     FileDown,
@@ -14,6 +16,7 @@ import {
     PlusCircle,
     Save,
     School,
+    Search,
     Trash2,
     UploadCloud,
     UserRound,
@@ -209,6 +212,11 @@ const selectedStudentImportFileName = computed(() => studentImportForm.students_
 const studentFilterStageId = ref('');
 const studentFilterGradeName = ref('');
 const studentFilterClassroomId = ref('');
+const structureSearchQuery = ref('');
+const structureStatusFilter = ref('');
+const expandedStages = ref({});
+const expandedGrades = ref({});
+const expandedClassrooms = ref({});
 const classroomStageGrades = computed(() => uniqueGradesForStage(classroomForm.school_stage_id));
 const gradeTermStageGrades = computed(() =>
     (props.stages.find((stage) => Number(stage.id) === Number(gradeTermForm.school_stage_id || 0))?.grades || [])
@@ -419,6 +427,143 @@ const classroomRows = computed(() =>
         })
 );
 
+const normalizedStructureSearch = computed(() => String(structureSearchQuery.value || '').trim().toLowerCase());
+const hasStructureFilters = computed(() =>
+    Boolean(normalizedStructureSearch.value || studentFilterStageId.value || studentFilterGradeName.value || studentFilterClassroomId.value || structureStatusFilter.value)
+);
+
+const matchesText = (values, query = normalizedStructureSearch.value) => {
+    if (!query) return true;
+
+    return values
+        .map((value) => String(value || '').toLowerCase())
+        .some((value) => value.includes(query));
+};
+
+const statusMatches = (student) => {
+    if (structureStatusFilter.value === 'active') return Boolean(student.is_active);
+    if (structureStatusFilter.value === 'inactive') return !Boolean(student.is_active);
+    return true;
+};
+
+const classroomStudents = (stage, classroom) =>
+    (classroom.students || []).map((student) => ({
+        ...student,
+        stage_id: stage.id,
+        stage_name: stage.name,
+        classroom_id: classroom.id,
+        classroom_name: classroom.name,
+        classroom_grade_name: normalizeGradeName(classroom.grade_name),
+    }));
+
+const studentStructureTree = computed(() =>
+    props.stages
+        .filter((stage) => !studentFilterStageId.value || Number(stage.id) === Number(studentFilterStageId.value))
+        .map((stage) => {
+            const gradeNames = [
+                ...(stage.grades || []).map((grade) => normalizeGradeName(grade.name)),
+                ...(stage.classrooms || []).map((classroom) => normalizeGradeName(classroom.grade_name)),
+            ];
+            const uniqueGradeNames = [...new Set(gradeNames)].filter((gradeName) => gradeName !== '');
+
+            const grades = uniqueGradeNames
+                .filter((gradeName) => !studentFilterGradeName.value || normalizeGradeName(studentFilterGradeName.value) === gradeName)
+                .map((gradeName) => {
+                    const classrooms = (stage.classrooms || [])
+                        .filter((classroom) => normalizeGradeName(classroom.grade_name) === gradeName)
+                        .filter((classroom) => !studentFilterClassroomId.value || Number(classroom.id) === Number(studentFilterClassroomId.value))
+                        .map((classroom) => {
+                            const students = classroomStudents(stage, classroom);
+                            const pathMatches = normalizedStructureSearch.value
+                                ? matchesText([stage.name, gradeName, classroom.name, classroom.code])
+                                : false;
+                            const visibleStudents = students.filter((student) =>
+                                statusMatches(student)
+                                && (pathMatches || matchesText([student.full_name, student.student_code, student.national_id]))
+                            );
+                            const shouldShowClassroom = !hasStructureFilters.value || pathMatches || visibleStudents.length > 0;
+
+                            return {
+                                ...classroom,
+                                grade_name: gradeName,
+                                stage_name: stage.name,
+                                all_students: students,
+                                visible_students: visibleStudents,
+                                students_count: students.length,
+                                visible_students_count: visibleStudents.length,
+                                should_show: shouldShowClassroom,
+                            };
+                        })
+                        .filter((classroom) => classroom.should_show);
+
+                    const allClassrooms = (stage.classrooms || []).filter((classroom) => normalizeGradeName(classroom.grade_name) === gradeName);
+                    const totalStudents = allClassrooms.reduce((total, classroom) => total + (classroom.students || []).length, 0);
+                    const gradeMatches = normalizedStructureSearch.value ? matchesText([stage.name, gradeName]) : false;
+                    const shouldShowGrade = !hasStructureFilters.value || gradeMatches || classrooms.length > 0;
+
+                    return {
+                        name: gradeName,
+                        key: `${stage.id}:${gradeName}`,
+                        classrooms,
+                        classrooms_count: allClassrooms.length,
+                        students_count: totalStudents,
+                        visible_students_count: classrooms.reduce((total, classroom) => total + classroom.visible_students_count, 0),
+                        should_show: shouldShowGrade,
+                    };
+                })
+                .filter((grade) => grade.should_show);
+
+            const classroomsCount = (stage.classrooms || []).length;
+            const studentsCount = (stage.classrooms || []).reduce((total, classroom) => total + (classroom.students || []).length, 0);
+            const stageMatches = normalizedStructureSearch.value ? matchesText([stage.name, stage.code]) : false;
+            const shouldShowStage = !hasStructureFilters.value || stageMatches || grades.length > 0;
+
+            return {
+                ...stage,
+                grades,
+                grades_count: uniqueGradeNames.length,
+                classrooms_count: classroomsCount,
+                students_count: studentsCount,
+                visible_students_count: grades.reduce((total, grade) => total + grade.visible_students_count, 0),
+                should_show: shouldShowStage,
+            };
+        })
+        .filter((stage) => stage.should_show)
+);
+
+const structureSummary = computed(() => ({
+    stages: props.stages.length,
+    grades: [...new Set(props.stages.flatMap((stage) => [
+        ...(stage.grades || []).map((grade) => `${stage.id}:${normalizeGradeName(grade.name)}`),
+        ...(stage.classrooms || []).map((classroom) => `${stage.id}:${normalizeGradeName(classroom.grade_name)}`),
+    ]))].length,
+    classrooms: classroomRows.value.length,
+    students: studentRows.value.length,
+}));
+
+const isExpanded = (store, key) => Boolean(store.value[String(key)]);
+const toggleExpanded = (store, key) => {
+    const normalizedKey = String(key);
+    store.value = {
+        ...store.value,
+        [normalizedKey]: !store.value[normalizedKey],
+    };
+};
+
+const expandClassroomPath = (stageId, gradeName, classroomId) => {
+    expandedStages.value = { ...expandedStages.value, [String(stageId)]: true };
+    expandedGrades.value = { ...expandedGrades.value, [`${stageId}:${normalizeGradeName(gradeName)}`]: true };
+    expandedClassrooms.value = { ...expandedClassrooms.value, [String(classroomId)]: true };
+};
+
+const clearStructureFilters = () => {
+    structureSearchQuery.value = '';
+    structureStatusFilter.value = '';
+    studentFilterStageId.value = '';
+    studentFilterGradeName.value = '';
+    studentFilterClassroomId.value = '';
+};
+
 const stageTermRows = computed(() =>
     props.stages
         .flatMap((stage) =>
@@ -564,7 +709,7 @@ const removeStageTerm = async (stageTermId) => {
     guardedDelete(route('school.student_structure.stage_terms.destroy', stageTermId));
 };
 
-const resetClassroomForm = (preferredStageId = null, shouldFocus = true) => {
+const resetClassroomForm = (preferredStageId = null, preferredGradeName = null, shouldFocus = true) => {
     classroomEditId.value = null;
     classroomForm.reset();
 
@@ -575,7 +720,9 @@ const resetClassroomForm = (preferredStageId = null, shouldFocus = true) => {
             : defaultStageId.value;
 
     const grades = uniqueGradesForStage(classroomForm.school_stage_id);
-    classroomForm.grade_name = grades[0] || '';
+    classroomForm.grade_name = preferredGradeName && grades.includes(normalizeGradeName(preferredGradeName))
+        ? normalizeGradeName(preferredGradeName)
+        : grades[0] || '';
     classroomForm.sort_order = 0;
     classroomForm.is_active = true;
     classroomForm.clearErrors();
@@ -596,10 +743,10 @@ const editClassroom = (classroom) => {
     focusInput(classroomNameInput);
 };
 
-const openCreateClassroomModal = () => {
+const openCreateClassroomModal = (preferredStageId = null, preferredGradeName = null) => {
     isClassroomModalOpen.value = true;
     nextTick(() => {
-        resetClassroomForm();
+        resetClassroomForm(preferredStageId, preferredGradeName);
     });
 };
 
@@ -612,7 +759,7 @@ const openEditClassroomModal = (classroom) => {
 
 const closeClassroomModal = () => {
     isClassroomModalOpen.value = false;
-    resetClassroomForm(null, false);
+    resetClassroomForm(null, null, false);
 };
 
 const submitClassroom = () => {
@@ -624,7 +771,7 @@ const submitClassroom = () => {
         preserveState: true,
         onSuccess: () => {
             isClassroomModalOpen.value = false;
-            resetClassroomForm(preferredStageId, false);
+            resetClassroomForm(preferredStageId, classroomForm.grade_name, false);
         },
     };
 
@@ -707,6 +854,14 @@ const openCreateStudentModal = () => {
     isStudentModalOpen.value = true;
     nextTick(() => {
         resetStudentForm();
+    });
+};
+
+const openCreateStudentForClassroom = (stageId, gradeName, classroomId) => {
+    expandClassroomPath(stageId, gradeName, classroomId);
+    isStudentModalOpen.value = true;
+    nextTick(() => {
+        resetStudentForm(stageId, gradeName, classroomId);
     });
 };
 
@@ -960,15 +1115,36 @@ focusInput(studentNameInput);
             </section>
 
             <section class="rounded-xl border border-gray-800 bg-gray-900 p-4">
-                <div class="mb-3 flex items-center justify-between">
+                <div class="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                     <h2 class="inline-flex items-center gap-2 text-lg font-bold">
                         <Building2 class="h-4 w-4 text-emerald-300" />
-                        <span>1) الصفوف والفصول</span>
+                        <span>الهيكل الطلابي الهرمي</span>
                     </h2>
-                    <button type="button" class="inline-flex items-center gap-1 rounded bg-gray-700 px-3 py-1 text-xs hover:bg-gray-600" @click="openCreateClassroomModal">
-                        <PlusCircle class="h-3.5 w-3.5" />
-                        <span>جديد</span>
-                    </button>
+                    <div class="flex flex-wrap items-center justify-end gap-2">
+                        <a
+                            :href="route('school.student_structure.students.import_template')"
+                            class="inline-flex items-center gap-1 rounded bg-gray-800 px-3 py-1.5 text-xs font-semibold text-gray-100 ring-1 ring-gray-700 transition hover:bg-gray-700"
+                        >
+                            <FileDown class="h-3.5 w-3.5" />
+                            <span>تحميل قالب Excel</span>
+                        </a>
+                        <button
+                            type="button"
+                            class="inline-flex items-center gap-1 rounded bg-blue-700 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-600"
+                            @click="openStudentImportModal"
+                        >
+                            <FileSpreadsheet class="h-3.5 w-3.5" />
+                            <span>استيراد الطلاب</span>
+                        </button>
+                        <button type="button" class="inline-flex items-center gap-1 rounded bg-emerald-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-600" @click="openCreateStudentModal">
+                            <UserRound class="h-3.5 w-3.5" />
+                            <span>طالب جديد</span>
+                        </button>
+                        <button type="button" class="inline-flex items-center gap-1 rounded bg-gray-700 px-3 py-1.5 text-xs hover:bg-gray-600" @click="openCreateClassroomModal">
+                            <PlusCircle class="h-3.5 w-3.5" />
+                            <span>فصل جديد</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div
@@ -1052,7 +1228,243 @@ focusInput(studentNameInput);
                 </form>
                     </div>
                 </div>
-                <div class="space-y-3 lg:hidden">
+
+                <div class="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+                    <div class="rounded-xl border border-gray-700/80 bg-gray-800/80 p-3">
+                        <p class="text-xs text-gray-400">المراحل</p>
+                        <p class="text-2xl font-black text-white">{{ structureSummary.stages }}</p>
+                    </div>
+                    <div class="rounded-xl border border-gray-700/80 bg-gray-800/80 p-3">
+                        <p class="text-xs text-gray-400">الصفوف</p>
+                        <p class="text-2xl font-black text-white">{{ structureSummary.grades }}</p>
+                    </div>
+                    <div class="rounded-xl border border-gray-700/80 bg-gray-800/80 p-3">
+                        <p class="text-xs text-gray-400">الفصول</p>
+                        <p class="text-2xl font-black text-white">{{ structureSummary.classrooms }}</p>
+                    </div>
+                    <div class="rounded-xl border border-blue-500/30 bg-blue-500/10 p-3">
+                        <p class="text-xs text-blue-100/80">الطلاب</p>
+                        <p class="text-2xl font-black text-blue-100">{{ structureSummary.students }}</p>
+                    </div>
+                </div>
+
+                <div class="mb-4 grid grid-cols-1 gap-2 rounded-xl border border-gray-700 bg-gray-800/90 p-3 md:grid-cols-5">
+                    <div class="md:col-span-2">
+                        <label class="mb-1 inline-flex items-center gap-1 text-xs text-gray-400">
+                            <Search class="h-3.5 w-3.5 text-blue-300" />
+                            <span>بحث سريع</span>
+                        </label>
+                        <input
+                            v-model="structureSearchQuery"
+                            type="search"
+                            class="w-full rounded border border-gray-700 bg-gray-900 p-2 text-sm text-gray-100 placeholder:text-gray-500"
+                            placeholder="اسم الطالب، رقم الطالب، الهوية، الصف أو الفصل"
+                        />
+                    </div>
+                    <div>
+                        <label class="mb-1 inline-flex items-center gap-1 text-xs text-gray-400">
+                            <Filter class="h-3.5 w-3.5 text-blue-300" />
+                            <span>المرحلة</span>
+                        </label>
+                        <select v-model="studentFilterStageId" class="w-full rounded border border-gray-700 bg-gray-900 p-2 text-sm">
+                            <option value="">الكل</option>
+                            <option v-for="stage in stageOptions" :key="`tree-filter-stage-${stage.id}`" :value="stage.id">{{ stage.name }}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="mb-1 inline-flex items-center gap-1 text-xs text-gray-400">
+                            <Filter class="h-3.5 w-3.5 text-blue-300" />
+                            <span>الصف</span>
+                        </label>
+                        <select v-model="studentFilterGradeName" class="w-full rounded border border-gray-700 bg-gray-900 p-2 text-sm">
+                            <option value="">الكل</option>
+                            <option v-for="grade in filterGradeOptions" :key="`tree-filter-grade-${grade}`" :value="grade">{{ grade }}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="mb-1 inline-flex items-center gap-1 text-xs text-gray-400">
+                            <Filter class="h-3.5 w-3.5 text-blue-300" />
+                            <span>حالة الطالب</span>
+                        </label>
+                        <select v-model="structureStatusFilter" class="w-full rounded border border-gray-700 bg-gray-900 p-2 text-sm">
+                            <option value="">الكل</option>
+                            <option value="active">نشط</option>
+                            <option value="inactive">غير نشط</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-5 flex flex-wrap items-center justify-between gap-2 border-t border-gray-700 pt-3">
+                        <select v-model="studentFilterClassroomId" class="min-w-0 flex-1 rounded border border-gray-700 bg-gray-900 p-2 text-sm md:max-w-md">
+                            <option value="">كل الفصول</option>
+                            <option v-for="classroom in classroomsForFilterScope" :key="`tree-filter-class-${classroom.id}`" :value="classroom.id">
+                                {{ classroom.stage_name }} - {{ classroom.grade_name }} - {{ classroom.name }}
+                            </option>
+                        </select>
+                        <button type="button" class="inline-flex items-center gap-1 rounded bg-gray-700 px-3 py-2 text-xs hover:bg-gray-600" @click="clearStructureFilters">
+                            <X class="h-3.5 w-3.5" />
+                            <span>مسح الفلاتر</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <article
+                        v-for="stage in studentStructureTree"
+                        :key="`tree-stage-${stage.id}`"
+                        class="overflow-hidden rounded-2xl border border-gray-700 bg-gray-900/80"
+                    >
+                        <button
+                            type="button"
+                            class="flex w-full flex-col gap-3 p-4 text-right transition hover:bg-gray-800/80 md:flex-row md:items-center md:justify-between"
+                            @click="toggleExpanded(expandedStages, stage.id)"
+                        >
+                            <span class="flex items-center gap-3">
+                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-200 ring-1 ring-emerald-400/30">
+                                    <School class="h-5 w-5" />
+                                </span>
+                                <span>
+                                    <span class="block text-base font-black text-white">{{ stage.name }}</span>
+                                    <span class="text-xs text-gray-400">مرحلة دراسية ضمن المدرسة الحالية</span>
+                                </span>
+                            </span>
+                            <span class="flex flex-wrap items-center gap-2 text-xs">
+                                <span class="rounded-full bg-gray-800 px-3 py-1 text-gray-200">{{ stage.grades_count }} صف</span>
+                                <span class="rounded-full bg-gray-800 px-3 py-1 text-gray-200">{{ stage.classrooms_count }} فصل</span>
+                                <span class="rounded-full bg-blue-500/10 px-3 py-1 text-blue-100">{{ stage.students_count }} طالب</span>
+                                <ChevronDown v-if="isExpanded(expandedStages, stage.id)" class="h-4 w-4 text-gray-300" />
+                                <ChevronLeft v-else class="h-4 w-4 text-gray-300" />
+                            </span>
+                        </button>
+
+                        <div v-if="isExpanded(expandedStages, stage.id)" class="space-y-3 border-t border-gray-800 p-3">
+                            <div v-if="stage.grades.length === 0" class="rounded-xl border border-dashed border-gray-700 p-4 text-center text-sm text-gray-400">
+                                لا توجد صفوف مطابقة داخل هذه المرحلة.
+                            </div>
+
+                            <article
+                                v-for="grade in stage.grades"
+                                :key="`tree-grade-${grade.key}`"
+                                class="overflow-hidden rounded-xl border border-gray-700 bg-gray-950/60"
+                            >
+                                <div class="flex w-full flex-col gap-3 p-3 md:flex-row md:items-center md:justify-between">
+                                    <button
+                                        type="button"
+                                        class="flex min-w-0 flex-1 items-center gap-3 rounded-lg text-right transition hover:bg-gray-900"
+                                        @click="toggleExpanded(expandedGrades, grade.key)"
+                                    >
+                                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-200 ring-1 ring-cyan-400/30">
+                                            <GraduationCap class="h-4 w-4" />
+                                        </span>
+                                        <span class="min-w-0 flex-1">
+                                            <span class="block font-bold text-white">{{ grade.name }}</span>
+                                            <span class="text-xs text-gray-400">صف داخل {{ stage.name }}</span>
+                                        </span>
+                                        <ChevronDown v-if="isExpanded(expandedGrades, grade.key)" class="h-4 w-4 shrink-0 text-gray-300" />
+                                        <ChevronLeft v-else class="h-4 w-4 shrink-0 text-gray-300" />
+                                    </button>
+                                    <div class="flex flex-wrap items-center gap-2 text-xs">
+                                        <span class="rounded-full bg-gray-800 px-3 py-1 text-gray-200">{{ grade.classrooms_count }} فصل</span>
+                                        <span class="rounded-full bg-blue-500/10 px-3 py-1 text-blue-100">{{ grade.students_count }} طالب</span>
+                                        <button type="button" class="rounded-full bg-gray-800 px-3 py-1 text-gray-100 hover:bg-gray-700" @click="openCreateClassroomModal(stage.id, grade.name)">
+                                            إضافة فصل
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div v-if="isExpanded(expandedGrades, grade.key)" class="space-y-3 border-t border-gray-800 p-3">
+                                    <div v-if="grade.classrooms.length === 0" class="rounded-xl border border-dashed border-gray-700 p-4 text-center text-sm text-gray-400">
+                                        لا توجد فصول مطابقة داخل هذا الصف.
+                                    </div>
+
+                                    <article
+                                        v-for="classroom in grade.classrooms"
+                                        :key="`tree-classroom-${classroom.id}`"
+                                        class="overflow-hidden rounded-xl border border-gray-700 bg-gray-900"
+                                        :style="stageAccent(stage.id, stage.name)"
+                                    >
+                                        <div class="flex w-full flex-col gap-3 p-3 md:flex-row md:items-center md:justify-between">
+                                            <button
+                                                type="button"
+                                                class="flex min-w-0 flex-1 items-center gap-3 rounded-lg text-right transition hover:bg-gray-800/80"
+                                                @click="toggleExpanded(expandedClassrooms, classroom.id)"
+                                            >
+                                                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-200 ring-1 ring-blue-400/30">
+                                                    <Building2 class="h-4 w-4" />
+                                                </span>
+                                                <span class="min-w-0 flex-1">
+                                                    <span class="block font-bold text-white">{{ classroom.name }}</span>
+                                                    <span class="text-xs text-gray-400">{{ classroom.code || 'بدون كود' }} - {{ statusLabel(classroom.is_active) }}</span>
+                                                </span>
+                                                <ChevronDown v-if="isExpanded(expandedClassrooms, classroom.id)" class="h-4 w-4 shrink-0 text-gray-300" />
+                                                <ChevronLeft v-else class="h-4 w-4 shrink-0 text-gray-300" />
+                                            </button>
+                                            <div class="flex flex-wrap items-center gap-2 text-xs">
+                                                <span class="rounded-full bg-blue-500/10 px-3 py-1 text-blue-100">{{ classroom.students_count }} طالب</span>
+                                                <button type="button" class="rounded-full bg-emerald-700 px-3 py-1 text-white hover:bg-emerald-600" @click="openCreateStudentForClassroom(stage.id, grade.name, classroom.id)">
+                                                    إضافة طالب
+                                                </button>
+                                                <button type="button" class="rounded-full bg-gray-800 px-3 py-1 text-gray-100 hover:bg-gray-700" @click="openEditClassroomModal(classroom)">
+                                                    تعديل
+                                                </button>
+                                                <button type="button" class="rounded-full bg-red-900/80 px-3 py-1 text-red-100 hover:bg-red-800" @click="removeClassroom(classroom.id)">
+                                                    حذف
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="isExpanded(expandedClassrooms, classroom.id)" class="border-t border-gray-800 p-3">
+                                            <div v-if="classroom.visible_students.length === 0" class="rounded-xl border border-dashed border-gray-700 p-4 text-center text-sm text-gray-400">
+                                                لا يوجد طلاب مطابقون داخل هذا الفصل.
+                                            </div>
+
+                                            <div v-else class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+                                                <article
+                                                    v-for="student in classroom.visible_students"
+                                                    :key="`tree-student-${student.id}`"
+                                                    class="rounded-xl border border-gray-700 bg-gray-950/80 p-3"
+                                                >
+                                                    <div class="mb-3 flex items-start justify-between gap-3">
+                                                        <div class="flex items-center gap-3">
+                                                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 text-sm font-black text-blue-100 ring-1 ring-blue-400/30">
+                                                                {{ String(student.full_name || 'ط').slice(0, 1) }}
+                                                            </span>
+                                                            <div>
+                                                                <h4 class="font-bold text-white">{{ student.full_name }}</h4>
+                                                                <p class="text-xs text-gray-400">{{ student.student_code || 'بدون رقم طالب' }}</p>
+                                                            </div>
+                                                        </div>
+                                                        <span class="rounded-full px-2 py-1 text-xs" :class="student.is_active ? 'bg-emerald-500/10 text-emerald-100' : 'bg-gray-700 text-gray-200'">
+                                                            {{ statusLabel(student.is_active) }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="space-y-1 text-xs text-gray-400">
+                                                        <p>رقم الهوية / الإقامة: <span class="text-gray-200">{{ student.national_id || '-' }}</span></p>
+                                                        <p>المسار: <span class="text-gray-200">{{ stage.name }} / {{ grade.name }} / {{ classroom.name }}</span></p>
+                                                    </div>
+                                                    <div class="mt-3 flex flex-wrap justify-end gap-2">
+                                                        <button class="inline-flex items-center gap-1 rounded bg-blue-700 px-3 py-1.5 text-xs text-white hover:bg-blue-600" @click="openEditStudentModal(student)">
+                                                            <Pencil class="h-3.5 w-3.5" />
+                                                            <span>تعديل</span>
+                                                        </button>
+                                                        <button class="inline-flex items-center gap-1 rounded bg-red-800 px-3 py-1.5 text-xs text-red-50 hover:bg-red-700" @click="removeStudent(student.id)">
+                                                            <Trash2 class="h-3.5 w-3.5" />
+                                                            <span>حذف</span>
+                                                        </button>
+                                                    </div>
+                                                </article>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                            </article>
+                        </div>
+                    </article>
+
+                    <div v-if="studentStructureTree.length === 0" class="rounded-2xl border border-dashed border-gray-700 bg-gray-900 p-6 text-center text-sm text-gray-400">
+                        لا توجد بيانات مطابقة للفلاتر الحالية.
+                    </div>
+                </div>
+
+                <div v-if="false" class="space-y-3 lg:hidden">
                     <article v-for="classroom in classroomRows" :key="`classroom-mobile-${classroom.id}`" class="rounded-2xl border border-gray-700 bg-gray-900 p-4 text-right" :style="stageAccent(classroom.school_stage_id, classroom.stage_name)">
                         <div class="mb-3">
                             <span class="stage-badge" :style="stageAccent(classroom.school_stage_id, classroom.stage_name)">{{ classroom.stage_name }}</span>
@@ -1070,7 +1482,7 @@ focusInput(studentNameInput);
                         </div>
                     </article>
                 </div>
-                <div class="hidden overflow-hidden rounded border border-gray-700 lg:block">
+                <div v-if="false" class="hidden overflow-hidden rounded border border-gray-700 lg:block">
                     <table class="w-full text-right text-sm text-gray-200">
                         <thead class="bg-gray-800 text-xs text-gray-400">
                             <tr>
@@ -1118,8 +1530,8 @@ focusInput(studentNameInput);
                 </div>
             </section>
 
-            <section class="rounded-xl border border-gray-800 bg-gray-900 p-4">
-                <div class="mb-3 flex items-center justify-between">
+            <section class="contents">
+                <div v-if="false" class="mb-3 flex items-center justify-between">
                     <h2 class="inline-flex items-center gap-2 text-lg font-bold">
                         <Users class="h-4 w-4 text-blue-300" />
                         <span>2) الطلاب</span>
@@ -1376,7 +1788,7 @@ focusInput(studentNameInput);
                     </div>
                 </div>
 
-                <div class="mb-3 grid grid-cols-1 gap-2 rounded border border-gray-700 bg-gray-800 p-3 md:grid-cols-4">
+                <div v-if="false" class="mb-3 grid grid-cols-1 gap-2 rounded border border-gray-700 bg-gray-800 p-3 md:grid-cols-4">
                     <div>
                         <label class="mb-1 inline-flex items-center gap-1 text-xs text-gray-400">
                             <Filter class="h-3.5 w-3.5 text-blue-300" />
@@ -1417,7 +1829,7 @@ focusInput(studentNameInput);
                     </div>
                 </div>
 
-                <div class="space-y-3 lg:hidden">
+                <div v-if="false" class="space-y-3 lg:hidden">
                     <article v-for="row in filteredStudentRows" :key="`student-mobile-${row.id}`" class="rounded-2xl border border-gray-700 bg-gray-900 p-4 text-right" :style="stageAccent(row.stage_id, row.stage_name)">
                         <div class="mb-3">
                             <h3 class="font-semibold">{{ row.full_name }}</h3>
@@ -1435,7 +1847,7 @@ focusInput(studentNameInput);
                     </article>
                 </div>
 
-                <div class="hidden overflow-hidden rounded border border-gray-700 lg:block">
+                <div v-if="false" class="hidden overflow-hidden rounded border border-gray-700 lg:block">
                     <table class="w-full text-right text-sm text-gray-200">
                         <thead class="bg-gray-800 text-xs text-gray-400">
                             <tr>
