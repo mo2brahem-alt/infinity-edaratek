@@ -24,6 +24,7 @@ class HandleInertiaRequests extends Middleware
         $user = $request->user();
         $shared = parent::share($request);
         $shared['errors'] = Inertia::always(fn () => $this->resolveValidationErrors($request));
+        $canUseQuestionBank = (bool) ($user?->canUseQuestionBank() ?? false);
 
         return [
             ...$shared,
@@ -35,6 +36,8 @@ class HandleInertiaRequests extends Middleware
                         'can_manage_student_attendance' => $user->canManageStudentAttendance(),
                         'can_manage_academic_planning' => $user->canManageAcademicPlanning(),
                         'can_manage_school_exams' => $user->canManageSchoolExams(),
+                        'can_manage_question_bank' => $canUseQuestionBank,
+                        'can_use_question_bank' => $canUseQuestionBank,
                         'can_manage_school_reports' => $user->canManageSchoolReports(),
                         'can_export_school_reports' => $user->canExportSchoolReports(),
                         'can_manage_student_leaves' => $user->canManageStudentLeaves(),

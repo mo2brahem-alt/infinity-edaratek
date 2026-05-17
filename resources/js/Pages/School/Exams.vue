@@ -115,6 +115,12 @@ const currentExamSection = computed(() => {
 const showSchedulingSection = computed(() => currentExamSection.value === 'scheduling');
 const showSelectedExamSection = computed(() => currentExamSection.value === 'selected');
 const showQuestionBankSection = computed(() => currentExamSection.value === 'question-bank');
+const examPageTitle = computed(() => {
+    if (showQuestionBankSection.value) return 'بنك الأسئلة';
+    if (showSelectedExamSection.value) return 'الاختبار المحدد: الأسئلة والدرجات';
+
+    return 'جدول الاختبارات';
+});
 
 const settingsForm = useForm({
     allow_subject_schedule_slot_overlap: Boolean(props.settings?.allow_subject_schedule_slot_overlap),
@@ -1182,9 +1188,9 @@ watch(
 </script>
 
 <template>
-    <Head title="الاختبارات وبنك الأسئلة" />
+    <Head :title="examPageTitle" />
 
-    <RoleLayout title="الاختبارات وبنك الأسئلة" :role="roleForLayout" :permissions="props.permissions">
+    <RoleLayout :title="examPageTitle" :role="roleForLayout" :permissions="props.permissions">
         <div v-if="!school" class="rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-200">لا يوجد ربط بمدرسة لهذا الحساب حاليًا.</div>
         <div v-else class="space-y-6">
             <section v-if="validationErrors.length" class="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-100">
@@ -2107,4 +2113,3 @@ watch(
         </div>
     </RoleLayout>
 </template>
-

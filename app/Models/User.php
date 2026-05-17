@@ -409,6 +409,37 @@ class User extends Authenticatable
             ->exists();
     }
 
+    public function canUseQuestionBank(): bool
+    {
+        if ($this->hasSystemRole('super_admin') || $this->hasSystemRole('school_manager')) {
+            return true;
+        }
+
+        if (!$this->hasSystemRole('staff')) {
+            return false;
+        }
+
+        if ($this->hasDelegatedSchoolPermission('school.exams.manage') || $this->canManageAcademicPlanning()) {
+            return true;
+        }
+
+        if (($this->school_staff_type ?? null) !== self::SCHOOL_STAFF_EDUCATIONAL) {
+            return false;
+        }
+
+        $schoolId = (int) ($this->school_id ?? 0);
+        if ($schoolId <= 0 || !(bool) $this->is_active) {
+            return false;
+        }
+
+        return SchoolTeachingAssignment::query()
+            ->where('school_id', $schoolId)
+            ->where('teacher_user_id', (int) $this->id)
+            ->where('is_active', true)
+            ->where('can_use_question_bank', true)
+            ->exists();
+    }
+
     public function canManageSchoolReports(): bool
     {
         if ($this->hasSystemRole('super_admin') || $this->hasSystemRole('school_manager')) {
