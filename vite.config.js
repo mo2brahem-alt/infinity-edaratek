@@ -11,6 +11,10 @@ export default defineConfig({
         }),
         vue({
             template: {
+                compilerOptions: {
+                    cacheHandlers: false,
+                    hoistStatic: false,
+                },
                 transformAssetUrls: {
                     base: null,
                     includeAbsolute: false,

@@ -6,7 +6,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-const lazyPages = import.meta.glob('./Pages/**/*.vue');
+const lazyPages = import.meta.glob(['./Pages/**/*.vue', '!./Pages/School/StudentStructure.vue']);
 const eagerPages = import.meta.glob('./Pages/School/StudentStructure.vue', { eager: true });
 
 const reportBootError = (error, context = 'boot') => {
