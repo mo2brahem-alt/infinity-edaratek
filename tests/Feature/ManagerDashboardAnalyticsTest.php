@@ -7,6 +7,7 @@ use App\Models\School;
 use App\Models\SchoolClassroom;
 use App\Models\SchoolStage;
 use App\Models\SchoolStudent;
+use App\Models\SchoolStudentAttendance;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
@@ -198,6 +199,47 @@ class ManagerDashboardAnalyticsTest extends TestCase
                 ->has('analytics.charts.attendanceTrend.categories')
                 ->has('analytics.charts.attendanceTrend.series')
                 ->has('analytics.charts.passFailDistribution.series')
+            );
+    }
+
+    public function test_dashboard_attendance_trend_uses_database_safe_leave_alias(): void
+    {
+        Role::firstOrCreate(['name' => 'school_manager', 'guard_name' => 'web']);
+
+        $region = EducationalDirectorate::create([
+            'name' => 'Attendance Trend Region',
+            'governorate' => 'Riyadh',
+        ]);
+
+        $manager = User::factory()->create(['role' => 'school_manager']);
+        $manager->assignRole('school_manager');
+        $school = $this->createManagedSchool($region->id, $manager, 'Attendance Trend School', 'SCH-DASH-ATT');
+        $classroom = $this->createClassroom($school, 'Ø§Ù„Ø£ÙˆÙ„', 'Ø£');
+        $student = SchoolStudent::create([
+            'school_id' => $school->id,
+            'school_classroom_id' => $classroom->id,
+            'full_name' => 'Ø·Ø§Ù„Ø¨ Ø¥Ø¬Ø§Ø²Ø©',
+            'student_code' => 'ATT-LEAVE-1',
+            'is_active' => true,
+        ]);
+
+        SchoolStudentAttendance::create([
+            'school_id' => $school->id,
+            'school_student_id' => $student->id,
+            'school_classroom_id' => $classroom->id,
+            'attendance_date' => now()->toDateString(),
+            'status' => SchoolStudentAttendance::STATUS_LEAVE,
+            'recorded_by' => $manager->id,
+        ]);
+
+        $this->actingAs($manager)
+            ->get(route('manager.dashboard'))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Manager/Dashboard')
+                ->where('analytics.attendance.attendanceTrend.0.leave_count', 1)
+                ->where('analytics.charts.attendanceTrend.series.3.name', 'إجازة')
+                ->where('analytics.charts.attendanceTrend.series.3.data.0', 1)
             );
     }
 

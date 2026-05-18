@@ -402,7 +402,7 @@ class SchoolDashboardAnalyticsService
                 DB::raw("SUM(CASE WHEN status = '" . SchoolStudentAttendance::STATUS_PRESENT . "' THEN 1 ELSE 0 END) as present"),
                 DB::raw("SUM(CASE WHEN status = '" . SchoolStudentAttendance::STATUS_ABSENT . "' THEN 1 ELSE 0 END) as absent"),
                 DB::raw("SUM(CASE WHEN status = '" . SchoolStudentAttendance::STATUS_EXCUSED . "' THEN 1 ELSE 0 END) as excused"),
-                DB::raw("SUM(CASE WHEN status = '" . SchoolStudentAttendance::STATUS_LEAVE . "' THEN 1 ELSE 0 END) as leave"),
+                DB::raw("SUM(CASE WHEN status = '" . SchoolStudentAttendance::STATUS_LEAVE . "' THEN 1 ELSE 0 END) as leave_count"),
                 DB::raw('COUNT(*) as total')
             )
             ->groupBy('attendance_date')
@@ -413,7 +413,7 @@ class SchoolDashboardAnalyticsService
                 'present' => (int) $row->present,
                 'absent' => (int) $row->absent,
                 'excused' => (int) $row->excused,
-                'leave' => (int) $row->leave,
+                'leave_count' => (int) $row->leave_count,
                 'total' => (int) $row->total,
                 'rate' => (int) $row->total > 0 ? round(((int) $row->present / (int) $row->total) * 100, 1) : 0,
             ])
@@ -682,7 +682,7 @@ class SchoolDashboardAnalyticsService
                     'present' => 'حاضر',
                     'absent' => 'غائب',
                     'excused' => 'مأذون',
-                    'leave' => 'إجازة',
+                    'leave_count' => 'إجازة',
                 ],
                 'area'
             ),
