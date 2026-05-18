@@ -552,19 +552,19 @@ onMounted(async () => {
                         <article
                             v-for="kpi in kpis"
                             :key="kpi.key"
-                            class="rounded-xl border p-3 shadow-sm transition hover:-translate-y-0.5"
+                            class="manager-kpi-card rounded-xl border p-3 shadow-sm transition hover:-translate-y-0.5"
                             :class="statusClassName(kpi.status)"
                         >
                             <div class="flex items-start justify-between gap-2">
                                 <div>
-                                    <p class="text-[11px] font-bold opacity-80">{{ kpi.label }}</p>
-                                    <p class="mt-2 text-xl font-black sm:text-2xl">{{ numberText(kpi.value) }}</p>
+                                    <p class="manager-kpi-label text-[11px] font-bold opacity-80">{{ kpi.label }}</p>
+                                    <p class="manager-kpi-value mt-2 text-xl font-black sm:text-2xl">{{ numberText(kpi.value) }}</p>
                                 </div>
-                                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/70 dark:bg-slate-950/50">
+                                <span class="manager-kpi-icon grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/70 dark:bg-slate-950/50">
                                     <component :is="iconFor(kpi.icon)" class="h-5 w-5" aria-hidden="true" />
                                 </span>
                             </div>
-                            <p class="mt-3 line-clamp-2 text-[11px] leading-5 opacity-80">{{ kpi.description }}</p>
+                            <p class="manager-kpi-description mt-3 line-clamp-2 text-[11px] leading-5 opacity-80">{{ kpi.description }}</p>
                         </article>
                     </div>
 
@@ -618,9 +618,9 @@ onMounted(async () => {
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                                     <h3 class="text-base font-black text-slate-950 dark:text-white">تنبيهات سريعة</h3>
                                     <div v-if="hasRows(analytics.summary?.alerts)" class="mt-4 space-y-2">
-                                        <div v-for="alert in analytics.summary.alerts" :key="alert.title" class="rounded-lg border p-3 text-sm" :class="severityClassName(alert.severity)">
+                                        <div v-for="alert in analytics.summary.alerts" :key="alert.title" class="manager-alert-card rounded-lg border p-3 text-sm" :class="severityClassName(alert.severity)">
                                             <p class="font-bold">{{ alert.title }}</p>
-                                            <p class="mt-1 text-xs opacity-80">{{ alert.description }}</p>
+                                            <p class="manager-alert-description mt-1 text-xs opacity-80">{{ alert.description }}</p>
                                         </div>
                                     </div>
                                     <p v-else class="mt-4 rounded-lg border border-dashed border-slate-300 p-4 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">لا توجد تنبيهات حرجة حاليًا.</p>
@@ -843,12 +843,12 @@ onMounted(async () => {
                                 <article v-if="!hasRows(analytics.alerts)" class="rounded-xl border border-dashed border-slate-300 bg-white p-5 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400">
                                     لا توجد تنبيهات تحتاج تدخلك الآن.
                                 </article>
-                                <article v-for="alert in analytics.alerts || []" :key="alert.title" class="rounded-xl border p-4" :class="severityClassName(alert.severity)">
+                                <article v-for="alert in analytics.alerts || []" :key="alert.title" class="manager-alert-card rounded-xl border p-4" :class="severityClassName(alert.severity)">
                                     <div class="flex items-start gap-3">
                                         <AlertTriangle class="mt-1 h-5 w-5 shrink-0" aria-hidden="true" />
                                         <div>
                                             <h3 class="font-black">{{ alert.title }}</h3>
-                                            <p class="mt-1 text-sm opacity-85">{{ alert.description }}</p>
+                                            <p class="manager-alert-description mt-1 text-sm opacity-85">{{ alert.description }}</p>
                                         </div>
                                     </div>
                                 </article>
@@ -1139,6 +1139,78 @@ onMounted(async () => {
 </template>
 
 <style>
+html.theme-light .manager-analytics-panel {
+    color: rgb(15, 23, 42);
+}
+
+html.theme-light .manager-analytics-panel .manager-kpi-card {
+    border-color: rgba(148, 163, 184, 0.42) !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.94)),
+        radial-gradient(circle at top right, rgba(59, 130, 246, 0.08), transparent 52%) !important;
+    color: rgb(15, 23, 42) !important;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+}
+
+html.theme-light .manager-analytics-panel .manager-kpi-card.text-emerald-700 {
+    color: rgb(4, 120, 87) !important;
+}
+
+html.theme-light .manager-analytics-panel .manager-kpi-card.text-red-700 {
+    color: rgb(185, 28, 28) !important;
+}
+
+html.theme-light .manager-analytics-panel .manager-kpi-card.text-amber-700 {
+    color: rgb(180, 83, 9) !important;
+}
+
+html.theme-light .manager-analytics-panel .manager-kpi-card.text-blue-700 {
+    color: rgb(29, 78, 216) !important;
+}
+
+html.theme-light .manager-analytics-panel .manager-kpi-card.text-cyan-700 {
+    color: rgb(14, 116, 144) !important;
+}
+
+html.theme-light .manager-analytics-panel .manager-kpi-card :where(.manager-kpi-label, .manager-kpi-description) {
+    color: rgb(71, 85, 105) !important;
+    opacity: 1 !important;
+}
+
+html.theme-light .manager-analytics-panel .manager-kpi-card .manager-kpi-value,
+html.theme-light .manager-analytics-panel .manager-kpi-card .manager-kpi-icon {
+    color: currentColor !important;
+    opacity: 1 !important;
+}
+
+html.theme-light .manager-analytics-panel .manager-kpi-card .manager-kpi-icon {
+    border: 1px solid rgba(148, 163, 184, 0.34);
+    background: rgba(255, 255, 255, 0.86) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
+html.theme-light .manager-analytics-panel :where(article)[class*='bg-white'] {
+    color: rgb(15, 23, 42);
+}
+
+html.theme-light .manager-analytics-panel :where(article)[class*='bg-white'] :where(dt, p, span)[class*='text-slate-500'],
+html.theme-light .manager-analytics-panel :where(article)[class*='bg-white'] :where(dt, p, span)[class*='text-slate-400'] {
+    color: rgb(71, 85, 105) !important;
+}
+
+html.theme-light .manager-analytics-panel :where(article)[class*='bg-white'] :where(dd, strong) {
+    color: rgb(15, 23, 42);
+}
+
+html.theme-light .manager-analytics-panel .manager-alert-card {
+    opacity: 1 !important;
+}
+
+html.theme-light .manager-analytics-panel .manager-alert-description {
+    color: color-mix(in srgb, currentColor 76%, rgb(15, 23, 42)) !important;
+    opacity: 1 !important;
+}
+
 html.theme-dark .manager-analytics-panel {
     border-color: rgba(51, 65, 85, 0.82) !important;
     background:
