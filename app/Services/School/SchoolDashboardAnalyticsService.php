@@ -1007,13 +1007,16 @@ class SchoolDashboardAnalyticsService
 
         $includedUsers = (int) ($subscription->included_users_count ?? $subscription->plan?->included_users_count ?? 0);
         $usedUsers = User::query()->where('users.school_id', $school->id)->where('users.is_active', true)->count();
+        $daysRemaining = $subscription->ends_at
+            ? (int) max(ceil(now()->startOfDay()->diffInDays($subscription->ends_at, false)), 0)
+            : null;
 
         return [
             'status' => 'active',
             'status_label' => 'نشط',
             'plan_name' => (string) ($subscription->plan?->name ?? 'اشتراك المدرسة'),
             'ends_at' => $subscription->ends_at?->toDateString(),
-            'days_remaining' => $subscription->ends_at ? max(now()->startOfDay()->diffInDays($subscription->ends_at, false), 0) : null,
+            'days_remaining' => $daysRemaining,
             'included_users' => $includedUsers > 0 ? $includedUsers : null,
             'used_users' => $usedUsers,
             'remaining_users' => $includedUsers > 0 ? max($includedUsers - $usedUsers, 0) : null,

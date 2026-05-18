@@ -8,6 +8,7 @@ use App\Models\SchoolClassroom;
 use App\Models\SchoolStage;
 use App\Models\SchoolStudent;
 use App\Models\SchoolStudentAttendance;
+use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
@@ -240,6 +241,38 @@ class ManagerDashboardAnalyticsTest extends TestCase
                 ->where('analytics.attendance.attendanceTrend.0.leave_count', 1)
                 ->where('analytics.charts.attendanceTrend.series.3.name', 'إجازة')
                 ->where('analytics.charts.attendanceTrend.series.3.data.0', 1)
+            );
+    }
+
+    public function test_subscription_days_remaining_is_returned_as_integer(): void
+    {
+        Role::firstOrCreate(['name' => 'school_manager', 'guard_name' => 'web']);
+
+        $region = EducationalDirectorate::create([
+            'name' => 'Subscription Days Region',
+            'governorate' => 'Riyadh',
+        ]);
+
+        $manager = User::factory()->create(['role' => 'school_manager']);
+        $manager->assignRole('school_manager');
+        $school = $this->createManagedSchool($region->id, $manager, 'Subscription Days School', 'SCH-DASH-SUB');
+
+        Subscription::create([
+            'user_id' => $manager->id,
+            'school_id' => $school->id,
+            'status' => Subscription::STATUS_ACTIVE,
+            'starts_at' => now()->subDay(),
+            'ends_at' => now()->startOfDay()->addDays(10)->addHours(8)->addMinutes(30),
+            'included_users_count' => 10,
+        ]);
+
+        $this->actingAs($manager)
+            ->get(route('manager.dashboard'))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Manager/Dashboard')
+                ->where('analytics.subscription.days_remaining', 11)
+                ->where('analytics.kpis.13.value', '11 يوم')
             );
     }
 
