@@ -147,21 +147,56 @@ watch(
 
 const iconFor = (key) => iconMap[key] || BarChart3;
 
-const statusClassName = (status) => {
-    if (status === 'success') return 'border-emerald-400/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-200';
-    if (status === 'danger') return 'border-red-400/40 bg-red-500/10 text-red-700 dark:text-red-200';
-    if (status === 'warning') return 'border-amber-400/40 bg-amber-500/10 text-amber-700 dark:text-amber-200';
-    if (status === 'primary') return 'border-blue-400/40 bg-blue-500/10 text-blue-700 dark:text-blue-200';
-    if (status === 'info') return 'border-cyan-400/40 bg-cyan-500/10 text-cyan-700 dark:text-cyan-200';
-    return 'border-slate-300/70 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-200';
+const toneClasses = {
+    success: {
+        container: 'manager-tone manager-tone-success border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-800/50 dark:bg-emerald-950/30 dark:text-emerald-100',
+        label: 'text-emerald-800 dark:text-emerald-200',
+        value: 'text-emerald-950 dark:text-emerald-100',
+        text: 'text-emerald-700 dark:text-emerald-200/85',
+        icon: 'text-emerald-800 dark:text-emerald-200',
+    },
+    danger: {
+        container: 'manager-tone manager-tone-danger border-rose-200 bg-rose-50 text-rose-900 dark:border-rose-800/50 dark:bg-rose-950/30 dark:text-rose-100',
+        label: 'text-rose-800 dark:text-rose-200',
+        value: 'text-rose-950 dark:text-rose-100',
+        text: 'text-rose-700 dark:text-rose-200/85',
+        icon: 'text-rose-800 dark:text-rose-200',
+    },
+    warning: {
+        container: 'manager-tone manager-tone-warning border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-100',
+        label: 'text-amber-800 dark:text-amber-200',
+        value: 'text-amber-950 dark:text-amber-100',
+        text: 'text-amber-700 dark:text-amber-200/85',
+        icon: 'text-amber-800 dark:text-amber-200',
+    },
+    primary: {
+        container: 'manager-tone manager-tone-primary border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-800/50 dark:bg-blue-950/30 dark:text-blue-100',
+        label: 'text-blue-800 dark:text-blue-200',
+        value: 'text-blue-950 dark:text-blue-100',
+        text: 'text-blue-700 dark:text-blue-200/85',
+        icon: 'text-blue-800 dark:text-blue-200',
+    },
+    info: {
+        container: 'manager-tone manager-tone-info border-cyan-200 bg-cyan-50 text-cyan-900 dark:border-cyan-800/50 dark:bg-cyan-950/30 dark:text-cyan-100',
+        label: 'text-cyan-800 dark:text-cyan-200',
+        value: 'text-cyan-950 dark:text-cyan-100',
+        text: 'text-cyan-700 dark:text-cyan-200/85',
+        icon: 'text-cyan-800 dark:text-cyan-200',
+    },
+    neutral: {
+        container: 'manager-tone manager-tone-neutral border-slate-200 bg-slate-50 text-slate-900 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100',
+        label: 'text-slate-700 dark:text-slate-200',
+        value: 'text-slate-950 dark:text-white',
+        text: 'text-slate-600 dark:text-slate-300',
+        icon: 'text-slate-700 dark:text-slate-200',
+    },
 };
 
-const severityClassName = (severity) => {
-    if (severity === 'danger') return 'border-red-400/40 bg-red-500/10 text-red-700 dark:text-red-200';
-    if (severity === 'warning') return 'border-amber-400/40 bg-amber-500/10 text-amber-700 dark:text-amber-200';
-    if (severity === 'success') return 'border-emerald-400/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-200';
-    return 'border-blue-400/40 bg-blue-500/10 text-blue-700 dark:text-blue-200';
-};
+const toneKey = (tone) => Object.prototype.hasOwnProperty.call(toneClasses, tone) ? tone : 'neutral';
+const toneClassName = (tone, part = 'container') => toneClasses[toneKey(tone)][part];
+const severityTone = (severity) => (severity === 'danger' || severity === 'warning' || severity === 'success' ? severity : 'primary');
+const statusClassName = (status) => toneClassName(status);
+const severityClassName = (severity) => toneClassName(severityTone(severity));
 
 const asRows = (items) => Array.isArray(items) ? items : [];
 const maxValue = (items) => Math.max(...asRows(items).map((item) => Number(item.value || 0)), 1);
@@ -296,8 +331,8 @@ const canAddSubtask = (ticket) => ticket?.status !== 'CLOSED';
 const ticketSourceLabel = (ticket) => (isInternalTicket(ticket) ? 'مهمة داخلية' : 'مهمة واردة من المشرف');
 
 const ticketSourceClass = (ticket) => (isInternalTicket(ticket)
-    ? 'bg-blue-500/20 text-blue-200'
-    : 'bg-amber-500/20 text-amber-200');
+    ? 'border border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-800/50 dark:bg-blue-950/30 dark:text-blue-200'
+    : 'border border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-200');
 
 const ensureSubtaskForm = (ticketId) => {
     if (!subtaskForms.value[ticketId]) {
@@ -557,14 +592,14 @@ onMounted(async () => {
                         >
                             <div class="flex items-start justify-between gap-2">
                                 <div>
-                                    <p class="manager-kpi-label text-[11px] font-bold opacity-80">{{ kpi.label }}</p>
-                                    <p class="manager-kpi-value mt-2 text-xl font-black sm:text-2xl">{{ numberText(kpi.value) }}</p>
+                                    <p class="manager-kpi-label text-[11px] font-bold" :class="toneClassName(kpi.status, 'label')">{{ kpi.label }}</p>
+                                    <p class="manager-kpi-value mt-2 text-xl font-black sm:text-2xl" :class="toneClassName(kpi.status, 'value')">{{ numberText(kpi.value) }}</p>
                                 </div>
-                                <span class="manager-kpi-icon grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/70 dark:bg-slate-950/50">
+                                <span class="manager-kpi-icon grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/80 dark:bg-slate-950/50" :class="toneClassName(kpi.status, 'icon')">
                                     <component :is="iconFor(kpi.icon)" class="h-5 w-5" aria-hidden="true" />
                                 </span>
                             </div>
-                            <p class="manager-kpi-description mt-3 line-clamp-2 text-[11px] leading-5 opacity-80">{{ kpi.description }}</p>
+                            <p class="manager-kpi-description mt-3 line-clamp-2 text-[11px] leading-5" :class="toneClassName(kpi.status, 'text')">{{ kpi.description }}</p>
                         </article>
                     </div>
 
@@ -609,18 +644,18 @@ onMounted(async () => {
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                                     <h3 class="text-base font-black text-slate-950 dark:text-white">حضور اليوم</h3>
                                     <div class="mt-4 grid grid-cols-2 gap-3 text-center">
-                                        <div class="rounded-lg bg-emerald-500/10 p-3 text-emerald-700 dark:text-emerald-200"><p class="text-xs">حاضر</p><p class="text-xl font-black">{{ analytics.attendance?.summary?.today_present ?? 0 }}</p></div>
-                                        <div class="rounded-lg bg-red-500/10 p-3 text-red-700 dark:text-red-200"><p class="text-xs">غائب</p><p class="text-xl font-black">{{ analytics.attendance?.summary?.today_absent ?? 0 }}</p></div>
-                                        <div class="rounded-lg bg-amber-500/10 p-3 text-amber-700 dark:text-amber-200"><p class="text-xs">مأذون</p><p class="text-xl font-black">{{ analytics.attendance?.summary?.today_excused ?? 0 }}</p></div>
-                                        <div class="rounded-lg bg-blue-500/10 p-3 text-blue-700 dark:text-blue-200"><p class="text-xs">النسبة</p><p class="text-xl font-black">{{ analytics.attendance?.summary?.today_attendance_rate ?? 'لا توجد' }}<span v-if="analytics.attendance?.summary?.today_attendance_rate !== null">%</span></p></div>
+                                        <div class="rounded-lg border p-3" :class="toneClassName('success')"><p class="text-xs font-bold" :class="toneClassName('success', 'label')">حاضر</p><p class="text-xl font-black" :class="toneClassName('success', 'value')">{{ analytics.attendance?.summary?.today_present ?? 0 }}</p></div>
+                                        <div class="rounded-lg border p-3" :class="toneClassName('danger')"><p class="text-xs font-bold" :class="toneClassName('danger', 'label')">غائب</p><p class="text-xl font-black" :class="toneClassName('danger', 'value')">{{ analytics.attendance?.summary?.today_absent ?? 0 }}</p></div>
+                                        <div class="rounded-lg border p-3" :class="toneClassName('warning')"><p class="text-xs font-bold" :class="toneClassName('warning', 'label')">مأذون</p><p class="text-xl font-black" :class="toneClassName('warning', 'value')">{{ analytics.attendance?.summary?.today_excused ?? 0 }}</p></div>
+                                        <div class="rounded-lg border p-3" :class="toneClassName('primary')"><p class="text-xs font-bold" :class="toneClassName('primary', 'label')">النسبة</p><p class="text-xl font-black" :class="toneClassName('primary', 'value')">{{ analytics.attendance?.summary?.today_attendance_rate ?? 'لا توجد' }}<span v-if="analytics.attendance?.summary?.today_attendance_rate !== null">%</span></p></div>
                                     </div>
                                 </article>
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                                     <h3 class="text-base font-black text-slate-950 dark:text-white">تنبيهات سريعة</h3>
                                     <div v-if="hasRows(analytics.summary?.alerts)" class="mt-4 space-y-2">
                                         <div v-for="alert in analytics.summary.alerts" :key="alert.title" class="manager-alert-card rounded-lg border p-3 text-sm" :class="severityClassName(alert.severity)">
-                                            <p class="font-bold">{{ alert.title }}</p>
-                                            <p class="manager-alert-description mt-1 text-xs opacity-80">{{ alert.description }}</p>
+                                            <p class="font-bold" :class="toneClassName(severityTone(alert.severity), 'value')">{{ alert.title }}</p>
+                                            <p class="manager-alert-description mt-1 text-xs" :class="toneClassName(severityTone(alert.severity), 'text')">{{ alert.description }}</p>
                                         </div>
                                     </div>
                                     <p v-else class="mt-4 rounded-lg border border-dashed border-slate-300 p-4 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">لا توجد تنبيهات حرجة حاليًا.</p>
@@ -708,12 +743,12 @@ onMounted(async () => {
                                         <div>
                                             <p class="mb-2 text-xs font-bold text-red-600 dark:text-red-300">الأكثر غيابًا</p>
                                             <p v-if="!hasRows(analytics.attendance?.topAbsentStudents)" class="text-sm text-slate-500">{{ emptyText }}</p>
-                                            <p v-for="row in analytics.attendance?.topAbsentStudents || []" :key="row.label" class="mb-2 rounded-lg bg-red-500/10 p-2 text-sm text-red-700 dark:text-red-200">{{ row.label }} - {{ row.value }}</p>
+                                            <p v-for="row in analytics.attendance?.topAbsentStudents || []" :key="row.label" class="mb-2 rounded-lg border p-2 text-sm font-semibold" :class="toneClassName('danger')">{{ row.label }} - {{ row.value }}</p>
                                         </div>
                                         <div>
                                             <p class="mb-2 text-xs font-bold text-amber-600 dark:text-amber-300">الأكثر إذنًا</p>
                                             <p v-if="!hasRows(analytics.attendance?.topLateStudents)" class="text-sm text-slate-500">{{ emptyText }}</p>
-                                            <p v-for="row in analytics.attendance?.topLateStudents || []" :key="row.label" class="mb-2 rounded-lg bg-amber-500/10 p-2 text-sm text-amber-700 dark:text-amber-200">{{ row.label }} - {{ row.value }}</p>
+                                            <p v-for="row in analytics.attendance?.topLateStudents || []" :key="row.label" class="mb-2 rounded-lg border p-2 text-sm font-semibold" :class="toneClassName('warning')">{{ row.label }} - {{ row.value }}</p>
                                         </div>
                                     </div>
                                 </article>
@@ -773,9 +808,9 @@ onMounted(async () => {
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                                     <h3 class="font-black text-slate-950 dark:text-white">أقرب الاختبارات</h3>
                                     <div v-if="hasRows(analytics.exams?.upcomingExams)" class="mt-4 space-y-2">
-                                        <div v-for="exam in analytics.exams.upcomingExams" :key="exam.id" class="rounded-lg bg-blue-500/10 p-3 text-sm text-blue-800 dark:text-blue-100">
-                                            <p class="font-bold">{{ exam.title }}</p>
-                                            <p class="mt-1 text-xs">{{ exam.subject }} - {{ exam.classroom }} - {{ exam.date }}</p>
+                                        <div v-for="exam in analytics.exams.upcomingExams" :key="exam.id" class="rounded-lg border p-3 text-sm" :class="toneClassName('primary')">
+                                            <p class="font-bold" :class="toneClassName('primary', 'value')">{{ exam.title }}</p>
+                                            <p class="mt-1 text-xs" :class="toneClassName('primary', 'text')">{{ exam.subject }} - {{ exam.classroom }} - {{ exam.date }}</p>
                                         </div>
                                     </div>
                                     <p v-else class="mt-4 text-sm text-slate-500">{{ emptyText }}</p>
@@ -808,12 +843,12 @@ onMounted(async () => {
                                         <div>
                                             <p class="mb-2 text-xs font-bold text-amber-600 dark:text-amber-300">بدون جدول</p>
                                             <p v-if="!hasRows(analytics.teachers?.teachersWithoutSchedules)" class="text-sm text-slate-500">لا توجد حالات واضحة.</p>
-                                            <p v-for="row in analytics.teachers?.teachersWithoutSchedules || []" :key="row.id" class="mb-2 rounded-lg bg-amber-500/10 p-2 text-sm text-amber-700 dark:text-amber-200">{{ row.label }}</p>
+                                            <p v-for="row in analytics.teachers?.teachersWithoutSchedules || []" :key="row.id" class="mb-2 rounded-lg border p-2 text-sm font-semibold" :class="toneClassName('warning')">{{ row.label }}</p>
                                         </div>
                                         <div>
                                             <p class="mb-2 text-xs font-bold text-blue-600 dark:text-blue-300">بدون تفويضات</p>
                                             <p v-if="!hasRows(analytics.teachers?.teachersWithoutDelegations)" class="text-sm text-slate-500">لا توجد حالات واضحة.</p>
-                                            <p v-for="row in analytics.teachers?.teachersWithoutDelegations || []" :key="row.id" class="mb-2 rounded-lg bg-blue-500/10 p-2 text-sm text-blue-700 dark:text-blue-200">{{ row.label }}</p>
+                                            <p v-for="row in analytics.teachers?.teachersWithoutDelegations || []" :key="row.id" class="mb-2 rounded-lg border p-2 text-sm font-semibold" :class="toneClassName('primary')">{{ row.label }}</p>
                                         </div>
                                     </div>
                                 </article>
@@ -833,7 +868,7 @@ onMounted(async () => {
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                                     <h3 class="font-black text-slate-950 dark:text-white">مواد غير مجدولة</h3>
                                     <div v-if="hasRows(analytics.schedules?.unscheduledSubjects)" class="mt-4 space-y-2">
-                                        <p v-for="subject in analytics.schedules.unscheduledSubjects" :key="subject.id" class="rounded-lg bg-amber-500/10 p-2 text-sm text-amber-700 dark:text-amber-200">{{ subject.label }}</p>
+                                        <p v-for="subject in analytics.schedules.unscheduledSubjects" :key="subject.id" class="rounded-lg border p-2 text-sm font-semibold" :class="toneClassName('warning')">{{ subject.label }}</p>
                                     </div>
                                     <p v-else class="mt-4 text-sm text-slate-500">لا توجد مواد غير مجدولة ضمن البيانات الحالية.</p>
                                 </article>
@@ -845,10 +880,10 @@ onMounted(async () => {
                                 </article>
                                 <article v-for="alert in analytics.alerts || []" :key="alert.title" class="manager-alert-card rounded-xl border p-4" :class="severityClassName(alert.severity)">
                                     <div class="flex items-start gap-3">
-                                        <AlertTriangle class="mt-1 h-5 w-5 shrink-0" aria-hidden="true" />
+                                        <AlertTriangle class="mt-1 h-5 w-5 shrink-0" :class="toneClassName(severityTone(alert.severity), 'icon')" aria-hidden="true" />
                                         <div>
-                                            <h3 class="font-black">{{ alert.title }}</h3>
-                                            <p class="manager-alert-description mt-1 text-sm opacity-85">{{ alert.description }}</p>
+                                            <h3 class="font-black" :class="toneClassName(severityTone(alert.severity), 'value')">{{ alert.title }}</h3>
+                                            <p class="manager-alert-description mt-1 text-sm" :class="toneClassName(severityTone(alert.severity), 'text')">{{ alert.description }}</p>
                                         </div>
                                     </div>
                                 </article>
@@ -860,7 +895,7 @@ onMounted(async () => {
 
             <div
                 v-if="loadError"
-                class="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200"
+                class="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-800 dark:border-rose-800/50 dark:bg-rose-950/30 dark:text-rose-200"
             >
                 {{ loadError }}
             </div>
@@ -1143,43 +1178,15 @@ html.theme-light .manager-analytics-panel {
     color: rgb(15, 23, 42);
 }
 
-html.theme-light .manager-analytics-panel .manager-kpi-card {
-    border-color: rgba(148, 163, 184, 0.42) !important;
-    background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.94)),
-        radial-gradient(circle at top right, rgba(59, 130, 246, 0.08), transparent 52%) !important;
-    color: rgb(15, 23, 42) !important;
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+html.theme-light .manager-analytics-panel .manager-kpi-card,
+html.theme-light .manager-analytics-panel .manager-alert-card,
+html.theme-light .manager-analytics-panel .manager-tone {
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
 }
 
-html.theme-light .manager-analytics-panel .manager-kpi-card.text-emerald-700 {
-    color: rgb(4, 120, 87) !important;
-}
-
-html.theme-light .manager-analytics-panel .manager-kpi-card.text-red-700 {
-    color: rgb(185, 28, 28) !important;
-}
-
-html.theme-light .manager-analytics-panel .manager-kpi-card.text-amber-700 {
-    color: rgb(180, 83, 9) !important;
-}
-
-html.theme-light .manager-analytics-panel .manager-kpi-card.text-blue-700 {
-    color: rgb(29, 78, 216) !important;
-}
-
-html.theme-light .manager-analytics-panel .manager-kpi-card.text-cyan-700 {
-    color: rgb(14, 116, 144) !important;
-}
-
-html.theme-light .manager-analytics-panel .manager-kpi-card :where(.manager-kpi-label, .manager-kpi-description) {
-    color: rgb(71, 85, 105) !important;
-    opacity: 1 !important;
-}
-
-html.theme-light .manager-analytics-panel .manager-kpi-card .manager-kpi-value,
-html.theme-light .manager-analytics-panel .manager-kpi-card .manager-kpi-icon {
-    color: currentColor !important;
+html.theme-light .manager-analytics-panel .manager-kpi-card :where(.manager-kpi-label, .manager-kpi-value, .manager-kpi-description),
+html.theme-light .manager-analytics-panel .manager-alert-card :where(h3, p, .manager-alert-description),
+html.theme-light .manager-analytics-panel .manager-tone :where(p, span, strong) {
     opacity: 1 !important;
 }
 
@@ -1200,15 +1207,6 @@ html.theme-light .manager-analytics-panel :where(article)[class*='bg-white'] :wh
 
 html.theme-light .manager-analytics-panel :where(article)[class*='bg-white'] :where(dd, strong) {
     color: rgb(15, 23, 42);
-}
-
-html.theme-light .manager-analytics-panel .manager-alert-card {
-    opacity: 1 !important;
-}
-
-html.theme-light .manager-analytics-panel .manager-alert-description {
-    color: color-mix(in srgb, currentColor 76%, rgb(15, 23, 42)) !important;
-    opacity: 1 !important;
 }
 
 html.theme-dark .manager-analytics-panel {
