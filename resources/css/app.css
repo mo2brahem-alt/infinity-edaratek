@@ -3046,6 +3046,80 @@ html.theme-light :where(.role-main-shell, .admin-main-shell, .ui-theme-modal-pan
     background-color: var(--ui-info-soft);
 }
 
+/* Light-mode bridge for legacy dark-first panels and tree cards.
+   Scoped to page content so headers, drawers, and branded public sections keep their own contract. */
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(section, article, aside, div, form, li, label)[class*='bg-gray-950'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(section, article, aside, div, form, li, label)[class*='bg-gray-900'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(section, article, aside, div, form, li, label)[class*='bg-gray-800'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(section, article, aside, div, form, li, label)[class*='bg-slate-950'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(section, article, aside, div, form, li, label)[class*='bg-slate-900'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(section, article, aside, div, form, li, label)[class*='bg-slate-800'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(section, article, aside, div, form, li, label)[class*='bg-zinc-950'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(section, article, aside, div, form, li, label)[class*='bg-zinc-900'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(section, article, aside, div, form, li, label)[class*='bg-neutral-950'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(section, article, aside, div, form, li, label)[class*='bg-neutral-900'] {
+    border-color: var(--ui-border-soft) !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(246, 250, 255, 0.97)),
+        radial-gradient(circle at top right, rgba(14, 165, 233, 0.08), transparent 44%) !important;
+    color: var(--ui-text-primary) !important;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.07) !important;
+}
+
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(span, small, mark, strong, em, p, h1, h2, h3, h4, h5, h6, td, th, label, div)[class*='text-white']:not([class*='bg-blue']):not([class*='bg-emerald']):not([class*='bg-red']):not([class*='bg-amber']):not([class*='bg-cyan']):not([class*='bg-indigo']):not([class*='bg-violet']):not([class*='bg-purple']):not([class*='bg-green']),
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(span, small, mark, strong, em, p, h1, h2, h3, h4, h5, h6, td, th, label, div)[class*='text-gray-100']:not([class*='bg-blue']):not([class*='bg-emerald']):not([class*='bg-red']):not([class*='bg-amber']):not([class*='bg-cyan']):not([class*='bg-indigo']):not([class*='bg-violet']):not([class*='bg-purple']):not([class*='bg-green']),
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(span, small, mark, strong, em, p, h1, h2, h3, h4, h5, h6, td, th, label, div)[class*='text-gray-200']:not([class*='bg-blue']):not([class*='bg-emerald']):not([class*='bg-red']):not([class*='bg-amber']):not([class*='bg-cyan']):not([class*='bg-indigo']):not([class*='bg-violet']):not([class*='bg-purple']):not([class*='bg-green']),
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(span, small, mark, strong, em, p, h1, h2, h3, h4, h5, h6, td, th, label, div)[class*='text-slate-100']:not([class*='bg-blue']):not([class*='bg-emerald']):not([class*='bg-red']):not([class*='bg-amber']):not([class*='bg-cyan']):not([class*='bg-indigo']):not([class*='bg-violet']):not([class*='bg-purple']):not([class*='bg-green']),
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(span, small, mark, strong, em, p, h1, h2, h3, h4, h5, h6, td, th, label, div)[class*='text-slate-200']:not([class*='bg-blue']):not([class*='bg-emerald']):not([class*='bg-red']):not([class*='bg-amber']):not([class*='bg-cyan']):not([class*='bg-indigo']):not([class*='bg-violet']):not([class*='bg-purple']):not([class*='bg-green']) {
+    color: var(--ui-text-primary) !important;
+}
+
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(span, small, mark, p, td, th, label, div)[class*='text-gray-300'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(span, small, mark, p, td, th, label, div)[class*='text-gray-400'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(span, small, mark, p, td, th, label, div)[class*='text-slate-300'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(span, small, mark, p, td, th, label, div)[class*='text-slate-400'] {
+    color: var(--ui-text-secondary) !important;
+}
+
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(button, a)[class*='bg-gray-900']:not([class*='bg-blue']):not([class*='bg-emerald']):not([class*='bg-red']):not([class*='bg-amber']),
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(button, a)[class*='bg-gray-800']:not([class*='bg-blue']):not([class*='bg-emerald']):not([class*='bg-red']):not([class*='bg-amber']),
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(button, a)[class*='bg-gray-700']:not([class*='bg-blue']):not([class*='bg-emerald']):not([class*='bg-red']):not([class*='bg-amber']) {
+    border-color: var(--ui-border-soft) !important;
+    background: linear-gradient(180deg, #f8fbff, #edf3fa) !important;
+    color: var(--ui-text-primary) !important;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06) !important;
+}
+
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(.stage-row-accent, .stage-inline-accent)[class*='bg-gray'],
+html.theme-light :where(.role-main-shell, .admin-main-shell)
+    :where(.stage-row-accent, .stage-inline-accent)[class*='bg-slate'] {
+    background:
+        linear-gradient(180deg, hsl(var(--stage-h, 208) 100% 99% / 0.98), hsl(var(--stage-h, 208) 88% 97% / 0.94)) !important;
+}
+
 @media (max-width: 767px) {
     :where(.role-main-shell, .admin-main-shell) {
         overflow-x: clip;
