@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\EducationalDirectorate;
 use App\Models\School;
 use App\Services\Exports\SchoolExportDocumentService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,10 +14,7 @@ class SchoolExportDocumentServiceTest extends TestCase
 
     public function test_csv_preamble_uses_utf8_bom_and_arabic_school_metadata(): void
     {
-        $school = School::query()->create([
-            'name' => 'مدرسة البيان',
-            'school_id' => 'SCH-UTF-001',
-        ]);
+        $school = $this->makeExportSchool();
 
         $stream = fopen('php://temp', 'w+');
         $this->assertIsResource($stream);
@@ -42,10 +40,7 @@ class SchoolExportDocumentServiceTest extends TestCase
 
     public function test_safe_filename_uses_school_code_and_timestamp_safe_segments(): void
     {
-        $school = School::query()->create([
-            'name' => 'مدرسة البيان',
-            'school_id' => 'SCH-UTF-001',
-        ]);
+        $school = $this->makeExportSchool();
 
         $filename = app(SchoolExportDocumentService::class)->safeFileName(
             'attendance-report',
@@ -70,10 +65,7 @@ class SchoolExportDocumentServiceTest extends TestCase
 
     public function test_report_dataset_view_declares_utf8_rtl_and_arabic_content(): void
     {
-        $school = School::query()->create([
-            'name' => 'مدرسة البيان',
-            'school_id' => 'SCH-UTF-001',
-        ]);
+        $school = $this->makeExportSchool();
 
         $html = view('exports.school.report-datasets', [
             'school' => $school,
@@ -95,6 +87,20 @@ class SchoolExportDocumentServiceTest extends TestCase
         $this->assertStringContainsString('dir="rtl"', $html);
         $this->assertStringContainsString('مدرسة البيان', $html);
         $this->assertStringContainsString('اسم الطالب', $html);
-        $this->assertStringContainsString('تم إنشاء هذا المستند بواسطة منصة إدارتك.', $html);
+        $this->assertStringContainsString('تم إنشاء هذا المستند بواسطة منصة إدارتك في', $html);
+    }
+
+    private function makeExportSchool(): School
+    {
+        $directorate = EducationalDirectorate::query()->create([
+            'name' => 'Export Test Directorate',
+            'governorate' => 'Riyadh',
+        ]);
+
+        return School::query()->create([
+            'directorate_id' => $directorate->id,
+            'name' => 'مدرسة البيان',
+            'school_id' => 'SCH-UTF-001',
+        ]);
     }
 }

@@ -1675,13 +1675,15 @@ class StudentAttendanceAccessTest extends TestCase
 
         $response->assertOk();
         $response->assertHeader('content-type', 'text/csv; charset=UTF-8');
-        $response->assertHeader(
-            'content-disposition',
-            'attachment; filename=attendance-report-' . $classroom->id . '-2026-02-01-to-2026-02-28.csv'
+        $contentDisposition = $response->headers->get('content-disposition');
+        $this->assertIsString($contentDisposition);
+        $this->assertMatchesRegularExpression(
+            '/^attachment; filename=attendance-report-sch-940007-3a-2026-02-01-2026-02-28-\d{8}-\d{6}\.csv$/',
+            $contentDisposition
         );
 
         $csv = $response->streamedContent();
-        $this->assertStringContainsString('student_name,student_code,leave_days,unexcused_absence_days,present_days,excused_days,recorded_days', $csv);
+        $this->assertStringContainsString('"اسم الطالب","كود الطالب","أيام الإجازة","غياب بدون عذر","أيام الحضور","أيام الإذن","الأيام المسجلة"', $csv);
         $this->assertMatchesRegularExpression('/"?Export Student"?,ST-9407,1,1,0,0,2/', $csv);
     }
 
@@ -2014,4 +2016,3 @@ class StudentAttendanceAccessTest extends TestCase
         ]);
     }
 }
-

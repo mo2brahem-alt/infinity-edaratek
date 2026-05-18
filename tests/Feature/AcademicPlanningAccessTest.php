@@ -164,6 +164,7 @@ class AcademicPlanningAccessTest extends TestCase
     public function test_approved_courses_tree_contains_current_school_courses_only(): void
     {
         Role::firstOrCreate(['name' => 'school_manager', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'staff', 'guard_name' => 'web']);
 
         $region = EducationalDirectorate::create([
             'name' => 'Approved Courses Tree Region',

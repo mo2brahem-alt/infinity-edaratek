@@ -208,7 +208,7 @@ class UserApprovalService
                 $query->where('manager_user_id', (int) $user->id);
 
                 if ((int) ($user->school_id ?? 0) > 0) {
-                    $query->orWhereKey((int) $user->school_id);
+                    $query->orWhere('id', (int) $user->school_id);
                 }
             })
             ->orderByRaw('CASE WHEN manager_user_id = ? THEN 0 ELSE 1 END', [(int) $user->id])

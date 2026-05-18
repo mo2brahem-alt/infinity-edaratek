@@ -355,9 +355,10 @@ class SchoolExamManagementTest extends TestCase
                     $grade = collect(data_get($stage, 'grades', []))->firstWhere('name', 'الصف الأول');
                     $subject = collect(data_get($grade, 'subjects', []))->firstWhere('id', $contextA['subjectA']->id);
                     $questions = collect(data_get($subject, 'groups', []))
-                        ->flatMap(fn ($group) => data_get($group, 'questions', []));
+                        ->pluck('questions')
+                        ->flatten(1);
 
-                    return is_array($tree)
+                    return is_iterable($tree)
                         && is_array(data_get($stage, 'grades'))
                         && is_array(data_get($grade, 'subjects'))
                         && is_array(data_get($subject, 'groups'))

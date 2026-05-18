@@ -392,12 +392,12 @@ Route::middleware(['auth', 'active_school_association', 'student_leave_access'])
     });
 });
 
+Route::middleware(['auth', 'academic_planning_access', 'throttle:api.school'])->prefix('api/school')->group(function () {
+    Route::get('/quick-setup/status', [ApiSchoolQuickSetupStatusController::class, 'show'])->name('api.school.quick_setup.status');
+});
+
 Route::middleware(['auth', 'active_school_association', 'academic_planning_access'])->group(function () {
     Route::get('/school/academic-planning', [SchoolAcademicPlanningController::class, 'index'])->name('school.academic_planning.index');
-
-    Route::middleware('throttle:api.school')->prefix('api/school')->group(function () {
-        Route::get('/quick-setup/status', [ApiSchoolQuickSetupStatusController::class, 'show'])->name('api.school.quick_setup.status');
-    });
 
     Route::post('/school/academic-planning/years', [SchoolAcademicPlanningController::class, 'storeYear'])->name('school.academic_planning.years.store');
     Route::put('/school/academic-planning/years/{schoolAcademicYear}', [SchoolAcademicPlanningController::class, 'updateYear'])->name('school.academic_planning.years.update');
