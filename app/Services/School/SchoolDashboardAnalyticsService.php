@@ -82,6 +82,7 @@ class SchoolDashboardAnalyticsService
             'filterOptions' => $this->filterOptions($school),
             'generatedAt' => now()->format('Y-m-d H:i'),
             'kpis' => $this->kpis($students, $attendance, $leaves, $exams, $teachers, $schedules, $subscription, $staff),
+            'charts' => $this->charts($students, $attendance, $leaves, $exams, $teachers, $schedules),
             'summary' => [
                 'students' => $students['summary'],
                 'attendance' => $attendance['summary'],
@@ -400,6 +401,8 @@ class SchoolDashboardAnalyticsService
                 'attendance_date as label',
                 DB::raw("SUM(CASE WHEN status = '" . SchoolStudentAttendance::STATUS_PRESENT . "' THEN 1 ELSE 0 END) as present"),
                 DB::raw("SUM(CASE WHEN status = '" . SchoolStudentAttendance::STATUS_ABSENT . "' THEN 1 ELSE 0 END) as absent"),
+                DB::raw("SUM(CASE WHEN status = '" . SchoolStudentAttendance::STATUS_EXCUSED . "' THEN 1 ELSE 0 END) as excused"),
+                DB::raw("SUM(CASE WHEN status = '" . SchoolStudentAttendance::STATUS_LEAVE . "' THEN 1 ELSE 0 END) as leave"),
                 DB::raw('COUNT(*) as total')
             )
             ->groupBy('attendance_date')
@@ -409,6 +412,8 @@ class SchoolDashboardAnalyticsService
                 'label' => (string) $row->label,
                 'present' => (int) $row->present,
                 'absent' => (int) $row->absent,
+                'excused' => (int) $row->excused,
+                'leave' => (int) $row->leave,
                 'total' => (int) $row->total,
                 'rate' => (int) $row->total > 0 ? round(((int) $row->present / (int) $row->total) * 100, 1) : 0,
             ])
@@ -561,13 +566,13 @@ class SchoolDashboardAnalyticsService
             ->whereNotIn('status', [SchoolExam::STATUS_CANCELED, SchoolExam::STATUS_CLOSED])
             ->count();
 
-        $scoresBase = SchoolExamStudentScore::query()
+        $allScoresBase = SchoolExamStudentScore::query()
             ->where('school_exam_student_scores.school_id', $school->id)
             ->join('school_exams', 'school_exams.id', '=', 'school_exam_student_scores.school_exam_id')
-            ->whereBetween('school_exams.exam_date', [$filters['date_from'], $filters['date_to']])
-            ->whereNotNull('school_exam_student_scores.score');
+            ->whereBetween('school_exams.exam_date', [$filters['date_from'], $filters['date_to']]);
 
-        $scoresBase = $this->applyExamScoreFilters($scoresBase, $filters, $classroomIds);
+        $allScoresBase = $this->applyExamScoreFilters($allScoresBase, $filters, $classroomIds);
+        $scoresBase = (clone $allScoresBase)->whereNotNull('school_exam_student_scores.score');
 
         $scoreSummary = (clone $scoresBase)
             ->selectRaw('COUNT(*) as scores_count')
@@ -578,6 +583,7 @@ class SchoolDashboardAnalyticsService
         $scoresCount = (int) ($scoreSummary->scores_count ?? 0);
         $averagePercent = $scoresCount > 0 ? round((float) $scoreSummary->average_percent, 1) : null;
         $passRate = $scoresCount > 0 ? round(((int) $scoreSummary->passed_count / $scoresCount) * 100, 1) : null;
+        $incompleteScores = (clone $allScoresBase)->whereNull('school_exam_student_scores.score')->count();
 
         $resultsBySubject = (clone $scoresBase)
             ->join('school_subjects', 'school_subjects.id', '=', 'school_exams.school_subject_id')
@@ -587,6 +593,39 @@ class SchoolDashboardAnalyticsService
             ->orderBy('value')
             ->limit(8)
             ->get();
+
+        $gradesDistribution = (clone $scoresBase)
+            ->selectRaw("
+                CASE
+                    WHEN school_exams.max_score <= 0 THEN 'غير محدد'
+                    WHEN (school_exam_student_scores.score / school_exams.max_score) * 100 < 50 THEN '0-49'
+                    WHEN (school_exam_student_scores.score / school_exams.max_score) * 100 < 60 THEN '50-59'
+                    WHEN (school_exam_student_scores.score / school_exams.max_score) * 100 < 70 THEN '60-69'
+                    WHEN (school_exam_student_scores.score / school_exams.max_score) * 100 < 80 THEN '70-79'
+                    WHEN (school_exam_student_scores.score / school_exams.max_score) * 100 < 90 THEN '80-89'
+                    ELSE '90-100'
+                END as label
+            ")
+            ->selectRaw('COUNT(*) as value')
+            ->groupBy('label')
+            ->orderByRaw("
+                CASE label
+                    WHEN '0-49' THEN 1
+                    WHEN '50-59' THEN 2
+                    WHEN '60-69' THEN 3
+                    WHEN '70-79' THEN 4
+                    WHEN '80-89' THEN 5
+                    WHEN '90-100' THEN 6
+                    ELSE 7
+                END
+            ")
+            ->get();
+
+        $passFailDistribution = collect([
+            ['label' => 'ناجح', 'value' => (int) ($scoreSummary->passed_count ?? 0)],
+            ['label' => 'راسب', 'value' => max($scoresCount - (int) ($scoreSummary->passed_count ?? 0), 0)],
+            ['label' => 'غير مكتمل', 'value' => (int) $incompleteScores],
+        ])->filter(fn (array $item): bool => (int) $item['value'] > 0)->values();
 
         $resultsByGrade = (clone $scoresBase)
             ->join('school_classrooms', 'school_classrooms.id', '=', 'school_exams.school_classroom_id')
@@ -627,8 +666,95 @@ class SchoolDashboardAnalyticsService
             ],
             'resultsBySubject' => $this->numericSeries($resultsBySubject),
             'resultsByGrade' => $this->numericSeries($resultsByGrade),
+            'gradesDistribution' => $this->series($gradesDistribution),
+            'passFailDistribution' => $this->series($passFailDistribution),
             'upcomingExams' => $upcomingList,
             'lowPerformingSubjects' => $this->numericSeries($resultsBySubject)->filter(fn ($item) => (float) $item['value'] < 60)->values()->all(),
+        ];
+    }
+
+    private function charts(array $students, array $attendance, array $leaves, array $exams, array $teachers, array $schedules): array
+    {
+        return [
+            'attendanceTrend' => $this->trendChart(
+                $attendance['attendanceTrend'] ?? [],
+                [
+                    'present' => 'حاضر',
+                    'absent' => 'غائب',
+                    'excused' => 'مأذون',
+                    'leave' => 'إجازة',
+                ],
+                'area'
+            ),
+            'attendanceStatusDistribution' => $this->donutChart($attendance['attendanceStatusDistribution'] ?? []),
+            'studentsByStage' => $this->barChart($students['studentsByStage'] ?? []),
+            'studentsByGrade' => $this->barChart($students['studentsByGrade'] ?? []),
+            'classroomDensity' => $this->barChart($students['topDenseClassrooms'] ?? [], true),
+            'absenceByClassroom' => $this->barChart($attendance['absenceByClassroom'] ?? [], true),
+            'leavesByStatus' => $this->donutChart($leaves['leavesByStatus'] ?? []),
+            'leavesByType' => $this->barChart($leaves['leavesByType'] ?? []),
+            'leavesTrend' => $this->singleTrendChart($leaves['leavesTrend'] ?? [], 'الإجازات'),
+            'examResultsBySubject' => $this->barChart($exams['resultsBySubject'] ?? []),
+            'gradesDistribution' => $this->barChart($exams['gradesDistribution'] ?? []),
+            'passFailDistribution' => $this->donutChart($exams['passFailDistribution'] ?? []),
+            'teacherWeeklyLoad' => $this->barChart($teachers['teacherWeeklyLoad'] ?? [], true),
+            'teachersByDepartment' => $this->donutChart($teachers['teachersByDepartment'] ?? []),
+            'lessonsByDay' => $this->barChart($schedules['lessonsByDay'] ?? []),
+            'lessonsBySubject' => $this->barChart($schedules['lessonsBySubject'] ?? [], true),
+        ];
+    }
+
+    private function trendChart(array|Collection $rows, array $seriesMap, string $type = 'line'): array
+    {
+        $rows = collect($rows);
+
+        return [
+            'type' => $type,
+            'categories' => $rows->pluck('label')->map(fn ($label) => (string) $label)->values()->all(),
+            'series' => collect($seriesMap)->map(fn (string $label, string $key): array => [
+                'name' => $label,
+                'data' => $rows->map(fn ($row) => (int) (is_array($row) ? ($row[$key] ?? 0) : ($row->{$key} ?? 0)))->values()->all(),
+            ])->values()->all(),
+        ];
+    }
+
+    private function singleTrendChart(array|Collection $rows, string $name): array
+    {
+        $rows = collect($rows);
+
+        return [
+            'type' => 'area',
+            'categories' => $rows->pluck('label')->map(fn ($label) => (string) $label)->values()->all(),
+            'series' => [[
+                'name' => $name,
+                'data' => $rows->map(fn ($row) => (int) (is_array($row) ? ($row['value'] ?? 0) : ($row->value ?? 0)))->values()->all(),
+            ]],
+        ];
+    }
+
+    private function barChart(array|Collection $rows, bool $horizontal = false): array
+    {
+        $rows = collect($rows);
+
+        return [
+            'type' => 'bar',
+            'horizontal' => $horizontal,
+            'categories' => $rows->pluck('label')->map(fn ($label) => (string) $label)->values()->all(),
+            'series' => [[
+                'name' => 'القيمة',
+                'data' => $rows->map(fn ($row) => round((float) (is_array($row) ? ($row['value'] ?? 0) : ($row->value ?? 0)), 1))->values()->all(),
+            ]],
+        ];
+    }
+
+    private function donutChart(array|Collection $rows): array
+    {
+        $rows = collect($rows);
+
+        return [
+            'type' => 'donut',
+            'labels' => $rows->pluck('label')->map(fn ($label) => (string) $label)->values()->all(),
+            'series' => $rows->map(fn ($row) => (int) (is_array($row) ? ($row['value'] ?? 0) : ($row->value ?? 0)))->values()->all(),
         ];
     }
 

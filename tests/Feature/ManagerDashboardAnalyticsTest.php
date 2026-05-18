@@ -78,6 +78,8 @@ class ManagerDashboardAnalyticsTest extends TestCase
                 ->where('analytics.students.summary.total', 1)
                 ->where('analytics.teachers.summary.total', 1)
                 ->has('analytics.kpis')
+                ->has('analytics.charts.attendanceTrend.series')
+                ->has('analytics.charts.studentsByStage.categories')
                 ->has('analytics.alerts')
             );
     }
@@ -125,6 +127,77 @@ class ManagerDashboardAnalyticsTest extends TestCase
                 ->where('analytics.filters.classroom_id', null)
                 ->where('analytics.students.summary.total', 1)
                 ->where('analytics.school.id', $schoolA->id)
+            );
+    }
+
+    public function test_dashboard_filters_ignore_teacher_from_another_school(): void
+    {
+        Role::firstOrCreate(['name' => 'school_manager', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'staff', 'guard_name' => 'web']);
+
+        $region = EducationalDirectorate::create([
+            'name' => 'Analytics Teacher Filter Region',
+            'governorate' => 'Jeddah',
+        ]);
+
+        $managerA = User::factory()->create(['role' => 'school_manager']);
+        $managerA->assignRole('school_manager');
+        $managerB = User::factory()->create(['role' => 'school_manager']);
+        $managerB->assignRole('school_manager');
+
+        $schoolA = $this->createManagedSchool($region->id, $managerA, 'Teacher Filter A', 'SCH-DASH-T-A');
+        $schoolB = $this->createManagedSchool($region->id, $managerB, 'Teacher Filter B', 'SCH-DASH-T-B');
+
+        $teacherA = User::factory()->create([
+            'role' => 'staff',
+            'school_id' => $schoolA->id,
+            'school_staff_type' => User::SCHOOL_STAFF_EDUCATIONAL,
+            'is_active' => true,
+        ]);
+        $teacherA->assignRole('staff');
+
+        $teacherB = User::factory()->create([
+            'role' => 'staff',
+            'school_id' => $schoolB->id,
+            'school_staff_type' => User::SCHOOL_STAFF_EDUCATIONAL,
+            'is_active' => true,
+        ]);
+        $teacherB->assignRole('staff');
+
+        $this->actingAs($managerA)
+            ->get(route('manager.dashboard', ['teacher_id' => $teacherB->id]))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Manager/Dashboard')
+                ->where('analytics.filters.teacher_id', null)
+                ->where('analytics.teachers.summary.total', 1)
+                ->where('analytics.school.id', $schoolA->id)
+            );
+    }
+
+    public function test_dashboard_returns_safe_chart_arrays_when_school_has_no_records(): void
+    {
+        Role::firstOrCreate(['name' => 'school_manager', 'guard_name' => 'web']);
+
+        $region = EducationalDirectorate::create([
+            'name' => 'Empty Analytics Region',
+            'governorate' => 'Riyadh',
+        ]);
+
+        $manager = User::factory()->create(['role' => 'school_manager']);
+        $manager->assignRole('school_manager');
+        $school = $this->createManagedSchool($region->id, $manager, 'Empty Analytics School', 'SCH-DASH-EMPTY');
+
+        $this->actingAs($manager)
+            ->get(route('manager.dashboard'))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Manager/Dashboard')
+                ->where('analytics.school.id', $school->id)
+                ->where('analytics.students.summary.total', 0)
+                ->has('analytics.charts.attendanceTrend.categories')
+                ->has('analytics.charts.attendanceTrend.series')
+                ->has('analytics.charts.passFailDistribution.series')
             );
     }
 

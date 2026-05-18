@@ -26,6 +26,7 @@ import {
     UserX,
     Users,
 } from 'lucide-vue-next';
+import DashboardChartCard from '@/Components/Dashboard/DashboardChartCard.vue';
 import RoleLayout from '@/Layouts/RoleLayout.vue';
 import { useActionDialog } from '@/composables/useActionDialog';
 
@@ -100,6 +101,7 @@ const iconMap = {
 };
 
 const kpis = computed(() => analytics.value?.kpis || []);
+const charts = computed(() => analytics.value?.charts || {});
 const filterOptions = computed(() => analytics.value?.filterOptions || {});
 const activeSlideIndex = computed(() => analyticsSlides.findIndex((slide) => slide.key === activeAnalyticsSlide.value));
 const filteredGrades = computed(() => {
@@ -205,6 +207,7 @@ const hasRows = (items) => asRows(items).length > 0;
 const numberText = (value) => value === null || typeof value === 'undefined' ? 'لا توجد بيانات' : value;
 const emptyText = 'لا توجد بيانات كافية لعرض هذا الرسم.';
 const piePalette = ['#0ea5e9', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#14b8a6'];
+const chartFor = (key) => charts.value?.[key] || {};
 
 const pieStyle = (items) => {
     const rows = asRows(items);
@@ -632,6 +635,19 @@ onMounted(async () => {
 
                         <div class="min-h-[360px]">
                             <div v-if="activeAnalyticsSlide === 'summary'" class="grid gap-4 lg:grid-cols-3">
+                                <DashboardChartCard
+                                    class="lg:col-span-2"
+                                    title="اتجاه الحضور"
+                                    description="حاضر، غائب، مأذون وإجازة خلال الفترة المحددة."
+                                    :chart="chartFor('attendanceTrend')"
+                                    :height="300"
+                                />
+                                <DashboardChartCard
+                                    title="توزيع حالات الحضور"
+                                    description="قراءة سريعة لنسب الحالات داخل نطاق الفلاتر."
+                                    :chart="chartFor('attendanceStatusDistribution')"
+                                    :height="300"
+                                />
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                                     <h3 class="text-base font-black text-slate-950 dark:text-white">ملخص التشغيل</h3>
                                     <dl class="mt-4 space-y-3 text-sm">
@@ -663,6 +679,22 @@ onMounted(async () => {
                             </div>
 
                             <div v-else-if="activeAnalyticsSlide === 'students'" class="grid gap-4 lg:grid-cols-2">
+                                <DashboardChartCard
+                                    title="الطلاب حسب المرحلة"
+                                    description="توزيع الطلاب على المراحل التعليمية داخل المدرسة."
+                                    :chart="chartFor('studentsByStage')"
+                                />
+                                <DashboardChartCard
+                                    title="كثافة الفصول"
+                                    description="أكثر الفصول كثافة حسب عدد الطلاب."
+                                    :chart="chartFor('classroomDensity')"
+                                />
+                                <DashboardChartCard
+                                    class="lg:col-span-2"
+                                    title="الطلاب حسب الصف"
+                                    description="مقارنة عدد الطلاب بين الصفوف."
+                                    :chart="chartFor('studentsByGrade')"
+                                />
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                                     <h3 class="font-black text-slate-950 dark:text-white">توزيع الطلاب حسب المرحلة</h3>
                                     <div v-if="hasRows(analytics.students?.studentsByStage)" class="mt-4 space-y-3">
@@ -707,6 +739,23 @@ onMounted(async () => {
                             </div>
 
                             <div v-else-if="activeAnalyticsSlide === 'attendance'" class="grid gap-4 lg:grid-cols-2">
+                                <DashboardChartCard
+                                    class="lg:col-span-2"
+                                    title="اتجاه الحضور خلال الفترة"
+                                    description="تغيّر حالات الحضور اليومية حسب الفلاتر المحددة."
+                                    :chart="chartFor('attendanceTrend')"
+                                    :height="320"
+                                />
+                                <DashboardChartCard
+                                    title="توزيع حالات الحضور"
+                                    description="إجمالي حالات الحضور والغياب والإذن والإجازة."
+                                    :chart="chartFor('attendanceStatusDistribution')"
+                                />
+                                <DashboardChartCard
+                                    title="الغياب حسب الفصل"
+                                    description="أعلى الفصول في عدد حالات الغياب خلال الفترة."
+                                    :chart="chartFor('absenceByClassroom')"
+                                />
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                                     <h3 class="font-black text-slate-950 dark:text-white">توزيع حالات الحضور</h3>
                                     <div v-if="hasRows(analytics.attendance?.attendanceStatusDistribution)" class="mt-4 flex flex-col gap-3">
@@ -755,6 +804,21 @@ onMounted(async () => {
                             </div>
 
                             <div v-else-if="activeAnalyticsSlide === 'leaves'" class="grid gap-4 lg:grid-cols-3">
+                                <DashboardChartCard
+                                    title="حالات الإجازات"
+                                    description="توزيع طلبات الإجازة حسب الحالة."
+                                    :chart="chartFor('leavesByStatus')"
+                                />
+                                <DashboardChartCard
+                                    title="الإجازات حسب النوع"
+                                    description="أكثر أنواع الإجازات استخدامًا خلال الفترة."
+                                    :chart="chartFor('leavesByType')"
+                                />
+                                <DashboardChartCard
+                                    title="اتجاه الإجازات"
+                                    description="حجم طلبات الإجازة على خط الزمن."
+                                    :chart="chartFor('leavesTrend')"
+                                />
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950 lg:col-span-1">
                                     <h3 class="font-black text-slate-950 dark:text-white">حالات الإجازات</h3>
                                     <div v-if="hasRows(analytics.leaves?.leavesByStatus)" class="mt-4 flex items-center gap-4">
@@ -786,6 +850,21 @@ onMounted(async () => {
                             </div>
 
                             <div v-else-if="activeAnalyticsSlide === 'exams'" class="grid gap-4 lg:grid-cols-3">
+                                <DashboardChartCard
+                                    title="نتائج الاختبارات حسب المادة"
+                                    description="متوسط النتيجة لكل مادة خلال الفترة."
+                                    :chart="chartFor('examResultsBySubject')"
+                                />
+                                <DashboardChartCard
+                                    title="توزيع الدرجات"
+                                    description="قراءة سريعة لنطاقات درجات الطلاب."
+                                    :chart="chartFor('gradesDistribution')"
+                                />
+                                <DashboardChartCard
+                                    title="النجاح والرسوب"
+                                    description="توزيع النتائج المسجلة وغير المكتملة."
+                                    :chart="chartFor('passFailDistribution')"
+                                />
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                                     <h3 class="font-black text-slate-950 dark:text-white">ملخص الاختبارات</h3>
                                     <dl class="mt-4 space-y-3 text-sm">
@@ -818,6 +897,17 @@ onMounted(async () => {
                             </div>
 
                             <div v-else-if="activeAnalyticsSlide === 'teachers'" class="grid gap-4 lg:grid-cols-3">
+                                <DashboardChartCard
+                                    class="lg:col-span-2"
+                                    title="الحصص الأسبوعية حسب المعلم"
+                                    description="توزيع الحمل التدريسي على المعلمين."
+                                    :chart="chartFor('teacherWeeklyLoad')"
+                                />
+                                <DashboardChartCard
+                                    title="المعلمون حسب القسم"
+                                    description="توزيع الطاقم التعليمي حسب الأقسام."
+                                    :chart="chartFor('teachersByDepartment')"
+                                />
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                                     <h3 class="font-black text-slate-950 dark:text-white">ملخص المعلمين</h3>
                                     <dl class="mt-4 space-y-3 text-sm">
@@ -855,6 +945,17 @@ onMounted(async () => {
                             </div>
 
                             <div v-else-if="activeAnalyticsSlide === 'schedules'" class="grid gap-4 lg:grid-cols-3">
+                                <DashboardChartCard
+                                    class="lg:col-span-2"
+                                    title="الحصص حسب أيام الأسبوع"
+                                    description="توزيع الحصص الأسبوعية عبر أيام الدراسة."
+                                    :chart="chartFor('lessonsByDay')"
+                                />
+                                <DashboardChartCard
+                                    title="الحصص حسب المادة"
+                                    description="أكثر المواد ظهورًا في الجدول."
+                                    :chart="chartFor('lessonsBySubject')"
+                                />
                                 <article class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950 lg:col-span-2">
                                     <h3 class="font-black text-slate-950 dark:text-white">الحصص حسب اليوم</h3>
                                     <div v-if="hasRows(analytics.schedules?.lessonsByDay)" class="mt-4 flex h-40 items-end gap-3">
