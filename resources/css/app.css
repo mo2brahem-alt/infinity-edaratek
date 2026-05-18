@@ -994,14 +994,28 @@ html.theme-light input[type='month']::-webkit-calendar-picker-indicator {
     --ui-surface-1: rgba(15, 23, 42, 0.82);
     --ui-surface-2: rgba(30, 41, 59, 0.92);
     --ui-surface-3: rgba(51, 65, 85, 0.88);
+    --ui-page-bg: #020617;
+    --ui-shell-bg: #07111f;
+    --ui-surface-elevated: rgba(15, 23, 42, 0.96);
+    --ui-input-bg: rgba(30, 41, 59, 0.94);
+    --ui-modal-bg: rgba(15, 23, 42, 0.98);
+    --ui-table-header-bg: rgba(30, 41, 59, 0.84);
+    --ui-table-row-bg: rgba(15, 23, 42, 0.58);
+    --ui-table-row-hover: rgba(14, 165, 233, 0.09);
     --ui-border-soft: rgba(148, 163, 184, 0.18);
     --ui-border-strong: rgba(148, 163, 184, 0.28);
+    --ui-border-subtle: rgba(148, 163, 184, 0.12);
     --ui-text-primary: #f8fafc;
     --ui-text-secondary: #cbd5e1;
     --ui-text-muted: #94a3b8;
+    --ui-text-disabled: #64748b;
+    --ui-text-inverse: #ffffff;
+    --ui-placeholder: #9aa9bc;
     --ui-accent: #38bdf8;
     --ui-accent-strong: #2563eb;
     --ui-accent-soft: rgba(56, 189, 248, 0.12);
+    --ui-info: #38bdf8;
+    --ui-info-soft: rgba(56, 189, 248, 0.13);
     --ui-success: #10b981;
     --ui-success-soft: rgba(16, 185, 129, 0.14);
     --ui-warning: #f59e0b;
@@ -1017,14 +1031,28 @@ html.theme-light {
     --ui-surface-1: rgba(255, 255, 255, 0.98);
     --ui-surface-2: rgba(248, 251, 255, 0.98);
     --ui-surface-3: rgba(235, 242, 249, 0.99);
+    --ui-page-bg: #edf3fa;
+    --ui-shell-bg: #f6f9fd;
+    --ui-surface-elevated: rgba(255, 255, 255, 0.99);
+    --ui-input-bg: rgba(255, 255, 255, 0.99);
+    --ui-modal-bg: rgba(255, 255, 255, 0.99);
+    --ui-table-header-bg: rgba(232, 240, 249, 0.98);
+    --ui-table-row-bg: rgba(255, 255, 255, 0.96);
+    --ui-table-row-hover: rgba(29, 78, 216, 0.06);
     --ui-border-soft: rgba(123, 145, 168, 0.24);
     --ui-border-strong: rgba(107, 129, 154, 0.4);
+    --ui-border-subtle: rgba(123, 145, 168, 0.16);
     --ui-text-primary: #081a2f;
     --ui-text-secondary: #24364d;
     --ui-text-muted: #5b6f85;
+    --ui-text-disabled: #7c8da1;
+    --ui-text-inverse: #ffffff;
+    --ui-placeholder: #637991;
     --ui-accent: #0891b2;
     --ui-accent-strong: #1d4ed8;
     --ui-accent-soft: rgba(29, 78, 216, 0.1);
+    --ui-info: #0369a1;
+    --ui-info-soft: rgba(2, 132, 199, 0.1);
     --ui-success: #047857;
     --ui-success-soft: rgba(5, 150, 105, 0.12);
     --ui-warning: #b45309;
@@ -1050,11 +1078,11 @@ html.theme-light {
     }
 
     .ui-panel {
-        @apply rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20;
-    }
-
-    html.theme-light .ui-panel {
-        @apply border-slate-200 bg-white text-slate-900 shadow-slate-200/70;
+        @apply rounded-2xl border p-5;
+        border-color: var(--ui-border-soft);
+        background: linear-gradient(180deg, var(--ui-surface-1), var(--ui-surface-2));
+        color: var(--ui-text-primary);
+        box-shadow: var(--ui-shadow-soft);
     }
 
     .ui-page-header {
@@ -1300,7 +1328,7 @@ html.theme-light {
     .ui-table-header {
         @apply border-b px-5 py-4;
         border-color: var(--ui-border-soft);
-        background: linear-gradient(180deg, color-mix(in srgb, var(--ui-surface-2) 94%, transparent), color-mix(in srgb, var(--ui-surface-3) 96%, transparent));
+        background: linear-gradient(180deg, var(--ui-table-header-bg), color-mix(in srgb, var(--ui-surface-3) 96%, transparent));
     }
 
     .ui-table-container {
@@ -1314,16 +1342,22 @@ html.theme-light {
     .ui-data-table th {
         @apply px-5 py-4 text-xs font-extrabold uppercase tracking-wide;
         color: var(--ui-text-muted);
+        background-color: var(--ui-table-header-bg);
     }
 
     .ui-data-table td {
         @apply px-5 py-4 align-top text-sm;
         color: var(--ui-text-secondary);
         border-top: 1px solid color-mix(in srgb, var(--ui-border-soft) 88%, transparent);
+        background-color: var(--ui-table-row-bg);
     }
 
     .ui-data-table tbody tr:hover {
-        background-color: color-mix(in srgb, var(--ui-accent-soft) 38%, transparent);
+        background-color: var(--ui-table-row-hover);
+    }
+
+    .ui-data-table tbody tr:hover td {
+        background-color: var(--ui-table-row-hover);
     }
 
     .ui-mobile-card-list {
@@ -1472,13 +1506,13 @@ html.theme-light {
     .ui-textarea {
         @apply w-full rounded-2xl border px-4 py-3 text-sm transition outline-none;
         border-color: var(--ui-border-soft);
-        background-color: color-mix(in srgb, var(--ui-surface-3) 92%, transparent);
+        background-color: var(--ui-input-bg);
         color: var(--ui-text-primary);
     }
 
     .ui-input::placeholder,
     .ui-textarea::placeholder {
-        color: color-mix(in srgb, var(--ui-text-muted) 85%, white);
+        color: var(--ui-placeholder);
     }
 
     .ui-search-shell {
@@ -2802,7 +2836,20 @@ body {
 }
 
 body {
-    background-color: var(--theme-bg);
+    background-color: var(--ui-page-bg, var(--theme-bg));
+}
+
+html.theme-dark :where(.role-dashboard-shell, .admin-dashboard-shell) {
+    background:
+        radial-gradient(circle at top right, rgba(14, 165, 233, 0.07), transparent 34%),
+        linear-gradient(180deg, #07111f 0%, #0b1220 48%, #020617 100%);
+}
+
+html.theme-light :where(.role-dashboard-shell, .admin-dashboard-shell) {
+    background:
+        radial-gradient(circle at top right, rgba(14, 165, 233, 0.1), transparent 32%),
+        radial-gradient(circle at bottom left, rgba(37, 99, 235, 0.08), transparent 28%),
+        linear-gradient(180deg, #f7fbff 0%, #edf3fa 48%, #e7eef7 100%);
 }
 
 :where(.role-dashboard-shell, .admin-dashboard-shell, .ui-site-shell),
@@ -2828,8 +2875,20 @@ body {
     font: inherit;
 }
 
+:where(.role-main-shell, .admin-main-shell) :where(.text-gray-400, .text-slate-400) {
+    color: var(--ui-text-muted);
+}
+
+:where(.role-main-shell, .admin-main-shell) :where(.text-gray-500, .text-slate-500) {
+    color: color-mix(in srgb, var(--ui-text-muted) 84%, var(--ui-text-secondary));
+}
+
+:where(.role-main-shell, .admin-main-shell) :where(.text-gray-300, .text-slate-300) {
+    color: var(--ui-text-secondary);
+}
+
 :where(.role-main-shell, .admin-main-shell, .ui-site-shell) :where(input, select, textarea)::placeholder {
-    color: color-mix(in srgb, var(--ui-text-muted) 88%, white);
+    color: var(--ui-placeholder);
     opacity: 1;
 }
 
@@ -2853,9 +2912,15 @@ html.theme-light :where(.role-main-shell, .admin-main-shell, .ui-site-shell) :wh
 :where(.role-main-shell, .admin-main-shell)
     :where(input:not([type='checkbox']):not([type='radio']):not([type='color']):not([type='file']), select, textarea)[class*='border-white/'],
 :where(.role-main-shell, .admin-main-shell)
+    :where(input:not([type='checkbox']):not([type='radio']):not([type='color']):not([type='file']), select, textarea)[class*='border-gray-600'],
+:where(.role-main-shell, .admin-main-shell)
+    :where(input:not([type='checkbox']):not([type='radio']):not([type='color']):not([type='file']), select, textarea)[class*='border-gray-700'],
+:where(.role-main-shell, .admin-main-shell)
+    :where(input:not([type='checkbox']):not([type='radio']):not([type='color']):not([type='file']), select, textarea)[class*='border-slate-700'],
+:where(.role-main-shell, .admin-main-shell)
     :where(input:not([type='checkbox']):not([type='radio']):not([type='color']):not([type='file']), select, textarea)[class*='bg-white/'] {
     border-color: var(--ui-border-soft) !important;
-    background-color: color-mix(in srgb, var(--ui-surface-3) 92%, transparent) !important;
+    background-color: var(--ui-input-bg) !important;
     color: var(--ui-text-primary) !important;
 }
 
@@ -2880,12 +2945,34 @@ html.theme-light :where(.role-main-shell, .admin-main-shell)
     min-width: 44rem;
 }
 
+:where(.role-main-shell, .admin-main-shell) table :where(thead) {
+    background-color: var(--ui-table-header-bg);
+}
+
+:where(.role-main-shell, .admin-main-shell) table :where(tbody tr) {
+    background-color: var(--ui-table-row-bg);
+}
+
+:where(.role-main-shell, .admin-main-shell) table :where(tbody tr:hover) {
+    background-color: var(--ui-table-row-hover);
+}
+
+:where(.role-main-shell, .admin-main-shell) table :where(tbody tr:hover td) {
+    background-color: var(--ui-table-row-hover);
+}
+
 :where(.role-main-shell, .admin-main-shell) table :where(th, td) {
     line-height: 1.75;
+    border-color: color-mix(in srgb, var(--ui-border-soft) 88%, transparent);
 }
 
 :where(.role-main-shell, .admin-main-shell) table :where(th) {
     white-space: nowrap;
+    color: var(--ui-text-muted);
+}
+
+:where(.role-main-shell, .admin-main-shell) table :where(td) {
+    color: var(--ui-text-secondary);
 }
 
 :where(.role-main-shell, .admin-main-shell) table :where(button, a) {
@@ -2907,6 +2994,56 @@ html.theme-light :where(.role-main-shell, .admin-main-shell)
 .ui-theme-modal-footer,
 .app-action-dialog__footer {
     background-color: color-mix(in srgb, var(--ui-surface-1) 96%, transparent);
+}
+
+:where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(span, small, mark)[class*='bg-slate-950'],
+:where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(span, small, mark)[class*='bg-slate-900'],
+:where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(span, small, mark)[class*='bg-gray-900'],
+:where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(span, small, mark)[class*='bg-gray-800'],
+:where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(span, small, mark)[class*='bg-gray-700'] {
+    border-color: var(--ui-border-soft) !important;
+    background-color: color-mix(in srgb, var(--ui-surface-3) 88%, transparent) !important;
+    color: var(--ui-text-secondary) !important;
+    box-shadow: none !important;
+}
+
+html.theme-light :where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(span, small, mark)[class*='bg-slate-950'],
+html.theme-light :where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(span, small, mark)[class*='bg-slate-900'],
+html.theme-light :where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(span, small, mark)[class*='bg-gray-900'],
+html.theme-light :where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(span, small, mark)[class*='bg-gray-800'],
+html.theme-light :where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(span, small, mark)[class*='bg-gray-700'] {
+    background-color: #edf3fa !important;
+    color: #31465d !important;
+}
+
+:where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(.bg-emerald-500\/20, .bg-emerald-500\/15, .bg-emerald-500\/10) {
+    background-color: var(--ui-success-soft);
+}
+
+:where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(.bg-amber-500\/20, .bg-amber-500\/15, .bg-amber-500\/10) {
+    background-color: var(--ui-warning-soft);
+}
+
+:where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(.bg-red-500\/20, .bg-red-500\/15, .bg-red-500\/10) {
+    background-color: var(--ui-danger-soft);
+}
+
+:where(.role-main-shell, .admin-main-shell, .ui-theme-modal-panel, .app-action-dialog__panel)
+    :where(.bg-blue-500\/20, .bg-blue-500\/15, .bg-blue-500\/10, .bg-indigo-500\/20, .bg-indigo-500\/15, .bg-indigo-500\/10, .bg-cyan-500\/20, .bg-cyan-500\/15, .bg-cyan-500\/10) {
+    background-color: var(--ui-info-soft);
 }
 
 @media (max-width: 767px) {
