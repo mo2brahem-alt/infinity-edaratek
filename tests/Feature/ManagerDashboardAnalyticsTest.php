@@ -215,11 +215,11 @@ class ManagerDashboardAnalyticsTest extends TestCase
         $manager = User::factory()->create(['role' => 'school_manager']);
         $manager->assignRole('school_manager');
         $school = $this->createManagedSchool($region->id, $manager, 'Attendance Trend School', 'SCH-DASH-ATT');
-        $classroom = $this->createClassroom($school, 'Ø§Ù„Ø£ÙˆÙ„', 'Ø£');
+        $classroom = $this->createClassroom($school, 'الأول', 'أ');
         $student = SchoolStudent::create([
             'school_id' => $school->id,
             'school_classroom_id' => $classroom->id,
-            'full_name' => 'Ø·Ø§Ù„Ø¨ Ø¥Ø¬Ø§Ø²Ø©',
+            'full_name' => 'طالب إجازة',
             'student_code' => 'ATT-LEAVE-1',
             'is_active' => true,
         ]);

@@ -151,7 +151,7 @@ class StudentStructureController extends Controller
             'school_day_start_time' => ['nullable', 'date_format:H:i', 'required_with:school_day_end_time', 'before:school_day_end_time'],
             'school_day_end_time' => ['nullable', 'date_format:H:i', 'required_with:school_day_start_time', 'after:school_day_start_time'],
         ], [
-            'name.unique' => 'Ø§Ø³Ù… Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ© Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø¯Ø±Ø³Ø©.',
+            'name.unique' => 'اسم المرحلة الدراسية موجود مسبقًا في هذه المدرسة.',
         ]);
 
         try {
@@ -180,7 +180,7 @@ class StudentStructureController extends Controller
             });
         } catch (QueryException $exception) {
             $this->rethrowDuplicateValidation($exception, [
-                'name' => 'Ø§Ø³Ù… Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ© Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø¯Ø±Ø³Ø©.',
+                'name' => 'اسم المرحلة الدراسية موجود مسبقًا في هذه المدرسة.',
                 'code' => 'Stage code already exists in this school.',
             ]);
             throw $exception;
@@ -230,7 +230,7 @@ class StudentStructureController extends Controller
             'school_day_start_time' => ['nullable', 'date_format:H:i', 'required_with:school_day_end_time', 'before:school_day_end_time'],
             'school_day_end_time' => ['nullable', 'date_format:H:i', 'required_with:school_day_start_time', 'after:school_day_start_time'],
         ], [
-            'name.unique' => 'Ø§Ø³Ù… Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ© Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø¯Ø±Ø³Ø©.',
+            'name.unique' => 'اسم المرحلة الدراسية موجود مسبقًا في هذه المدرسة.',
         ]);
 
         $before = $schoolStage->only(['name', 'code', 'sort_order', 'is_active', 'school_day_start_time', 'school_day_end_time']);
@@ -260,7 +260,7 @@ class StudentStructureController extends Controller
             });
         } catch (QueryException $exception) {
             $this->rethrowDuplicateValidation($exception, [
-                'name' => 'Ø§Ø³Ù… Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ© Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø¯Ø±Ø³Ø©.',
+                'name' => 'اسم المرحلة الدراسية موجود مسبقًا في هذه المدرسة.',
                 'code' => 'Stage code already exists in this school.',
             ]);
             throw $exception;
@@ -307,13 +307,13 @@ class StudentStructureController extends Controller
             );
 
             throw ValidationException::withMessages([
-                'stage' => (string) ($impact['message'] ?? 'Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø­Ø°Ù Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ© Ù„ÙˆØ¬ÙˆØ¯ Ø¨ÙŠØ§Ù†Ø§Øª Ù…Ø±ØªØ¨Ø·Ø©.'),
+                'stage' => (string) ($impact['message'] ?? 'لا يمكن حذف المرحلة الدراسية لوجود بيانات مرتبطة.'),
             ]);
         }
 
         if (($impact['requires_confirmation'] ?? false) && !$request->boolean('confirm_impact')) {
             throw ValidationException::withMessages([
-                'confirm_impact' => (string) ($impact['message'] ?? 'ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø¹Ù…Ù„ÙŠØ© Ù…Ø·Ù„ÙˆØ¨ Ø¨Ø³Ø¨Ø¨ ÙˆØ¬ÙˆØ¯ Ø¨ÙŠØ§Ù†Ø§Øª Ù…Ø±ØªØ¨Ø·Ø©.'),
+                'confirm_impact' => (string) ($impact['message'] ?? 'تأكيد العملية مطلوب بسبب وجود بيانات مرتبطة.'),
             ]);
         }
 
@@ -359,14 +359,14 @@ class StudentStructureController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
             'is_active' => ['nullable', 'boolean'],
         ], [
-            'name.unique' => 'Ø§Ø³Ù… Ø§Ù„ÙØµÙ„ Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø±Ø­Ù„Ø©.',
+            'name.unique' => 'اسم الفصل الدراسي مستخدم مسبقًا داخل هذه المرحلة.',
         ]);
 
         $this->assertDateRangeOrder(
             startDate: $validated['start_date'] ?? null,
             endDate: $validated['end_date'] ?? null,
             startField: 'start_date',
-            message: 'ØªØ§Ø±ÙŠØ® Ù†Ù‡Ø§ÙŠØ© Ø§Ù„ÙØµÙ„ Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø¨Ø¹Ø¯ ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¨Ø¯Ø§ÙŠØ© Ø£Ùˆ Ù…Ø³Ø§ÙˆÙŠÙ‹Ø§ Ù„Ù‡.'
+            message: 'تاريخ نهاية الفصل الدراسي يجب أن يكون بعد تاريخ البداية أو مساويًا له.'
         );
 
         try {
@@ -382,7 +382,7 @@ class StudentStructureController extends Controller
             ]);
         } catch (QueryException $exception) {
             $this->rethrowDuplicateValidation($exception, [
-                'name' => 'Ø§Ø³Ù… Ø§Ù„ÙØµÙ„ Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø±Ø­Ù„Ø©.',
+                'name' => 'اسم الفصل الدراسي مستخدم مسبقًا داخل هذه المرحلة.',
             ]);
             throw $exception;
         }
@@ -427,14 +427,14 @@ class StudentStructureController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
             'is_active' => ['nullable', 'boolean'],
         ], [
-            'name.unique' => 'Ø§Ø³Ù… Ø§Ù„ÙØµÙ„ Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø±Ø­Ù„Ø©.',
+            'name.unique' => 'اسم الفصل الدراسي مستخدم مسبقًا داخل هذه المرحلة.',
         ]);
 
         $this->assertDateRangeOrder(
             startDate: $validated['start_date'] ?? null,
             endDate: $validated['end_date'] ?? null,
             startField: 'start_date',
-            message: 'ØªØ§Ø±ÙŠØ® Ù†Ù‡Ø§ÙŠØ© Ø§Ù„ÙØµÙ„ Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø¨Ø¹Ø¯ ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¨Ø¯Ø§ÙŠØ© Ø£Ùˆ Ù…Ø³Ø§ÙˆÙŠÙ‹Ø§ Ù„Ù‡.'
+            message: 'تاريخ نهاية الفصل الدراسي يجب أن يكون بعد تاريخ البداية أو مساويًا له.'
         );
 
         $before = $schoolStageTerm->only(['school_stage_id', 'name', 'start_date', 'end_date', 'source', 'sort_order', 'is_active']);
@@ -451,7 +451,7 @@ class StudentStructureController extends Controller
             ]);
         } catch (QueryException $exception) {
             $this->rethrowDuplicateValidation($exception, [
-                'name' => 'Ø§Ø³Ù… Ø§Ù„ÙØµÙ„ Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø±Ø­Ù„Ø©.',
+                'name' => 'اسم الفصل الدراسي مستخدم مسبقًا داخل هذه المرحلة.',
             ]);
             throw $exception;
         }
@@ -517,13 +517,13 @@ class StudentStructureController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
             'is_active' => ['nullable', 'boolean'],
         ], [
-            'name.unique' => 'Ø§Ø³Ù… Ø§Ù„ØµÙ Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ù…Ø­Ø¯Ø¯Ø©.',
+            'name.unique' => 'اسم الصف موجود مسبقًا داخل المرحلة المحددة.',
         ]);
 
         $normalizedGradeName = $this->normalizeGradeInput($validated['name']) ?? '';
         if ($normalizedGradeName === '') {
             throw ValidationException::withMessages([
-                'name' => 'Ø§Ø³Ù… Ø§Ù„ØµÙ Ù…Ø·Ù„ÙˆØ¨.',
+                'name' => 'اسم الصف مطلوب.',
             ]);
         }
 
@@ -539,7 +539,7 @@ class StudentStructureController extends Controller
             });
         } catch (QueryException $exception) {
             $this->rethrowDuplicateValidation($exception, [
-                'name' => 'Ø§Ø³Ù… Ø§Ù„ØµÙ Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ù…Ø­Ø¯Ø¯Ø©.',
+                'name' => 'اسم الصف موجود مسبقًا داخل المرحلة المحددة.',
             ]);
             throw $exception;
         }
@@ -582,13 +582,13 @@ class StudentStructureController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
             'is_active' => ['nullable', 'boolean'],
         ], [
-            'name.unique' => 'Ø§Ø³Ù… Ø§Ù„ØµÙ Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ù…Ø­Ø¯Ø¯Ø©.',
+            'name.unique' => 'اسم الصف موجود مسبقًا داخل المرحلة المحددة.',
         ]);
 
         $normalizedGradeName = $this->normalizeGradeInput($validated['name']) ?? '';
         if ($normalizedGradeName === '') {
             throw ValidationException::withMessages([
-                'name' => 'Ø§Ø³Ù… Ø§Ù„ØµÙ Ù…Ø·Ù„ÙˆØ¨.',
+                'name' => 'اسم الصف مطلوب.',
             ]);
         }
 
@@ -605,7 +605,7 @@ class StudentStructureController extends Controller
 
             if ($hasRelatedClassrooms) {
                 throw ValidationException::withMessages([
-                    'school_stage_id' => 'Ù„Ø§ ÙŠÙ…ÙƒÙ† Ù†Ù‚Ù„ Ø§Ù„ØµÙ Ø¥Ù„Ù‰ Ù…Ø±Ø­Ù„Ø© Ø£Ø®Ø±Ù‰ Ù„ÙˆØ¬ÙˆØ¯ ÙØµÙˆÙ„ Ù…Ø±ØªØ¨Ø·Ø© Ø¨Ù‡.',
+                    'school_stage_id' => 'لا يمكن نقل الصف إلى مرحلة أخرى لوجود فصول مرتبطة به.',
                 ]);
             }
         }
@@ -633,7 +633,7 @@ class StudentStructureController extends Controller
             });
         } catch (QueryException $exception) {
             $this->rethrowDuplicateValidation($exception, [
-                'name' => 'Ø§Ø³Ù… Ø§Ù„ØµÙ Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ù…Ø­Ø¯Ø¯Ø©.',
+                'name' => 'اسم الصف موجود مسبقًا داخل المرحلة المحددة.',
             ]);
             throw $exception;
         }
@@ -680,7 +680,7 @@ class StudentStructureController extends Controller
             );
 
             throw ValidationException::withMessages([
-                'stage_grade' => 'Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø­Ø°Ù Ø§Ù„ØµÙ Ù„ÙˆØ¬ÙˆØ¯ ÙØµÙˆÙ„ Ù…Ø±ØªØ¨Ø·Ø© Ø¨Ù‡.',
+                'stage_grade' => 'لا يمكن حذف الصف لوجود فصول مرتبطة به.',
             ]);
         }
 
@@ -727,7 +727,7 @@ class StudentStructureController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
             'is_active' => ['nullable', 'boolean'],
         ], [
-            'name.unique' => 'Ø§Ø³Ù… Ø§Ù„ØªØ±Ù… Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ù‡Ø°Ø§ Ø§Ù„ØµÙ.',
+            'name.unique' => 'اسم الترم الدراسي مستخدم مسبقًا داخل هذا الصف.',
         ]);
 
         $this->assertSchoolStageGradeMatchesStage(
@@ -746,7 +746,7 @@ class StudentStructureController extends Controller
             ]);
         } catch (QueryException $exception) {
             $this->rethrowDuplicateValidation($exception, [
-                'name' => 'Ø§Ø³Ù… Ø§Ù„ØªØ±Ù… Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ù‡Ø°Ø§ Ø§Ù„ØµÙ.',
+                'name' => 'اسم الترم الدراسي مستخدم مسبقًا داخل هذا الصف.',
             ]);
             throw $exception;
         }
@@ -793,7 +793,7 @@ class StudentStructureController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
             'is_active' => ['nullable', 'boolean'],
         ], [
-            'name.unique' => 'Ø§Ø³Ù… Ø§Ù„ØªØ±Ù… Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ù‡Ø°Ø§ Ø§Ù„ØµÙ.',
+            'name.unique' => 'اسم الترم الدراسي مستخدم مسبقًا داخل هذا الصف.',
         ]);
 
         $this->assertSchoolStageGradeMatchesStage(
@@ -813,7 +813,7 @@ class StudentStructureController extends Controller
             ]);
         } catch (QueryException $exception) {
             $this->rethrowDuplicateValidation($exception, [
-                'name' => 'Ø§Ø³Ù… Ø§Ù„ØªØ±Ù… Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø³Ø¨Ù‚Ù‹Ø§ Ø¯Ø§Ø®Ù„ Ù‡Ø°Ø§ Ø§Ù„ØµÙ.',
+                'name' => 'اسم الترم الدراسي مستخدم مسبقًا داخل هذا الصف.',
             ]);
             throw $exception;
         }
@@ -877,7 +877,7 @@ class StudentStructureController extends Controller
                 Rule::unique('school_classrooms', 'name')->where(fn ($query) => $query
                     ->where('school_id', $schoolId)
                     ->where('school_stage_id', (int) $request->input('school_stage_id'))
-                    ->where('grade_name', (string) ($normalizedGradeName ?? 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯'))),
+                    ->where('grade_name', (string) ($normalizedGradeName ?? 'غير محدد'))),
             ],
             'code' => [
                 'nullable',
@@ -888,7 +888,7 @@ class StudentStructureController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
             'is_active' => ['nullable', 'boolean'],
         ], [
-            'name.unique' => 'Ø§Ø³Ù… Ø§Ù„ÙØµÙ„ Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©.',
+            'name.unique' => 'اسم الفصل موجود مسبقًا في هذه المرحلة الدراسية.',
         ]);
 
         try {
@@ -923,7 +923,7 @@ class StudentStructureController extends Controller
             });
         } catch (QueryException $exception) {
             $this->rethrowDuplicateValidation($exception, [
-                'name' => 'Ø§Ø³Ù… Ø§Ù„ÙØµÙ„ Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©.',
+                'name' => 'اسم الفصل موجود مسبقًا في هذه المرحلة الدراسية.',
                 'code' => 'Classroom code already exists in this school.',
             ]);
             throw $exception;
@@ -967,7 +967,7 @@ class StudentStructureController extends Controller
                     ->where(fn ($query) => $query
                         ->where('school_id', $schoolId)
                         ->where('school_stage_id', (int) $request->input('school_stage_id'))
-                        ->where('grade_name', (string) ($normalizedGradeName ?? 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯')))
+                        ->where('grade_name', (string) ($normalizedGradeName ?? 'غير محدد')))
                     ->ignore($schoolClassroom->id),
             ],
             'code' => [
@@ -981,7 +981,7 @@ class StudentStructureController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
             'is_active' => ['nullable', 'boolean'],
         ], [
-            'name.unique' => 'Ø§Ø³Ù… Ø§Ù„ÙØµÙ„ Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©.',
+            'name.unique' => 'اسم الفصل موجود مسبقًا في هذه المرحلة الدراسية.',
         ]);
 
         $before = $schoolClassroom->only(['school_stage_id', 'grade_name', 'name', 'code', 'sort_order', 'is_active']);
@@ -1018,7 +1018,7 @@ class StudentStructureController extends Controller
             });
         } catch (QueryException $exception) {
             $this->rethrowDuplicateValidation($exception, [
-                'name' => 'Ø§Ø³Ù… Ø§Ù„ÙØµÙ„ Ù…ÙˆØ¬ÙˆØ¯ Ù…Ø³Ø¨Ù‚Ù‹Ø§ ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©.',
+                'name' => 'اسم الفصل موجود مسبقًا في هذه المرحلة الدراسية.',
                 'code' => 'Classroom code already exists in this school.',
             ]);
             throw $exception;
@@ -1065,13 +1065,13 @@ class StudentStructureController extends Controller
             );
 
             throw ValidationException::withMessages([
-                'classroom' => (string) ($impact['message'] ?? 'Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø­Ø°Ù Ø§Ù„ÙØµÙ„ Ù„ÙˆØ¬ÙˆØ¯ Ø¨ÙŠØ§Ù†Ø§Øª Ù…Ø±ØªØ¨Ø·Ø©.'),
+                'classroom' => (string) ($impact['message'] ?? 'لا يمكن حذف الفصل لوجود بيانات مرتبطة.'),
             ]);
         }
 
         if (($impact['requires_confirmation'] ?? false) && !$request->boolean('confirm_impact')) {
             throw ValidationException::withMessages([
-                'confirm_impact' => (string) ($impact['message'] ?? 'ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø¹Ù…Ù„ÙŠØ© Ù…Ø·Ù„ÙˆØ¨ Ø¨Ø³Ø¨Ø¨ ÙˆØ¬ÙˆØ¯ Ø¨ÙŠØ§Ù†Ø§Øª Ù…Ø±ØªØ¨Ø·Ø©.'),
+                'confirm_impact' => (string) ($impact['message'] ?? 'تأكيد العملية مطلوب بسبب وجود بيانات مرتبطة.'),
             ]);
         }
 
@@ -1398,13 +1398,13 @@ class StudentStructureController extends Controller
             );
 
             throw ValidationException::withMessages([
-                'student' => (string) ($impact['message'] ?? 'Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø­Ø°Ù Ø§Ù„Ø·Ø§Ù„Ø¨ Ù„ÙˆØ¬ÙˆØ¯ Ø¨ÙŠØ§Ù†Ø§Øª Ù…Ø±ØªØ¨Ø·Ø©.'),
+                'student' => (string) ($impact['message'] ?? 'لا يمكن حذف الطالب لوجود بيانات مرتبطة.'),
             ]);
         }
 
         if (($impact['requires_confirmation'] ?? false) && !$request->boolean('confirm_impact')) {
             throw ValidationException::withMessages([
-                'confirm_impact' => (string) ($impact['message'] ?? 'ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø¹Ù…Ù„ÙŠØ© Ù…Ø·Ù„ÙˆØ¨ Ø¨Ø³Ø¨Ø¨ ÙˆØ¬ÙˆØ¯ Ø¨ÙŠØ§Ù†Ø§Øª Ù…Ø±ØªØ¨Ø·Ø©.'),
+                'confirm_impact' => (string) ($impact['message'] ?? 'تأكيد العملية مطلوب بسبب وجود بيانات مرتبطة.'),
             ]);
         }
 
@@ -1536,7 +1536,7 @@ class StudentStructureController extends Controller
 
         if (!$matches) {
             throw ValidationException::withMessages([
-                'school_stage_grade_id' => 'Ø§Ù„ØµÙ Ø§Ù„Ù…Ø­Ø¯Ø¯ Ù„Ø§ ÙŠØªØ¨Ø¹ Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ù…Ø®ØªØ§Ø±Ø© Ø¯Ø§Ø®Ù„ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø¯Ø±Ø³Ø©.',
+                'school_stage_grade_id' => 'الصف المحدد لا يتبع المرحلة المختارة داخل هذه المدرسة.',
             ]);
         }
     }
@@ -1590,7 +1590,7 @@ class StudentStructureController extends Controller
             return (string) $anyGrade->name;
         }
 
-        $defaultName = 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯';
+        $defaultName = 'غير محدد';
         $fallback = SchoolStageGrade::query()->firstOrCreate(
             [
                 'school_id' => $schoolId,

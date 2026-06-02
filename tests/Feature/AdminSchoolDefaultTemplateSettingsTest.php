@@ -677,18 +677,18 @@ class AdminSchoolDefaultTemplateSettingsTest extends TestCase
     public function test_super_admin_can_delete_a_saved_template_scope_without_affecting_school_copies(): void
     {
         $admin = $this->createSuperAdmin();
-        $country = Country::query()->create(['name' => 'Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©']);
-        $educationType = EducationType::query()->create(['name' => 'ØªØ¹Ù„ÙŠÙ… Ø£Ù‡Ù„ÙŠ']);
+        $country = Country::query()->create(['name' => 'السعودية']);
+        $educationType = EducationType::query()->create(['name' => 'تعليم أهلي']);
         $directorate = EducationalDirectorate::query()->create([
-            'name' => 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø¯Ù…Ø§Ù…',
-            'governorate' => 'Ø§Ù„Ø¯Ù…Ø§Ù…',
+            'name' => 'إدارة الدمام',
+            'governorate' => 'الدمام',
             'country_id' => $country->id,
             'education_type_id' => $educationType->id,
         ]);
 
         $this->actingAs($admin)
             ->postJson(route('admin.school_defaults.scopes.store'), [
-                'template_name' => 'Ù‚Ø§Ù„Ø¨ Ø§Ù„Ø¯Ù…Ø§Ù… Ø§Ù„Ø£Ù‡Ù„ÙŠ',
+                'template_name' => 'قالب الدمام الأهلي',
                 'country_id' => $country->id,
                 'education_type_id' => $educationType->id,
                 'reference_snapshot' => [
@@ -699,7 +699,7 @@ class AdminSchoolDefaultTemplateSettingsTest extends TestCase
                     'unavailable_data' => [],
                     'available_counts' => ['public_holidays' => 0],
                     'holidays' => [],
-                    'message' => 'Ù…Ø±Ø¬Ø¹ÙŠØ§Øª Ù…Ø­ÙÙˆØ¸Ø©.',
+                    'message' => 'مرجعيات محفوظة.',
                     'fetched_at' => '2026-04-09T10:00:00+02:00',
                     'source' => [
                         'key' => 'manual',
@@ -718,14 +718,14 @@ class AdminSchoolDefaultTemplateSettingsTest extends TestCase
             'country_id' => $country->id,
             'education_type_id' => $educationType->id,
             'directorate_id' => null,
-            'name' => 'Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø§Ø¨ØªØ¯Ø§Ø¦ÙŠØ©',
+            'name' => 'المرحلة الابتدائية',
             'code' => 'STG-PRI',
             'sort_order' => 1,
             'is_active' => true,
         ]);
 
         $school = School::query()->create([
-            'name' => 'Ù…Ø¯Ø§Ø±Ø³ Ø§Ù„Ø¯Ù…Ø§Ù… Ø§Ù„Ø£Ù‡Ù„ÙŠØ©',
+            'name' => 'مدارس الدمام الأهلية',
             'school_id' => 'SCH-302',
             'directorate_id' => $directorate->id,
         ]);
@@ -736,7 +736,7 @@ class AdminSchoolDefaultTemplateSettingsTest extends TestCase
 
         $schoolStage = SchoolStage::query()
             ->where('school_id', $school->id)
-            ->where('name', 'Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø§Ø¨ØªØ¯Ø§Ø¦ÙŠØ©')
+            ->where('name', 'المرحلة الابتدائية')
             ->firstOrFail();
 
         $this->actingAs($admin)
@@ -750,7 +750,7 @@ class AdminSchoolDefaultTemplateSettingsTest extends TestCase
         $this->assertDatabaseMissing('school_default_stage_templates', [
             'country_id' => $country->id,
             'education_type_id' => $educationType->id,
-            'name' => 'Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø§Ø¨ØªØ¯Ø§Ø¦ÙŠØ©',
+            'name' => 'المرحلة الابتدائية',
         ]);
 
         $this->assertDatabaseMissing('school_default_academic_year_templates', [
@@ -765,7 +765,7 @@ class AdminSchoolDefaultTemplateSettingsTest extends TestCase
         $this->assertDatabaseHas('school_stages', [
             'id' => $schoolStage->id,
             'school_id' => $school->id,
-            'name' => 'Ø§Ù„Ù…Ø±Ø­Ù„Ø© Ø§Ù„Ø§Ø¨ØªØ¯Ø§Ø¦ÙŠØ©',
+            'name' => 'المرحلة الابتدائية',
         ]);
     }
 
