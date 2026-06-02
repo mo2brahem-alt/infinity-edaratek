@@ -32,6 +32,7 @@ class DashboardController extends Controller
                     ->orWhereHas('roles', fn ($r) => $r->where('name', 'staff'));
             })
             ->orderBy('name')
+            ->limit(200)
             ->get([
                 'id',
                 'name',
@@ -49,6 +50,7 @@ class DashboardController extends Controller
                 'supervisor:id,name,email',
             ])
             ->latest('id')
+            ->limit(50)
             ->get();
 
         return Inertia::render('Manager/Dashboard', [
