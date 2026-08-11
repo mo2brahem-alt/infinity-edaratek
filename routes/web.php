@@ -9,6 +9,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicStorageController;
 use App\Http\Controllers\CertificateVerificationController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\WhatsAppDispatchClaimController;
+use App\Http\Controllers\WhatsAppDispatchResultController;
+use App\Http\Controllers\WhatsAppPhoneVerificationController;
+use App\Http\Controllers\WhatsAppStatusCallbackController;
 use App\Http\Controllers\Api\System\SystemPermissionController;
 use App\Http\Controllers\Api\System\SystemRoleController;
 use App\Http\Controllers\Api\School\SchoolAssignableRoleController;
@@ -62,6 +66,15 @@ Route::get('/storage/{path}', [PublicStorageController::class, 'show'])
 Route::get('/certificates/verify/{token}', CertificateVerificationController::class)
     ->where('token', '[A-Za-z0-9]+')
     ->name('certificates.verify');
+Route::post('/webhooks/whatsapp/status', WhatsAppStatusCallbackController::class)
+    ->middleware('throttle:api.school')
+    ->name('webhooks.whatsapp.status');
+Route::post('/webhooks/whatsapp/dispatch/claim', WhatsAppDispatchClaimController::class)
+    ->middleware('throttle:api.school')
+    ->name('webhooks.whatsapp.dispatch.claim');
+Route::post('/webhooks/whatsapp/dispatch/result', WhatsAppDispatchResultController::class)
+    ->middleware('throttle:api.school')
+    ->name('webhooks.whatsapp.dispatch.result');
 
 Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->group(function () {
     Route::resource('users', App\Http\Controllers\Admin\UserController::class)->except(['create', 'show', 'edit']);
@@ -445,6 +458,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read_all');
+    Route::post('/phone/verification/whatsapp/send', [WhatsAppPhoneVerificationController::class, 'send'])
+        ->middleware('throttle:api.school')
+        ->name('phone.verification.whatsapp.send');
+    Route::post('/phone/verification/whatsapp/verify', [WhatsAppPhoneVerificationController::class, 'verify'])
+        ->middleware('throttle:api.school')
+        ->name('phone.verification.whatsapp.verify');
 });
 
 Route::get('/dashboard', function () {

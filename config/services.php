@@ -53,4 +53,22 @@ return [
         'connect_timeout' => (int) env('NAGER_DATE_CONNECT_TIMEOUT', 5),
     ],
 
+    'n8n' => [
+        'whatsapp' => [
+            'enabled' => (bool) env('N8N_WHATSAPP_ENABLED', false),
+            'webhook_url' => env('N8N_WHATSAPP_WEBHOOK_URL'),
+            'webhook_secret' => env('N8N_WHATSAPP_WEBHOOK_SECRET'),
+            'status_secret' => env('N8N_WHATSAPP_STATUS_SECRET'),
+            'claim_secret' => env('N8N_WHATSAPP_CLAIM_SECRET', env('N8N_WHATSAPP_STATUS_SECRET')),
+            'timeout' => (int) env('N8N_WHATSAPP_TIMEOUT', 15),
+        ],
+    ],
+
+    'whatsapp' => [
+        'templates' => [
+            'notification' => env('WHATSAPP_NOTIFICATION_TEMPLATE', 'edaratek_notifications_enabled'),
+            'phone_verification_otp' => env('WHATSAPP_PHONE_VERIFICATION_TEMPLATE', 'edaratek_phone_verification_otp'),
+        ],
+    ],
+
 ];

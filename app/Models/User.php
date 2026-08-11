@@ -63,6 +63,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
             'approved_at' => 'datetime',
@@ -76,6 +77,15 @@ class User extends Authenticatable
             'can_manage_school_calendar' => 'boolean',
             'can_manage_school_holidays' => 'boolean',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::updating(function (User $user): void {
+            if ($user->isDirty('mobile') || $user->isDirty('phone')) {
+                $user->phone_verified_at = null;
+            }
+        });
     }
 
     public function department()
@@ -147,6 +157,16 @@ class User extends Authenticatable
     public function systemNotifications()
     {
         return $this->hasMany(Notification::class, 'user_id');
+    }
+
+    public function whatsappMessages()
+    {
+        return $this->hasMany(WhatsAppMessage::class, 'user_id');
+    }
+
+    public function phoneVerificationOtps()
+    {
+        return $this->hasMany(PhoneVerificationOtp::class, 'user_id');
     }
 
     public function subscriptions()

@@ -5,13 +5,16 @@ namespace App\Services\Subscription;
 use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Services\Support\NotificationService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class SubscriptionService
 {
     public function __construct(
         private readonly SubscriptionPricingService $pricingService,
+        private readonly NotificationService $notificationService,
     ) {
     }
 
@@ -29,7 +32,7 @@ class SubscriptionService
         $startsAt = $activateNow ? now() : null;
         $endsAt = $activateNow ? $this->pricingService->endsAtForBillingCycle($startsAt, $snapshot['billing_cycle']) : null;
 
-        return Subscription::create([
+        $subscription = Subscription::create([
             'user_id' => $user->id,
             'plan_id' => $plan->id,
             'school_id' => $schoolId ?? $user->school_id,
@@ -42,6 +45,10 @@ class SubscriptionService
             'ends_at' => $endsAt,
             'meta' => $meta,
         ]);
+
+        $this->notifySubscriptionCreated($subscription->refresh(), $user, $plan, $meta);
+
+        return $subscription;
     }
 
     public function activate(Subscription $subscription, ?int $actorId = null, ?string $reason = null): Subscription
@@ -162,5 +169,42 @@ class SubscriptionService
     public function syncSchoolContextForUser(User $user, int $schoolId): void
     {
         $this->pricingService->syncSchoolContextForUser($user, $schoolId);
+    }
+
+    /**
+     * @param array<string, mixed>|null $meta
+     */
+    private function notifySubscriptionCreated(Subscription $subscription, User $user, Plan $plan, ?array $meta): void
+    {
+        try {
+            $roleLabel = $user->hasSystemRole('school_manager') ? 'مدير مدرسة' : ($user->hasSystemRole('supervisor') ? 'مشرف' : 'مستخدم');
+            $source = is_array($meta) ? ($meta['source'] ?? null) : null;
+
+            $payload = [
+                'subscription_id' => (int) $subscription->id,
+                'plan_id' => (int) $plan->id,
+                'plan_name' => (string) $plan->name,
+                'role' => $user->primaryRole(),
+                'source' => $source,
+                'status' => (string) $subscription->status,
+            ];
+
+            $this->notificationService->notifyUser(
+                (int) $user->id,
+                'subscription.created',
+                'تم تسجيل طلب الاشتراك',
+                'تم تسجيل اشتراكك في باقة ' . $plan->name . ' وسيتم إشعارك عند اكتمال المراجعة.',
+                $payload
+            );
+
+            $this->notificationService->notifySuperAdmins(
+                'subscription.created.admin',
+                'اشتراك جديد يحتاج مراجعة',
+                'تم تسجيل اشتراك جديد لحساب ' . $roleLabel . ' باسم ' . $user->name . ' على باقة ' . $plan->name . '.',
+                $payload + ['user_id' => (int) $user->id]
+            );
+        } catch (Throwable $exception) {
+            report($exception);
+        }
     }
 }

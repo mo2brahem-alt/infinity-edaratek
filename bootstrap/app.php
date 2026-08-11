@@ -15,6 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/whatsapp/status',
+            'webhooks/whatsapp/dispatch/claim',
+            'webhooks/whatsapp/dispatch/result',
+        ]);
+
         // Register middleware aliases used across routes.
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
