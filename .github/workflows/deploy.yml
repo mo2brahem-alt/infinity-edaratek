@@ -3,7 +3,7 @@ name: Auto Deploy to Webmin Server
 on:
   push:
     branches:
-      - main  # سيتم التشغيل التلقائي عند الرفع على فرع main
+      - main
 
 jobs:
   deploy:
@@ -16,23 +16,65 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASS }}
-          port: 22 # تأكد أن بورت الـ SSH في سيرفرك هو 22
+          port: 22
           script: |
-            cd /home/test/public_html
-            # إخبار Git أن المجلد آمن لتجنب الخطأ السابق
+            set -euo pipefail
+
+            APP_DIR="/home/test/public_html"
+            BACKUP_ROOT="/home/test/backups"
+
+            cd "$APP_DIR"
+            if [ "$(pwd)" != "$APP_DIR" ]; then
+              echo "Unexpected deployment directory"
+              exit 1
+            fi
+
+            if [ ! -f artisan ]; then
+              echo "Laravel artisan file not found"
+              exit 1
+            fi
+
+            if [ ! -f .env ]; then
+              echo "Staging .env file is missing before deployment"
+              exit 1
+            fi
+
+            ENV_BACKUP_DIR="$BACKUP_ROOT/env-transition-$(date +%Y%m%d-%H%M%S)"
+            mkdir -p "$ENV_BACKUP_DIR"
+            chmod 700 "$ENV_BACKUP_DIR"
+            cp .env "$ENV_BACKUP_DIR/.env"
+            chmod 600 "$ENV_BACKUP_DIR/.env"
+
+            restore_staging_env() {
+              if [ -f "$ENV_BACKUP_DIR/.env" ]; then
+                cp "$ENV_BACKUP_DIR/.env" .env
+                chmod 600 .env
+              fi
+            }
+
+            trap restore_staging_env EXIT
+
             git config --global --add safe.directory /home/test/public_html
-            
-            # سحب الكود الجديد
-            git pull origin main
-            
-            # تحديث مكتبات Laravel
+
+            if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+              git checkout -- .env
+            fi
+
+            git pull --ff-only origin main
+
+            restore_staging_env
+            if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+              echo "Staging .env is still tracked after deployment"
+              exit 1
+            fi
+            git check-ignore -v .env >/dev/null
+
             composer install --no-dev --optimize-autoloader
-            
-            # بناء ملفات Vue 3
+
             npm install
             npm run build
-            
-            # تنظيف الكاش الخاص بلارافيل
+
             php artisan optimize:clear
-            
-            echo "Deployment Successful!"    
+            php artisan config:cache
+
+            echo "Deployment Successful!"
