@@ -18,7 +18,7 @@ jobs:
           password: ${{ secrets.SERVER_PASS }}
           port: 22
           script: |
-            set -euo pipefail
+            set -eu
 
             APP_DIR="/home/test/public_html"
             BACKUP_ROOT="/home/test/backups"
