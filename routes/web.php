@@ -11,6 +11,7 @@ use App\Http\Controllers\CertificateVerificationController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\WhatsAppDispatchClaimController;
 use App\Http\Controllers\WhatsAppDispatchResultController;
+use App\Http\Controllers\WhatsAppMetaVerificationController;
 use App\Http\Controllers\WhatsAppPhoneVerificationController;
 use App\Http\Controllers\WhatsAppStatusCallbackController;
 use App\Http\Controllers\Api\System\SystemPermissionController;
@@ -66,6 +67,9 @@ Route::get('/storage/{path}', [PublicStorageController::class, 'show'])
 Route::get('/certificates/verify/{token}', CertificateVerificationController::class)
     ->where('token', '[A-Za-z0-9]+')
     ->name('certificates.verify');
+Route::get('/webhooks/whatsapp/meta/verify', WhatsAppMetaVerificationController::class)
+    ->middleware('throttle:api.school')
+    ->name('webhooks.whatsapp.meta.verify');
 Route::post('/webhooks/whatsapp/status', WhatsAppStatusCallbackController::class)
     ->middleware('throttle:api.school')
     ->name('webhooks.whatsapp.status');

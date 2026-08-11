@@ -43,6 +43,7 @@ class WhatsAppIntegrationTest extends TestCase
             'services.n8n.whatsapp.webhook_secret' => 'test-dispatch-secret',
             'services.n8n.whatsapp.status_secret' => 'test-status-secret',
             'services.n8n.whatsapp.claim_secret' => 'test-status-secret',
+            'services.whatsapp.meta_verify_token' => 'test-meta-verify-token',
         ]);
 
         RateLimiter::clear('whatsapp-otp|send-hour|1|966500000001|127.0.0.1');
@@ -146,6 +147,45 @@ class WhatsAppIntegrationTest extends TestCase
         ], $body);
 
         $replay->assertStatus(409);
+    }
+
+    public function test_meta_webhook_verification_returns_plain_challenge_for_valid_request(): void
+    {
+        $response = $this->get(route('webhooks.whatsapp.meta.verify', [
+            'hub.mode' => 'subscribe',
+            'hub.verify_token' => 'test-meta-verify-token',
+            'hub.challenge' => 'edaratek_meta_verify_test',
+        ]));
+
+        $response->assertOk();
+        $this->assertSame('text/plain; charset=UTF-8', $response->headers->get('content-type'));
+        $this->assertSame('edaratek_meta_verify_test', $response->getContent());
+    }
+
+    public function test_meta_webhook_verification_rejects_invalid_token(): void
+    {
+        $this->get(route('webhooks.whatsapp.meta.verify', [
+            'hub.mode' => 'subscribe',
+            'hub.verify_token' => 'wrong-token',
+            'hub.challenge' => 'edaratek_meta_verify_test',
+        ]))->assertForbidden();
+    }
+
+    public function test_meta_webhook_verification_rejects_invalid_mode(): void
+    {
+        $this->get(route('webhooks.whatsapp.meta.verify', [
+            'hub.mode' => 'unsubscribe',
+            'hub.verify_token' => 'test-meta-verify-token',
+            'hub.challenge' => 'edaratek_meta_verify_test',
+        ]))->assertForbidden();
+    }
+
+    public function test_meta_webhook_verification_rejects_missing_parameters(): void
+    {
+        $this->get(route('webhooks.whatsapp.meta.verify', [
+            'hub.mode' => 'subscribe',
+            'hub.verify_token' => 'test-meta-verify-token',
+        ]))->assertForbidden();
     }
 
     public function test_whatsapp_dispatch_failure_does_not_duplicate_message_and_retry_can_succeed(): void

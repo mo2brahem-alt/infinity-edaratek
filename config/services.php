@@ -65,6 +65,7 @@ return [
     ],
 
     'whatsapp' => [
+        'meta_verify_token' => env('META_WHATSAPP_VERIFY_TOKEN'),
         'templates' => [
             'notification' => env('WHATSAPP_NOTIFICATION_TEMPLATE', 'edaratek_notifications_enabled'),
             'phone_verification_otp' => env('WHATSAPP_PHONE_VERIFICATION_TEMPLATE', 'edaratek_phone_verification_otp'),
