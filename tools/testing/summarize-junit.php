@@ -1,11 +1,25 @@
 <?php
 ini_set('display_errors', '0');
+$baselineContext = [];
 function evidenceFail(string $category): never {
-    echo json_encode(['kind' => 'infrastructure', 'status' => 'FAIL', 'stage' => $category])."\n";
+    global $baselineContext;
+    $classifications = [
+        'junit_missing' => 'JUNIT_MISSING', 'junit_empty' => 'JUNIT_EMPTY',
+        'junit_invalid_utf8' => 'JUNIT_INVALID_UTF8', 'unsafe_junit' => 'JUNIT_UNSAFE_DTD',
+        'invalid_junit' => 'JUNIT_XML_PARSE_FAILED', 'zero_tests' => 'JUNIT_ZERO_TESTS',
+        'incomplete_test_execution' => 'TEST_EXECUTION_INCOMPLETE',
+        'incomplete_event_report' => 'EVENT_REPORT_INCOMPLETE',
+        'inconsistent_test_exit' => 'TEST_EXIT_INCONSISTENT',
+    ];
+    emitEvidence(array_merge($baselineContext, ['kind' => 'infrastructure', 'status' => 'FAIL',
+        'stage' => $category, 'classification' => $classifications[$category] ?? 'TEST_INFRASTRUCTURE',
+        'BASELINE_TEST_RESULTS_RECORDED' => 'FAIL']));
     exit(25);
 }
 set_exception_handler(static function (Throwable $error): void { evidenceFail('evidence_exception'); });
 function emitEvidence(array $record): void {
+    // The existing PowerShell transport recognizes JSON by its first key.
+    if (isset($record['kind'])) { $record = ['kind' => $record['kind']] + $record; }
     echo json_encode($record, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES)."\n";
 }
 require '/app/vendor/autoload.php';
@@ -46,33 +60,100 @@ if ($mode === 'platform') {
 if ($mode !== 'baseline') { evidenceFail('evidence_mode'); }
 $testExit = filter_var($argv[2] ?? null, FILTER_VALIDATE_INT);
 if ($testExit === false || $testExit < 0 || $testExit > 255) { evidenceFail('test_exit'); }
+$baselineContext = ['TEST_EXIT_CODE' => $testExit];
+// Record the actual process exit BEFORE report I/O or XML parsing can fail.
+emitEvidence(['kind' => 'infrastructure', 'status' => 'INFO', 'stage' => 'baseline_process_exit',
+    'TEST_EXIT_CODE' => $testExit]);
 if (Composer\InstalledVersions::getVersion('phpunit/phpunit') !== '11.5.51.0') {
     evidenceFail('unsupported_warning_event_format');
 }
 $xmlFile = '/tmp/baseline-junit.xml'; $eventFile = '/tmp/baseline-events.log';
-if (!is_file($xmlFile) || !is_file($eventFile)) { evidenceFail('missing_baseline_reports'); }
-$source = file_get_contents($xmlFile);
-if (preg_match('/<!DOCTYPE|<!ENTITY/i', $source)) { evidenceFail('unsafe_junit'); }
-libxml_use_internal_errors(true);
-$xml = simplexml_load_string($source, SimpleXMLElement::class, LIBXML_NONET);
-if ($xml === false) { evidenceFail('invalid_junit'); }
-$cases = $xml->xpath('//testcase') ?: [];
-if (count($cases) === 0) { evidenceFail('zero_tests'); }
 $warnings = ['user' => 0, 'php' => 0, 'phpunit' => 0, 'runner' => 0];
 $prefixes = ['Test Triggered Warning (' => 'user', 'Test Triggered PHP Warning (' => 'php',
     'Test Triggered PHPUnit Warning (' => 'phpunit', 'Test Runner Triggered Warning (' => 'runner'];
-$finished = false;
-$stream = fopen($eventFile, 'rb');
-while (($line = fgets($stream)) !== false) {
+$finishedCodes = [];
+$eventPresent = is_file($eventFile);
+$eventBytes = $eventPresent ? filesize($eventFile) : null;
+$stream = $eventPresent ? fopen($eventFile, 'rb') : false;
+while ($stream !== false && ($line = fgets($stream)) !== false) {
     // PHPUnit 11.5.51 prefixes only event first lines; continuations are indented.
     if (!preg_match('/^\[[^\]\r\n]+\] \[\d+ bytes\] (.*)$/', rtrim($line, "\r\n"), $event)) { continue; }
     foreach ($prefixes as $prefix => $key) {
         if (str_starts_with($event[1], $prefix)) { $warnings[$key]++; }
     }
-    if ($event[1] === 'PHPUnit Finished (Shell Exit Code: '.$testExit.')') { $finished = true; }
+    if (preg_match('/^PHPUnit Finished \(Shell Exit Code: ([0-9]{1,3})\)$/D', $event[1], $finish)) {
+        $finishedCodes[] = (int) $finish[1];
+    }
 }
-fclose($stream);
-if (!$finished) { evidenceFail('incomplete_event_report'); }
+if ($stream !== false) { fclose($stream); }
+$baselineContext += ['event_file_present' => $eventPresent, 'event_file_bytes' => $eventBytes,
+    'phpunit_finished_event' => count($finishedCodes) > 0,
+    'finished_shell_exit_code' => count($finishedCodes) === 1 ? $finishedCodes[0] : null,
+    'finished_event_count' => count($finishedCodes),
+    'execution_classification' => count($finishedCodes) === 1 ? 'COMPLETED_REQUIRES_EXIT_CHECK' : 'INCOMPLETE_TEST_EXECUTION'];
+
+// Metadata only; raw bytes are neither emitted nor repaired. Counts below are
+// diagnostic tokens, NEVER a substitute for parsed testcase result records.
+$present = is_file($xmlFile);
+$source = $present ? file_get_contents($xmlFile) : false;
+$readable = is_string($source);
+$baselineContext += ['junit_file_present' => $present,
+    'junit_bytes' => $present ? filesize($xmlFile) : null,
+    'junit_sha256' => $readable ? hash('sha256', $source) : null,
+    'utf8_valid' => $readable ? preg_match('//u', $source) === 1 : null,
+    'xml_declaration_present' => $readable ? preg_match('/^(?:\xEF\xBB\xBF)?<\?xml\s/', $source) === 1 : null,
+    'contains_doctype_or_entity' => $readable ? preg_match('/<!DOCTYPE|<!ENTITY/i', $source) === 1 : null,
+    'starts_with_expected_xml_structure' => $readable ? preg_match('/^(?:\xEF\xBB\xBF)?\s*(?:<\?xml[^?]*\?>\s*)?<testsuites?(?:\s|>)/', $source) === 1 : null,
+    'ends_with_plausible_xml_structure' => $readable ? preg_match('~</testsuites?>\s*$~D', $source) === 1 : null,
+    'testcase_token_count' => $readable ? preg_match_all('/<testcase(?=\s|\/?>)/', $source) : null,
+    'testcase_token_count_is_diagnostic_only' => true,
+    'libxml_errors' => [], 'libxml_error_count' => 0];
+
+// Only complete, ASCII, literal/numeric PHPUnit summary lines are allowed.
+// Never export test progress, assertion values, dataset labels or exceptions.
+$summary = [];
+$log = is_file('/tmp/baseline.log') ? fopen('/tmp/baseline.log', 'rb') : false;
+while ($log !== false && ($line = fgets($log)) !== false) {
+    $line = rtrim($line, "\r\n");
+    if (strlen($line) > 256) { continue; }
+    if (preg_match('/^(?:FAILURES!|ERRORS!|OK, but there were issues!|No tests executed!)$/D', $line)
+        || preg_match('/^OK \([0-9]+ tests?, [0-9]+ assertions?\)$/D', $line)
+        || preg_match('/^Time: [0-9]+(?::[0-9]{2}){0,2}(?:\.[0-9]+)?, Memory: [0-9]+(?:\.[0-9]+)? (?:KB|MB|GB)$/D', $line)
+        || preg_match('/^Tests: [0-9]+(?:, (?:Assertions|Errors|Failures|Warnings|Skipped|Incomplete|Risky|Deprecations|PHPUnit Deprecations|PHPUnit Warnings|Notices): [0-9]+)*\.$/D', $line)) {
+        $summary[] = $line;
+        if (count($summary) > 8) { array_shift($summary); }
+    }
+}
+if ($log !== false) { fclose($log); }
+$baselineContext['safe_phpunit_summary_lines'] = $summary;
+emitEvidence(array_merge($baselineContext, ['kind' => 'infrastructure', 'status' => 'INFO',
+    'stage' => 'baseline_report_metadata']));
+
+// Completion is checked FIRST; no XML result is trusted for a partial suite.
+if (!$eventPresent || $eventBytes === 0 || count($finishedCodes) > 1) { evidenceFail('incomplete_event_report'); }
+if (count($finishedCodes) === 0) { evidenceFail('incomplete_test_execution'); }
+if ($finishedCodes[0] !== $testExit) { evidenceFail('inconsistent_test_exit'); }
+$baselineContext['execution_classification'] = 'COMPLETED';
+if (!$present) { evidenceFail('junit_missing'); }
+if (!$readable) { evidenceFail('junit_unreadable'); }
+if ($baselineContext['junit_bytes'] === 0) { evidenceFail('junit_empty'); }
+if ($baselineContext['contains_doctype_or_entity']) { evidenceFail('unsafe_junit'); }
+if (!$baselineContext['utf8_valid']) { evidenceFail('junit_invalid_utf8'); }
+libxml_use_internal_errors(true);
+libxml_clear_errors();
+$xml = simplexml_load_string($source, SimpleXMLElement::class, LIBXML_NONET);
+$libxmlErrors = libxml_get_errors();
+$baselineContext['libxml_error_count'] = count($libxmlErrors);
+foreach (array_slice($libxmlErrors, 0, 20) as $error) {
+    $baselineContext['libxml_errors'][] = ['code' => (int) $error->code, 'level' => (int) $error->level,
+        'line' => (int) $error->line, 'column' => (int) $error->column];
+}
+$baselineContext['libxml_errors_truncated'] = count($libxmlErrors) > 20;
+libxml_clear_errors();
+if ($xml === false) { evidenceFail('invalid_junit'); }
+if (!in_array($xml->getName(), ['testsuite', 'testsuites'], true)) { evidenceFail('junit_root_structure'); }
+$cases = $xml->xpath('//testcase') ?: [];
+if (count($cases) === 0) { evidenceFail('zero_tests'); }
 $failed = 0; $errors = 0; $skipped = 0; $diagnostics = [];
 foreach ($cases as $case) {
     if (isset($case->error)) { $errors++; $node = $case->error; }
@@ -97,5 +178,6 @@ emitEvidence(['kind' => 'baseline', 'TOTAL' => count($cases),
     'PASSED' => count($cases) - $failed - $errors - $skipped, 'FAILED' => $failed,
     'ERRORS' => $errors, 'SKIPPED' => $skipped, 'WARNINGS' => array_sum($warnings),
     'warning_events' => $warnings, 'warning_basis' => 'PHPUnit 11.5.51 verbose warning events; events, not affected tests',
-    'TEST_EXIT_CODE' => $testExit, 'baseline_gate' => $testExit === 0 ? 'PASS' : 'FAIL',
+    'TEST_EXIT_CODE' => $testExit, 'BASELINE_TEST_RESULTS_RECORDED' => 'PASS',
+    'phpunit_completed' => true, 'test_suite_outcome' => $testExit === 0 ? 'PASS' : 'NONZERO_EXIT',
     'diagnostics' => $diagnostics, 'diagnostics_truncated' => ($failed + $errors) > count($diagnostics)]);
