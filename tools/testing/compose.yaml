@@ -1,0 +1,67 @@
+services:
+  mysql:
+    image: mysql:8.0@sha256:62fb722c78b24245ddff1796a0fcee4a49cc5b87e0aaaf20c92d1da9e0a2497b
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: ${EDARATEK_TEST_DB_NAME:?test database required}
+      MYSQL_USER: edaratek_test
+      MYSQL_PASSWORD: ${EDARATEK_TEST_DB_PASSWORD:?ephemeral credential required}
+      MYSQL_ROOT_PASSWORD: ${EDARATEK_TEST_ROOT_PASSWORD:?ephemeral credential required}
+    tmpfs:
+      - /var/lib/mysql
+    networks: [isolated]
+    healthcheck:
+      test: [CMD-SHELL, "mysqladmin ping -h 127.0.0.1 --silent"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+  tests:
+    platform: linux/amd64
+    build:
+      context: ../..
+      dockerfile: tools/testing/Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [isolated]
+    tmpfs:
+      - /tmp
+    environment:
+      EDARATEK_ISOLATED_TEST: '1'
+      APP_ENV: testing
+      APP_DEBUG: 'false'
+      APP_KEY: ${EDARATEK_TEST_APP_KEY:?synthetic key required}
+      APP_URL: http://isolated.invalid
+      APP_CONFIG_CACHE: /app/storage/framework/testing/config.php
+      APP_EVENTS_CACHE: /app/storage/framework/testing/events.php
+      APP_PACKAGES_CACHE: /app/storage/framework/testing/packages.php
+      APP_ROUTES_CACHE: /app/storage/framework/testing/routes.php
+      APP_SERVICES_CACHE: /app/storage/framework/testing/services.php
+      LOG_CHANNEL: stderr
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: '3306'
+      DB_DATABASE: ${EDARATEK_TEST_DB_NAME:?test database required}
+      DB_USERNAME: edaratek_test
+      DB_PASSWORD: ${EDARATEK_TEST_DB_PASSWORD:?ephemeral credential required}
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+      MAIL_MAILER: array
+      MAIL_HOST: 127.0.0.1
+      MAIL_PORT: '2525'
+      MAIL_URL: ''
+      MAIL_USERNAME: ''
+      MAIL_PASSWORD: ''
+      FILESYSTEM_DISK: local
+      BROADCAST_CONNECTION: 'null'
+      N8N_WHATSAPP_ENABLED: 'false'
+      N8N_WHATSAPP_WEBHOOK_URL: ''
+      N8N_WHATSAPP_WEBHOOK_SECRET: ''
+      N8N_WHATSAPP_STATUS_SECRET: ''
+      N8N_WHATSAPP_CLAIM_SECRET: ''
+      META_WHATSAPP_VERIFY_TOKEN: ''
+      BCRYPT_ROUNDS: '4'
+networks:
+  isolated:
+    internal: true
