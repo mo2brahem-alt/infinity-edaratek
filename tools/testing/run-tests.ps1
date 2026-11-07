@@ -6,6 +6,34 @@ $repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $script:copied = 0
 $script:skipped = 0
 
+function Write-SafeBuildDiagnostics([object[]]$BuildOutput) {
+    # Sanitize BEFORE truncation; never emit arbitrary environment or full logs.
+    $text = ($BuildOutput | ForEach-Object { [string]$_ }) -join "`n"
+    $text = $text -replace '\x1B\[[0-?]*[ -/]*[@-~]', ''
+    $text = $text -replace '(?s)-----BEGIN [A-Z ]*PRIVATE KEY-----.*?(?:-----END [A-Z ]*PRIVATE KEY-----|$)', '[PRIVATE_KEY_REDACTED]'
+    $text = $text -replace '(?im)\b(?:proxy-)?authorization\s*[:=].*$', 'Authorization: [REDACTED]'
+    $text = $text -replace '(?i)\b(?:Bearer|Basic)\s+[A-Za-z0-9+/=._~-]+', '[AUTH_REDACTED]'
+    $text = $text -replace '(?i)(\b[A-Za-z0-9_.-]{0,128}(?:password|passwd|secret|token|api[_-]?key|credential)[A-Za-z0-9_.-]{0,128}["'']?\s*[:=]\s*)(?:"[^"]*"|''[^'']*''|[^\s;,]+)', '$1[REDACTED]'
+    $text = $text -replace '(?i)(--(?:password|secret|token|api-key)\s+)(?:"[^"]*"|''[^'']*''|\S+)', '$1[REDACTED]'
+    $text = $text -replace '\b(?:gh[pousr]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+|xox[baprs]-[A-Za-z0-9-]+|AKIA[A-Z0-9]{16}|eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)\b', '[TOKEN_REDACTED]'
+    $text = $text -replace '(?i)https?://[^\s"''<>]+', '[URL_REDACTED]'
+    $text = $text -replace '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b', '[EMAIL_REDACTED]'
+    $relevant = @($text -split '\r?\n' | Where-Object {
+        $_ -match '(?i)error|failed|exit code|COMPOSER_|PHP_REQUIRED_EXTENSION|npm ERR|could not|requires ext-|not found|manifest|checksum|^#\d+\s+\[|^\s*>\s*\[|^Dockerfile:|^\s*(?:>>>|\d+\s*\|)'
+    })
+    Write-Output 'BUILD_DIAGNOSTICS_BEGIN (redacted; last 40 relevant lines; max 24000 characters)'
+    $remaining = 24000
+    foreach ($line in ($relevant | Select-Object -Last 40)) {
+        if ($remaining -le 0) { break }
+        $safe = $line -replace '[\x00-\x08\x0B-\x1F\x7F]', ''
+        $limit = [Math]::Min(600, $remaining)
+        if ($safe.Length -gt $limit) { $safe = $safe.Substring(0, $limit-3) + '...' }
+        Write-Output $safe
+        $remaining -= $safe.Length
+    }
+    Write-Output "BUILD_DIAGNOSTICS_END (relevant_lines=$($relevant.Count); output_bounded=true)"
+}
+
 function Copy-SafeTree([string]$Source, [string]$Destination) {
     if (-not (Test-Path -LiteralPath $Source)) { return }
     $item = Get-Item -LiteralPath $Source -Force
@@ -128,9 +156,20 @@ try {
     $composeFile = Join-Path $scratch 'tools/testing/compose.yaml'
     $emptyEnv = Join-Path $scratch 'tools/testing/empty.env'
     [IO.File]::WriteAllText($emptyEnv,'')
-    $composeArgs = @('compose','--project-directory',$scratch,'--env-file',$emptyEnv,'-p',$project,'-f',$composeFile)
-    $buildLog = & docker @composeArgs build --pull 2>&1
-    if ($LASTEXITCODE -ne 0) { Write-Output 'TEST_IMAGE_BUILD_FAILED: review ephemeral builder diagnostics safely.'; exit 33 }
+    # Compose resolves build.context relative to its project directory. The
+    # existing ../.. context must resolve from tools/testing, not scratch root.
+    $composeDirectory = [IO.Path]::GetDirectoryName($composeFile)
+    $resolvedContext = [IO.Path]::GetFullPath((Join-Path $composeDirectory '../..'))
+    if ($resolvedContext -cne [IO.Path]::GetFullPath($scratch)) { throw 'BUILD_CONTEXT_OUTSIDE_FILTERED_SCRATCH' }
+    $composeArgs = @('compose','--project-directory',$composeDirectory,'--env-file',$emptyEnv,'-p',$project,'-f',$composeFile)
+    # --progress is a Compose global option, before the build subcommand.
+    $buildLog = & docker @composeArgs --progress plain build --pull 2>&1
+    $buildExit = $LASTEXITCODE
+    if ($buildExit -ne 0) {
+        Write-Output "TEST_IMAGE_BUILD_FAILED: docker_exit=$buildExit"
+        Write-SafeBuildDiagnostics $buildLog
+        exit 33
+    }
     $composeStarted = $true
     $null = & docker @composeArgs up -d --wait mysql 2>&1
     if ($LASTEXITCODE -ne 0) { Write-Output 'ISOLATED_DATABASE_START_FAILED'; exit 37 }
