@@ -22,8 +22,31 @@ function emitEvidence(array $record): void {
     if (isset($record['kind'])) { $record = ['kind' => $record['kind']] + $record; }
     echo json_encode($record, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES)."\n";
 }
+function memoryEvents(): array {
+    $path = '/sys/fs/cgroup/memory.events';
+    $counts = [];
+    if (is_readable($path)) {
+        foreach (file($path, FILE_IGNORE_NEW_LINES) as $line) {
+            if (preg_match('/^(oom|oom_kill|oom_group_kill) ([0-9]+)$/D', $line, $match)) {
+                $counts[$match[1]] = (int) $match[2];
+            }
+        }
+    }
+    return $counts;
+}
 require '/app/vendor/autoload.php';
 $mode = $argv[1] ?? '';
+if ($mode === 'process-profile') {
+    $limit = ini_get('memory_limit');
+    if (!preg_match('/^(?:-1|[0-9]+[KMG]?)$/iD', $limit)) { evidenceFail('memory_limit_format'); }
+    $profile = ['PHP_MEMORY_LIMIT' => $limit, 'PHP_MAX_EXECUTION_TIME' => (int) ini_get('max_execution_time'),
+        'cgroup_memory_events_before' => memoryEvents()];
+    if (file_put_contents('/tmp/baseline-process-profile.json', json_encode($profile, JSON_THROW_ON_ERROR)) === false) {
+        evidenceFail('process_profile_write');
+    }
+    emitEvidence(['kind' => 'infrastructure', 'status' => 'INFO', 'stage' => 'phpunit_process_profile'] + $profile);
+    exit(0);
+}
 if ($mode === 'platform') {
     $strict = filter_var($argv[2] ?? null, FILTER_VALIDATE_INT);
     $platformExit = filter_var($argv[3] ?? null, FILTER_VALIDATE_INT);
@@ -61,6 +84,15 @@ if ($mode !== 'baseline') { evidenceFail('evidence_mode'); }
 $testExit = filter_var($argv[2] ?? null, FILTER_VALIDATE_INT);
 if ($testExit === false || $testExit < 0 || $testExit > 255) { evidenceFail('test_exit'); }
 $baselineContext = ['TEST_EXIT_CODE' => $testExit];
+if (is_file('/tmp/baseline-process-profile.json')) {
+    $profile = json_decode(file_get_contents('/tmp/baseline-process-profile.json'), true, 512, JSON_THROW_ON_ERROR);
+    $baselineContext += $profile;
+    $after = memoryEvents();
+    $baselineContext['cgroup_memory_events_after'] = $after;
+    $before = $profile['cgroup_memory_events_before']['oom_kill'] ?? null;
+    $baselineContext['cgroup_oom_kill_increased'] = $before !== null && isset($after['oom_kill'])
+        ? $after['oom_kill'] > $before : null;
+}
 // Record the actual process exit BEFORE report I/O or XML parsing can fail.
 emitEvidence(['kind' => 'infrastructure', 'status' => 'INFO', 'stage' => 'baseline_process_exit',
     'TEST_EXIT_CODE' => $testExit]);
@@ -72,12 +104,31 @@ $warnings = ['user' => 0, 'php' => 0, 'phpunit' => 0, 'runner' => 0];
 $prefixes = ['Test Triggered Warning (' => 'user', 'Test Triggered PHP Warning (' => 'php',
     'Test Triggered PHPUnit Warning (' => 'phpunit', 'Test Runner Triggered Warning (' => 'runner'];
 $finishedCodes = [];
+$lastTest = null;
+$eventTail = [];
+$knownEventTypes = ['PHPUnit Started', 'PHPUnit Finished', 'Test Suite Started', 'Test Suite Finished',
+    'Test Preparation Started', 'Test Prepared', 'Test Passed', 'Test Failed', 'Test Errored',
+    'Test Finished', 'Test Considered Risky', 'Test Skipped', 'Test Marked Incomplete',
+    'Assertion Succeeded', 'Assertion Failed', 'Before Test Method Called', 'After Test Method Called',
+    'Before Test Method Finished', 'After Test Method Finished', 'Test Triggered Warning',
+    'Test Triggered PHP Warning', 'Test Triggered PHPUnit Warning', 'Test Runner Triggered Warning',
+    'Test Triggered Deprecation', 'Test Triggered PHP Deprecation', 'Test Triggered Notice',
+    'Test Triggered PHP Notice', 'Test Triggered Error', 'Test Runner Execution Started',
+    'Test Runner Execution Finished'];
 $eventPresent = is_file($eventFile);
 $eventBytes = $eventPresent ? filesize($eventFile) : null;
 $stream = $eventPresent ? fopen($eventFile, 'rb') : false;
 while ($stream !== false && ($line = fgets($stream)) !== false) {
     // PHPUnit 11.5.51 prefixes only event first lines; continuations are indented.
     if (!preg_match('/^\[[^\]\r\n]+\] \[\d+ bytes\] (.*)$/', rtrim($line, "\r\n"), $event)) { continue; }
+    $type = strstr($event[1], ' (', true);
+    $eventTail[] = in_array($type, $knownEventTypes, true) ? $type : 'OTHER_PHPUNIT_EVENT';
+    if (count($eventTail) > 20) { array_shift($eventTail); }
+    // Source symbols only: the match stops BEFORE dataset names/values.
+    if (in_array($type, $knownEventTypes, true)
+        && preg_match('/^Test [A-Za-z ]+ \((Tests[\\\\A-Za-z0-9_]+)::([A-Za-z_][A-Za-z0-9_]*)(?=[\s,)])/', $event[1], $identity)) {
+        $lastTest = ['class' => substr($identity[1], 0, 200), 'method' => substr($identity[2], 0, 200)];
+    }
     foreach ($prefixes as $prefix => $key) {
         if (str_starts_with($event[1], $prefix)) { $warnings[$key]++; }
     }
@@ -90,6 +141,7 @@ $baselineContext += ['event_file_present' => $eventPresent, 'event_file_bytes' =
     'phpunit_finished_event' => count($finishedCodes) > 0,
     'finished_shell_exit_code' => count($finishedCodes) === 1 ? $finishedCodes[0] : null,
     'finished_event_count' => count($finishedCodes),
+    'last_test_identity' => $lastTest, 'last_phpunit_event_types' => $eventTail,
     'execution_classification' => count($finishedCodes) === 1 ? 'COMPLETED_REQUIRES_EXIT_CHECK' : 'INCOMPLETE_TEST_EXECUTION'];
 
 // Metadata only; raw bytes are neither emitted nor repaired. Counts below are
@@ -112,9 +164,31 @@ $baselineContext += ['junit_file_present' => $present,
 // Only complete, ASCII, literal/numeric PHPUnit summary lines are allowed.
 // Never export test progress, assertion values, dataset labels or exceptions.
 $summary = [];
-$log = is_file('/tmp/baseline.log') ? fopen('/tmp/baseline.log', 'rb') : false;
+$fatalCategories = [];
+$fatalPatterns = [
+    'PHP_MEMORY_EXHAUSTED' => '/(?:PHP\s+)?Fatal error:.*Allowed memory size of [0-9]+ bytes exhausted/i',
+    'PHP_EXECUTION_TIME_EXCEEDED' => '/(?:PHP\s+)?Fatal error:.*Maximum execution time of [0-9]+ seconds exceeded/i',
+    'SEGMENTATION_FAULT' => '/^(?:Segmentation fault|.*\bSegmentation fault\s*\(core dumped\))/i',
+    'ZEND_HEAP_CORRUPTION' => '/^.*zend_mm_heap corrupted/i',
+    'BUS_ERROR' => '/^Bus error(?:\s|$)/i',
+    'PROCESS_KILLED' => '/^(?:Killed|.*\bKilled\s+.*phpunit)(?:\s|$)/i',
+    'PROCESS_OUT_OF_MEMORY' => '/^(?:Out of memory:|Memory cgroup out of memory:)/i',
+    'PHP_PARSE_ERROR' => '/^(?:PHP\s+)?Parse error:/i',
+    'PHP_REDECLARE_FATAL' => '/(?:PHP\s+)?Fatal error:.*Cannot (?:redeclare|declare class)/i',
+    'PHP_UNDEFINED_CALL' => '/(?:PHP\s+)?Fatal error:.*(?:Call to undefined|Call to a member function)/i',
+    'PHP_CLASS_NOT_FOUND' => '/(?:PHP\s+)?Fatal error:.*Class .* not found/i',
+    'PHP_UNCAUGHT_FATAL' => '/(?:PHP\s+)?Fatal error:.*Uncaught /i',
+    'PHP_FATAL_ERROR' => '/(?:PHP\s+)?Fatal error:/i',
+];
+$logPresent = is_file('/tmp/baseline.log');
+$baselineContext['baseline_log_present'] = $logPresent;
+$baselineContext['baseline_log_bytes'] = $logPresent ? filesize('/tmp/baseline.log') : null;
+$log = $logPresent ? fopen('/tmp/baseline.log', 'rb') : false;
 while ($log !== false && ($line = fgets($log)) !== false) {
     $line = rtrim($line, "\r\n");
+    foreach ($fatalPatterns as $category => $pattern) {
+        if (preg_match($pattern, $line)) { $fatalCategories[$category] = true; }
+    }
     if (strlen($line) > 256) { continue; }
     if (preg_match('/^(?:FAILURES!|ERRORS!|OK, but there were issues!|No tests executed!)$/D', $line)
         || preg_match('/^OK \([0-9]+ tests?, [0-9]+ assertions?\)$/D', $line)
@@ -126,6 +200,8 @@ while ($log !== false && ($line = fgets($log)) !== false) {
 }
 if ($log !== false) { fclose($log); }
 $baselineContext['safe_phpunit_summary_lines'] = $summary;
+$baselineContext['fatal_signature_categories'] = array_keys($fatalCategories);
+$baselineContext['fatal_signatures_are_observations_only'] = true;
 emitEvidence(array_merge($baselineContext, ['kind' => 'infrastructure', 'status' => 'INFO',
     'stage' => 'baseline_report_metadata']));
 

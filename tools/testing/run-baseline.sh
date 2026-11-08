@@ -22,6 +22,7 @@ php tools/testing/summarize-junit.php platform "$strict_exit" "$platform_exit" |
 [ "$platform_exit" -eq 0 ] || fail composer_platform 42
 php artisan package:discover --no-ansi >/tmp/discovery.log 2>&1 || fail package_discovery 22
 guard boot
+php tools/testing/summarize-junit.php process-profile || fail process_profile 24
 # ONE suite. Warnings are counted from version-checked verbose event records.
 test_exit=0
 vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log >/tmp/baseline.log 2>&1 || test_exit=$?
