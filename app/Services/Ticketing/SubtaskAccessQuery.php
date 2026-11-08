@@ -57,7 +57,11 @@ final class SubtaskAccessQuery
     {
         $user = User::query()->where('school_id', $schoolId)->whereKey($id)->first();
         if (! $user || ! $user->hasSystemRole('staff') || ! $user->hasApprovedAccountAccess()) {
-            throw ValidationException::withMessages(['assigned_to' => ['An eligible staff member of the current school is required.']]);
+            // Existing manager endpoints return 422 JSON even for a plain web POST.
+            $message = 'An eligible staff member of the current school is required.';
+            throw new \Illuminate\Http\Exceptions\HttpResponseException(response()->json([
+                'message' => $message, 'errors' => ['assigned_to' => [$message]],
+            ], 422));
         }
         return $user;
     }

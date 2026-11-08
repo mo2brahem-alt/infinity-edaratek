@@ -95,4 +95,22 @@ class StaffTaskIsolationTest extends TestCase
         $s = $this->schools();
         $this->actingAs($s['A']['staff'])->getJson('/api/v1/staff/tasks')->assertUnauthorized()->assertJsonPath('code', 'UNAUTHENTICATED');
     }
+
+    public function test_dashboard_uses_current_owned_school_and_excludes_inconsistent_parent_counts(): void
+    {
+        $s = $this->schools();
+        foreach (['A', 'B'] as $key) {
+            $s[$key]['staff']->update(['school_staff_type' => User::SCHOOL_STAFF_EDUCATIONAL]);
+            $this->task($s[$key]);
+        }
+        $this->task($s['A'], $s['B']['staff'], ['school_id' => $s['B']['school']->id]);
+        // Two schools remain owned by the same manager; current context must win over hasOne order.
+        $s['B']['school']->update(['manager_user_id' => $s['A']['manager']->id]);
+        $s['A']['manager']->update(['school_id' => $s['B']['school']->id]);
+        $this->actingAs($s['A']['manager'])->get(route('manager.dashboard'))->assertOk()
+            ->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+                ->where('analytics.school.id', $s['B']['school']->id)
+                ->has('analytics.teachers.teachersOpenTickets', 1)
+                ->where('analytics.teachers.teachersOpenTickets.0.value', 1));
+    }
 }

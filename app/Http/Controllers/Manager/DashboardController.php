@@ -15,8 +15,7 @@ class DashboardController extends Controller
     public function index(Request $request, SchoolDashboardAnalyticsService $analyticsService): Response
     {
         $manager = $request->user();
-        $manager->loadMissing(['managedSchool', 'school']);
-        $school = $manager->managedSchool ?: $manager->school;
+        $school = app(\App\Services\School\SchoolContextResolver::class)->current($manager, purpose: 'manager');
 
         abort_unless($school, 403, __('messages.manager_school_required'));
 

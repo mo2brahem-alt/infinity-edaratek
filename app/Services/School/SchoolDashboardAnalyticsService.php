@@ -845,7 +845,7 @@ class SchoolDashboardAnalyticsService
             ])
             ->all();
 
-        $openSubtasks = Subtask::query()
+        $openSubtasks = app(\App\Services\Ticketing\SubtaskAccessQuery::class)->consistentParent(Subtask::query())
             ->where('subtasks.school_id', $school->id)
             ->whereIn('subtasks.status', [Subtask::STATUS_OPEN, Subtask::STATUS_IN_PROGRESS, Subtask::STATUS_SUBMITTED])
             ->join('users', 'users.id', '=', 'subtasks.assigned_to')

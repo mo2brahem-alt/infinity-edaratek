@@ -20,7 +20,7 @@ try {
         $classes[(string) $case['class']] = ($classes[(string) $case['class']] ?? 0) + 1;
     }
     foreach (['Mobile\\Phase4\\StaffTaskIsolationTest', 'Mobile\\Phase4\\CurrentTenantContextTest', 'Mobile\\Phase4\\ForeignRelationshipTest',
-        'TicketWorkflowAuthorizationTest', 'HeavyEndpointsPaginationTest', 'RealtimeNotificationFlowTest',
+        'TicketWorkflowAuthorizationTest', 'HeavyEndpointsPaginationTest', 'RealtimeNotificationFlowTest', 'ManagerDashboardAnalyticsTest',
         'ActiveSchoolAssociationMiddlewareTest', 'AcademicPlanningAccessTest', 'QuickSetupStatusTest', 'SchoolTenantIsolationTest'] as $class) {
         if (($classes['Tests\\Feature\\'.$class] ?? 0) < 1) { throw new RuntimeException('Missing class'); }
     }
