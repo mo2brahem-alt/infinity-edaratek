@@ -61,4 +61,5 @@ php -d memory_limit=512M tools/testing/summarize-junit.php process-profile || fa
 test_exit=0
 php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log >/tmp/baseline.log 2>&1 || test_exit=$?
 php tools/testing/summarize-junit.php baseline "$test_exit" || fail baseline_evidence 24
+php tools/testing/probe-mobile-auth-gate.php "$test_exit" || fail mobile_auth_foundation_gate 29
 exit "$test_exit"
