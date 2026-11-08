@@ -20,10 +20,11 @@ class NativeAuthenticationTest extends TestCase
         $response = $this->postJson('/api/v1/auth/login', $this->credentials($user));
 
         $response->assertOk()
-            ->assertHeader('Cache-Control', 'no-store')
             ->assertJsonPath('data.token_type', 'Bearer')
             ->assertJsonPath('data.user.id', $user->id)
             ->assertJsonStructure(['data' => ['access_token', 'token_type', 'expires_at', 'user']]);
+
+        $this->assertStringContainsString('no-store', (string) $response->headers->get('Cache-Control'));
 
         $plainTextToken = (string) $response->json('data.access_token');
         $accessToken = PersonalAccessToken::findOrFail((int) explode('|', $plainTextToken, 2)[0]);
