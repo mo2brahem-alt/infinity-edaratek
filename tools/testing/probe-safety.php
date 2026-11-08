@@ -35,6 +35,21 @@ try {
     }
     $argv[1] = 'boot';
     require __DIR__.'/assert-environment.php';
+    // Inspect the real isolated resolver before installing the narrowly scoped
+    // fixture. No DNS payload, hostname value or email address is exported.
+    $records = @\dns_get_record('gmail.com', DNS_A + DNS_MX);
+    $record['unmocked_fixture_domain_has_dns_records'] = is_array($records) && count($records) > 0;
+    require_once __DIR__.'/dns-fixture.php';
+    $positive = Illuminate\Support\Facades\Validator::make(
+        ['email' => 'fixture@gmail.com'], ['email' => 'email:rfc,dns'])->passes();
+    $reserved = Illuminate\Support\Facades\Validator::make(
+        ['email' => 'fixture@reserved.invalid'], ['email' => 'email:rfc,dns'])->fails();
+    $malformed = Illuminate\Support\Facades\Validator::make(
+        ['email' => 'not-an-email'], ['email' => 'email:rfc,dns'])->fails();
+    $record['dns_fixture_valid_email_accepted'] = $positive;
+    $record['dns_fixture_reserved_domain_rejected'] = $reserved;
+    $record['dns_fixture_malformed_email_rejected'] = $malformed;
+    if (!$positive || !$reserved || !$malformed) { throw new RuntimeException('DNS validation fixture failed'); }
     Illuminate\Support\Facades\Http::preventStrayRequests();
     $blocked = false;
     try { Illuminate\Support\Facades\Http::get('http://unmatched.invalid/phase1'); }

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 
+require_once '/app/tools/testing/dns-fixture.php';
+
 // This file replaces tests/TestCase.php ONLY inside the disposable image.
 // Original assertions, tests and business application source stay unchanged.
 abstract class TestCase extends BaseTestCase
