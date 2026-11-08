@@ -92,6 +92,17 @@ class NativeAccountStateTest extends TestCase
             ->assertJsonPath('code', 'ACCOUNT_PENDING_APPROVAL');
     }
 
+    public function test_deleted_user_cannot_use_an_already_issued_token(): void
+    {
+        $user = User::factory()->create();
+        $plainTextToken = $this->issue($user);
+        $user->delete();
+
+        $this->native($plainTextToken)->getJson('/api/v1/me')
+            ->assertStatus(401)
+            ->assertJsonPath('code', 'UNAUTHENTICATED');
+    }
+
     private function login(User $user)
     {
         return $this->postJson('/api/v1/auth/login', [

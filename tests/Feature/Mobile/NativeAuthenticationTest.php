@@ -5,6 +5,7 @@ namespace Tests\Feature\Mobile;
 use App\Models\User;
 use App\Services\Mobile\NativeTokenService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 use Tests\TestCase;
@@ -86,11 +87,15 @@ class NativeAuthenticationTest extends TestCase
         $plainTextToken = $this->issue($user);
         $tokenId = (int) explode('|', $plainTextToken, 2)[0];
 
-        PersonalAccessToken::findOrFail($tokenId)->forceFill(['expires_at' => now()->subSecond()])->save();
-
-        $this->native($plainTextToken)->getJson('/api/v1/me')
-            ->assertStatus(401)
-            ->assertJsonPath('code', 'UNAUTHENTICATED');
+        $expiresAt = PersonalAccessToken::findOrFail($tokenId)->expires_at;
+        Carbon::setTestNow($expiresAt);
+        try {
+            $this->native($plainTextToken)->getJson('/api/v1/me')
+                ->assertStatus(401)
+                ->assertJsonPath('code', 'UNAUTHENTICATED');
+        } finally {
+            Carbon::setTestNow();
+        }
 
         $this->withHeader('Authorization', 'Bearer malformed')->getJson('/api/v1/me')
             ->assertStatus(401)
@@ -123,6 +128,14 @@ class NativeAuthenticationTest extends TestCase
             ->assertHeader('Retry-After')
             ->assertJsonPath('code', 'RATE_LIMITED')
             ->assertJsonMissing(['email', 'ip']);
+
+        Carbon::setTestNow(now()->addSeconds(61));
+        try {
+            $this->postJson('/api/v1/auth/login', $this->credentials($user, ['password' => 'wrong-password']))
+                ->assertStatus(401);
+        } finally {
+            Carbon::setTestNow();
+        }
     }
 
     /** @param array<string, mixed> $overrides */
