@@ -3,7 +3,7 @@
 FROM composer:2@sha256:07cb23c4c9d528524a8b9a67c403d6ad7fef2268651eb1448e3874d40f28b789 AS composer
 FROM php:8.2-cli-bookworm@sha256:26b388d187a5e592ef5e02c14d0f92dd9c761894ff0a5fe338183196471c4b4e AS php-dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git unzip ca-certificates libzip-dev libpng-dev \
+    git unzip ca-certificates chromium fonts-dejavu-core libzip-dev libpng-dev \
     libjpeg62-turbo-dev libfreetype6-dev libicu-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j2 pdo_mysql zip gd intl bcmath pcntl \
@@ -75,6 +75,7 @@ COPY --from=frontend /ui/public/build ./public/build
 COPY --from=frontend /ui/frontend-node-version.txt /opt/frontend-node-version.txt
 # Dedicated test bootstrap modifies only the image's disposable test superclass.
 RUN cp tools/testing/IsolatedTestCase.php tests/TestCase.php \
+    && cp phpunit.mysql.xml phpunit.xml \
     && mkdir -p storage/framework/testing storage/framework/cache/data \
        storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
     && chmod +x tools/testing/run-baseline.sh

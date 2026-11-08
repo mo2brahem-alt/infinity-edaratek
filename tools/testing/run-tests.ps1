@@ -120,14 +120,14 @@ foreach ($key in @('EDARATEK_TEST_DB_NAME','EDARATEK_TEST_DB_PASSWORD','EDARATEK
 }
 try {
     New-Item -ItemType Directory -Path $scratch | Out-Null
-    foreach ($dir in @('app','bootstrap','config','database','resources','routes','tests','tools/testing')) {
+    foreach ($dir in @('app','bootstrap','config','database','lang','resources','routes','tests','tools/testing')) {
         Copy-SafeTree (Join-Path $repoRoot $dir) (Join-Path $scratch $dir)
     }
-    foreach ($file in @('artisan','composer.json','composer.lock','phpunit.xml','phpunit.mysql.xml','package.json','package-lock.json','vite.config.js','postcss.config.js','tailwind.config.js','jsconfig.json')) {
+    foreach ($file in @('.htaccess','artisan','composer.json','composer.lock','phpunit.xml','phpunit.mysql.xml','package.json','package-lock.json','vite.config.js','postcss.config.js','tailwind.config.js','jsconfig.json')) {
         Copy-SafeTree (Join-Path $repoRoot $file) (Join-Path $scratch $file)
     }
     # Vite assets are generated ONLY by Docker's locked Node build stage.
-    foreach ($asset in @('public/index.php','public/favicon.ico','public/robots.txt')) {
+    foreach ($asset in @('public/.htaccess','public/index.php','public/favicon.ico','public/robots.txt')) {
         Copy-SafeTree (Join-Path $repoRoot $asset) (Join-Path $scratch $asset)
     }
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot '.dockerignore') -Destination (Join-Path $scratch '.dockerignore')

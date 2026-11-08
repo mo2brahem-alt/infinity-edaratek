@@ -30,7 +30,9 @@ diagnostic_exit=0
 for file in tests/Feature/Auth/AuthenticationTest.php tests/Feature/AcademicPlanningAccessTest.php tests/Feature/AccountApprovalFlowTest.php; do
   test_exit=0
   if [ "$file" = tests/Feature/Auth/AuthenticationTest.php ]; then
-    php -d memory_limit=512M artisan test --configuration=phpunit.mysql.xml --colors=never --stop-on-error --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log "$file" >/tmp/baseline.log 2>&1 || test_exit=$?
+    # Dedicated image default is the unchanged repository MySQL configuration;
+    # avoid Collision adding a duplicate --configuration option.
+    php -d memory_limit=512M artisan test --colors=never --stop-on-error --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log "$file" >/tmp/baseline.log 2>&1 || test_exit=$?
   else
     php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --stop-on-error --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log "$file" >/tmp/baseline.log 2>&1 || test_exit=$?
   fi
