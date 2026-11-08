@@ -53,7 +53,7 @@ try {
     $record['known_preexisting_regression_only'] = $record['full_suite_failure_count'] === 1
         && in_array($expectedRegression, $failures, true);
 
-    if ($testExit !== 1 || $mobileTests !== 15 || $record['mobile_test_failures'] !== 0
+    if ($testExit !== 1 || $mobileTests !== 16 || $record['mobile_test_failures'] !== 0
         || ! $record['known_preexisting_regression_only']) {
         throw new RuntimeException('Phase 2 gate conditions not met');
     }

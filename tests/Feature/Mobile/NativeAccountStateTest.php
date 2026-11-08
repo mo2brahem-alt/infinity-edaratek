@@ -55,6 +55,10 @@ class NativeAccountStateTest extends TestCase
         $this->native($plainTextToken)->getJson('/api/v1/me')
             ->assertStatus(401)
             ->assertJsonPath('code', 'UNAUTHENTICATED');
+
+        $this->native($plainTextToken)->postJson('/api/v1/auth/logout')
+            ->assertStatus(401)
+            ->assertJsonPath('code', 'UNAUTHENTICATED');
     }
 
     public function test_current_role_permission_and_approval_changes_are_reloaded_for_each_request(): void
@@ -101,6 +105,18 @@ class NativeAccountStateTest extends TestCase
         $this->native($plainTextToken)->getJson('/api/v1/me')
             ->assertStatus(401)
             ->assertJsonPath('code', 'UNAUTHENTICATED');
+    }
+
+    public function test_rejected_manager_loses_access_after_a_token_has_been_issued(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('school_manager');
+        $plainTextToken = $this->issue($user);
+        $user->forceFill(['approval_status' => User::APPROVAL_REJECTED])->save();
+
+        $this->native($plainTextToken)->getJson('/api/v1/me')
+            ->assertStatus(403)
+            ->assertJsonPath('code', 'ACCOUNT_REJECTED');
     }
 
     private function login(User $user)
