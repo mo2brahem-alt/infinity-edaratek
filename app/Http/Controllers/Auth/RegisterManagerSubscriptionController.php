@@ -73,6 +73,7 @@ class RegisterManagerSubscriptionController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        \App\Support\UserAuthorityFields::reject($request);
         $this->normalizeSaudiPhoneInputs($request, ['mobile']);
 
         $validated = $request->validate([

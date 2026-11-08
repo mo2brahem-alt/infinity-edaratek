@@ -23,7 +23,7 @@ try {
     foreach (['AccountApprovalMatrixTest', 'PrivilegeEscalationTest', 'EnvironmentSafetyTest', 'WebSessionSafetyTest'] as $class) {
         if (($classes['Tests\\Feature\\Mobile\\Phase3\\'.$class] ?? 0) < 1) { throw new RuntimeException('Missing focused class'); }
     }
-    foreach (['Tests\\Feature\\SafeAdminSeederTest', 'Tests\\Feature\\Auth\\PasswordResetTest', 'Tests\\Feature\\AccountApprovalFlowTest', 'Tests\\Feature\\SchoolUserRoleAssignmentApiTest'] as $class) {
+    foreach (['Tests\\Feature\\SafeAdminSeederTest', 'Tests\\Feature\\Auth\\PasswordResetTest', 'Tests\\Feature\\AccountApprovalFlowTest', 'Tests\\Feature\\SchoolUserRoleAssignmentApiTest', 'Tests\\Feature\\SubscriptionBillingAndSeatsTest'] as $class) {
         if (($classes[$class] ?? 0) < 1) { throw new RuntimeException('Missing web regression class'); }
     }
     $full = $read('/tmp/baseline-junit.xml')->xpath('//testcase') ?: [];

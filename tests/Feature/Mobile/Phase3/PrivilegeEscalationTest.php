@@ -49,6 +49,16 @@ class PrivilegeEscalationTest extends TestCase
             ->assertJsonPath('data.capabilities', [])->assertJsonPath('data.roles', ['staff']);
     }
 
+    public function test_sensitive_registration_never_accepts_account_authority_from_client(): void
+    {
+        $before = User::count();
+        foreach (['/auth/register/supervisor', '/auth/register/manager'] as $uri) {
+            $this->postJson($uri, ['role' => 'super_admin', 'approval_status' => 'approved', 'is_active' => true])
+                ->assertUnprocessable()->assertJsonValidationErrors(['role', 'approval_status', 'is_active']);
+        }
+        $this->assertSame($before, User::count());
+    }
+
     public function test_nonadmin_cannot_reach_system_role_or_approval_mutations(): void
     {
         $actor = User::factory()->create(['role' => 'staff']);

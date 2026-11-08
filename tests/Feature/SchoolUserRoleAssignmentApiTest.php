@@ -1090,6 +1090,50 @@ class SchoolUserRoleAssignmentApiTest extends TestCase
         $this->assertSame('rejected', $target->fresh()->approval_status);
     }
 
+    public function test_current_manager_membership_removal_and_forged_selector_cannot_restore_access(): void
+    {
+        $this->seedSystemRoles();
+        $manager = $this->createSchoolManagerWithSchool('SCH-930003');
+        $schoolId = $manager->school_id;
+        $this->actingAs($manager)->getJson(route('api.school.users.index'))->assertOk();
+        User::whereKey($manager->id)->update(['school_id' => null]);
+        $this->getJson(route('api.school.users.index', ['school_id' => $schoolId]))->assertStatus(409);
+    }
+
+    public function test_current_suspension_or_removed_ownership_blocks_existing_manager_session(): void
+    {
+        $this->seedSystemRoles();
+        $manager = $this->createSchoolManagerWithSchool('SCH-930004');
+        $this->actingAs($manager)->getJson(route('api.school.users.index'))->assertOk();
+        School::whereKey($manager->school_id)->update(['status' => School::STATUS_SUSPENDED]);
+        $this->getJson(route('api.school.users.index'))->assertForbidden();
+        School::whereKey($manager->school_id)->update(['status' => School::STATUS_ACTIVE, 'manager_user_id' => null]);
+        $this->getJson(route('api.school.users.index'))->assertForbidden();
+    }
+
+    public function test_removed_manager_role_blocks_privileged_operation_without_new_login(): void
+    {
+        $this->seedSystemRoles();
+        $manager = $this->createSchoolManagerWithSchool('SCH-930005');
+        $this->actingAs($manager)->getJson(route('api.school.users.index'))->assertOk();
+        $manager->syncRoles(['staff']);
+        $manager->update(['role' => 'staff']);
+        $this->getJson(route('api.school.users.index'))->assertForbidden();
+    }
+
+    public function test_permission_removal_denies_existing_operational_web_request_without_new_login(): void
+    {
+        $this->seedSystemRoles();
+        $manager = $this->createSchoolManagerWithSchool('SCH-930006');
+        $staff = User::factory()->create(['role' => 'staff', 'school_id' => $manager->school_id, 'can_manage_student_structure' => false]);
+        $staff->assignRole(['staff', 'teacher']);
+        $permission = \Spatie\Permission\Models\Permission::findOrCreate('school.student_structure.manage', 'web');
+        $staff->givePermissionTo($permission);
+        $this->actingAs($staff)->get(route('school.student_structure.index'))->assertOk();
+        $staff->revokePermissionTo($permission);
+        $this->get(route('school.student_structure.index'))->assertForbidden();
+    }
+
     private function seedSystemRoles(): void
     {
         $roles = [

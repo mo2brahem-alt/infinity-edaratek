@@ -65,6 +65,10 @@ class StoreSchoolUserWithRolesRequest extends FormRequest
     public function after(): array
     {
         return [fn () => \App\Support\UserAuthorityFields::reject($this, [
+            // Existing web contract ignores this selector; it is intentionally
+            // absent from rules()/validated(). The controller derives school
+            // and subscription from the authenticated manager, never this value.
+            'school_id',
             'role_names', 'permission_names', 'department_id', 'department_role_id',
             'school_permission_group_ids', 'can_manage_student_structure', 'can_manage_student_attendance',
             'can_manage_academic_planning', 'can_manage_student_leaves', 'can_manage_leave_types',

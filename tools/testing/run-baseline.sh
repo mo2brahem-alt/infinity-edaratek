@@ -49,7 +49,7 @@ done
 guard boot
 php -d memory_limit=512M tools/testing/probe-safety.php || fail phase1_safety_probe 28
 phase3_exit=0
-php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log tests/Feature/Mobile/Phase3 tests/Feature/SafeAdminSeederTest.php tests/Feature/Auth/PasswordResetTest.php tests/Feature/AccountApprovalFlowTest.php tests/Feature/SchoolUserRoleAssignmentApiTest.php >/tmp/baseline.log 2>&1 || phase3_exit=$?
+php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log tests/Feature/Mobile/Phase3 tests/Feature/SafeAdminSeederTest.php tests/Feature/Auth/PasswordResetTest.php tests/Feature/AccountApprovalFlowTest.php tests/Feature/SchoolUserRoleAssignmentApiTest.php tests/Feature/SubscriptionBillingAndSeatsTest.php >/tmp/baseline.log 2>&1 || phase3_exit=$?
 php tools/testing/summarize-junit.php baseline "$phase3_exit" phase3 || fail phase3_focused_evidence 29
 [ "$phase3_exit" -eq 0 ] || fail phase3_focused_tests 29
 cp /tmp/baseline-junit.xml /tmp/phase3-focused-junit.xml
