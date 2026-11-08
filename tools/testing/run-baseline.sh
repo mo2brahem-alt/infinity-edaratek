@@ -22,6 +22,20 @@ php tools/testing/summarize-junit.php platform "$strict_exit" "$platform_exit" |
 [ "$platform_exit" -eq 0 ] || fail composer_platform 42
 php artisan package:discover --no-ansi >/tmp/discovery.log 2>&1 || fail package_discovery 22
 guard boot
+schema_exit=0
+php -d memory_limit=512M tools/testing/probe-database.php || schema_exit=$?
+# Small unchanged representative tests diagnose RefreshDatabase independently;
+# they do not replace the authoritative full suite below.
+diagnostic_exit=0
+for file in tests/Feature/Auth/AuthenticationTest.php tests/Feature/AcademicPlanningAccessTest.php tests/Feature/AccountApprovalFlowTest.php; do
+  test_exit=0
+  php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --stop-on-error --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log "$file" >/tmp/baseline.log 2>&1 || test_exit=$?
+  php tools/testing/summarize-junit.php baseline "$test_exit" diagnostic || fail diagnostic_evidence 24
+  if [ "$test_exit" -ne 0 ]; then diagnostic_exit=1; fi
+done
+[ "$schema_exit" -eq 0 ] || fail migration_schema_probe 26
+[ "$diagnostic_exit" -eq 0 ] || fail representative_database_tests 27
+guard boot
 # CI run 42469219953 proved PHP memory exhaustion at the base 128M limit.
 # Bound ONLY the isolated test process/profile; no application/production ini.
 php -d memory_limit=512M tools/testing/summarize-junit.php process-profile || fail process_profile 24

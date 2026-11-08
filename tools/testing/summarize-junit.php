@@ -83,7 +83,8 @@ if ($mode === 'platform') {
 if ($mode !== 'baseline') { evidenceFail('evidence_mode'); }
 $testExit = filter_var($argv[2] ?? null, FILTER_VALIDATE_INT);
 if ($testExit === false || $testExit < 0 || $testExit > 255) { evidenceFail('test_exit'); }
-$baselineContext = ['TEST_EXIT_CODE' => $testExit];
+$runKind = ($argv[3] ?? '') === 'diagnostic' ? 'diagnostic_subset' : 'authoritative_full';
+$baselineContext = ['TEST_EXIT_CODE' => $testExit, 'run_kind' => $runKind];
 if (is_file('/tmp/baseline-process-profile.json')) {
     $profile = json_decode(file_get_contents('/tmp/baseline-process-profile.json'), true, 512, JSON_THROW_ON_ERROR);
     $baselineContext += $profile;
@@ -106,6 +107,7 @@ $prefixes = ['Test Triggered Warning (' => 'user', 'Test Triggered PHP Warning (
 $finishedCodes = [];
 $lastTest = null;
 $eventTail = [];
+$warningSources = [];
 $knownEventTypes = ['PHPUnit Started', 'PHPUnit Finished', 'Test Suite Started', 'Test Suite Finished',
     'Test Preparation Started', 'Test Prepared', 'Test Passed', 'Test Failed', 'Test Errored',
     'Test Finished', 'Test Considered Risky', 'Test Skipped', 'Test Marked Incomplete',
@@ -132,6 +134,21 @@ while ($stream !== false && ($line = fgets($stream)) !== false) {
     foreach ($prefixes as $prefix => $key) {
         if (str_starts_with($event[1], $prefix)) { $warnings[$key]++; }
     }
+    // Source location only, never the warning continuation/message. A path is
+    // emitted only if it resolves to a static existing file inside the image.
+    if (str_starts_with($event[1], 'Test Triggered PHP Warning (')
+        && preg_match('~ in (/app/(?:vendor|app|tests|database|bootstrap|config|tools)/[A-Za-z0-9_/.-]+\.php):([0-9]+)$~D', $event[1], $location)) {
+        $resolved = realpath($location[1]);
+        if ($resolved !== false && str_starts_with($resolved, '/app/') && is_file($resolved)) {
+            $relative = substr($resolved, 5);
+            $signature = hash('sha256', 'PHP_WARNING:'.$relative.':'.$location[2]);
+            if (isset($warningSources[$signature])) { $warningSources[$signature]['count']++; }
+            elseif (count($warningSources) < 40) {
+                $warningSources[$signature] = ['category' => 'PHP_WARNING', 'signature_sha256' => $signature,
+                    'source_file' => $relative, 'source_line' => (int) $location[2], 'count' => 1];
+            }
+        }
+    }
     if (preg_match('/^PHPUnit Finished \(Shell Exit Code: ([0-9]{1,3})\)$/D', $event[1], $finish)) {
         $finishedCodes[] = (int) $finish[1];
     }
@@ -142,6 +159,7 @@ $baselineContext += ['event_file_present' => $eventPresent, 'event_file_bytes' =
     'finished_shell_exit_code' => count($finishedCodes) === 1 ? $finishedCodes[0] : null,
     'finished_event_count' => count($finishedCodes),
     'last_test_identity' => $lastTest, 'last_phpunit_event_types' => $eventTail,
+    'php_warning_sources' => array_values($warningSources),
     'execution_classification' => count($finishedCodes) === 1 ? 'COMPLETED_REQUIRES_EXIT_CHECK' : 'INCOMPLETE_TEST_EXECUTION'];
 
 // Metadata only; raw bytes are neither emitted nor repaired. Counts below are
@@ -230,27 +248,43 @@ if ($xml === false) { evidenceFail('invalid_junit'); }
 if (!in_array($xml->getName(), ['testsuite', 'testsuites'], true)) { evidenceFail('junit_root_structure'); }
 $cases = $xml->xpath('//testcase') ?: [];
 if (count($cases) === 0) { evidenceFail('zero_tests'); }
-$failed = 0; $errors = 0; $skipped = 0; $diagnostics = [];
+$failed = 0; $errors = 0; $skipped = 0; $diagnostics = []; $databaseGroups = [];
 foreach ($cases as $case) {
     if (isset($case->error)) { $errors++; $node = $case->error; }
     elseif (isset($case->failure)) { $failed++; $node = $case->failure; }
     elseif (isset($case->skipped)) { $skipped++; continue; }
     else { continue; }
-    if (count($diagnostics) >= 128) { continue; }
     // No dataset labels, expected/actual assertion values or raw exception bodies.
     $method = preg_split('/\s+with data set/', (string) $case['name'])[0];
     $clean = static fn (string $value): string => substr(preg_replace('/[^A-Za-z0-9_\\\\]/', '', $value), 0, 200);
     $body = (string) $node;
+    $sqlstate = null; $driverCode = null;
+    if (preg_match('/SQLSTATE\[([A-Z0-9]{5})\]/', $body, $sql)) { $sqlstate = $sql[1]; }
+    if (preg_match('/SQLSTATE\[[A-Z0-9]{5}\]:[^\r\n]{0,100}?: ([0-9]{2,5})(?:\s|$)/', $body, $driver)) {
+        $driverCode = (int) $driver[1];
+    }
+    if ($sqlstate !== null) {
+        $group = $sqlstate.':'.($driverCode ?? 'unknown');
+        if (isset($databaseGroups[$group])) { $databaseGroups[$group]['count']++; }
+        elseif (count($databaseGroups) < 40) { $databaseGroups[$group] = ['sqlstate' => $sqlstate,
+            'sqlstate_class' => substr($sqlstate, 0, 2), 'driver_error_code' => $driverCode, 'count' => 1]; }
+    }
     $classification = 'UNKNOWN_REQUIRES_REVIEW';
-    if (preg_match('/SQLSTATE|Connection refused|could not find driver/i', $body)) { $classification = 'ENVIRONMENTAL'; }
+    if (in_array($driverCode, [1044, 1045, 1049, 2002, 2006, 2013], true)
+        || preg_match('/Connection refused|could not find driver/i', $body)) { $classification = 'ENVIRONMENTAL'; }
     elseif (preg_match('/Vite manifest|Unable to locate file in Vite manifest/i', $body)) { $classification = 'TEST_INFRASTRUCTURE'; }
     elseif (isset($case->failure)) { $classification = 'ASSERTION_FAILURE_REQUIRES_REVIEW'; }
+    if (count($diagnostics) >= 128) { continue; }
     $diagnostics[] = ['class' => $clean((string) $case['class']), 'method' => $clean($method),
         'type' => $clean((string) $node['type']), 'classification' => $classification,
+        'sqlstate' => $sqlstate, 'sqlstate_class' => $sqlstate ? substr($sqlstate, 0, 2) : null,
+        'driver_error_code' => $driverCode,
         'sanitized_message' => $classification, 'raw_message_exported' => false];
 }
 if (($failed + $errors) > 0 && $testExit === 0) { evidenceFail('inconsistent_test_exit'); }
 emitEvidence(['kind' => 'baseline', 'TOTAL' => count($cases),
+    'run_kind' => $runKind, 'database_error_groups' => array_values($databaseGroups),
+    'php_warning_sources' => array_values($warningSources),
     'PASSED' => count($cases) - $failed - $errors - $skipped, 'FAILED' => $failed,
     'ERRORS' => $errors, 'SKIPPED' => $skipped, 'WARNINGS' => array_sum($warnings),
     'warning_events' => $warnings, 'warning_basis' => 'PHPUnit 11.5.51 verbose warning events; events, not affected tests',
