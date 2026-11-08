@@ -802,9 +802,11 @@ class User extends Authenticatable
      */
     public function groupedSchoolPermissionNames(): array
     {
-        $loadedGroups = $this->relationLoaded('schoolPermissionGroups')
-            ? $this->schoolPermissionGroups
-            : $this->schoolPermissionGroups()->get(['school_permission_groups.id', 'school_permission_groups.permission_names']);
+        $school = app(\App\Services\School\SchoolContextResolver::class)->identitySchool($this);
+        if (! $school) { return []; }
+        // Do not trust a loaded group collection retained before a transfer.
+        $loadedGroups = $this->schoolPermissionGroups()->where('school_permission_groups.school_id', $school->id)
+            ->get(['school_permission_groups.id', 'school_permission_groups.permission_names']);
 
         return $loadedGroups
             ->flatMap(fn (SchoolPermissionGroup $group) => (array) ($group->permission_names ?? []))

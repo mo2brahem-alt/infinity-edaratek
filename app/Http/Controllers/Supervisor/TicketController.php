@@ -26,6 +26,7 @@ class TicketController extends Controller
         $query = Ticket::query()
             ->with(['school:id,name,school_id,status', 'manager:id,name,email'])
             ->where('created_by', $user->id)
+            ->whereIn('school_id', app(\App\Services\School\SchoolContextResolver::class)->supervisedSchools($user)->select('id'))
             ->latest('id');
 
         $perPage = (int) ($validated['per_page'] ?? 0);
@@ -49,6 +50,7 @@ class TicketController extends Controller
     public function store(Request $request): JsonResponse
     {
         $this->authorize('create', Ticket::class);
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request, ['school_id', 'assigned_to']);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -68,6 +70,8 @@ class TicketController extends Controller
         if ((int) $school->supervisor_id !== (int) $request->user()->id) {
             return response()->json(['message' => 'هذه المدرسة غير مسندة إلى هذا المشرف.'], 403);
         }
+
+        app(\App\Services\School\SchoolContextResolver::class)->supervised($request->user(), (int) $school->id);
 
         if ((int) $school->manager_user_id !== (int) $validated['assigned_to']) {
             return response()->json(['message' => 'يجب إسناد المهمة إلى مدير هذه المدرسة فقط.'], 422);
@@ -95,6 +99,7 @@ class TicketController extends Controller
         $this->authorize('view', $ticket);
 
         return response()->json($ticket->load([
+            'subtasks' => fn ($q) => app(\App\Services\Ticketing\SubtaskAccessQuery::class)->consistentParent($q->getQuery()),
             'school',
             'manager',
             'subtasks.assignee',
@@ -107,6 +112,7 @@ class TicketController extends Controller
     public function update(Request $request, Ticket $ticket): JsonResponse
     {
         $this->authorize('update', $ticket);
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
 
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
@@ -128,6 +134,7 @@ class TicketController extends Controller
     public function close(Request $request, Ticket $ticket): JsonResponse
     {
         $this->authorize('close', $ticket);
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
 
         $this->ticketingService->markTicketStatus(
             $ticket,

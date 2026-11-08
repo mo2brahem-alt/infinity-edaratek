@@ -18,11 +18,13 @@ class SubtaskController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', Subtask::class);
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
         $validated = $request->validate([
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ]);
 
-        $query = Subtask::query()
+        $query = app(\App\Services\Ticketing\SubtaskAccessQuery::class)->forStaff($request->user())
             ->with([
                 'ticket:id,title,status',
                 'school:id,name,school_id',
@@ -67,6 +69,7 @@ class SubtaskController extends Controller
     public function reply(Request $request, Subtask $subtask): JsonResponse
     {
         $this->authorize('reply', $subtask);
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
 
         $validated = $request->validate([
             'message' => 'required|string|max:5000',
@@ -113,6 +116,7 @@ class SubtaskController extends Controller
     public function submit(Request $request, Subtask $subtask): JsonResponse
     {
         $this->authorize('submit', $subtask);
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
 
         $this->ticketingService->markSubtaskStatus(
             $subtask,

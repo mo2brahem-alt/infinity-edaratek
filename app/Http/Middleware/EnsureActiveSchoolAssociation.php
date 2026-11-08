@@ -15,59 +15,18 @@ class EnsureActiveSchoolAssociation
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-
-        if (!$user) {
-            return redirect('/login');
-        }
-
-        $schoolId = (int) ($user->school_id ?? 0);
-        if ($schoolId <= 0) {
-            if ($user->hasSystemRole('school_manager')) {
-                return $this->sendManagerSetupResponse($request, __('messages.manager_school_required'), 409);
+        if (! $user) { return redirect('/login'); }
+        try {
+            $school = app(\App\Services\School\SchoolContextResolver::class)->current($user);
+        } catch (\App\Services\School\SchoolContextException $error) {
+            if ($user->hasSystemRole('school_manager') && $error->errorCode !== 'SCHOOL_SUSPENDED') {
+                return $this->sendManagerSetupResponse($request, $error->getMessage(), $error->getStatusCode());
             }
-
-            abort(403, SchoolAssociationState::STAFF_SCHOOL_REQUIRED_MESSAGE);
+            abort($error->getStatusCode() === 409 ? 403 : $error->getStatusCode(),
+                $error->getStatusCode() === 409 ? SchoolAssociationState::STAFF_SCHOOL_REQUIRED_MESSAGE : $error->getMessage());
         }
-
-        $school = School::query()
-            ->whereKey($schoolId)
-            ->first(['id', 'status', 'supervision_status', 'manager_user_id', 'supervisor_id']);
-
-        if (!$school) {
-            if ($user->hasSystemRole('school_manager')) {
-                return $this->sendManagerSetupResponse($request, __('messages.school_context_invalid'), 409);
-            }
-
-            abort(403, __('messages.school_context_invalid'));
-        }
-
-        if ($user->hasSystemRole('school_manager') && (int) $school->manager_user_id !== (int) $user->id) {
-            return $this->sendManagerSetupResponse($request, __('messages.assigned_manager_required'), 403);
-        }
-
-        if ($user->hasSystemRole('school_manager')) {
-            if (! SchoolAssociationState::isSchoolActive($school)) {
-                abort(403, SchoolAssociationState::SCHOOL_SUSPENDED_MESSAGE);
-            }
-
-            $request->attributes->set('school_context_id', $schoolId);
-
-            return $next($request);
-        }
-
-        if (SchoolAssociationState::allowsOperationalAccessFor($user, $school)) {
-            $request->attributes->set('school_context_id', $schoolId);
-
-            return $next($request);
-        }
-
-        $message = SchoolAssociationState::operationalAccessDeniedMessageFor($user, $school);
-
-        if ($request->expectsJson() || $request->is('api/*')) {
-            abort(403, $message);
-        }
-
-        abort(403, $message);
+        $request->attributes->set('school_context_id', (int) $school->id);
+        return $next($request);
     }
 
     private function sendManagerSetupResponse(Request $request, string $message, int $status): Response|RedirectResponse|JsonResponse

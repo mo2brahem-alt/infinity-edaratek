@@ -246,7 +246,7 @@ class QuickSetupStatusTest extends TestCase
             ->assertOk();
     }
 
-    public function test_manager_can_fetch_status_when_school_flags_are_waiting_with_manager_approval_request(): void
+    public function test_suspended_school_denies_quick_setup_even_with_manager_approval_request(): void
     {
         Role::firstOrCreate(['name' => 'school_manager', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'supervisor', 'guard_name' => 'web']);
@@ -287,6 +287,6 @@ class QuickSetupStatusTest extends TestCase
 
         $this->actingAs($manager)
             ->getJson(route('api.school.quick_setup.status'))
-            ->assertOk();
+            ->assertForbidden();
     }
 }

@@ -19,7 +19,7 @@ class TicketController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $schoolId = (int) ($request->user()?->school_id ?? 0);
+        $schoolId = (int) app(\App\Services\School\SchoolContextResolver::class)->current($request->user(), purpose: 'manager')->id;
 
         $validated = $request->validate([
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
@@ -27,6 +27,7 @@ class TicketController extends Controller
 
         $query = Ticket::query()
             ->with([
+                'subtasks' => fn ($q) => app(\App\Services\Ticketing\SubtaskAccessQuery::class)->consistentParent($q->getQuery()),
                 'school:id,name,school_id,status',
                 'creator:id,name,email',
                 'subtasks.assignee:id,name,email,department_id,school_staff_type',
@@ -58,6 +59,7 @@ class TicketController extends Controller
         $this->authorize('view', $ticket);
 
         return response()->json($ticket->load([
+            'subtasks' => fn ($q) => app(\App\Services\Ticketing\SubtaskAccessQuery::class)->consistentParent($q->getQuery()),
             'school:id,name,school_id,status',
             'creator:id,name,email',
             'subtasks.assignee:id,name,email,department_id,school_staff_type',
@@ -70,6 +72,7 @@ class TicketController extends Controller
     public function store(Request $request): JsonResponse
     {
         $user = $request->user();
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request, ['assigned_to']);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -79,24 +82,12 @@ class TicketController extends Controller
             'assigned_to' => 'required|exists:users,id',
         ]);
 
-        $schoolId = (int) ($user->school_id ?? 0);
+        $schoolId = (int) app(\App\Services\School\SchoolContextResolver::class)->current($user, purpose: 'manager')->id;
         if ($schoolId <= 0) {
             return response()->json(['message' => 'يجب ربط حساب مدير المدرسة بمدرسة أولًا.'], 422);
         }
 
-        $assignee = User::query()->findOrFail((int) $validated['assigned_to']);
-
-        if (!$assignee->hasSystemRole('staff')) {
-            return response()->json(['message' => 'يمكن إسناد المهام فقط لمستخدمي هيكل المدرسة.'], 422);
-        }
-
-        if ((int) $assignee->school_id !== $schoolId) {
-            return response()->json(['message' => 'يجب أن يكون المستخدم المُسند إليه من نفس المدرسة.'], 422);
-        }
-
-        if (!(bool) $assignee->is_active) {
-            return response()->json(['message' => 'حساب المستخدم المُسند إليه غير نشط.'], 422);
-        }
+        $assignee = app(\App\Services\Ticketing\SubtaskAccessQuery::class)->assignee($schoolId, (int) $validated['assigned_to']);
 
         $ticket = DB::transaction(function () use ($validated, $user, $schoolId, $assignee, $request) {
             $ticketDescription = trim((string) ($validated['description'] ?? ''));
@@ -144,6 +135,7 @@ class TicketController extends Controller
     public function finalReport(Request $request, Ticket $ticket): JsonResponse
     {
         $this->authorize('addFinalReport', $ticket);
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
 
         if ((int) $ticket->created_by === (int) $request->user()->id) {
             return response()->json(['message' => 'المهام الداخلية لا تتطلب تقريرًا نهائيًا للمشرف.'], 422);
@@ -172,6 +164,7 @@ class TicketController extends Controller
     public function close(Request $request, Ticket $ticket): JsonResponse
     {
         $this->authorize('view', $ticket);
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
 
         if ((int) $ticket->created_by !== (int) $request->user()->id) {
             return response()->json(['message' => 'يمكنك إغلاق المهام الداخلية التي أنشأتها أنت فقط من هنا.'], 422);

@@ -35,6 +35,14 @@ final class AccountAccessEvaluator
     {
         $permissions = $user->getAllPermissions()->pluck('name')->filter()->unique()->sort()->values()->all();
 
+        $school = app(\App\Services\School\SchoolContextResolver::class)->identitySchool($user);
+        if ($school) {
+            $permissions = array_values(array_unique(array_merge($permissions, $user->groupedSchoolPermissionNames())));
+            sort($permissions);
+        } else {
+            $permissions = array_values(array_diff($permissions, \App\Support\SchoolPermissionCatalog::permissionNames()));
+        }
+
         return array_values($permissions);
     }
 

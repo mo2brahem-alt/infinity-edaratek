@@ -19,20 +19,13 @@ class EnsureManagerOwnsSchool
             abort(403, 'Manager access is required.');
         }
 
-        $schoolId = (int) ($user->school_id ?? 0);
-        if ($schoolId <= 0) {
-            return $this->sendManagerSetupResponse($request, __('messages.manager_school_required'), 409);
+        try {
+            $school = app(\App\Services\School\SchoolContextResolver::class)->current($user, operational: false, purpose: 'manager');
+        } catch (\App\Services\School\SchoolContextException $error) {
+            return $this->sendManagerSetupResponse($request, $error->getMessage(), $error->getStatusCode());
         }
 
-        $school = School::query()
-            ->whereKey($schoolId)
-            ->first(['id', 'status', 'supervision_status', 'manager_user_id', 'supervisor_id']);
-
-        if (!$school || (int) $school->manager_user_id !== (int) $user->id) {
-            return $this->sendManagerSetupResponse($request, __('messages.assigned_manager_required'), 403);
-        }
-
-        $request->attributes->set('school_context_id', $schoolId);
+        $request->attributes->set('school_context_id', (int) $school->id);
 
         return $next($request);
     }

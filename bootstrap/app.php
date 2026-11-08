@@ -39,6 +39,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'native.bearer' => \App\Http\Middleware\AuthenticateNativeBearer::class,
             'native.account' => \App\Http\Middleware\EnsureNativeAccountAccess::class,
             'native.throttle' => \App\Http\Middleware\ThrottleNativeRequest::class,
+            'native.staff_context' => \App\Http\Middleware\EnsureNativeStaffContext::class,
         ]);
 
         $middleware->web(append: [
@@ -79,6 +80,10 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             $status = $exception->getStatusCode();
+
+            if ($exception instanceof \App\Services\School\SchoolContextException) {
+                return NativeApiResponse::error($exception->errorCode, $status);
+            }
 
             return NativeApiResponse::error(match (true) {
                 $status >= 500 => 'INTERNAL_ERROR',

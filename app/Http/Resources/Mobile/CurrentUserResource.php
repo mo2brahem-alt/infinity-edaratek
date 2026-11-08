@@ -15,7 +15,7 @@ final class CurrentUserResource extends JsonResource
         /** @var User $user */
         $user = $this->resource;
         $accounts = app(AccountAccessEvaluator::class);
-        $school = $user->relationLoaded('school') ? $user->school : $user->school()->first();
+        $school = app(\App\Services\School\SchoolContextResolver::class)->identitySchool($user);
 
         return [
             'id' => (int) $user->getKey(),

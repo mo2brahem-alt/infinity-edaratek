@@ -43,7 +43,7 @@ try {
     }
     $record += ['focused_total' => count($focused), 'focused_passed' => count($focused), 'focused_classes' => $classes,
         'full_total' => count($full), 'full_passed' => count($full) - 1, 'full_failed' => 1, 'full_errors' => 0, 'full_skipped' => 0,
-        'known_preexisting_regression_only' => true, 'PHASE_4_STARTED' => false];
+        'known_preexisting_regression_only' => true, 'run_kind' => 'phase3_regression'];
     $record['status'] = 'PASS';
     foreach (['ACCOUNT_APPROVAL_HARDENING', 'AUTHORIZATION_HARDENING', 'PHASE_3_ACCEPTANCE'] as $gate) { $record[$gate] = 'PASS'; }
 } catch (Throwable $error) {

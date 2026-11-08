@@ -15,6 +15,10 @@ Route::prefix('v1')->group(function (): void {
     Route::middleware(['native.bearer', 'native.throttle:read', 'native.account'])->group(function (): void {
         Route::get('/me', [NativeSessionController::class, 'me']);
         Route::get('/auth/devices', [NativeSessionController::class, 'devices']);
+        Route::middleware('native.staff_context')->group(function (): void {
+            Route::get('/staff/tasks', [\App\Http\Controllers\Mobile\StaffTaskController::class, 'index']);
+            Route::get('/staff/tasks/{subtask}', [\App\Http\Controllers\Mobile\StaffTaskController::class, 'show']);
+        });
     });
 
     Route::middleware(['native.bearer', 'native.throttle:session', 'native.account'])->group(function (): void {

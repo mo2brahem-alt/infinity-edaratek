@@ -36,6 +36,16 @@ class TicketingService
 
     public function markSubtaskStatus(Subtask $subtask, string $toStatus, int $changedBy, ?Request $request = null, ?array $meta = null): Subtask
     {
+        $actor = \App\Models\User::query()->findOrFail($changedBy);
+        $policy = \Illuminate\Support\Facades\Gate::forUser($actor);
+        if ($toStatus === Subtask::STATUS_APPROVED) {
+            $policy->authorize('approve', $subtask);
+        } elseif ($toStatus === Subtask::STATUS_SUBMITTED && $policy->allows('submit', $subtask)) {
+            // Staff may submit only their currently visible assigned task.
+        } else {
+            $policy->authorize('update', $subtask);
+        }
+        abort_unless(in_array($toStatus, [Subtask::STATUS_OPEN, Subtask::STATUS_IN_PROGRESS, Subtask::STATUS_SUBMITTED, Subtask::STATUS_APPROVED], true), 422);
         $fromStatus = $subtask->status;
         $subtask->update(['status' => $toStatus]);
 

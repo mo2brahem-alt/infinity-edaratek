@@ -19,6 +19,7 @@ class SubtaskController extends Controller
     public function store(Request $request): JsonResponse
     {
         $this->authorize('create', Subtask::class);
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request, ['ticket_id', 'assigned_to']);
 
         $validated = $request->validate([
             'ticket_id' => 'required|exists:tickets,id',
@@ -29,21 +30,9 @@ class SubtaskController extends Controller
         ]);
 
         $ticket = Ticket::query()->findOrFail($validated['ticket_id']);
-        $this->authorize('view', $ticket);
+        $this->authorize('assignSubtask', $ticket);
 
-        $staff = User::query()->findOrFail($validated['assigned_to']);
-
-        if (!$staff->hasSystemRole('staff')) {
-            return response()->json(['message' => 'يمكن إسناد المهام الفرعية فقط لمستخدمي هيكل المدرسة.'], 422);
-        }
-
-        if ((int) $staff->school_id !== (int) $ticket->school_id) {
-            return response()->json(['message' => 'يجب أن ينتمي المستخدم إلى نفس المدرسة.'], 422);
-        }
-
-        if (!(bool) $staff->is_active) {
-            return response()->json(['message' => 'حساب المستخدم المُسند إليه غير نشط.'], 422);
-        }
+        $staff = app(\App\Services\Ticketing\SubtaskAccessQuery::class)->assignee((int) $ticket->school_id, (int) $validated['assigned_to']);
 
         $subtask = Subtask::create([
             'ticket_id' => $ticket->id,
@@ -66,6 +55,7 @@ class SubtaskController extends Controller
     public function update(Request $request, Subtask $subtask): JsonResponse
     {
         $this->authorize('update', $subtask);
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request, ['assigned_to']);
 
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
@@ -79,19 +69,7 @@ class SubtaskController extends Controller
         $previousAssigneeId = (int) $subtask->assigned_to;
 
         if (array_key_exists('assigned_to', $validated)) {
-            $staff = User::query()->findOrFail((int) $validated['assigned_to']);
-
-            if (!$staff->hasSystemRole('staff')) {
-                return response()->json(['message' => 'يمكن إسناد المهام الفرعية فقط لمستخدمي هيكل المدرسة.'], 422);
-            }
-
-            if ((int) $staff->school_id !== (int) $subtask->school_id) {
-                return response()->json(['message' => 'يجب أن يكون المستخدم المُسند إليه من نفس المدرسة.'], 422);
-            }
-
-            if (!(bool) $staff->is_active) {
-                return response()->json(['message' => 'حساب المستخدم المُسند إليه غير نشط.'], 422);
-            }
+            $staff = app(\App\Services\Ticketing\SubtaskAccessQuery::class)->assignee((int) $subtask->school_id, (int) $validated['assigned_to']);
 
             $payload['assigned_to'] = $staff->id;
         }
@@ -120,6 +98,7 @@ class SubtaskController extends Controller
     public function approve(Request $request, Subtask $subtask): JsonResponse
     {
         $this->authorize('approve', $subtask);
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
 
         $this->ticketingService->markSubtaskStatus(
             $subtask,

@@ -367,14 +367,9 @@ class QuickSetupStatusController extends Controller
 
     private function resolveSchoolId(Request $request): int
     {
-        $schoolId = (int) $request->attributes->get('school_context_id', (int) ($request->user()?->school_id ?? 0));
-        if ($schoolId <= 0) {
-            throw ValidationException::withMessages([
-                'school' => 'School context is required.',
-            ]);
-        }
-
-        return $schoolId;
+        $school = app(\App\Services\School\SchoolContextResolver::class)->current($request->user());
+        $request->attributes->set('school_context_id', (int) $school->id);
+        return (int) $school->id;
     }
 
     /**
