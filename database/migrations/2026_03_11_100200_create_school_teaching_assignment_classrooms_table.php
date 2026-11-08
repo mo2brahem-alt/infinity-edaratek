@@ -25,7 +25,7 @@ return new class extends Migration
 
             $table->unique(
                 ['school_teaching_assignment_id', 'school_classroom_id'],
-                'school_teaching_assignment_classrooms_unique_assignment_classroom'
+                'sta_classrooms_assignment_classroom_unique'
             );
             $table->index(
                 ['school_id', 'school_classroom_id'],
