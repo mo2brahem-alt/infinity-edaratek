@@ -22,7 +22,8 @@ class AccountApprovalMatrixTest extends TestCase
         $cases = [];
         foreach ([['staff', ['staff', 'teacher'], false], ['school_manager', ['staff'], true],
             ['staff', ['staff', 'school_manager'], true], ['staff', ['school_manager', 'staff'], true],
-            ['staff', ['staff', 'supervisor'], true], ['supervisor', [], true], ['school_admin', [], false]] as $index => [$legacy, $roles, $required]) {
+            ['staff', ['staff', 'supervisor'], true], ['staff', ['supervisor', 'staff'], true],
+            ['supervisor', [], true], ['school_admin', [], false]] as $index => [$legacy, $roles, $required]) {
             foreach (['approved', 'pending_approval', 'rejected'] as $status) {
                 foreach ([true, false] as $active) {
                     $cases['case_'.$index.'_'.$status.'_'.(int) $active] = [$legacy, $roles, $required, $status, $active];
@@ -45,6 +46,14 @@ class AccountApprovalMatrixTest extends TestCase
         $this->assertSame($required, $user->requiresSuperAdminApproval());
         $this->assertSame($expected, $user->hasApprovedAccountAccess());
         $code = app(AccountAccessEvaluator::class)->denialCode($user);
+        $login = $this->postJson('/api/v1/auth/login', [
+            'email' => $user->email, 'password' => 'password',
+            'device_uuid' => (string) Str::uuid(), 'device_name' => 'Matrix login',
+        ])->assertStatus($expected ? 200 : 403);
+        $this->assertSame($expected ? 1 : 0, $user->tokens()->count());
+        if (! $expected) {
+            $login->assertJsonPath('code', $code)->assertJsonMissingPath('data');
+        }
         $token = app(NativeTokenService::class)->issue($user, (string) Str::uuid(), 'Matrix')->plainTextToken;
         $response = $this->withToken($token)->getJson('/api/v1/me');
         $response->assertStatus($expected ? 200 : 403);
