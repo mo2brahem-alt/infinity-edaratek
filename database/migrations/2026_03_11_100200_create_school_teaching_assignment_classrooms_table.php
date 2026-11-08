@@ -15,8 +15,12 @@ return new class extends Migration
         Schema::create('school_teaching_assignment_classrooms', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('school_id')->constrained('schools')->cascadeOnDelete();
-            $table->foreignId('school_teaching_assignment_id')->constrained('school_teaching_assignments')->cascadeOnDelete();
-            $table->foreignId('school_classroom_id')->constrained('school_classrooms')->cascadeOnDelete();
+            $table->foreignId('school_teaching_assignment_id');
+            $table->foreignId('school_classroom_id');
+            $table->foreign('school_teaching_assignment_id', 'sta_classrooms_assignment_fk')
+                ->references('id')->on('school_teaching_assignments')->cascadeOnDelete();
+            $table->foreign('school_classroom_id', 'sta_classrooms_classroom_fk')
+                ->references('id')->on('school_classrooms')->cascadeOnDelete();
             $table->timestamps();
 
             $table->unique(
