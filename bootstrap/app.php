@@ -49,6 +49,14 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->report(function (\Throwable $exception) {
+            if (app()->bound('request') && NativeApiResponse::isNativeRequest(request())) {
+                // Exception text may contain SQL, request values, or secrets.
+                \Illuminate\Support\Facades\Log::error('native.internal_error', ['code' => 'INTERNAL_ERROR']);
+                return false;
+            }
+            return null;
+        });
         $exceptions->render(function (ValidationException $exception, Request $request) {
             if (! NativeApiResponse::isNativeRequest($request)) {
                 return null;
@@ -72,7 +80,12 @@ return Application::configure(basePath: dirname(__DIR__))
 
             $status = $exception->getStatusCode();
 
-            return NativeApiResponse::error($status === 404 ? 'NOT_FOUND' : 'FORBIDDEN', $status);
+            return NativeApiResponse::error(match (true) {
+                $status >= 500 => 'INTERNAL_ERROR',
+                $status === 401 => 'UNAUTHENTICATED',
+                $status === 404 => 'NOT_FOUND',
+                default => 'FORBIDDEN',
+            }, $status);
         });
 
         $exceptions->render(function (\Throwable $exception, Request $request) {

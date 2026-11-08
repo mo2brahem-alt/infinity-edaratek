@@ -247,7 +247,7 @@ class User extends Authenticatable
 
     public function requiresSuperAdminApproval(): bool
     {
-        return in_array((string) $this->primaryRole(), self::APPROVAL_REQUIRED_ROLES, true);
+        return app(\App\Services\Mobile\AccountAccessEvaluator::class)->approvalRequired($this);
     }
 
     public function isPendingApproval(): bool
@@ -262,12 +262,7 @@ class User extends Authenticatable
 
     public function hasApprovedAccountAccess(): bool
     {
-        if (! $this->requiresSuperAdminApproval()) {
-            return (bool) $this->is_active;
-        }
-
-        return (bool) $this->is_active
-            && (string) ($this->approval_status ?? self::APPROVAL_APPROVED) === self::APPROVAL_APPROVED;
+        return app(\App\Services\Mobile\AccountAccessEvaluator::class)->denialCode($this) === null;
     }
 
     public function approvalBlockedMessage(): string

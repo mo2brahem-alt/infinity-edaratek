@@ -1064,6 +1064,32 @@ class SchoolUserRoleAssignmentApiTest extends TestCase
             ->assertOk();
     }
 
+    public function test_manager_role_sync_rejects_account_authority_tampering_without_mutation(): void
+    {
+        $this->seedSystemRoles();
+        $manager = $this->createSchoolManagerWithSchool('SCH-930001');
+        $target = User::factory()->create(['role' => 'staff', 'school_id' => $manager->school_id, 'approval_status' => 'rejected', 'is_active' => false]);
+        $target->assignRole('staff');
+        $before = $target->fresh()->getAttributes();
+        $this->actingAs($manager)->putJson(route('api.school.users.roles.sync', $target), [
+            'role_names' => ['teacher'], 'approval_status' => 'approved', 'is_active' => true, 'school_id' => 999,
+        ])->assertUnprocessable();
+        $this->assertSame($before, $target->fresh()->getAttributes());
+        $this->assertFalse($target->fresh()->hasRole('teacher'));
+    }
+
+    public function test_valid_role_sync_does_not_approve_or_activate_target(): void
+    {
+        $this->seedSystemRoles();
+        $manager = $this->createSchoolManagerWithSchool('SCH-930002');
+        $target = User::factory()->create(['role' => 'staff', 'school_id' => $manager->school_id, 'approval_status' => 'rejected', 'is_active' => false]);
+        $target->assignRole('staff');
+        $this->actingAs($manager)->putJson(route('api.school.users.roles.sync', $target), ['role_names' => ['teacher']])->assertOk();
+        $this->assertTrue($target->fresh()->hasRole('teacher'));
+        $this->assertFalse($target->fresh()->is_active);
+        $this->assertSame('rejected', $target->fresh()->approval_status);
+    }
+
     private function seedSystemRoles(): void
     {
         $roles = [

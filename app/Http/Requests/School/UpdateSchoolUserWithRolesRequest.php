@@ -66,4 +66,14 @@ class UpdateSchoolUserWithRolesRequest extends FormRequest
             'can_manage_school_holidays' => ['nullable', 'boolean'],
         ];
     }
+
+    public function after(): array
+    {
+        return [fn () => \App\Support\UserAuthorityFields::reject($this, [
+            'role_names', 'permission_names', 'department_id', 'department_role_id',
+            'school_permission_group_ids', 'can_manage_student_structure', 'can_manage_student_attendance',
+            'can_manage_academic_planning', 'can_manage_student_leaves', 'can_manage_leave_types',
+            'can_manage_school_calendar', 'can_manage_school_holidays',
+        ])];
+    }
 }

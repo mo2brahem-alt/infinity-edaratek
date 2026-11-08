@@ -48,11 +48,16 @@ done
 [ "$diagnostic_exit" -eq 0 ] || fail representative_database_tests 27
 guard boot
 php -d memory_limit=512M tools/testing/probe-safety.php || fail phase1_safety_probe 28
+phase3_exit=0
+php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log tests/Feature/Mobile/Phase3 tests/Feature/SafeAdminSeederTest.php tests/Feature/Auth/PasswordResetTest.php tests/Feature/AccountApprovalFlowTest.php tests/Feature/SchoolUserRoleAssignmentApiTest.php >/tmp/baseline.log 2>&1 || phase3_exit=$?
+php tools/testing/summarize-junit.php baseline "$phase3_exit" phase3 || fail phase3_focused_evidence 29
+[ "$phase3_exit" -eq 0 ] || fail phase3_focused_tests 29
+cp /tmp/baseline-junit.xml /tmp/phase3-focused-junit.xml
 # Native auth tests must be clean on their own. The later authoritative suite
 # still preserves the historical unrelated StudentExcelImport failure evidence.
 native_tests_exit=0
-php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --stop-on-error --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log tests/Feature/Mobile >/tmp/baseline.log 2>&1 || native_tests_exit=$?
-php tools/testing/summarize-junit.php baseline "$native_tests_exit" diagnostic || fail native_mobile_evidence 29
+php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --stop-on-error --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log tests/Feature/Mobile/NativeAccountStateTest.php tests/Feature/Mobile/NativeAuthenticationTest.php tests/Feature/Mobile/NativeDeviceLifecycleTest.php tests/Feature/Mobile/NativeWebCompatibilityTest.php >/tmp/baseline.log 2>&1 || native_tests_exit=$?
+php tools/testing/summarize-junit.php baseline "$native_tests_exit" native || fail native_mobile_evidence 29
 [ "$native_tests_exit" -eq 0 ] || fail native_mobile_tests 29
 # CI run 42469219953 proved PHP memory exhaustion at the base 128M limit.
 # Bound ONLY the isolated test process/profile; no application/production ini.
@@ -62,4 +67,5 @@ test_exit=0
 php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log >/tmp/baseline.log 2>&1 || test_exit=$?
 php tools/testing/summarize-junit.php baseline "$test_exit" || fail baseline_evidence 24
 php tools/testing/probe-mobile-auth-gate.php "$test_exit" || fail mobile_auth_foundation_gate 29
+php tools/testing/probe-phase3-gate.php "$test_exit" || fail phase3_acceptance_gate 29
 exit "$test_exit"

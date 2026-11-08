@@ -40,13 +40,15 @@ final class AccountAccessEvaluator
 
     public function approvalRequired(User $user): bool
     {
-        return array_intersect($this->roles($user), User::APPROVAL_REQUIRED_ROLES) !== [];
+        // Eligibility must not depend on a previously loaded role collection.
+        return in_array($user->role, User::APPROVAL_REQUIRED_ROLES, true)
+            || $user->roles()->whereIn('name', User::APPROVAL_REQUIRED_ROLES)->exists();
     }
 
     public function denialCode(User $user): ?string
     {
         if ($this->approvalRequired($user)) {
-            $status = (string) ($user->approval_status ?? User::APPROVAL_APPROVED);
+            $status = (string) $user->approval_status;
 
             // Approval states take precedence over activity so clients receive
             // a stable account-state response when both are set.

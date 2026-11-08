@@ -34,6 +34,7 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        \App\Support\UserAuthorityFields::reject($request);
         $validated = $request->validate([
             'name' => 'required|string|max:255|min:3',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,

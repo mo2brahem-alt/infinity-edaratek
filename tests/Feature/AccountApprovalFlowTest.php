@@ -557,20 +557,13 @@ class AccountApprovalFlowTest extends TestCase
             );
     }
 
-    public function test_super_admin_seeder_creates_sultan_account_once_with_hashed_password(): void
+    public function test_super_admin_seeder_without_explicit_provisioning_creates_no_accounts(): void
     {
+        config(['provisioning.super_admin.enabled' => false]);
+        $before = User::query()->count();
         $this->seed(SuperAdminSeeder::class);
         $this->seed(SuperAdminSeeder::class);
-
-        $user = User::query()->where('email', 'sultan@edaratek.com')->firstOrFail();
-
-        $this->assertSame('super_admin', $user->role);
-        $this->assertTrue($user->hasRole('super_admin'));
-        $this->assertTrue((bool) $user->is_active);
-        $this->assertSame(User::APPROVAL_APPROVED, $user->approval_status);
-        $this->assertTrue(Hash::check('AdminP@ss2000', $user->password));
-        $this->assertNotSame('AdminP@ss2000', $user->password);
-        $this->assertSame(1, User::query()->where('email', 'sultan@edaratek.com')->count());
+        $this->assertSame($before, User::query()->count());
     }
 
     public function test_admin_created_manager_is_immediately_approved_without_pending_queue(): void

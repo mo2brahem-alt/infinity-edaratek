@@ -80,6 +80,8 @@ class UserApprovalService
 
     public function approve(User $user, User $actor, ?string $note = null): User
     {
+        $this->ensureActorCanReview($actor);
+        $user->refresh();
         $this->ensureTargetCanBeReviewed($user);
         $this->ensureCanBeApproved($user);
 
@@ -118,11 +120,15 @@ class UserApprovalService
             'تمت مراجعة طلبك والموافقة عليه، ويمكنك الآن تسجيل الدخول واستخدام المنصة.'
         );
 
+        \App\Support\AuthSecurityLog::event('APPROVAL_APPROVED', (int) $approvedUser->id);
+
         return $approvedUser;
     }
 
     public function reject(User $user, User $actor, ?string $note = null): User
     {
+        $this->ensureActorCanReview($actor);
+        $user->refresh();
         $this->ensureTargetCanBeReviewed($user);
         $this->ensureCanBeRejected($user);
 
@@ -160,6 +166,8 @@ class UserApprovalService
             'تم رفض طلب الانضمام حاليًا. يمكنك التواصل مع الإدارة العامة إذا كنت بحاجة إلى مراجعة الطلب.'
         );
 
+        \App\Support\AuthSecurityLog::event('APPROVAL_REJECTED', (int) $rejectedUser->id);
+
         return $rejectedUser;
     }
 
@@ -170,6 +178,12 @@ class UserApprovalService
                 'user' => 'هذا الحساب لا يخضع لمسار اعتماد السوبر أدمن.',
             ]);
         }
+    }
+
+    private function ensureActorCanReview(User $actor): void
+    {
+        $current = app(\App\Services\Mobile\AccountAccessEvaluator::class)->freshUser((int) $actor->id);
+        abort_unless($current && $current->hasSystemRole('super_admin') && $current->hasApprovedAccountAccess(), 403);
     }
 
     private function ensureCanBeApproved(User $user): void

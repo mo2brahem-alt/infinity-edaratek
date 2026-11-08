@@ -83,7 +83,12 @@ if ($mode === 'platform') {
 if ($mode !== 'baseline') { evidenceFail('evidence_mode'); }
 $testExit = filter_var($argv[2] ?? null, FILTER_VALIDATE_INT);
 if ($testExit === false || $testExit < 0 || $testExit > 255) { evidenceFail('test_exit'); }
-$runKind = ($argv[3] ?? '') === 'diagnostic' ? 'diagnostic_subset' : 'authoritative_full';
+$runKind = match ($argv[3] ?? '') {
+    'diagnostic' => 'diagnostic_subset',
+    'phase3' => 'phase3_focused',
+    'native' => 'phase2_regression',
+    default => 'authoritative_full',
+};
 $baselineContext = ['TEST_EXIT_CODE' => $testExit, 'run_kind' => $runKind];
 if (is_file('/tmp/baseline-process-profile.json')) {
     $profile = json_decode(file_get_contents('/tmp/baseline-process-profile.json'), true, 512, JSON_THROW_ON_ERROR);

@@ -19,6 +19,7 @@ final class AuthenticateNativeBearer
         $user = $this->authenticator->authenticate($request);
 
         if ($user === null) {
+            \App\Support\AuthSecurityLog::event('NATIVE_AUTH_DENIED');
             return NativeApiResponse::error('UNAUTHENTICATED', 401);
         }
 

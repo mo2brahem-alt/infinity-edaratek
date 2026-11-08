@@ -70,4 +70,39 @@ class PasswordResetTest extends TestCase
             return true;
         });
     }
+
+    public function test_known_unknown_and_broker_cooldown_have_identical_general_outcome(): void
+    {
+        Notification::fake();
+        $user = User::factory()->create();
+        $known = $this->from('/forgot-password')->post('/forgot-password', ['email' => $user->email]);
+        $status = session('status');
+        $known->assertRedirect('/forgot-password')->assertSessionHasNoErrors();
+        $this->from('/forgot-password')->post('/forgot-password', ['email' => 'missing@example.test'])
+            ->assertRedirect('/forgot-password')->assertSessionHas('status', $status)->assertSessionHasNoErrors();
+        $this->from('/forgot-password')->post('/forgot-password', ['email' => $user->email])
+            ->assertRedirect('/forgot-password')->assertSessionHas('status', $status)->assertSessionHasNoErrors();
+        Notification::assertSentToTimes($user, ResetPassword::class, 1);
+    }
+
+    public function test_identifier_budget_survives_ip_rotation_and_recovers_after_window(): void
+    {
+        $email = 'unknown-limited@example.test';
+        for ($attempt = 1; $attempt <= 3; $attempt++) {
+            $this->withServerVariables(['REMOTE_ADDR' => '192.0.2.'.$attempt])->post('/forgot-password', ['email' => $email])->assertRedirect();
+        }
+        $this->withServerVariables(['REMOTE_ADDR' => '192.0.2.100'])->post('/forgot-password', ['email' => $email])
+            ->assertStatus(429)->assertHeader('Retry-After');
+        $this->travel(3601)->seconds();
+        $this->post('/forgot-password', ['email' => $email])->assertRedirect();
+        $this->travelBack();
+    }
+
+    public function test_ip_budget_limits_rotating_identifiers(): void
+    {
+        for ($attempt = 1; $attempt <= 10; $attempt++) {
+            $this->post('/forgot-password', ['email' => 'missing-'.$attempt.'@example.test'])->assertRedirect();
+        }
+        $this->post('/forgot-password', ['email' => 'missing-final@example.test'])->assertStatus(429)->assertHeader('Retry-After');
+    }
 }

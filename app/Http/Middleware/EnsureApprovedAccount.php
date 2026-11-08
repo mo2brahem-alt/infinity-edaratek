@@ -13,11 +13,25 @@ class EnsureApprovedAccount
     {
         $user = $request->user();
 
+        if ($user) {
+            $user = app(\App\Services\Mobile\AccountAccessEvaluator::class)->freshUser((int) $user->getKey());
+            if (! $user) {
+                Auth::guard('web')->logout();
+                if ($request->hasSession()) {
+                    $request->session()->invalidate();
+                    $request->session()->regenerateToken();
+                }
+                return redirect()->route('login');
+            }
+            Auth::guard('web')->setUser($user);
+        }
+
         if (! $user || $user->hasApprovedAccountAccess()) {
             return $next($request);
         }
 
         Auth::guard('web')->logout();
+        \App\Support\AuthSecurityLog::event('ACCOUNT_ACCESS_DENIED', (int) $user->id);
 
         if ($request->hasSession()) {
             $request->session()->invalidate();

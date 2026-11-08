@@ -26,6 +26,7 @@ final class EnsureNativeAccountAccess
         $denialCode = $this->accounts->denialCode($user);
 
         if ($denialCode !== null) {
+            \App\Support\AuthSecurityLog::event('NATIVE_ACCOUNT_DENIED', (int) $user->id);
             return NativeApiResponse::error($denialCode, 403);
         }
 

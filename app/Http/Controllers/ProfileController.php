@@ -30,6 +30,7 @@ class ProfileController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
+        \App\Support\UserAuthorityFields::reject($request);
         $user = $request->user();
         $this->normalizeSaudiPhoneInputs($request, ['phone']);
 

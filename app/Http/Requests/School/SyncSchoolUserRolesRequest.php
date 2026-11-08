@@ -22,4 +22,9 @@ class SyncSchoolUserRolesRequest extends FormRequest
             ],
         ];
     }
+
+    public function after(): array
+    {
+        return [fn () => \App\Support\UserAuthorityFields::reject($this, ['role_names'])];
+    }
 }

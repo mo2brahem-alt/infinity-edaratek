@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'password_reset_identifier_per_hour' => 3,
+    'password_reset_ip_per_hour' => 10,
     // Native access tokens are deliberately finite. This does not change the
     // lifetime of any existing Sanctum consumer.
     'native_token_expiration_minutes' => max(1, (int) env('MOBILE_NATIVE_TOKEN_EXPIRATION_MINUTES', 1440)),

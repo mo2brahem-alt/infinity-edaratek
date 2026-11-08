@@ -58,6 +58,16 @@ class AppServiceProvider extends ServiceProvider
 
     private function configureApiRateLimiters(): void
     {
+        RateLimiter::for('password-reset-link', function (Request $request) {
+            $email = $request->input('email');
+            $identity = is_string($email) ? mb_strtolower(trim($email)) : 'invalid';
+            $key = static fn (string $scope, string $value): string => hash_hmac('sha256', $scope.'|'.$value, (string) config('app.key'));
+            return [
+                Limit::perHour((int) config('mobile.password_reset_identifier_per_hour', 3))->by($key('reset-identity', $identity)),
+                Limit::perHour((int) config('mobile.password_reset_ip_per_hour', 10))->by($key('reset-ip', (string) $request->ip())),
+            ];
+        });
+
         RateLimiter::for('api.system', function (Request $request) {
             $perMinute = max(1, (int) config('features.api.system_rate_limit_per_minute', 60));
 
