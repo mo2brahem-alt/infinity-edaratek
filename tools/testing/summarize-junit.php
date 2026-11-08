@@ -260,7 +260,7 @@ foreach ($cases as $case) {
     elseif (isset($case->failure)) { $failed++; $node = $case->failure; }
     elseif (isset($case->skipped)) { $skipped++; continue; }
     else { continue; }
-    // No dataset labels, expected/actual assertion values or raw exception bodies.
+    // No dataset labels, arbitrary assertion values or raw exception bodies.
     $method = preg_split('/\s+with data set/', (string) $case['name'])[0];
     $clean = static fn (string $value): string => substr(preg_replace('/[^A-Za-z0-9_\\\\]/', '', $value), 0, 200);
     $body = (string) $node;
@@ -281,10 +281,19 @@ foreach ($cases as $case) {
     elseif (preg_match('/Vite manifest|Unable to locate file in Vite manifest/i', $body)) { $classification = 'TEST_INFRASTRUCTURE'; }
     elseif (isset($case->failure)) { $classification = 'ASSERTION_FAILURE_REQUIRES_REVIEW'; }
     if (count($diagnostics) >= 128) { continue; }
+    $sourceLocation = null;
+    if (preg_match('~(?:/app/)?(tests/[A-Za-z0-9_/-]+\.php):([0-9]{1,6})(?:\s|$)~', $body, $location)) {
+        $sourceLocation = ['file' => $location[1], 'line' => (int) $location[2]];
+    }
+    $httpStatus = null;
+    if (preg_match('/Expected response status code \[([1-5][0-9]{2})\] but received ([1-5][0-9]{2})/', $body, $http)) {
+        $httpStatus = ['expected' => (int) $http[1], 'actual' => (int) $http[2]];
+    }
     $diagnostics[] = ['class' => $clean((string) $case['class']), 'method' => $clean($method),
         'type' => $clean((string) $node['type']), 'classification' => $classification,
         'sqlstate' => $sqlstate, 'sqlstate_class' => $sqlstate ? substr($sqlstate, 0, 2) : null,
         'driver_error_code' => $driverCode,
+        'test_source' => $sourceLocation, 'http_status' => $httpStatus,
         'sanitized_message' => $classification, 'raw_message_exported' => false];
 }
 if (($failed + $errors) > 0 && $testExit === 0) { evidenceFail('inconsistent_test_exit'); }

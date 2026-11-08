@@ -102,4 +102,35 @@ class CurrentTenantContextTest extends TestCase
         $this->postJson(route('supervisor.tickets.store'), ['school_id' => $s['A']['school']->id,
             'assigned_to' => $s['A']['manager']->id, 'title' => 'Denied', 'description' => 'Denied'])->assertForbidden();
     }
+
+    public function test_manager_ownership_removal_changes_existing_token_identity_and_web_access(): void
+    {
+        $s = $this->schools();
+        $manager = $s['A']['manager'];
+        $token = $this->nativeToken($manager);
+        $this->withToken($token)->getJson('/api/v1/me')->assertOk()->assertJsonPath('data.school.id', $s['A']['school']->id);
+        $s['A']['school']->update(['manager_user_id' => $s['B']['manager']->id]);
+        $this->getJson('/api/v1/me')->assertOk()->assertJsonPath('data.school', null);
+        $this->actingAs($manager)->getJson(route('manager.tickets.index'))->assertForbidden();
+    }
+
+    public function test_unconfirmed_legacy_supervision_is_excluded_from_lists_until_current_confirmation(): void
+    {
+        $s = $this->schools();
+        $ticket = $this->task($s['A'])->ticket;
+        \App\Models\AssociationRequest::create(['school_id' => $s['A']['school']->id,
+            'manager_user_id' => $s['A']['manager']->id, 'supervisor_user_id' => $s['A']['supervisor']->id,
+            'status' => \App\Models\AssociationRequest::STATUS_APPROVED]);
+        $this->actingAs($s['A']['supervisor'])->getJson(route('supervisor.tickets.index', ['per_page' => 1]))
+            ->assertOk()->assertJsonPath('pagination.total', 0);
+        $this->getJson(route('supervisor.tickets.show', $ticket))->assertForbidden();
+        $confirmed = \App\Models\SchoolSupervisionRequest::create(['school_id' => $s['A']['school']->id,
+            'region_id' => $s['A']['school']->directorate_id, 'manager_id' => $s['A']['manager']->id,
+            'supervisor_id' => $s['A']['supervisor']->id, 'status' => \App\Models\SchoolSupervisionRequest::STATUS_ACTIVE_ASSOCIATION]);
+        $this->getJson(route('supervisor.tickets.index', ['per_page' => 1]))->assertOk()->assertJsonPath('pagination.total', 1);
+        $this->getJson(route('supervisor.tickets.show', $ticket))->assertOk();
+        $confirmed->update(['status' => \App\Models\SchoolSupervisionRequest::STATUS_CANCELED]);
+        $this->getJson(route('supervisor.tickets.index', ['per_page' => 1]))->assertOk()->assertJsonPath('pagination.total', 0);
+        $this->getJson(route('supervisor.tickets.show', $ticket))->assertForbidden();
+    }
 }

@@ -56,7 +56,7 @@ class TicketController extends Controller
 
     public function show(Ticket $ticket): JsonResponse
     {
-        $this->authorize('view', $ticket);
+        $this->authorize('manage', $ticket);
 
         return response()->json($ticket->load([
             'subtasks' => fn ($q) => app(\App\Services\Ticketing\SubtaskAccessQuery::class)->consistentParent($q->getQuery()),
@@ -163,7 +163,7 @@ class TicketController extends Controller
 
     public function close(Request $request, Ticket $ticket): JsonResponse
     {
-        $this->authorize('view', $ticket);
+        $this->authorize('manage', $ticket);
         app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
 
         if ((int) $ticket->created_by !== (int) $request->user()->id) {

@@ -19,14 +19,14 @@ class StaffTaskIsolationTest extends TestCase
         $own = $this->task($s['A'], attributes: ['title' => 'Own matching']);
         $foreign = $this->task($s['B'], $s['A']['staff'], ['title' => 'Foreign matching']);
         $other = User::factory()->create(['role' => 'staff', 'school_id' => $s['A']['school']->id]);
-        $this->task($s['A'], $other, ['title' => 'Colleague matching']);
+        $colleague = $this->task($s['A'], $other, ['title' => 'Colleague matching']);
         $broken = $this->task($s['B'], $s['A']['staff'], ['school_id' => $s['A']['school']->id, 'title' => 'Broken matching']);
         TicketMessage::create(['subtask_id' => $own->id, 'user_id' => $s['A']['staff']->id, 'message' => 'Private transcript', 'message_type' => 'reply']);
         $this->withToken($this->nativeToken($s['A']['staff']))->getJson('/api/v1/staff/tasks?search=matching&per_page=1')
             ->assertOk()->assertJsonPath('meta.total', 1)->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.id', $own->id)->assertJsonMissingPath('data.0.messages');
         $this->getJson('/api/v1/staff/tasks/'.$own->id)->assertOk()->assertJsonPath('data.id', $own->id);
-        foreach ([$foreign, $broken] as $task) {
+        foreach ([$foreign, $broken, $colleague] as $task) {
             $this->getJson('/api/v1/staff/tasks/'.$task->id)->assertNotFound()->assertJsonPath('code', 'NOT_FOUND');
         }
     }
@@ -69,7 +69,8 @@ class StaffTaskIsolationTest extends TestCase
         $this->withToken($this->nativeToken($s['A']['staff']))->getJson('/api/v1/staff/tasks')->assertOk()->assertJsonCount(25, 'data')->assertJsonPath('meta.total', 27);
         $this->getJson('/api/v1/staff/tasks?page=2')->assertOk()->assertJsonCount(2, 'data')->assertJsonPath('meta.total', 27);
         $this->getJson('/api/v1/staff/tasks?page=99')->assertOk()->assertJsonPath('data', [])->assertJsonPath('meta.from', null);
-        foreach (['per_page=101', 'per_page=0', 'page=-1', 'sort=school_id', 'status=UNKNOWN', 'school_id='.$s['B']['school']->id, 'assigned_to='.$s['B']['staff']->id, 'department_id=999'] as $query) {
+        foreach (['per_page=101', 'per_page=0', 'page=-1', 'sort=school_id', 'status=UNKNOWN', 'school_id='.$s['B']['school']->id,
+            'assigned_to='.$s['B']['staff']->id, 'department_id=999', 'tenant_id=999', 'organization_id=999', 'role=super_admin'] as $query) {
             $this->getJson('/api/v1/staff/tasks?'.$query)->assertUnprocessable()->assertJsonPath('code', 'VALIDATION_FAILED');
         }
     }

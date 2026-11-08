@@ -39,7 +39,7 @@ class ForeignRelationshipTest extends TestCase
         $s = $this->schools();
         $own = $this->task($s['A']);
         $this->actingAs($s['A']['staff']);
-        foreach (['school_id', 'tenant_id', 'organization_id', 'created_by', 'assigned_by', 'owner_id', 'ticket_id', 'subtask_id', 'department_id', 'user_id'] as $field) {
+        foreach (['school_id', 'tenant_id', 'organization_id', 'created_by', 'assigned_by', 'owner_id', 'ticket_id', 'subtask_id', 'department_id', 'user_id', 'role', 'roles', 'permissions', 'approval_status', 'is_active'] as $field) {
             $this->postJson(route('staff.subtasks.reply', $own), ['message' => 'Denied', $field => $s['B']['school']->id])->assertUnprocessable();
         }
         $this->postJson(route('staff.subtasks.submit', $own).'?school_id='.$s['B']['school']->id)->assertUnprocessable();
@@ -77,7 +77,7 @@ class ForeignRelationshipTest extends TestCase
             $this->fail('The service accepted a foreign actor.');
         } catch (AuthorizationException) {
             $this->assertSame(Subtask::STATUS_OPEN, $foreign->fresh()->status);
-            $this->assertDatabaseMissing('status_histories', ['entity_type' => 'subtask', 'entity_id' => $foreign->id]);
+            $this->assertDatabaseMissing('status_history', ['entity_type' => 'subtask', 'entity_id' => $foreign->id]);
         }
     }
 
@@ -121,5 +121,26 @@ class ForeignRelationshipTest extends TestCase
         $this->actingAs($actor)->postJson(route('manager.subtasks.store'), ['ticket_id' => $foreign->ticket_id,
             'assigned_to' => $s['B']['staff']->id, 'title' => 'Denied'])->assertForbidden();
         $this->assertSame($count, Subtask::count());
+        $this->getJson(route('manager.tickets.show', $foreign->ticket_id))->assertForbidden();
+        $this->postJson(route('manager.tickets.close', $foreign->ticket_id))->assertForbidden();
+        $this->assertSame(Ticket::STATUS_OPEN, $foreign->ticket->fresh()->status);
+    }
+
+    public function test_manager_updates_and_approves_allowed_task_and_rejects_authority_and_foreign_creation(): void
+    {
+        $s = $this->schools();
+        $own = $this->task($s['A']);
+        $this->actingAs($s['A']['manager'])->putJson(route('manager.subtasks.update', $own), ['title' => 'Updated', 'status' => Subtask::STATUS_IN_PROGRESS])
+            ->assertOk()->assertJsonPath('title', 'Updated')->assertJsonPath('status', Subtask::STATUS_IN_PROGRESS);
+        $this->postJson(route('manager.subtasks.approve', $own))->assertOk()->assertJsonPath('status', Subtask::STATUS_APPROVED);
+        $count = Ticket::count();
+        $this->postJson(route('manager.tickets.store'), ['title' => 'Denied', 'assigned_to' => $s['B']['staff']->id])->assertUnprocessable();
+        $this->postJson(route('manager.tickets.store'), ['title' => 'Denied', 'assigned_to' => $s['A']['staff']->id,
+            'school_id' => $s['B']['school']->id])->assertUnprocessable();
+        $this->assertSame($count, Ticket::count());
+        $this->actingAs($s['A']['supervisor'])->postJson(route('supervisor.tickets.store'), ['title' => 'Denied', 'description' => 'Denied',
+            'school_id' => $s['A']['school']->id, 'assigned_to' => $s['B']['manager']->id])->assertUnprocessable();
+        $this->putJson(route('supervisor.tickets.update', $own->ticket_id), ['school_id' => $s['B']['school']->id, 'title' => 'Denied'])->assertUnprocessable();
+        $this->assertSame('Parent', $own->ticket->fresh()->title);
     }
 }

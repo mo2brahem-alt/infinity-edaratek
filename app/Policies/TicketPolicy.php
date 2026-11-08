@@ -53,6 +53,11 @@ class TicketPolicy
 
     public function addFinalReport(User $user, Ticket $ticket): bool
     {
+        return $this->manage($user, $ticket);
+    }
+
+    public function manage(User $user, Ticket $ticket): bool
+    {
         if (! $user->hasSystemRole('school_manager') || (int) $ticket->assigned_to !== (int) $user->id) { return false; }
         try {
             return (int) app(\App\Services\School\SchoolContextResolver::class)->current($user, purpose: 'manager')->id === (int) $ticket->school_id;
@@ -62,6 +67,6 @@ class TicketPolicy
     public function assignSubtask(User $user, Ticket $ticket): bool
     {
         // Viewing a ticket as supervisor must not grant manager assignment powers.
-        return $this->addFinalReport($user, $ticket);
+        return $this->manage($user, $ticket);
     }
 }
