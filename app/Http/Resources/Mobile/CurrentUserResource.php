@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Resources\Mobile;
+
+use App\Models\User;
+use App\Services\Mobile\AccountAccessEvaluator;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+/** @mixin User */
+final class CurrentUserResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        /** @var User $user */
+        $user = $this->resource;
+        $accounts = app(AccountAccessEvaluator::class);
+        $school = $user->relationLoaded('school') ? $user->school : $user->school()->first();
+
+        return [
+            'id' => (int) $user->getKey(),
+            'name' => (string) $user->name,
+            'email' => (string) $user->email,
+            'roles' => $accounts->roles($user),
+            'capabilities' => $accounts->capabilities($user),
+            'is_active' => (bool) $user->is_active,
+            'approval_required' => $accounts->approvalRequired($user),
+            'approval_status' => $user->approval_status,
+            'school' => $school === null ? null : [
+                'id' => (int) $school->getKey(),
+                'name' => (string) $school->name,
+            ],
+            'phone_verified' => $user->phone_verified_at !== null,
+        ];
+    }
+}

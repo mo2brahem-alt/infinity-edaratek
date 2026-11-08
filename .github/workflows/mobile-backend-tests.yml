@@ -2,7 +2,7 @@ name: Isolated mobile backend baseline
 'on':
   push:
     branches:
-      - ci/mobile-backend-baseline
+      - 001-mobile-backend-readiness
 permissions:
   contents: read
 concurrency:
@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   baseline:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/ci/mobile-backend-baseline'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/001-mobile-backend-readiness'
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     steps:
@@ -24,4 +24,4 @@ jobs:
 # ^20.19.0 || >=22.12.0). npm ci + npm run build run there without host .env.
 # Only sanitized JSON is logged. No raw JUnit/log/storage artifact is uploaded.
 # No main/PR/schedule trigger, deployment, shared environment or provider secrets.
-# Branch creation/commit/push still require separate PM approval.
+# The workflow is isolated to the approved feature branch and never deploys.

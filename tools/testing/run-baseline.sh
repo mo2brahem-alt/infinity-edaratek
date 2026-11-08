@@ -24,6 +24,8 @@ php artisan package:discover --no-ansi >/tmp/discovery.log 2>&1 || fail package_
 guard boot
 schema_exit=0
 php -d memory_limit=512M tools/testing/probe-database.php || schema_exit=$?
+native_pat_migration_exit=0
+php -d memory_limit=512M tools/testing/probe-native-pat-migration.php || native_pat_migration_exit=$?
 # Small unchanged representative tests diagnose RefreshDatabase independently;
 # they do not replace the authoritative full suite below.
 diagnostic_exit=0
@@ -42,9 +44,16 @@ for file in tests/Feature/Auth/AuthenticationTest.php tests/Feature/AcademicPlan
   if [ "$test_exit" -gt 1 ]; then diagnostic_exit=1; fi
 done
 [ "$schema_exit" -eq 0 ] || fail migration_schema_probe 26
+[ "$native_pat_migration_exit" -eq 0 ] || fail native_pat_migration_probe 29
 [ "$diagnostic_exit" -eq 0 ] || fail representative_database_tests 27
 guard boot
 php -d memory_limit=512M tools/testing/probe-safety.php || fail phase1_safety_probe 28
+# Native auth tests must be clean on their own. The later authoritative suite
+# still preserves the historical unrelated StudentExcelImport failure evidence.
+native_tests_exit=0
+php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --stop-on-error --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log tests/Feature/Mobile >/tmp/baseline.log 2>&1 || native_tests_exit=$?
+php tools/testing/summarize-junit.php baseline "$native_tests_exit" diagnostic || fail native_mobile_evidence 29
+[ "$native_tests_exit" -eq 0 ] || fail native_mobile_tests 29
 # CI run 42469219953 proved PHP memory exhaustion at the base 128M limit.
 # Bound ONLY the isolated test process/profile; no application/production ini.
 php -d memory_limit=512M tools/testing/summarize-junit.php process-profile || fail process_profile 24
