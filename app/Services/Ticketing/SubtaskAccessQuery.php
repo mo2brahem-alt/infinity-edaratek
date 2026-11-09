@@ -47,7 +47,7 @@ final class SubtaskAccessQuery
         $errors = [];
         foreach (array_diff(['school_id', 'tenant_id', 'organization_id', 'created_by', 'owner_id', 'assigned_by',
             'assigned_to', 'ticket_id', 'subtask_id', 'department_id', 'user_id', 'assignee_id',
-            'role', 'roles', 'permissions', 'approval_status', 'is_active'], $allowed) as $key) {
+            'role', 'roles', 'permissions', 'approval_status', 'is_active', 'disk', 'path', 'file_path', 'parent_id', 'uploaded_by', 'is_private'], $allowed) as $key) {
             if (array_key_exists($key, $request->all())) { $errors[$key] = ['This field cannot select or change the authorized scope.']; }
         }
         if ($errors) { throw ValidationException::withMessages($errors); }

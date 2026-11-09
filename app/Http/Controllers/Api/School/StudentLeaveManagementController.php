@@ -366,45 +366,13 @@ class StudentLeaveManagementController extends Controller
         SchoolStudentLeaveRequest $schoolStudentLeaveRequest,
         SchoolStudentLeaveAttachment $schoolStudentLeaveAttachment
     ): StreamedResponse {
-        $schoolId = $this->resolveSchoolId($request);
-
-        if ((int) $schoolStudentLeaveRequest->school_id !== $schoolId) {
-            abort(403, 'You are not allowed to access this leave request.');
-        }
-
-        if (
-            (int) $schoolStudentLeaveAttachment->school_id !== $schoolId
-            || (int) $schoolStudentLeaveAttachment->school_student_leave_request_id !== (int) $schoolStudentLeaveRequest->id
-        ) {
-            abort(404);
-        }
-
-        $path = trim((string) $schoolStudentLeaveAttachment->file_path);
-        if ($path === '') {
-            abort(404);
-        }
-
-        $downloadName = trim((string) $schoolStudentLeaveAttachment->file_name);
-        if ($downloadName === '') {
-            $downloadName = basename($path);
-        }
-
-        $headers = [
-            'Content-Type' => $schoolStudentLeaveAttachment->mime_type ?: 'application/octet-stream',
-        ];
-
-        $localDisk = Storage::disk('local');
-        if ($localDisk->exists($path)) {
-            return $localDisk->download($path, $downloadName, $headers);
-        }
-
-        // Backward compatibility: attachments uploaded before hardening were stored on the public disk.
-        $legacyPublicDisk = Storage::disk('public');
-        if ($legacyPublicDisk->exists($path)) {
-            return $legacyPublicDisk->download($path, $downloadName, $headers);
-        }
-
-        abort(404, 'Attachment file is missing.');
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
+        $school = app(\App\Services\School\SchoolContextResolver::class)->current($request->user());
+        // Existing web contract is 403 for an out-of-school leave parent.
+        abort_unless((int) $schoolStudentLeaveRequest->school_id === (int) $school->id, 403);
+        app(\App\Services\Support\AttachmentAccess::class)->leave($request->user(), $schoolStudentLeaveRequest, $schoolStudentLeaveAttachment);
+        return app(\App\Services\Support\PrivateFileReader::class)->download('local',
+            $schoolStudentLeaveAttachment->file_path, $schoolStudentLeaveAttachment->file_name);
     }
 
     private function resolveSchoolId(Request $request): int

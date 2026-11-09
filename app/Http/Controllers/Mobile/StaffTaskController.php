@@ -40,7 +40,15 @@ final class StaffTaskController
         abort_if($id === false, 404);
         $task = $this->tasks->forStaff($request->user())->whereKey($id)->firstOrFail();
         \Illuminate\Support\Facades\Gate::forUser($request->user())->authorize('view', $task);
-        return NativeApiResponse::data($this->serialize($task) + ['description' => $task->description]);
+        $attachments = \App\Models\Attachment::query()->whereIn('ticket_message_id', $task->messages()->select('id'))
+            ->where(fn ($q) => $q->whereNull('school_id')->orWhere('school_id', $task->school_id))
+            ->get()->filter(function ($attachment) use ($request): bool {
+                try { app(\App\Services\Support\AttachmentAccess::class)->authorize($request->user(), $attachment); return true; }
+                catch (\Symfony\Component\HttpKernel\Exception\HttpExceptionInterface) { return false; }
+            })->map(fn ($a) => ['id' => (int) $a->id, 'name' => (string) $a->file_name,
+                'mime_type' => (string) ($a->mime_type ?: 'application/octet-stream'), 'size_bytes' => max(0, (int) $a->file_size),
+                'download_url' => '/api/v1/attachments/'.$a->id.'/download'])->values()->all();
+        return NativeApiResponse::data($this->serialize($task) + ['description' => $task->description, 'attachments' => $attachments]);
     }
 
     private function serialize(Subtask $task): array

@@ -78,6 +78,9 @@ class SubtaskController extends Controller
             'attachment.mimetypes' => 'صيغة الملف المرفوع غير مدعومة.',
         ]);
 
+        if ($request->hasFile('attachment')) {
+            \App\Support\UploadSecurity::validateProtected($request->file('attachment'), 'features.uploads.ticket_attachment_mime_types', 'attachment');
+        }
         $message = TicketMessage::create([
             'subtask_id' => $subtask->id,
             'user_id' => $request->user()->id,
@@ -87,7 +90,7 @@ class SubtaskController extends Controller
 
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            $path = $file->store('ticketing/attachments', 'public');
+            $path = $file->store('ticketing/attachments', 'school_attachments');
 
             Attachment::create([
                 'school_id' => (int) ($subtask->school_id ?? 0) ?: null,
@@ -99,12 +102,12 @@ class SubtaskController extends Controller
                 'uploaded_by' => $request->user()->id,
                 'file_name' => $file->getClientOriginalName(),
                 'stored_name' => basename($path),
-                'disk' => 'public',
+                'disk' => 'school_attachments',
                 'file_path' => $path,
                 'mime_type' => $file->getMimeType() ?: 'application/octet-stream',
                 'extension' => $file->clientExtension(),
                 'file_size' => $file->getSize(),
-                'is_private' => false,
+                'is_private' => true,
             ]);
         }
 

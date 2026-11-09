@@ -37,7 +37,8 @@ try {
     $record['unrelated_users_before'] = $db->table('users')->count();
     $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
     $record['rollback_exit'] = $kernel->call('migrate:rollback', [
-        '--step' => 1,
+        '--path' => ['database/migrations/'.$migration.'.php'],
+        '--batch' => (int) $db->table('migrations')->where('migration', $migration)->value('batch'),
         '--force' => true,
         '--no-interaction' => true,
         '--no-ansi' => true,

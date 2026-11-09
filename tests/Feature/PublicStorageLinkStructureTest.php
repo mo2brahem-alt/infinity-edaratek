@@ -16,14 +16,11 @@ class PublicStorageLinkStructureTest extends TestCase
         $this->assertStringContainsString('if (! App::runningUnitTests()) {', $content);
     }
 
-    public function test_public_storage_link_maintainer_repairs_legacy_project_storage_directories(): void
+    public function test_public_storage_link_maintainer_does_not_move_or_copy_existing_legacy_directories(): void
     {
-        $content = file_get_contents(app_path('Support/PublicStorageLinkMaintainer.php'));
-
-        $this->assertIsString($content);
-        $this->assertStringContainsString('$this->files->copyDirectory($publicStoragePath, $targetPath);', $content);
-        $this->assertStringContainsString('$this->files->deleteDirectory($publicStoragePath);', $content);
-        $this->assertStringContainsString('$this->files->link($targetPath, $publicStoragePath);', $content);
-        $this->assertStringContainsString('return is_link($path) && ! $this->files->exists($path);', $content);
+        $files = \Mockery::mock(\Illuminate\Filesystem\Filesystem::class);
+        $files->shouldReceive('exists')->once()->with(public_path('storage'))->andReturnTrue();
+        $files->shouldNotReceive('copyDirectory'); $files->shouldNotReceive('deleteDirectory'); $files->shouldNotReceive('link');
+        (new \App\Support\PublicStorageLinkMaintainer($files))->ensure();
     }
 }

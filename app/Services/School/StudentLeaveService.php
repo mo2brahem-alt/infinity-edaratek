@@ -592,6 +592,7 @@ class StudentLeaveService
         $this->ensureLeaveBelongsToSchool($leave, $schoolId);
 
         return DB::transaction(function () use ($leave, $schoolId, $actorId, $file, $request): SchoolStudentLeaveAttachment {
+            \App\Support\UploadSecurity::validateProtected($file, 'features.uploads.student_leave_attachment_mime_types', 'file');
             $basePath = sprintf(
                 'schools/%d/student-leaves/%d/attachments',
                 $schoolId,

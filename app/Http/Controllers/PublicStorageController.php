@@ -11,13 +11,16 @@ class PublicStorageController extends Controller
     {
         $normalizedPath = $this->normalizePublicDiskPath($path);
 
-        if ($normalizedPath === null || ! Storage::disk('public')->exists($normalizedPath)) {
-            abort(404);
+        if ($normalizedPath === null || ! \App\Support\PublicAssetPath::allows($normalizedPath)
+            || \App\Services\Support\PrivateFileClassification::hasSensitiveReference($normalizedPath) || ! Storage::disk('public')->exists($normalizedPath)) {
+            abort(404, '', ['Cache-Control' => 'private, no-store']);
         }
 
         $absolutePath = Storage::disk('public')->path($normalizedPath);
 
-        if (! is_file($absolutePath)) {
+        $root = realpath(Storage::disk('public')->path(''));
+        $real = realpath($absolutePath);
+        if (! $root || ! $real || ! str_starts_with($real, $root.DIRECTORY_SEPARATOR) || ! is_file($absolutePath)) {
             abort(404);
         }
 

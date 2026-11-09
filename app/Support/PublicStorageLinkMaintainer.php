@@ -16,37 +16,11 @@ class PublicStorageLinkMaintainer
     {
         $targetPath = storage_path('app/public');
         $publicStoragePath = public_path('storage');
-
-        if (! $this->files->isDirectory($targetPath)) {
-            $this->files->makeDirectory($targetPath, 0755, true);
-        }
-
-        if ($this->isBrokenLink($publicStoragePath)) {
-            $this->files->delete($publicStoragePath);
-        }
-
-        if ($this->files->exists($publicStoragePath)) {
-            if (is_link($publicStoragePath)) {
-                return;
-            }
-
-            if (! $this->files->isDirectory($publicStoragePath)) {
-                return;
-            }
-
-            $this->files->copyDirectory($publicStoragePath, $targetPath);
-            $this->files->deleteDirectory($publicStoragePath);
-        }
-
-        try {
-            $this->files->link($targetPath, $publicStoragePath);
-        } catch (Throwable $throwable) {
-            report($throwable);
-
-            if (! $this->files->exists($publicStoragePath)) {
-                $this->files->copyDirectory($targetPath, $publicStoragePath);
-            }
-        }
+        // Never migrate/delete/copy legacy data as an application-boot side effect.
+        if ($this->files->exists($publicStoragePath) || is_link($publicStoragePath)) { return; }
+        if (! $this->files->isDirectory($targetPath)) { $this->files->makeDirectory($targetPath, 0755, true); }
+        try { $this->files->link($targetPath, $publicStoragePath); }
+        catch (Throwable $error) { report($error); } // Laravel's public-asset fallback remains available.
     }
 
     private function isBrokenLink(string $path): bool

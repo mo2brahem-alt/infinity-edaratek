@@ -1,0 +1,7 @@
+# Representative only; future environment/topology approval required before installation.
+# Apply BEFORE existing-file/directory shortcuts, at every actual document root/alias.
+RewriteEngine On
+RewriteRule ^(?:storage|media-files)/.*$ index.php [L]
+# Root deployments must equivalently route BOTH aliases to public/index.php.
+# Disable proxy/CDN cache for protected routes and denials; purge legacy sensitive URLs
+# through a separately approved operational procedure. Never alias private disks.

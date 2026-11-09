@@ -397,7 +397,7 @@ class StudentLeaveManagementTest extends TestCase
         ]);
     }
 
-    public function test_leave_attachment_download_supports_legacy_public_storage_for_backward_compatibility(): void
+    public function test_leave_attachment_download_denies_legacy_public_storage_until_verified_private_migration(): void
     {
         Carbon::setTestNow('2026-02-22 08:00:00');
         Storage::fake('local');
@@ -443,8 +443,7 @@ class StudentLeaveManagementTest extends TestCase
                 'schoolStudentLeaveRequest' => $leave->id,
                 'schoolStudentLeaveAttachment' => $attachment->id,
             ]))
-            ->assertOk()
-            ->assertHeader('content-disposition');
+            ->assertNotFound();
     }
 
     public function test_leave_attachment_upload_rejects_disallowed_mime_types_by_default(): void

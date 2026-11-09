@@ -14,6 +14,7 @@ class Attachment extends Model
     protected $guarded = [];
 
     protected $appends = ['url', 'download_url'];
+    protected $hidden = ['disk', 'file_path', 'stored_name', 'metadata', 'attachable_type', 'attachable_id', 'uploaded_by'];
 
     protected function casts(): array
     {
@@ -76,7 +77,7 @@ class Attachment extends Model
             return route('school.attachments.download', ['attachment' => (int) $this->id], false);
         }
 
-        return $this->isLegacyTicketAttachment() ? $this->getLegacyUrl() : null;
+        return $this->isLegacyTicketAttachment() ? route('school.attachments.download', ['attachment' => (int) $this->id], false) : null;
     }
 
     public function getUrlAttribute(): string
@@ -85,13 +86,7 @@ class Attachment extends Model
             return (string) $this->getDownloadUrlAttribute();
         }
 
-        return $this->getLegacyUrl();
+        return (string) $this->getDownloadUrlAttribute();
     }
 
-    private function getLegacyUrl(): string
-    {
-        $disk = trim((string) ($this->disk ?: 'public')) ?: 'public';
-
-        return Storage::disk($disk)->url((string) $this->file_path);
-    }
 }

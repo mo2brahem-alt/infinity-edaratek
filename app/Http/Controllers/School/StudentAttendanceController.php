@@ -515,41 +515,16 @@ class StudentAttendanceController extends Controller
 
     public function downloadAttachment(Request $request, SchoolAttendanceAttachment $schoolAttendanceAttachment): StreamedResponse
     {
-        $schoolId = $this->resolveSchoolId($request);
-
-        if ((int) $schoolAttendanceAttachment->school_id !== $schoolId) {
-            abort(404);
-        }
-
-        $path = trim((string) $schoolAttendanceAttachment->file_path);
-        if ($path === '') {
-            abort(404);
-        }
-
-        $downloadName = trim((string) $schoolAttendanceAttachment->file_name);
-        if ($downloadName === '') {
-            $downloadName = basename($path);
-        }
-
-        $headers = [
-            'Content-Type' => $schoolAttendanceAttachment->mime_type ?: 'application/octet-stream',
-        ];
-
-        $localDisk = Storage::disk('local');
-        if ($localDisk->exists($path)) {
-            return $localDisk->download($path, $downloadName, $headers);
-        }
-
-        $legacyPublicDisk = Storage::disk('public');
-        if ($legacyPublicDisk->exists($path)) {
-            return $legacyPublicDisk->download($path, $downloadName, $headers);
-        }
-
-        abort(404, 'Attachment file is missing.');
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
+        app(\App\Services\Support\AttachmentAccess::class)->attendance($request->user(), $schoolAttendanceAttachment);
+        return app(\App\Services\Support\PrivateFileReader::class)->download('local',
+            $schoolAttendanceAttachment->file_path, $schoolAttendanceAttachment->file_name);
     }
 
     public function destroyAttachment(Request $request, SchoolAttendanceAttachment $schoolAttendanceAttachment): RedirectResponse
     {
+        app(\App\Services\Ticketing\SubtaskAccessQuery::class)->rejectAuthority($request);
+        app(\App\Services\Support\AttachmentAccess::class)->attendance($request->user(), $schoolAttendanceAttachment);
         $schoolId = $this->resolveSchoolId($request);
 
         if ((int) $schoolAttendanceAttachment->school_id !== $schoolId) {
@@ -565,8 +540,8 @@ class StudentAttendanceController extends Controller
         $fileName = (string) ($schoolAttendanceAttachment->file_name ?? '');
 
         if ($filePath !== '') {
+            if (Storage::disk('local')->exists($filePath)) { app(\App\Services\Support\PrivateFileReader::class)->physicalPath('local', $filePath); }
             Storage::disk('local')->delete($filePath);
-            Storage::disk('public')->delete($filePath);
         }
 
         $schoolAttendanceAttachment->delete();
@@ -1413,6 +1388,7 @@ class StudentAttendanceController extends Controller
             $classroomId,
             $attendanceDate
         );
+        \App\Support\UploadSecurity::validateProtected($file, 'features.uploads.student_attendance_attachment_mime_types', 'attachments');
         $path = $file->store($basePath, 'local');
         $originalFileName = trim(basename((string) $file->getClientOriginalName()));
 

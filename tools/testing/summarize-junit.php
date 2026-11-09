@@ -87,6 +87,7 @@ $runKind = match ($argv[3] ?? '') {
     'diagnostic' => 'diagnostic_subset',
     'phase3' => 'phase3_focused',
     'phase4' => 'phase4_focused',
+    'phase5' => 'phase5_focused',
     'native' => 'phase2_regression',
     default => 'authoritative_full',
 };

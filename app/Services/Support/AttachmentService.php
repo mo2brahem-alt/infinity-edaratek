@@ -39,12 +39,8 @@ class AttachmentService
             'attachments.*' => ['file', 'max:' . self::MAX_FILE_SIZE_KB],
         ];
 
-        if ($this->strictValidationEnabled($strictFlag)) {
-            $mimeTypes = $this->allowedMimeTypes($mimeTypesConfig);
-            if ($mimeTypes !== []) {
-                $rules['attachments.*'][] = 'mimetypes:' . implode(',', $mimeTypes);
-            }
-        }
+        $mimeTypes = $this->allowedMimeTypes($mimeTypesConfig);
+        $rules['attachments.*'][] = 'mimetypes:' . implode(',', $mimeTypes);
 
         return $rules;
     }
@@ -100,8 +96,11 @@ class AttachmentService
         $actionType = trim((string) ($context['action_type'] ?? 'attachment'));
         $description = $this->nullIfEmpty($context['description'] ?? null);
         $metadata = $this->normalizeMetadata($context['metadata'] ?? null);
-        $disk = trim((string) ($context['disk'] ?? self::DEFAULT_DISK));
-        $isPrivate = array_key_exists('is_private', $context) ? (bool) $context['is_private'] : true;
+        $disk = self::DEFAULT_DISK;
+        $isPrivate = true;
+        if (count($normalizedFiles) > self::MAX_UPLOAD_FILES) {
+            throw ValidationException::withMessages(['attachments' => ['Too many attachments.']]);
+        }
         $baseDirectory = $this->defaultBaseDirectory($schoolId, $module);
         $storedFiles = [];
         $created = collect();
@@ -112,7 +111,8 @@ class AttachmentService
 
         try {
             foreach ($normalizedFiles as $file) {
-                $originalName = trim((string) $file->getClientOriginalName());
+                UploadSecurity::validateProtected($file, 'features.uploads.school_attachment_mime_types');
+                $originalName = basename(str_replace('\\', '/', (string) $file->getClientOriginalName()));
                 $extension = strtolower((string) ($file->guessExtension() ?: $file->clientExtension() ?: 'bin'));
                 $this->assertSafeExtension($extension, strtolower((string) $file->clientExtension()));
                 $storedName = Str::uuid()->toString() . ($extension !== '' ? '.' . $extension : '');
@@ -180,10 +180,12 @@ class AttachmentService
 
     public function deleteInstitutionalAttachment(Attachment $attachment, ?Request $request = null, ?int $userId = null): void
     {
+        app(AttachmentAccess::class)->authorize(User::query()->findOrFail($userId), $attachment, 'delete');
         $disk = $this->attachmentDisk($attachment);
         $path = (string) ($attachment->file_path ?? '');
 
         if ($path !== '') {
+            if (Storage::disk($disk)->exists($path)) { app(PrivateFileReader::class)->physicalPath($disk, $path); }
             Storage::disk($disk)->delete($path);
         }
 
@@ -206,19 +208,13 @@ class AttachmentService
         );
     }
 
-    public function downloadInstitutionalAttachment(Attachment $attachment): BinaryFileResponse|StreamedResponse
+    public function downloadInstitutionalAttachment(Attachment $attachment, User $actor): BinaryFileResponse|StreamedResponse
     {
+        app(AttachmentAccess::class)->authorize($actor, $attachment);
         $disk = $this->attachmentDisk($attachment);
         $path = (string) ($attachment->file_path ?? '');
 
-        if ($path === '' || !Storage::disk($disk)->exists($path)) {
-            abort(404, 'المرفق المطلوب غير موجود.');
-        }
-
-        return Storage::disk($disk)->download(
-            $path,
-            (string) ($attachment->file_name ?: $attachment->stored_name ?: basename($path))
-        );
+        return app(PrivateFileReader::class)->download($disk, $path, (string) ($attachment->file_name ?: 'attachment'));
     }
 
     /**
@@ -251,11 +247,10 @@ class AttachmentService
     private function resolveSchoolId(Model $attachable, array $context): int
     {
         $explicitSchoolId = (int) ($context['school_id'] ?? 0);
-        if ($explicitSchoolId > 0) {
-            return $explicitSchoolId;
-        }
-
         $schoolId = (int) data_get($attachable, 'school_id', 0);
+        if ($explicitSchoolId > 0 && $explicitSchoolId !== $schoolId) {
+            throw ValidationException::withMessages(['school_id' => ['Attachment parent school does not match.']]);
+        }
         if ($schoolId <= 0) {
             throw new RuntimeException('لا يمكن تحديد المدرسة المرتبطة بهذا المرفق.');
         }

@@ -35,7 +35,7 @@ try {
         $class = (string) $case['class'];
         $method = preg_split('/\s+with data set/', (string) $case['name'])[0];
         if (str_starts_with($class, 'Tests\\Feature\\Mobile\\') && ! str_starts_with($class, 'Tests\\Feature\\Mobile\\Phase3\\')
-            && ! str_starts_with($class, 'Tests\\Feature\\Mobile\\Phase4\\')) {
+            && ! str_starts_with($class, 'Tests\\Feature\\Mobile\\Phase4\\') && ! str_starts_with($class, 'Tests\\Feature\\Mobile\\Phase5\\')) {
             $mobileTests++;
             if (isset($case->failure) || isset($case->error)) {
                 $failures[] = 'MOBILE_TEST_FAILURE';
