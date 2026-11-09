@@ -255,4 +255,32 @@ class PrivateAttachmentMigrationTest extends TestCase
         $this->assertSame(0, $counts['verified']);
         $this->assertSame('PUBLIC_REEXPOSURE', PrivateFileMigration::firstOrFail()->safe_failure_code);
     }
+
+    public function test_stale_public_copy_cannot_replace_an_existing_private_current_file(): void
+    {
+        $a = $this->legacy(); $old = $a->file_path;
+        Storage::disk('school_attachments')->put($old, 'current-private-version');
+        $a->update(['disk' => 'school_attachments', 'is_private' => true]);
+        $result = app(PrivateAttachmentMigrator::class)->run(true);
+        $this->assertSame(0, $result['verified']); $this->assertSame(1, $result['quarantined']);
+        $this->assertSame('PRIVATE_SOURCE_CONFLICT', PrivateFileMigration::firstOrFail()->safe_failure_code);
+        $this->assertSame($old, $a->fresh()->file_path);
+        $this->assertSame('current-private-version', Storage::disk('school_attachments')->get($old));
+        $this->assertSame('synthetic-proof', Storage::disk('public')->get($old));
+    }
+
+    public function test_concurrent_private_file_change_is_rechecked_before_metadata_switch(): void
+    {
+        $a = $this->legacy(); $old = $a->file_path;
+        Storage::disk('school_attachments')->put($old, 'synthetic-proof'); $a->update(['disk' => 'school_attachments', 'is_private' => true]);
+        $service = new class extends PrivateAttachmentMigrator {
+            protected function checkpoint(PrivateFileMigration $m): void {
+                if ($m->state === 'copied_verified') { Storage::disk('school_attachments')->put($m->observed_source_metadata['file_path'], 'new-private-version'); }
+            }
+        };
+        $service->run(true);
+        $this->assertSame('PRIVATE_SOURCE_CONFLICT', PrivateFileMigration::firstOrFail()->safe_failure_code);
+        $this->assertSame($old, $a->fresh()->file_path); Storage::disk('public')->assertExists($old);
+        $this->assertSame('new-private-version', Storage::disk('school_attachments')->get($old));
+    }
 }

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\{DB, Storage};
 class PrivateAttachmentMigrator
 {
     public const TYPES = [Attachment::class, SchoolStudentLeaveAttachment::class, SchoolAttendanceAttachment::class];
-    private const QUARANTINE = ['AMBIGUOUS_REFERENCE', 'ORPHAN_REQUIRES_REVIEW', 'ORPHAN_OR_DELETED_PARENT', 'UNSAFE_SOURCE_PATH', 'MISSING_SOURCE'];
+    private const QUARANTINE = ['AMBIGUOUS_REFERENCE', 'ORPHAN_REQUIRES_REVIEW', 'ORPHAN_OR_DELETED_PARENT', 'UNSAFE_SOURCE_PATH', 'MISSING_SOURCE', 'PRIVATE_SOURCE_CONFLICT', 'MISSING_PRIVATE_SOURCE', 'INVALID_PRIVATE_SOURCE'];
 
     public function run(bool $apply = false, int $limit = 100, int $offset = 0, bool $inventoryOnly = false, bool $resumeOnly = false, string $surface = 'public'): array
     {
@@ -68,7 +68,10 @@ class PrivateAttachmentMigrator
         $record = $refs->count() === 1 ? $refs->first() : null;
         $reason = $refs->count() > 1 ? 'AMBIGUOUS_REFERENCE' : ($record ? null : 'ORPHAN_REQUIRES_REVIEW');
         if ($record && ! $this->validParent($record)) { $reason = 'ORPHAN_OR_DELETED_PARENT'; }
-        try { $source = $this->publicPhysicalPath($path); }
+        try {
+            $source = $this->publicPhysicalPath($path);
+            if ($record) { $this->assertPrivateSourceCompatible($record, $source); }
+        }
         catch (\Throwable $error) { $source = null; $reason = $reason ?: ($error instanceof PrivateFileMigratorException ? $error->getMessage() : 'UNSAFE_SOURCE_PATH'); }
         if ($apply) {
             PrivateFileMigration::firstOrCreate(['inventory_key' => $key], ['schema_version' => 1,
@@ -129,6 +132,7 @@ class PrivateAttachmentMigrator
                     $record = ($type === Attachment::class ? $type::withTrashed() : $type::query())->lockForUpdate()->find($manifest->attachment_id);
                     if (! $record || ! $this->validParent($record) || $record->getRawOriginal() != $manifest->observed_source_metadata) { throw new PrivateFileMigratorException('METADATA_CONFLICT'); }
                     $this->assertFingerprint($this->publicPhysicalPath($manifest->source_path), $manifest);
+                    $this->assertPrivateSourceCompatible($record, $this->publicPhysicalPath($manifest->source_path));
                     $payload = ['file_path' => $manifest->destination_path];
                     if ($record instanceof Attachment) { $payload += ['disk' => $manifest->destination_disk, 'is_private' => true]; }
                     $record->update($payload);
@@ -161,6 +165,21 @@ class PrivateAttachmentMigrator
     }
 
     protected function checkpoint(PrivateFileMigration $manifest): void {}
+
+    private function assertPrivateSourceCompatible(Model $record, string $publicSource): void
+    {
+        $disk = $record instanceof Attachment ? ($record->disk ?: 'public') : 'local';
+        if ($disk === 'public') { return; }
+        if (! in_array($disk, ['local', 'school_attachments'], true)) { throw new PrivateFileMigratorException('INVALID_PRIVATE_SOURCE'); }
+        if (! Storage::disk($disk)->exists($record->file_path)) {
+            if ($record instanceof Attachment) { throw new PrivateFileMigratorException('MISSING_PRIVATE_SOURCE'); }
+            return; // Legacy leave/attendance models have no disk column; public-only sources are inventoried explicitly.
+        }
+        $private = app(PrivateFileReader::class)->physicalPath($disk, $record->file_path);
+        if (filesize($private) !== filesize($publicSource) || hash_file('sha256', $private) !== hash_file('sha256', $publicSource)) {
+            throw new PrivateFileMigratorException('PRIVATE_SOURCE_CONFLICT');
+        }
+    }
 
     private function assertFingerprint(string $path, PrivateFileMigration $manifest): void
     {
