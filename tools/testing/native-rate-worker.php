@@ -14,10 +14,11 @@ config(['cache.limiter' => 'phase7_rate', 'cache.stores.phase7_rate' => ['driver
 file_put_contents($root.'/ready-'.$worker, 'ready');
 $deadline = microtime(true) + 15;
 while (! is_file($root.'/start')) { if (microtime(true) > $deadline) { exit(22); } usleep(10000); }
-$request = \Illuminate\Http\Request::create('/', 'POST', ['email' => 'synthetic-limit@example.test'], [], [], ['REMOTE_ADDR' => '192.0.2.'.$worker]);
+$identity = $kind === 'login' ? 'synthetic-worker-'.$worker.'@example.test' : 'synthetic-limit@example.test';
+$request = \Illuminate\Http\Request::create('/', 'POST', ['email' => $identity], [], [], ['REMOTE_ADDR' => '192.0.2.'.$worker]);
 $user = (new \App\Models\User)->forceFill(['id' => 123]);
 $limiter = app(\App\Services\Mobile\NativeRateLimiter::class);
-$retry = match ($kind) { 'login' => $limiter->consumeLogin($request, 'synthetic-limit@example.test'),
+$retry = match ($kind) { 'login' => $limiter->consumeLogin($request, $identity, $user),
     'reset' => $limiter->consumeReset($request), default => $limiter->consumeRequest($request, $user, $kind) };
 ob_end_clean();
 echo json_encode(['fixture' => 'phase7_atomic_budget', 'admitted' => $retry === null]).PHP_EOL;

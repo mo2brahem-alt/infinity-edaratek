@@ -10,13 +10,17 @@ use Illuminate\Support\Facades\Cache;
 
 final class NativeRateLimiter
 {
-    public function consumeLogin(Request $request, string $email): ?int
+    public function consumeLogin(Request $request, string $email, ?User $account = null): ?int
     {
         // All attempts count, including unknown identities and rotating IPs.
-        return $this->consume([
+        $limits = [
             [$this->key('login-identity', mb_strtolower(trim($email))), (int) config('mobile.login_attempts_per_minute'), 60],
             [$this->key('login-ip', (string) $request->ip()), (int) config('mobile.login_ip_attempts_per_minute'), 60],
-        ]);
+        ];
+        if ($account !== null) {
+            $limits[] = [$this->key('login-account', (string) $account->getKey()), (int) config('mobile.login_attempts_per_minute'), 60];
+        }
+        return $this->consume($limits);
     }
 
     public function consumeRequest(Request $request, User $user, string $kind): ?int

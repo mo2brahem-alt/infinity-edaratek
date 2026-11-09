@@ -36,6 +36,19 @@ class MobileRatePolicyTest extends TestCase
         $this->assertSafeError($this->postJson('/api/v1/auth/login', $this->credentials($user)),429,'RATE_LIMITED');
     }
 
+    public function test_account_budget_survives_identifier_changes_and_rotating_ips_before_credentials(): void
+    {
+        $user=User::factory()->create();
+        for($i=1;$i<=5;$i++){
+            $user->update(['email'=>'synthetic-account-'.$i.'@example.test']);
+            $this->withServerVariables(['REMOTE_ADDR'=>'192.0.2.'.$i])->postJson('/api/v1/auth/login',$this->credentials($user,['password'=>'wrong']))->assertUnauthorized();
+        }
+        $user->update(['email'=>'synthetic-account-final@example.test']);
+        $r=$this->withServerVariables(['REMOTE_ADDR'=>'192.0.2.99'])->postJson('/api/v1/auth/login',$this->credentials($user));
+        $this->assertSafeError($r,429,'RATE_LIMITED');$this->assertDatabaseCount('personal_access_tokens',0);
+        $this->travel(61)->seconds();$this->postJson('/api/v1/auth/login',$this->credentials($user))->assertOk();$this->travelBack();
+    }
+
     public function test_read_and_session_http_boundaries_and_cooldown_are_actual_configured_values(): void
     {
         $user = User::factory()->create(); $this->bearer($user);
@@ -88,7 +101,7 @@ class MobileRatePolicyTest extends TestCase
         config(['cache.limiter'=>'phase7_rate','cache.stores.phase7_rate'=>['driver'=>'file','path'=>$root,'lock_path'=>$root]]);
         $limiter=app(NativeRateLimiter::class); $request=Request::create('/','POST',['email'=>'synthetic-limit@example.test'],[],[],['REMOTE_ADDR'=>'192.0.2.100']);
         $actor=(new User)->forceFill(['id'=>123]);
-        $consume=fn()=>match($kind){'login'=>$limiter->consumeLogin($request,'synthetic-limit@example.test'),'reset'=>$limiter->consumeReset($request),default=>$limiter->consumeRequest($request,$actor,$kind)};
+        $consume=fn()=>match($kind){'login'=>$limiter->consumeLogin($request,'synthetic-limit@example.test',$actor),'reset'=>$limiter->consumeReset($request),default=>$limiter->consumeRequest($request,$actor,$kind)};
         for($i=0;$i<$maximum-2;$i++){ $this->assertNull($consume()); }
         $processes=[]; $pipes=[];
         try {

@@ -31,11 +31,12 @@ final class NativeSessionController
         $data = $request->validated();
         $email = (string) $data['email'];
 
-        if (($retryAfter = $this->limiter->consumeLogin($request, $email)) !== null) {
+        // Resolve the database identity before admission so email changes/collation
+        // aliases cannot create another budget for the same account. No credential check yet.
+        $candidate = User::query()->where('email', $email)->first();
+        if (($retryAfter = $this->limiter->consumeLogin($request, $email, $candidate)) !== null) {
             return $this->rateLimited($retryAfter);
         }
-
-        $candidate = User::query()->where('email', $email)->first();
 
         if (! $candidate instanceof User || ! Hash::check((string) $data['password'], (string) $candidate->password)) {
             return NativeApiResponse::error('INVALID_CREDENTIALS', 401);
