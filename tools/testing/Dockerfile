@@ -70,6 +70,10 @@ RUN npm run build && test -s public/build/manifest.json \
     && node -p process.versions.node > /ui/frontend-node-version.txt
 
 FROM php-dependencies AS runtime
+# Artisan/Collision launches another PHP process; parent -d flags are not an image default.
+# Keep the already approved 512M test budget in this disposable test image only.
+RUN printf 'memory_limit=512M\n' > /usr/local/etc/php/conf.d/zz-edaratek-isolated-memory.ini \
+    && php -r 'if (ini_get("memory_limit") !== "512M") { exit(43); }'
 COPY . .
 COPY --from=frontend /ui/public/build ./public/build
 COPY --from=frontend /ui/frontend-node-version.txt /opt/frontend-node-version.txt

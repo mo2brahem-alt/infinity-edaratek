@@ -89,7 +89,7 @@ php tools/testing/summarize-junit.php baseline "$native_tests_exit" native || fa
 [ "$native_tests_exit" -eq 0 ] || fail native_mobile_tests 29
 # CI run 42469219953 proved PHP memory exhaustion at the base 128M limit.
 # Bound ONLY the isolated test process/profile; no application/production ini.
-php -d memory_limit=512M tools/testing/summarize-junit.php process-profile || fail process_profile 24
+php tools/testing/summarize-junit.php process-profile || fail process_profile 24
 # T108 requires the guarded Artisan runner and the explicit MySQL PHPUnit lane.
 # The image already copies phpunit.mysql.xml to phpunit.xml; do not duplicate -c through Collision.
 artisan_exit=0
