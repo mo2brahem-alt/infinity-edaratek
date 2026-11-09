@@ -123,7 +123,9 @@ try {
     foreach ($dir in @('app','bootstrap','config','database','lang','resources','routes','tests','tools/testing')) {
         Copy-SafeTree (Join-Path $repoRoot $dir) (Join-Path $scratch $dir)
     }
-    foreach ($file in @('.htaccess','artisan','composer.json','composer.lock','phpunit.xml','phpunit.mysql.xml','package.json','package-lock.json','vite.config.js','postcss.config.js','tailwind.config.js','jsconfig.json')) {
+    # Passive, tracked reference files only; .github workflows are hashed, never executed here.
+    $phase8References = @('.github/workflows/deploy.yml','.github/workflows/mobile-backend-tests.yml','docs/mobile-api-v1.md','docs/notification-policy.md')
+    foreach ($file in (@('.htaccess','artisan','composer.json','composer.lock','phpunit.xml','phpunit.mysql.xml','package.json','package-lock.json','vite.config.js','postcss.config.js','tailwind.config.js','jsconfig.json') + $phase8References)) {
         Copy-SafeTree (Join-Path $repoRoot $file) (Join-Path $scratch $file)
     }
     # Vite assets are generated ONLY by Docker's locked Node build stage.
@@ -141,8 +143,16 @@ try {
         throw 'FILTERED_CONTEXT_REJECTED'
     }
     if ($PrepareOnly) {
+        foreach ($reference in $phase8References) {
+            $originalReference = Join-Path $repoRoot $reference
+            $copiedReference = Join-Path $scratch $reference
+            if (-not (Test-Path -LiteralPath $copiedReference) -or
+                (Get-FileHash -LiteralPath $originalReference -Algorithm SHA256).Hash -cne (Get-FileHash -LiteralPath $copiedReference -Algorithm SHA256).Hash) {
+                throw 'PHASE8_REFERENCE_COPY_REJECTED'
+            }
+        }
         [pscustomobject]@{context='PASS';copied_files=$script:copied;excluded_entries=$script:skipped;
-            forbidden_entries=0;laravel_booted=$false;docker_started=$false;cleanup='task_owned_scratch_only'} | ConvertTo-Json -Compress
+            phase8_reference_files_verified=$phase8References.Count;forbidden_entries=0;laravel_booted=$false;docker_started=$false;cleanup='task_owned_scratch_only'} | ConvertTo-Json -Compress
         return
     }
     # Transient process-only synthetic credentials; never print compose config/env.
