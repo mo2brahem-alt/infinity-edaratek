@@ -88,6 +88,7 @@ $runKind = match ($argv[3] ?? '') {
     'phase3' => 'phase3_focused',
     'phase4' => 'phase4_focused',
     'phase5' => 'phase5_focused',
+    'phase6' => 'phase6_focused',
     'native' => 'phase2_regression',
     default => 'authoritative_full',
 };

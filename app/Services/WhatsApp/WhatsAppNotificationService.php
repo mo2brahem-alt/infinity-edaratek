@@ -19,6 +19,7 @@ class WhatsAppNotificationService
 
     public function queueForNotification(Notification $notification): ?WhatsAppMessage
     {
+        return null; // Retired channel: preserve caller compatibility without fan-out or state writes.
         if (! $this->client->configured()) {
             return null;
         }

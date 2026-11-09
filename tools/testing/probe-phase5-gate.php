@@ -34,7 +34,7 @@ try {
         || (int) ($argv[1] ?? -1) !== 1) { throw new RuntimeException('Regression mismatch'); }
     $record += ['focused_total' => count($focused), 'focused_passed' => count($focused), 'focused_classes' => $classes,
         'full_total' => count($full), 'full_passed' => count($full) - 1, 'full_failed' => 1, 'full_errors' => 0, 'full_skipped' => 0,
-        'known_preexisting_regression_only' => true, 'PHASE_6_STARTED' => false];
+        'known_preexisting_regression_only' => true, 'run_kind' => 'phase5_regression'];
     $record['status'] = 'PASS';
     foreach (['PRIVATE_ATTACHMENT_STORAGE', 'ATTACHMENT_AUTHORIZATION', 'PRIVATE_FILE_MIGRATION', 'PHASE_5_ACCEPTANCE'] as $gate) { $record[$gate] = 'PASS'; }
 } catch (Throwable $error) {

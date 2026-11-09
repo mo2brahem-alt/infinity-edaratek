@@ -80,4 +80,6 @@ RUN cp tools/testing/IsolatedTestCase.php tests/TestCase.php \
        storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
     && chmod +x tools/testing/run-baseline.sh
 RUN for file in tools/testing/*.php; do php -l "$file" > /dev/null || exit 43; done
+RUN sh -n tools/testing/run-baseline.sh \
+    && for file in app/Http/Controllers/RetiredNotificationChannelController.php app/Services/Support/NotificationService.php app/Services/WhatsApp/N8nWhatsAppClient.php app/Services/WhatsApp/WhatsAppNotificationService.php app/Services/WhatsApp/WhatsAppOtpService.php app/Jobs/DispatchWhatsAppNotification.php app/Jobs/DispatchWhatsAppOtp.php config/services.php routes/web.php tests/Feature/Mobile/Phase6/NotificationChannelPolicyTest.php tests/Feature/PhoneStateCompatibilityTest.php; do php -l "$file" > /dev/null || exit 43; done
 CMD ["sh", "tools/testing/run-baseline.sh"]

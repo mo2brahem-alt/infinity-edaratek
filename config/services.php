@@ -55,7 +55,7 @@ return [
 
     'n8n' => [
         'whatsapp' => [
-            'enabled' => (bool) env('N8N_WHATSAPP_ENABLED', false),
+            'enabled' => false, // Permanently retired by PM; an environment flag cannot re-enable it.
             'webhook_url' => env('N8N_WHATSAPP_WEBHOOK_URL'),
             'webhook_secret' => env('N8N_WHATSAPP_WEBHOOK_SECRET'),
             'status_secret' => env('N8N_WHATSAPP_STATUS_SECRET'),

@@ -6,15 +6,9 @@ use App\Models\Notification;
 use App\Models\School;
 use App\Models\SchoolSupervisorAssignment;
 use App\Models\User;
-use App\Services\WhatsApp\WhatsAppNotificationService;
-use Throwable;
 
 class NotificationService
 {
-    public function __construct(private readonly WhatsAppNotificationService $whatsAppNotificationService)
-    {
-    }
-
     public function notifyUser(int $userId, string $type, string $title, ?string $body = null, ?array $data = null): Notification
     {
         $notification = Notification::create([
@@ -24,12 +18,6 @@ class NotificationService
             'body' => $body,
             'data' => $this->normalizeData($data),
         ]);
-
-        try {
-            $this->whatsAppNotificationService->queueForNotification($notification);
-        } catch (Throwable $exception) {
-            report($exception);
-        }
 
         return $notification;
     }

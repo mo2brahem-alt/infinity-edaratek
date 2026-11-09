@@ -1,0 +1,14 @@
+{
+  "pm_decision": "2026-11-09 permanent WhatsApp removal",
+  "baseline_commit": "ecb6b7fd7d1b06bf7d4575f1b194ce77fa76fb54",
+  "baseline_total": 670,
+  "archived_file": "tests/Feature/WhatsAppIntegrationTest.php",
+  "archived_sha256": "97447e224e8761cd91758d124baa1bc837db6aec5aba713a6dda43aa064e2349",
+  "archived_test_methods": 33,
+  "archived_expanded_cases_static": 41,
+  "relocated_generic_cases": 10,
+  "retired_product_cases": 31,
+  "relocated_file": "tests/Feature/PhoneStateCompatibilityTest.php",
+  "delivery_tests_executed": false,
+  "case_basis": "33 source methods, one nine-row provider:41 static cases. Generic normalization9 + invalidation1 retained;31 obsolete product cases superseded, not passed/skipped."
+}

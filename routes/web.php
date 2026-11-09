@@ -9,11 +9,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicStorageController;
 use App\Http\Controllers\CertificateVerificationController;
 use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\WhatsAppDispatchClaimController;
-use App\Http\Controllers\WhatsAppDispatchResultController;
-use App\Http\Controllers\WhatsAppMetaVerificationController;
-use App\Http\Controllers\WhatsAppPhoneVerificationController;
-use App\Http\Controllers\WhatsAppStatusCallbackController;
 use App\Http\Controllers\Api\System\SystemPermissionController;
 use App\Http\Controllers\Api\System\SystemRoleController;
 use App\Http\Controllers\Api\School\SchoolAssignableRoleController;
@@ -67,16 +62,16 @@ Route::get('/storage/{path}', [PublicStorageController::class, 'show'])
 Route::get('/certificates/verify/{token}', CertificateVerificationController::class)
     ->where('token', '[A-Za-z0-9]+')
     ->name('certificates.verify');
-Route::get('/webhooks/whatsapp/meta/verify', WhatsAppMetaVerificationController::class)
+Route::get('/webhooks/whatsapp/meta/verify', \App\Http\Controllers\RetiredNotificationChannelController::class)
     ->middleware('throttle:api.school')
     ->name('webhooks.whatsapp.meta.verify');
-Route::post('/webhooks/whatsapp/status', WhatsAppStatusCallbackController::class)
+Route::post('/webhooks/whatsapp/status', \App\Http\Controllers\RetiredNotificationChannelController::class)
     ->middleware('throttle:api.school')
     ->name('webhooks.whatsapp.status');
-Route::post('/webhooks/whatsapp/dispatch/claim', WhatsAppDispatchClaimController::class)
+Route::post('/webhooks/whatsapp/dispatch/claim', \App\Http\Controllers\RetiredNotificationChannelController::class)
     ->middleware('throttle:api.school')
     ->name('webhooks.whatsapp.dispatch.claim');
-Route::post('/webhooks/whatsapp/dispatch/result', WhatsAppDispatchResultController::class)
+Route::post('/webhooks/whatsapp/dispatch/result', \App\Http\Controllers\RetiredNotificationChannelController::class)
     ->middleware('throttle:api.school')
     ->name('webhooks.whatsapp.dispatch.result');
 
@@ -462,10 +457,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read_all');
-    Route::post('/phone/verification/whatsapp/send', [WhatsAppPhoneVerificationController::class, 'send'])
+    Route::post('/phone/verification/whatsapp/send', \App\Http\Controllers\RetiredNotificationChannelController::class)
         ->middleware('throttle:api.school')
         ->name('phone.verification.whatsapp.send');
-    Route::post('/phone/verification/whatsapp/verify', [WhatsAppPhoneVerificationController::class, 'verify'])
+    Route::post('/phone/verification/whatsapp/verify', \App\Http\Controllers\RetiredNotificationChannelController::class)
         ->middleware('throttle:api.school')
         ->name('phone.verification.whatsapp.verify');
 });

@@ -26,6 +26,8 @@ class WhatsAppOtpService
 
     public function send(User $user, ?string $ip = null): PhoneVerificationOtp
     {
+        throw new \Symfony\Component\HttpKernel\Exception\GoneHttpException('WHATSAPP_REMOVED');
+        // Historical implementation below is retained for audit, not an active feature.
         if (! $this->client->configured()) {
             throw ValidationException::withMessages([
                 'phone' => 'خدمة التحقق عبر واتساب غير مفعلة حاليًا.',
@@ -112,6 +114,8 @@ class WhatsAppOtpService
 
     public function verify(User $user, string $code, ?string $ip = null): bool
     {
+        throw new \Symfony\Component\HttpKernel\Exception\GoneHttpException('WHATSAPP_REMOVED');
+        // No retired OTP may create a new phone-verification assertion.
         if (! preg_match('/^\d{6}$/', $code)) {
             throw ValidationException::withMessages(['code' => 'رمز التحقق يجب أن يتكون من 6 أرقام.']);
         }
