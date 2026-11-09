@@ -54,6 +54,9 @@ class MobileRatePolicyTest extends TestCase
         $this->assertSame(300,config('mobile.native_read_ip_attempts_per_minute'));
         for ($account=1;$account<=3;$account++) { $user=(new User)->forceFill(['id'=>$account]); for ($i=0;$i<100;$i++) { $this->assertNull($limiter->consumeRequest($request,$user,'read')); } }
         $this->assertGreaterThan(0,$limiter->consumeRequest($request,(new User)->forceFill(['id'=>4]),'read'));
+        $this->assertSame(30,config('mobile.native_session_ip_attempts_per_minute'));
+        for ($account=1;$account<=3;$account++) { $user=(new User)->forceFill(['id'=>$account]); for ($i=0;$i<10;$i++) { $this->assertNull($limiter->consumeRequest($request,$user,'session')); } }
+        $this->assertGreaterThan(0,$limiter->consumeRequest($request,(new User)->forceFill(['id'=>4]),'session'));
     }
 
     public function test_cache_failure_is_generic_error_and_cannot_create_a_token(): void

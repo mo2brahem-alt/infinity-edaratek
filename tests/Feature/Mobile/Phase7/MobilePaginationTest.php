@@ -50,13 +50,15 @@ class MobilePaginationTest extends TestCase
         $a = $this->task($s['A'], attributes: ['title'=>'100%_done', 'due_date'=>'2026-11-01']);
         $b = $this->task($s['A'], attributes: ['title'=>'100xxdone', 'due_date'=>'2026-11-01', 'status'=>Subtask::STATUS_SUBMITTED]);
         $null = $this->task($s['A'], attributes: ['title'=>'Other', 'due_date'=>null, 'description'=>'100%_done']);
+        $early = $this->task($s['A'], attributes: ['title'=>'Earlier', 'due_date'=>'2026-10-31']);
         $this->task($s['B'], $s['A']['staff'], ['title'=>'100%_done']);
         $this->bearer($s['A']['staff']);
         $r = $this->getJson('/api/v1/staff/tasks?'.http_build_query(['search'=>'%_']))->assertOk()->assertJsonPath('meta.total',1)->assertJsonPath('data.0.id',$a->id);
         $this->assertStringContainsString('search=', $r->json('links.first'));
         $this->getJson('/api/v1/staff/tasks?status=SUBMITTED')->assertOk()->assertJsonPath('meta.total',1)->assertJsonPath('data.0.id',$b->id);
-        foreach (['due_date','-due_date'] as $sort) { $this->assertSame([$b->id,$a->id,$null->id], $this->getJson('/api/v1/staff/tasks?sort='.$sort)->assertOk()->json('data.*.id')); }
-        $this->assertSame([$a->id,$b->id,$null->id], $this->getJson('/api/v1/staff/tasks?sort=id')->json('data.*.id'));
+        $this->assertSame([$early->id,$b->id,$a->id,$null->id], $this->getJson('/api/v1/staff/tasks?sort=due_date')->assertOk()->json('data.*.id'));
+        $this->assertSame([$b->id,$a->id,$early->id,$null->id], $this->getJson('/api/v1/staff/tasks?sort=-due_date')->assertOk()->json('data.*.id'));
+        $this->assertSame([$a->id,$b->id,$null->id,$early->id], $this->getJson('/api/v1/staff/tasks?sort=id')->json('data.*.id'));
         foreach (['status=INVALID','sort=title','sort=id%20desc','search[]=bad','search='.str_repeat('a',101)] as $query) {
             $this->getJson('/api/v1/staff/tasks?'.$query)->assertUnprocessable()->assertJsonPath('code','VALIDATION_FAILED');
         }
