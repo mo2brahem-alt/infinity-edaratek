@@ -1,0 +1,759 @@
+{
+  "checkpoint": "8020e8b9363e1d100a1012c9b0a68d245169f2c1",
+  "baseline_total": 723,
+  "focused_paths": [
+    "tests/Feature/Mobile",
+    "tests/Feature/Auth",
+    "tests/Feature/SafeAdminSeederTest.php",
+    "tests/Feature/PhoneStateCompatibilityTest.php",
+    "tests/Feature/RealtimeNotificationFlowTest.php",
+    "tests/Feature/SecurityHeadersTest.php",
+    "tests/Feature/ArabicValidationMessagesTest.php",
+    "tests/Feature/ApiRateLimitingTest.php",
+    "tests/Feature/SystemRoleManagementApiTest.php",
+    "tests/Feature/SchoolUserRoleAssignmentApiTest.php",
+    "tests/Feature/SchoolCalendarManagementApiTest.php",
+    "tests/Feature/AccountApprovalFlowTest.php",
+    "tests/Feature/SubscriptionBillingAndSeatsTest.php",
+    "tests/Feature/SubscriptionHandshakeFlowTest.php",
+    "tests/Feature/AssociationHandshakeTest.php",
+    "tests/Feature/ActiveSchoolAssociationMiddlewareTest.php",
+    "tests/Feature/ManagerSchoolOwnershipMiddlewareTest.php",
+    "tests/Feature/TicketWorkflowAuthorizationTest.php",
+    "tests/Feature/SchoolAttachmentManagementTest.php",
+    "tests/Feature/StudentLeaveManagementTest.php",
+    "tests/Feature/StudentAttendanceAccessTest.php",
+    "tests/Feature/StudentCertificateFeatureTest.php",
+    "tests/Feature/UploadValidationFeatureFlagTest.php",
+    "tests/Feature/PublicStorageLinkStructureTest.php",
+    "tests/Feature/ManagerOnboardingLogoUploadTest.php",
+    "tests/Feature/MediaStorageUrlFallbackTest.php",
+    "tests/Feature/HeavyEndpointsPaginationTest.php",
+    "tests/Feature/ManagerDashboardAnalyticsTest.php",
+    "tests/Feature/AcademicPlanningAccessTest.php",
+    "tests/Feature/QuickSetupStatusTest.php",
+    "tests/Feature/SchoolTenantIsolationTest.php",
+    "tests/Feature/SchoolExportDocumentServiceTest.php"
+  ],
+  "focused_classes": [
+    "Tests\\Feature\\AcademicPlanningAccessTest",
+    "Tests\\Feature\\AccountApprovalFlowTest",
+    "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest",
+    "Tests\\Feature\\ApiRateLimitingTest",
+    "Tests\\Feature\\ArabicValidationMessagesTest",
+    "Tests\\Feature\\AssociationHandshakeTest",
+    "Tests\\Feature\\Auth\\AuthenticationTest",
+    "Tests\\Feature\\Auth\\EmailVerificationTest",
+    "Tests\\Feature\\Auth\\PasswordConfirmationTest",
+    "Tests\\Feature\\Auth\\PasswordResetTest",
+    "Tests\\Feature\\Auth\\PasswordUpdateTest",
+    "Tests\\Feature\\Auth\\RegistrationTest",
+    "Tests\\Feature\\HeavyEndpointsPaginationTest",
+    "Tests\\Feature\\ManagerDashboardAnalyticsTest",
+    "Tests\\Feature\\ManagerOnboardingLogoUploadTest",
+    "Tests\\Feature\\ManagerSchoolOwnershipMiddlewareTest",
+    "Tests\\Feature\\MediaStorageUrlFallbackTest",
+    "Tests\\Feature\\Mobile\\NativeAccountStateTest",
+    "Tests\\Feature\\Mobile\\NativeAuthenticationTest",
+    "Tests\\Feature\\Mobile\\NativeDeviceLifecycleTest",
+    "Tests\\Feature\\Mobile\\NativeWebCompatibilityTest",
+    "Tests\\Feature\\Mobile\\Phase3\\AccountApprovalMatrixTest",
+    "Tests\\Feature\\Mobile\\Phase3\\EnvironmentSafetyTest",
+    "Tests\\Feature\\Mobile\\Phase3\\PrivilegeEscalationTest",
+    "Tests\\Feature\\Mobile\\Phase3\\WebSessionSafetyTest",
+    "Tests\\Feature\\Mobile\\Phase4\\CurrentTenantContextTest",
+    "Tests\\Feature\\Mobile\\Phase4\\ForeignRelationshipTest",
+    "Tests\\Feature\\Mobile\\Phase4\\StaffTaskIsolationTest",
+    "Tests\\Feature\\Mobile\\Phase5\\PrivateAttachmentAuthorizationTest",
+    "Tests\\Feature\\Mobile\\Phase5\\PrivateAttachmentMigrationTest",
+    "Tests\\Feature\\Mobile\\Phase5\\PublicAssetCompatibilityTest",
+    "Tests\\Feature\\Mobile\\Phase5\\StaticPrivateUrlTest",
+    "Tests\\Feature\\Mobile\\Phase6\\NotificationChannelPolicyTest",
+    "Tests\\Feature\\Mobile\\Phase7\\MobileApiContractTest",
+    "Tests\\Feature\\Mobile\\Phase7\\MobileErrorContractTest",
+    "Tests\\Feature\\Mobile\\Phase7\\MobilePaginationTest",
+    "Tests\\Feature\\Mobile\\Phase7\\MobileRatePolicyTest",
+    "Tests\\Feature\\Mobile\\Phase7\\MobileSerializationTest",
+    "Tests\\Feature\\PhoneStateCompatibilityTest",
+    "Tests\\Feature\\PublicStorageLinkStructureTest",
+    "Tests\\Feature\\QuickSetupStatusTest",
+    "Tests\\Feature\\RealtimeNotificationFlowTest",
+    "Tests\\Feature\\SafeAdminSeederTest",
+    "Tests\\Feature\\SchoolAttachmentManagementTest",
+    "Tests\\Feature\\SchoolCalendarManagementApiTest",
+    "Tests\\Feature\\SchoolExportDocumentServiceTest",
+    "Tests\\Feature\\SchoolTenantIsolationTest",
+    "Tests\\Feature\\SchoolUserRoleAssignmentApiTest",
+    "Tests\\Feature\\SecurityHeadersTest",
+    "Tests\\Feature\\StudentAttendanceAccessTest",
+    "Tests\\Feature\\StudentCertificateFeatureTest",
+    "Tests\\Feature\\StudentLeaveManagementTest",
+    "Tests\\Feature\\SubscriptionBillingAndSeatsTest",
+    "Tests\\Feature\\SubscriptionHandshakeFlowTest",
+    "Tests\\Feature\\SystemRoleManagementApiTest",
+    "Tests\\Feature\\TicketWorkflowAuthorizationTest",
+    "Tests\\Feature\\UploadValidationFeatureFlagTest"
+  ],
+  "immutable_sources": [
+    {
+      "path": ".github/workflows/deploy.yml",
+      "sha256": "349264dca87ac571ae508f130a9d79267e67ef18a0c1e52f640633d488e2c317"
+    },
+    {
+      "path": ".github/workflows/mobile-backend-tests.yml",
+      "sha256": "6d6c9c2f9b750f49898118b1645fcf95778ee60192f45606ecef1351b8a900b6"
+    },
+    {
+      "path": "app/Http/Controllers/Mobile/AttachmentController.php",
+      "sha256": "c51726de45d9ed9386e34ea3ae8a0dd59870777b7aa60145d3b3c4c894c93e62"
+    },
+    {
+      "path": "app/Http/Controllers/Mobile/NativeSessionController.php",
+      "sha256": "815cf377e3bada46d55572f5b142146086c5566312b2fa2ffd502326bd285bf4"
+    },
+    {
+      "path": "app/Http/Controllers/Mobile/StaffTaskController.php",
+      "sha256": "7111f7b155c9e189443f6779369803debecea55dc4222c51242ad7d543b68676"
+    },
+    {
+      "path": "app/Http/Middleware/ThrottleNativeRequest.php",
+      "sha256": "7c013b6e759e55a666e77dd8e81958f063fb018307603f8b66715729188d28f2"
+    },
+    {
+      "path": "app/Http/Middleware/ThrottlePasswordReset.php",
+      "sha256": "ab5b462d2839f41777d56ca4cf3b4916e8c4734d7268f996e51eaee580c20f66"
+    },
+    {
+      "path": "app/Http/Requests/Api/V1/ContractRequest.php",
+      "sha256": "8b3adef6efff54c82b4da3f1ab145d6ae08cefba1710460d9fd9aa685a47a0d8"
+    },
+    {
+      "path": "app/Http/Requests/Api/V1/NativeLoginRequest.php",
+      "sha256": "89cd1d98d434edb4aa531c95313d57e187481189949ff15637fc50ea6ea7a2ed"
+    },
+    {
+      "path": "app/Http/Requests/Api/V1/NativePaginationRequest.php",
+      "sha256": "c25bcfadf1d104b9c2c24ec551ec8e65500ad2bd512955cc861ad9caddffe55c"
+    },
+    {
+      "path": "app/Http/Requests/Api/V1/StaffTaskListRequest.php",
+      "sha256": "8697a2c70f4493d700433001b40219d7df38acffd1530eadc544aefd1831d5f3"
+    },
+    {
+      "path": "app/Http/Resources/Api/V1/AttachmentResource.php",
+      "sha256": "cd3c700993baeda5d9c8bc40d7e1eb1f8fa2669726e1f73eeb20f1fa3a9bd222"
+    },
+    {
+      "path": "app/Http/Resources/Api/V1/CurrentUserResource.php",
+      "sha256": "e9ce3ad72fbc01c5e3e181a008f5d061b20f5c787d662c2aaa80f70caa0d3543"
+    },
+    {
+      "path": "app/Http/Resources/Api/V1/DeviceResource.php",
+      "sha256": "aab21d247b601263c7690c886c1ba29d54f8a5ddb68db65e9b1c03c4ce6d102a"
+    },
+    {
+      "path": "app/Http/Resources/Api/V1/TaskDetailResource.php",
+      "sha256": "f832cc12948872e57b7f0d2af5b75781a17768b8991dde71ab2d73f9c4fc24c4"
+    },
+    {
+      "path": "app/Http/Resources/Api/V1/TaskSummaryResource.php",
+      "sha256": "968832c79704cd1e69dc2a4169c0006fb74df463477b3eac57deed150e6ba1b7"
+    },
+    {
+      "path": "app/Jobs/DispatchWhatsAppNotification.php",
+      "sha256": "931f6a07702d319660f3e44a9ff9926ff899f5c1103adb9b6eab77592d86807e"
+    },
+    {
+      "path": "app/Jobs/DispatchWhatsAppOtp.php",
+      "sha256": "0f9086acd36331b2537d3b8bd9f94e6195ca61ce2ccbd74acfae930146035a07"
+    },
+    {
+      "path": "app/Providers/AppServiceProvider.php",
+      "sha256": "3242e8d5fd52a47da33e1a2f6ff761e47e35422aec114ecf439d1f5b0d74823f"
+    },
+    {
+      "path": "app/Services/Mobile/NativeRateLimiter.php",
+      "sha256": "7fb53c630169d05f476b1ecca39e4715bb4c3a4e26b8872c4d03ca53dd89a62d"
+    },
+    {
+      "path": "app/Services/Mobile/NativeTokenService.php",
+      "sha256": "22c27722c76e561e60f5001d52915c23fb35aa4bfe396de7a5ea04fc4c114027"
+    },
+    {
+      "path": "app/Services/School/StudentImportService.php",
+      "sha256": "fad0e59a9b87fde756bbb5b8d6caef5f8bdb7505cecb1d08f87a3272fbb69e36"
+    },
+    {
+      "path": "app/Services/Support/AttachmentAccess.php",
+      "sha256": "cb15132369123a9a8a6370b868ee5a3962a35cdc0d50adf39f4b09826f0e17b3"
+    },
+    {
+      "path": "app/Services/Support/NotificationService.php",
+      "sha256": "27d0673ac1a577d4f5b7539013d56e63098a7a779822294c0a0286c2a7ed694c"
+    },
+    {
+      "path": "app/Services/WhatsApp/N8nWhatsAppClient.php",
+      "sha256": "f5a555e966c71c9d9cd8c8e1b5b297c452e70114f417517d32ca39a4e05e8981"
+    },
+    {
+      "path": "app/Support/ApiError.php",
+      "sha256": "a537e33e7195c34255aaf8a6c248c38f55b31a8dd57ff9429dd4900644a4f9f3"
+    },
+    {
+      "path": "app/Support/NativeApiResponse.php",
+      "sha256": "63c020daedb43be9820652ac9fde281a6c1200b9853bb5dbe103b046bed34437"
+    },
+    {
+      "path": "app/Support/NativeCollection.php",
+      "sha256": "812dbc493727eed7028f88d893ccaa1251587bc9ec91e179b1a2b607e5030bc6"
+    },
+    {
+      "path": "app/Support/NativeId.php",
+      "sha256": "d9ce927c00e8a4c6a310a12aebc6306727fbce04a4d17d8a8f8a15ebe52e0351"
+    },
+    {
+      "path": "bootstrap/app.php",
+      "sha256": "d122fa3b2096e3695aa9960ecd313d34229a72fd56ea0650597983711abbf4be"
+    },
+    {
+      "path": "config/mobile.php",
+      "sha256": "84b7bd4d4102f3d0bf79a932d8fdf7d32bd28dc51c00d95abfd643154853dc2e"
+    },
+    {
+      "path": "config/services.php",
+      "sha256": "42556ab8becbe83b23847faa1919f545e8567a2e7d24dd1412b437916d5f8309"
+    },
+    {
+      "path": "docs/mobile-api-v1.md",
+      "sha256": "b6af6078e34320536e553814d1bb4fd688e75891c753e8c1bd217954f33be836"
+    },
+    {
+      "path": "docs/notification-policy.md",
+      "sha256": "39aeef17778f76b54d74b7904764e77ab985ad0c0ee8a4af7e0afcbe03a4c1b2"
+    },
+    {
+      "path": "phpunit.mysql.xml",
+      "sha256": "ca648185f36344887344ff98ee2abd506c61b183a552c79963ba73adad0729c9"
+    },
+    {
+      "path": "routes/api.php",
+      "sha256": "5a8d29999684115f3f45042c87318dab5bf9793a430ddbc351dcc83256e0223a"
+    },
+    {
+      "path": "routes/auth.php",
+      "sha256": "ae7dfbb54542b3dc26d5f8ea92cf93621776141c427a2302cc6a652bbbc25a12"
+    },
+    {
+      "path": "routes/web.php",
+      "sha256": "664d8dcc57c2e8a9b616c839b4ea71f94225b174c401aed103d81b91e93dbdff"
+    },
+    {
+      "path": "tests/Feature/AcademicPlanningAccessTest.php",
+      "sha256": "92ead091d3780807e93e9123b90a93ef154e7ee3e7b4da8b409ae16df61d373f"
+    },
+    {
+      "path": "tests/Feature/AcademicPlanningCentralValidationTest.php",
+      "sha256": "ac92af35a95412fb60560aca86deae32a7923c9ea21dbdfcfaee06481baa157f"
+    },
+    {
+      "path": "tests/Feature/AcademicPlanningGridEditorTest.php",
+      "sha256": "77db2c1a6bd73879a9b1132fc6d4c24a77cc52bdc1557cdcaf744c676c5a3aaa"
+    },
+    {
+      "path": "tests/Feature/AcademicPlanningPageSegmentationTest.php",
+      "sha256": "fae143049347499bb45005214e85a47836e9c06f9e52dc860cf9ffb184052099"
+    },
+    {
+      "path": "tests/Feature/AcademicPlanningSubjectManagementTest.php",
+      "sha256": "1b5d2c3013728dbaf670e3cd728299834ddef40bf9e91c7b5c060fb97f367148"
+    },
+    {
+      "path": "tests/Feature/AcademicYearManagementTest.php",
+      "sha256": "bd16b4f89b6a8b4739ad66f398f2ffb2919a8384d338a3896d0755e10b079c32"
+    },
+    {
+      "path": "tests/Feature/AccountApprovalFlowTest.php",
+      "sha256": "bfadcfacd2969b3d7e79b1d77adb47b674c3680cee61bdc7f3dd2b329b0e5f54"
+    },
+    {
+      "path": "tests/Feature/ActiveSchoolAssociationMiddlewareTest.php",
+      "sha256": "af6753c8bf4048e05afbea94f03415652ef721a27119c5067c4870ab4bedd6d3"
+    },
+    {
+      "path": "tests/Feature/AdminDashboardPageDesignTest.php",
+      "sha256": "e6b97b3564fda5e144ca33efde944c1d18663cd75dbde9a524b8512f373ee2d9"
+    },
+    {
+      "path": "tests/Feature/AdminDefaultStageTemplateLinkingTest.php",
+      "sha256": "bef096fba8da0f735261a2841af1b26841718ba9d3d71f088e3e91f1d1caac04"
+    },
+    {
+      "path": "tests/Feature/AdminDirectorateManagementTest.php",
+      "sha256": "86832f5c5eb0afd0360b4355fa9a9771d4faa3ef857eaeb54a9420d5d5e151c8"
+    },
+    {
+      "path": "tests/Feature/AdminEducationStageManagementTest.php",
+      "sha256": "6bbf6abe1ed5cf3e4d18f0ca4a6073932acd1cb1d3ab010cbce02c3c4bdc4003"
+    },
+    {
+      "path": "tests/Feature/AdminGlobalTaxonomySyncTest.php",
+      "sha256": "24dfdc9fa0dd8259d32c26e29a4771c6cb6810f4c2a49d41325877c710e6e627"
+    },
+    {
+      "path": "tests/Feature/AdminModalStructureTest.php",
+      "sha256": "796810237e9fcd4e503a38139cab7344c4e00eea6e5d2553d4ceefe4c87bf4a2"
+    },
+    {
+      "path": "tests/Feature/AdminPlansPageDesignTest.php",
+      "sha256": "e9738d686a28ea0a3e25aa831d7299273d5b401f0635126066441116978626c1"
+    },
+    {
+      "path": "tests/Feature/AdminSchoolDefaultEducationTypeManagementTest.php",
+      "sha256": "7815e3247dc0ad67b8f43be83ead1c4bcfbd3613b977f7fa07ba5c900863a751"
+    },
+    {
+      "path": "tests/Feature/AdminSchoolDefaultTemplateSettingsTest.php",
+      "sha256": "7390475266b5a0e5d45813bba8bf64408f9d56753fed4bcfe3b89a2f59e15cf4"
+    },
+    {
+      "path": "tests/Feature/AdminSchoolManagementStructureTest.php",
+      "sha256": "67b979537144dfda36775f981738044a2bb7edd6fcebc29681ccc4000f715cf7"
+    },
+    {
+      "path": "tests/Feature/AdminSchoolsPageDesignTest.php",
+      "sha256": "3085434d16b5cf286c37f84fafb3a9ac0ea07856d32c626964de28fbc249e7ff"
+    },
+    {
+      "path": "tests/Feature/AdminSettingsPageDesignTest.php",
+      "sha256": "208672655ae9012ce99033dcea9d5dfd723a7d8e6fd8014b03e3f493b09c73ba"
+    },
+    {
+      "path": "tests/Feature/AdminSidebarLayoutTest.php",
+      "sha256": "92232fc7a475b377b1ce274230b6a59ca38f3ea92c6ffdb76d45c813d84ee8cc"
+    },
+    {
+      "path": "tests/Feature/AdminUsersPageDesignTest.php",
+      "sha256": "1f043b571896de94b75f2b04a803b2985868cf08c924eea90174e0c5ce2ac0bd"
+    },
+    {
+      "path": "tests/Feature/ApiRateLimitingTest.php",
+      "sha256": "08df39191ae9a568aa0450713c77112e538ac0a59089520293dbd5a5e9217203"
+    },
+    {
+      "path": "tests/Feature/ArabicValidationMessagesTest.php",
+      "sha256": "5aef50d23a103093d0120414706030d9a69caf8745dead46e538c00aec4959eb"
+    },
+    {
+      "path": "tests/Feature/AssociationHandshakeTest.php",
+      "sha256": "8222f6d9c750a5eae1d9710f99444ac4f16825f974420336644e342153fbe21b"
+    },
+    {
+      "path": "tests/Feature/AttendancePerformanceIndexesTest.php",
+      "sha256": "7f2c969459213bd0a08253e9c6c46f2e7b9debf0c35b9aa82217bd018c63c8c4"
+    },
+    {
+      "path": "tests/Feature/Auth/AuthenticationTest.php",
+      "sha256": "9d9cc9c5cec8105760d16b53d5d6d0be18c5536cd6765b0a28db4eba40dbbe7d"
+    },
+    {
+      "path": "tests/Feature/Auth/EmailVerificationTest.php",
+      "sha256": "ee9fe6e9df4a60968a0857d3a2ea6b5d79248308db0b8a4844ce094c1d89143c"
+    },
+    {
+      "path": "tests/Feature/Auth/PasswordConfirmationTest.php",
+      "sha256": "255e0c8d39d61cde86a497fa845aae4e0a4f593f83d4c3591e8f149e68e696e3"
+    },
+    {
+      "path": "tests/Feature/Auth/PasswordResetTest.php",
+      "sha256": "6c714682a271a4dcc725cd5fea4bdde651638580af526541b641b13991b847ec"
+    },
+    {
+      "path": "tests/Feature/Auth/PasswordUpdateTest.php",
+      "sha256": "7fd78968f4765313e7a664dffe3b3476875f014585ffb4f09ba6ff79d893b46e"
+    },
+    {
+      "path": "tests/Feature/Auth/RegistrationTest.php",
+      "sha256": "d4a7182d10848659beb1af46133b0fbbb1fc6b68da3f64531b039ee3a566112e"
+    },
+    {
+      "path": "tests/Feature/CountryReferenceHolidayTemplateImportTest.php",
+      "sha256": "2d3a0bdd9a0b8227be183fc76dd242696793706bc64b32553c3b7bfeceebdbc8"
+    },
+    {
+      "path": "tests/Feature/CourseOfferingAssignmentTest.php",
+      "sha256": "a2a41d3b2dc2920872f4529c870ed77ef6f4faf1f1754efb2a07ead91fb6dabf"
+    },
+    {
+      "path": "tests/Feature/CourseStudyPlanScopeTest.php",
+      "sha256": "d2a8f12a474ab4c999c941941d3ff74fc81a98e971a1aab2daa063c100c5b22a"
+    },
+    {
+      "path": "tests/Feature/DepartmentRolesStructureTest.php",
+      "sha256": "362a1882ed014527b5ed1b9a1244091fc23e9ef0499c9fb3d693df620635dc75"
+    },
+    {
+      "path": "tests/Feature/ExampleTest.php",
+      "sha256": "aaa4a192fb4aa96d4e81eda06a29968da3d9a73b71026b87a67297e66dd985b8"
+    },
+    {
+      "path": "tests/Feature/GulfCountriesAndGovernoratesSeederTest.php",
+      "sha256": "a72d39a20c3463f13177d6a4d95a253ed2db2341f99faf64310ba11dbb15d8ec"
+    },
+    {
+      "path": "tests/Feature/HeavyEndpointsPaginationTest.php",
+      "sha256": "3d07c828d8d0f86dbef0b2809ea1c1f99f19433ca1a574029fdc600a38ea43ae"
+    },
+    {
+      "path": "tests/Feature/LightModeThemeDesignTest.php",
+      "sha256": "755872c0fa4caa948b6f91589bf8469bf4916997a0d896b7ec00fef456eb10df"
+    },
+    {
+      "path": "tests/Feature/ManagerDashboardAnalyticsTest.php",
+      "sha256": "998551821ced01f0ab8beed5ed29e93083a43b656fea6d35052865860260e21f"
+    },
+    {
+      "path": "tests/Feature/ManagerOnboardingCountryEducationTypeTemplateMatchTest.php",
+      "sha256": "90e2fbf6d6eeb03192ff6da27e2d54aed7b11fac3e851eb5d627ab7a721c970d"
+    },
+    {
+      "path": "tests/Feature/ManagerOnboardingGovernorateSyncTest.php",
+      "sha256": "e337c6938298354eda836f7d3a6ea8212df45d02be0d787fa04f7a04228993dc"
+    },
+    {
+      "path": "tests/Feature/ManagerOnboardingLogoUploadTest.php",
+      "sha256": "258e789176edd85a1e5f5da71ca28daf4a02e5f6e4ee4990cb41da1625b4b948"
+    },
+    {
+      "path": "tests/Feature/ManagerOnboardingStructureTest.php",
+      "sha256": "f1d22874ed1525207710dc50d2b8e441800005f72a5acacbb881c58210f214cc"
+    },
+    {
+      "path": "tests/Feature/ManagerSchoolOwnershipMiddlewareTest.php",
+      "sha256": "a2b6f1718ba9eac093ea43d38905ef620e9e13e60b4ae2f93d8f5bd9996d0159"
+    },
+    {
+      "path": "tests/Feature/ManagerSchoolStructurePermissionIndicatorTest.php",
+      "sha256": "dc5dd53ec4d6544a169f9714f829a119e19f5f3bb433874e3a135dcb953042fc"
+    },
+    {
+      "path": "tests/Feature/ManagerStructurePageDesignTest.php",
+      "sha256": "20bdc39fe4eb0fa6d2dbaa5f8d6c46a6ea4950d9f919a23fa26ca03d8543818d"
+    },
+    {
+      "path": "tests/Feature/MediaStorageUrlFallbackTest.php",
+      "sha256": "e35dc962c6a7c17abb195b345eecdf91a7e1a2845705f953029a2a763e7c3021"
+    },
+    {
+      "path": "tests/Feature/Mobile/NativeAccountStateTest.php",
+      "sha256": "54afb3ff7b44eeeb8f16aee5dc7e6bd137e9a29affdb3fedbacf43d36b13cfd6"
+    },
+    {
+      "path": "tests/Feature/Mobile/NativeAuthenticationTest.php",
+      "sha256": "5954aec5e0bea0655426a239e54acbac6d136d33a720edd6e1e7b9e165019bad"
+    },
+    {
+      "path": "tests/Feature/Mobile/NativeDeviceLifecycleTest.php",
+      "sha256": "fcd1868b025efd005268dc9b112fdd40d1faa5ce0620cb9d526936b26c910eab"
+    },
+    {
+      "path": "tests/Feature/Mobile/NativeWebCompatibilityTest.php",
+      "sha256": "c84f2e3bc0e90932f513c96d1b240e85c8d3eb33322f78931f31e4d04b0c3d6e"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/AccountApprovalMatrixTest.php",
+      "sha256": "a3b1c583f40249013b0718204cb9466c17e49aaeccfd93e947866fa7c87376cd"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/EnvironmentSafetyTest.php",
+      "sha256": "d26b59dc04af694484199f26901da89211dd093b9a691bab98ddd6611c1f2b6d"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/PrivilegeEscalationTest.php",
+      "sha256": "bd6ed4a1ca7041e93b43b7463bc7c9b232bbb47d87a7debbff73f10ef43832b7"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/WebSessionSafetyTest.php",
+      "sha256": "e8a5e321295b9492fc5d98bc3cbe6540fd4d76db925e69373c1172913f57bba6"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase4/CurrentTenantContextTest.php",
+      "sha256": "8d222587d5efad5d06b561c06a2efaa57205118178912f469424e4b3e8021e6c"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase4/ForeignRelationshipTest.php",
+      "sha256": "f56bbbbb549897e172a26edbae8daf6afe7a19fb847b637718cde7e8ff88789e"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase4/StaffTaskIsolationTest.php",
+      "sha256": "9a37de676a471758fbc5cb48e8d805d92b740366b3fc8c492daaae4f7a62f1eb"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/PrivateAttachmentAuthorizationTest.php",
+      "sha256": "ae5dde819edf13b7de452353dc62d46b6a882a5a04778e8a394390b5ef9e7b02"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/PrivateAttachmentMigrationTest.php",
+      "sha256": "fe1efd4289ef79e4ca17ec7f58c0db191b611675d09a568d3740878f9e40ee06"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/PublicAssetCompatibilityTest.php",
+      "sha256": "31336dc893a09980eb3b6c33841efcb9e99c35c339817430b099337cff5e3a09"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/StaticPrivateUrlTest.php",
+      "sha256": "aba52d78283edd55f17f610ace24cbdd95fdb1dd7a21fd39b782cc0baf9a49a6"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase6/NotificationChannelPolicyTest.php",
+      "sha256": "05249adb9775e8ce8abf3201dfd026270d45438f4f263e3d65cb3eabce2e8140"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileApiContractTest.php",
+      "sha256": "5c30d122bf322f3f9a7053fe5f8fe46b1667149a821e15be2d380bbb66777f94"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileErrorContractTest.php",
+      "sha256": "4335d5ffa36e273db4ab8b10971b1f7be2afc6d68ab6c506079af59070d7de18"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobilePaginationTest.php",
+      "sha256": "68092aa241604d32403a47c15dade67d556b47553354fd7bca02e885ddf1075b"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileRatePolicyTest.php",
+      "sha256": "9b6d4801f1d35db64078cc13e39345eb33b86071f31d0c87cf28df81bf83ea61"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileSerializationTest.php",
+      "sha256": "d885e1cd9fc13211eda81194078c7f7f248bb2f446cffa1b693e85dbecfb90ab"
+    },
+    {
+      "path": "tests/Feature/OrgStructureRoleTemplateManagementTest.php",
+      "sha256": "76a408b9d736bad0fa0eb25a679edd6314887f7b89be2e99b8237efebcddcea0"
+    },
+    {
+      "path": "tests/Feature/PhoneStateCompatibilityTest.php",
+      "sha256": "49381b8bb98cad732a1bb601f3ca9f1aa1f84a7df8c57c4754605db7bf39487a"
+    },
+    {
+      "path": "tests/Feature/ProfilePageDesignTest.php",
+      "sha256": "35b4180625847a3f1ba25fcc75d682d965bd79c5a4a037bd29a405261feda18c"
+    },
+    {
+      "path": "tests/Feature/ProfileTest.php",
+      "sha256": "3c7dc3c8726e2243e725a5251d4528772b75f0e27739fe53cfef6300e2aa3dbc"
+    },
+    {
+      "path": "tests/Feature/PublicContentSanitizationTest.php",
+      "sha256": "e14b04e7a610ec38db128da895e1d9dab199d0114cfd52530270ecafc1f02b05"
+    },
+    {
+      "path": "tests/Feature/PublicHomepageBannerSettingsIntegrationTest.php",
+      "sha256": "50ac9e2801da07c626dac68f1b35caf8c54a71e3f15068eea5c3f11441a8a631"
+    },
+    {
+      "path": "tests/Feature/PublicHomepageSettingsIntegrationTest.php",
+      "sha256": "b7a45fd4c615c2cb5030969333c6fbba80468906ad44ff1cbe9a17c090dca231"
+    },
+    {
+      "path": "tests/Feature/PublicPricingTableThemeIsolationTest.php",
+      "sha256": "eb52aded5a36a89e133e1f70e25b103744f2853d9dc96ec21efcecc4011db223"
+    },
+    {
+      "path": "tests/Feature/PublicStorageLinkStructureTest.php",
+      "sha256": "1da55ee6d594b93c9b4e287c816bd47c7ba988cfeac910c6a36765f9c7128a3b"
+    },
+    {
+      "path": "tests/Feature/QuickSetupStatusTest.php",
+      "sha256": "758033819887ee6b5576e2fb49732970db271b3eb4d96d57ad8e004a7a17284e"
+    },
+    {
+      "path": "tests/Feature/QuickSetupWizardStructureTest.php",
+      "sha256": "900288898c9951f902c69124d4b9d683d0e3309e5dc1b7d8586de7243cbe7bbd"
+    },
+    {
+      "path": "tests/Feature/RealtimeNotificationFlowTest.php",
+      "sha256": "e145cc7453330802ab59f52ab902f094c7028d411753be339e376656b07e79ac"
+    },
+    {
+      "path": "tests/Feature/SafeAdminSeederTest.php",
+      "sha256": "d27a28e42a89baaed357c18a1f0be993c912e8fb1a33c71b2fb592920851a2c2"
+    },
+    {
+      "path": "tests/Feature/SaudiAcademicYear20252026DefaultTemplateSeederTest.php",
+      "sha256": "28c9fd33dc310045e60e5194cdb17ce464f7dc3d4fbf858f58db1c3c8f26176b"
+    },
+    {
+      "path": "tests/Feature/SchoolAttachmentManagementTest.php",
+      "sha256": "f2ec3f5b25be395fd1be8896e10d09598521bcd3d9a5bcc3a9b073a65b56c514"
+    },
+    {
+      "path": "tests/Feature/SchoolCalendarManagementApiTest.php",
+      "sha256": "c64fbc0a0baf6d2e013b89980eab05c32cace6786bd73476cf11edac20606095"
+    },
+    {
+      "path": "tests/Feature/SchoolDefaultDataProvisioningTest.php",
+      "sha256": "184fb4fd5b912ed5e5607e1df6af1238e7c0d8ba120a59cffdff9b01c0942973"
+    },
+    {
+      "path": "tests/Feature/SchoolExamManagementTest.php",
+      "sha256": "e118a833a1058d3df7b2b97b3302f5cf020280a0ad712192f2b8dc6af76c587c"
+    },
+    {
+      "path": "tests/Feature/SchoolExportDocumentServiceTest.php",
+      "sha256": "c895b0ad6184feeb8e6567459f759f913ea1a9c4d272487d16460b8a2b8de857"
+    },
+    {
+      "path": "tests/Feature/SchoolReportsPageDesignTest.php",
+      "sha256": "119500389ff654d7252cb87ae0ee881966381e7881cbd1845d54b328ab388130"
+    },
+    {
+      "path": "tests/Feature/SchoolReportsTest.php",
+      "sha256": "6f7e52de063e2ced0b8b75ba07dc0be5e665e28002ecfafaa2ef0c5466251aad"
+    },
+    {
+      "path": "tests/Feature/SchoolSidebarStructureLabelsTest.php",
+      "sha256": "0e6ae0e334d07f59e2871dcdb59622f0666da6c49ffa31ea429100b7228e8c2d"
+    },
+    {
+      "path": "tests/Feature/SchoolStructureCompatibilityTest.php",
+      "sha256": "a1c7c561bf2535cf0b5e47db24aa62881715cff4b08e479686d1d2eccd888804"
+    },
+    {
+      "path": "tests/Feature/SchoolTenantIsolationTest.php",
+      "sha256": "e33ace6328054c3fee99e3c84cb0641f77ae0ab85fba2b461a190260e5e96bc8"
+    },
+    {
+      "path": "tests/Feature/SchoolUserRoleAssignmentApiTest.php",
+      "sha256": "929053c8d0820b94d0e637d94db5a95df4605fe5889c6c74228dda60527444ca"
+    },
+    {
+      "path": "tests/Feature/SecurityHeadersTest.php",
+      "sha256": "ec5ee14a3284cae63fd87df5c3dc0e908c6ffaa26f4a387bd3b03e4fe3c8a033"
+    },
+    {
+      "path": "tests/Feature/SharedFilterFeedbackFoundationTest.php",
+      "sha256": "e35a06052ae76c23c8339c3f02c9f52c38ee39526bdf48aa48c0b9ad8490bf12"
+    },
+    {
+      "path": "tests/Feature/SharedUiCacheTest.php",
+      "sha256": "2a848d2edb40b98a021802d2722b42aaf2af298fb927547bfdf698fd1c5873dd"
+    },
+    {
+      "path": "tests/Feature/StudentAttendanceAccessTest.php",
+      "sha256": "db90456acae030943094472512d933d2eaa64f36e226ce6551b74595c5df07f3"
+    },
+    {
+      "path": "tests/Feature/StudentCertificateFeatureTest.php",
+      "sha256": "e20f6d6124a838bf7a23f2749ea075938b5c19fa7b90abb342d7e42b74f79978"
+    },
+    {
+      "path": "tests/Feature/StudentExcelImportTest.php",
+      "sha256": "facfb5c3d4f0f1a45ffad2dd93cab5d0e1f4d1f9f1041a92dc692294acbf62d6"
+    },
+    {
+      "path": "tests/Feature/StudentLeaveManagementTest.php",
+      "sha256": "85213f4e10137c165757f292dafdce1df4fe55c7f3853803af8de566f0c3a0bd"
+    },
+    {
+      "path": "tests/Feature/StudentStructureAccessTest.php",
+      "sha256": "e3f20a4bcea4f9cc0f59578df5344fe49bf0443a20e777c36ed12c7fedb533b8"
+    },
+    {
+      "path": "tests/Feature/StudentStructureEnhancementsTest.php",
+      "sha256": "4f278696061dbf19c12c63c5dcb3a05ee595e52d556ff5329b37d1af774684ec"
+    },
+    {
+      "path": "tests/Feature/StudentStructureTreeViewTest.php",
+      "sha256": "400fcd789949b1df40dc86cf80881339dc88c62ff39888d4b61ffa309b3b8140"
+    },
+    {
+      "path": "tests/Feature/SubscriptionBillingAndSeatsTest.php",
+      "sha256": "f36613071e34b0a28e90f0214dcd2d2260fc5e5fc941700e6663a60dd2f2168d"
+    },
+    {
+      "path": "tests/Feature/SubscriptionHandshakeFlowTest.php",
+      "sha256": "025ed469b1de9e601eeca7e108b5fa35abd72efca18068cf04045d25746c0105"
+    },
+    {
+      "path": "tests/Feature/SupervisorAssignmentConstraintsTest.php",
+      "sha256": "33267fedd463929b14c039f286cfb05a75fc6f142c3cef9024f2d9832d70fad8"
+    },
+    {
+      "path": "tests/Feature/SupervisorOnboardingGovernorateSchoolFilterTest.php",
+      "sha256": "10c5f2882a8390a726441643aff77fdb4ae3a9dfe3029faedede0cb50787299b"
+    },
+    {
+      "path": "tests/Feature/SystemRoleManagementApiTest.php",
+      "sha256": "95b9af4f649deb2657116edfbd7a62d7f9cf251975a3f1911d82adbbdf370652"
+    },
+    {
+      "path": "tests/Feature/TeacherAvailabilitySchedulingTest.php",
+      "sha256": "8ed8fa96f0808e1ebba5b6c2fdd7588b9183f28069f3083ecb799e3e7ba9e24f"
+    },
+    {
+      "path": "tests/Feature/TicketWorkflowAuthorizationTest.php",
+      "sha256": "cc4f4bdcea2ff7dbf7fc8e115195bb5028a6f7ec522c9b14dc1891bbeba47fd8"
+    },
+    {
+      "path": "tests/Feature/TimetableVersionManagementTest.php",
+      "sha256": "b63ed4d740637e0da86007a28b4e705fa607bcbcc7deaf4b5beec59ddddadf16"
+    },
+    {
+      "path": "tests/Feature/UploadValidationFeatureFlagTest.php",
+      "sha256": "b4d626dadc439278b6764d3896e5db3f279e2f0b6a1954b4707ba297ddd78715"
+    },
+    {
+      "path": "tests/Feature/WhatsAppIntegrationTest.php",
+      "sha256": "97447e224e8761cd91758d124baa1bc837db6aec5aba713a6dda43aa064e2349"
+    },
+    {
+      "path": "tests/Support/MobileContractFixtures.php",
+      "sha256": "7b652732896bc3adf690df7c49c9cc0953cea1c20e3ec9f956e26a51833ab94c"
+    },
+    {
+      "path": "tests/Support/MobileSchoolFixtures.php",
+      "sha256": "8e5d720aa9536b2670c3641399b5ec48702aa98162d72a483bb644e616c78dc8"
+    },
+    {
+      "path": "tests/Unit/ArabicInputGuardsStructureTest.php",
+      "sha256": "d66a134334444eb1906c3d54badae653037b739577e5e87bdc878e0ffc25bc07"
+    },
+    {
+      "path": "tests/Unit/ExampleTest.php",
+      "sha256": "ffacae5c1a2a44c809420af5b3b404910da1b12167d58764dac6d10b8ba8cfaf"
+    },
+    {
+      "path": "tests/Unit/NativeDialogRegressionTest.php",
+      "sha256": "70dea80e7777b4cc195a8f646faa2b53a5fd0f390148493769580b7352569f44"
+    },
+    {
+      "path": "tests/Unit/PublicHtmlSanitizerTest.php",
+      "sha256": "b239788150a2f86cc60acbe5a060b9f66ef14fe77919e1641ab81d354e378d37"
+    },
+    {
+      "path": "tests/Unit/ThemeModeStructureTest.php",
+      "sha256": "31ba441076849688b8f29173214de3087a3e1a6af6bc05f3ed5c0c0372223602"
+    },
+    {
+      "path": "tools/testing/IsolatedTestCase.php",
+      "sha256": "45fb8a711717412034823b4d4b2fc6065c8d7f33b2f442ae7af56d7d6c31f7e8"
+    }
+  ],
+  "image_overrides": [
+    {
+      "path": "tests/TestCase.php",
+      "sha256": "45fb8a711717412034823b4d4b2fc6065c8d7f33b2f442ae7af56d7d6c31f7e8",
+      "reason": "Existing image-only isolated superclass"
+    },
+    {
+      "path": "phpunit.xml",
+      "sha256": "ca648185f36344887344ff98ee2abd506c61b183a552c79963ba73adad0729c9",
+      "reason": "Existing image-only MySQL default for Artisan"
+    }
+  ],
+  "original_testcase_sha256": "c7c209f5579c42647c1f7b2a79ac828e8b54ac62a98442045a6e94fa2c0d0ebc",
+  "archived_whatsapp_test": "Static hash only; never loaded/executed",
+  "source_status_before": " M README.md\n D public/awstats-icon\n D public/awstatsicons\n D public/icon/mime/conf.png\n D public/icon/mime/csv.png\n D public/icon/mime/document.png\n D public/icon/mime/dtd.png\n D public/icon/mime/flv.png\n D public/icon/mime/fon.png\n D public/icon/mime/package.png\n D public/icon/mime/runtime.png\n D public/icon/mime/swf.png\n D public/icon/mime/vbs.png\n D public/icon/mime/xsl.png\n?? .agents/\n?? .specify/\n?? .well-known/\n?? docs/spec-kit.md\n?? specs/",
+  "readme_sha256": "1287b879863b9ba8e6081826afa5c9c6c72e7e84534e1bac6c2aea07e5b28092"
+}

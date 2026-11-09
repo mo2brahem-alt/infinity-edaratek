@@ -10,6 +10,7 @@ guard() {
   fi
 }
 guard preflight
+php tools/testing/probe-phase8-source.php pre_tests || fail phase8_source_preflight 29
 composer validate --no-check-publish --no-interaction --no-ansi >/tmp/validate.log 2>&1 || fail composer_validate 40
 strict_exit=0
 composer validate --strict --no-check-publish --no-interaction --no-ansi >/tmp/strict.log 2>&1 || strict_exit=$?
@@ -50,6 +51,11 @@ done
 guard boot
 php -d memory_limit=512M tools/testing/probe-safety.php || fail phase1_safety_probe 28
 php tools/testing/probe-notification-scope.php || fail notification_scope_probe 29
+phase8_exit=0
+php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log tests/Feature/Mobile tests/Feature/Auth tests/Feature/SafeAdminSeederTest.php tests/Feature/PhoneStateCompatibilityTest.php tests/Feature/RealtimeNotificationFlowTest.php tests/Feature/SecurityHeadersTest.php tests/Feature/ArabicValidationMessagesTest.php tests/Feature/ApiRateLimitingTest.php tests/Feature/SystemRoleManagementApiTest.php tests/Feature/SchoolUserRoleAssignmentApiTest.php tests/Feature/SchoolCalendarManagementApiTest.php tests/Feature/AccountApprovalFlowTest.php tests/Feature/SubscriptionBillingAndSeatsTest.php tests/Feature/SubscriptionHandshakeFlowTest.php tests/Feature/AssociationHandshakeTest.php tests/Feature/ActiveSchoolAssociationMiddlewareTest.php tests/Feature/ManagerSchoolOwnershipMiddlewareTest.php tests/Feature/TicketWorkflowAuthorizationTest.php tests/Feature/SchoolAttachmentManagementTest.php tests/Feature/StudentLeaveManagementTest.php tests/Feature/StudentAttendanceAccessTest.php tests/Feature/StudentCertificateFeatureTest.php tests/Feature/UploadValidationFeatureFlagTest.php tests/Feature/PublicStorageLinkStructureTest.php tests/Feature/ManagerOnboardingLogoUploadTest.php tests/Feature/MediaStorageUrlFallbackTest.php tests/Feature/HeavyEndpointsPaginationTest.php tests/Feature/ManagerDashboardAnalyticsTest.php tests/Feature/AcademicPlanningAccessTest.php tests/Feature/QuickSetupStatusTest.php tests/Feature/SchoolTenantIsolationTest.php tests/Feature/SchoolExportDocumentServiceTest.php >/tmp/baseline.log 2>&1 || phase8_exit=$?
+php tools/testing/summarize-junit.php baseline "$phase8_exit" phase8 || fail phase8_focused_evidence 29
+[ "$phase8_exit" -eq 0 ] || fail phase8_focused_tests 29
+cp /tmp/baseline-junit.xml /tmp/phase8-focused-junit.xml
 phase7_exit=0
 php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log tests/Feature/Mobile/Phase7 >/tmp/baseline.log 2>&1 || phase7_exit=$?
 php tools/testing/summarize-junit.php baseline "$phase7_exit" phase7 || fail phase7_focused_evidence 29
@@ -84,7 +90,13 @@ php tools/testing/summarize-junit.php baseline "$native_tests_exit" native || fa
 # CI run 42469219953 proved PHP memory exhaustion at the base 128M limit.
 # Bound ONLY the isolated test process/profile; no application/production ini.
 php -d memory_limit=512M tools/testing/summarize-junit.php process-profile || fail process_profile 24
-# ONE suite. Warnings are counted from version-checked verbose event records.
+# T108 requires the guarded Artisan runner and the explicit MySQL PHPUnit lane.
+# The image already copies phpunit.mysql.xml to phpunit.xml; do not duplicate -c through Collision.
+artisan_exit=0
+php -d memory_limit=512M artisan test --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log >/tmp/baseline.log 2>&1 || artisan_exit=$?
+php tools/testing/summarize-junit.php baseline "$artisan_exit" phase8_artisan || fail phase8_artisan_evidence 29
+cp /tmp/baseline-junit.xml /tmp/phase8-artisan-junit.xml
+# Warnings are counted from version-checked verbose event records.
 test_exit=0
 php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log >/tmp/baseline.log 2>&1 || test_exit=$?
 php tools/testing/summarize-junit.php baseline "$test_exit" || fail baseline_evidence 24
@@ -94,4 +106,6 @@ php tools/testing/probe-phase4-gate.php "$test_exit" || fail phase4_acceptance_g
 php tools/testing/probe-phase5-gate.php "$test_exit" || fail phase5_acceptance_gate 29
 php tools/testing/probe-phase6-gate.php "$test_exit" || fail phase6_acceptance_gate 29
 php tools/testing/probe-phase7-gate.php "$test_exit" || fail phase7_acceptance_gate 29
+php tools/testing/probe-phase8-source.php post_tests || fail phase8_source_postflight 29
+php tools/testing/probe-phase8-gate.php "$test_exit" "$artisan_exit" || fail phase8_execution_evidence 29
 exit "$test_exit"

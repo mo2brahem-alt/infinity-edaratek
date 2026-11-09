@@ -32,7 +32,7 @@ try {
     $record += ['focused_total' => count($focused), 'focused_passed' => count($focused), 'focused_classes' => $classes,
         'full_total' => count($full), 'full_passed' => count($full)-1, 'full_failed' => 1, 'full_errors' => 0, 'full_skipped' => 0,
         'phase6_baseline_total' => 647, 'new_contract_cases' => $new, 'known_preexisting_regression_only' => true,
-        'query_profile' => $profile, 'WHATSAPP_IN_SCOPE' => 'NO', 'PHASE_8_STARTED' => false];
+        'query_profile' => $profile, 'WHATSAPP_IN_SCOPE' => 'NO', 'run_kind' => 'phase7_regression'];
     $record['status'] = 'PASS'; $record['MOBILE_API_CONTRACT_PASS'] = 'PASS';
 } catch (Throwable) { $record['classification'] = 'PHASE7_EVIDENCE_REQUIRES_REVIEW'; }
 echo json_encode($record, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES).PHP_EOL;
