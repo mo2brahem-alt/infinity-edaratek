@@ -98,6 +98,7 @@ class AttachmentService
         $metadata = $this->normalizeMetadata($context['metadata'] ?? null);
         $disk = self::DEFAULT_DISK;
         $isPrivate = true;
+        app(PrivateFileReader::class)->assertPrivateDisk($disk);
         if (count($normalizedFiles) > self::MAX_UPLOAD_FILES) {
             throw ValidationException::withMessages(['attachments' => ['Too many attachments.']]);
         }

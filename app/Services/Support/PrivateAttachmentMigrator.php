@@ -10,16 +10,21 @@ use Illuminate\Support\Facades\{DB, Storage};
 class PrivateAttachmentMigrator
 {
     public const TYPES = [Attachment::class, SchoolStudentLeaveAttachment::class, SchoolAttendanceAttachment::class];
+    private const QUARANTINE = ['AMBIGUOUS_REFERENCE', 'ORPHAN_REQUIRES_REVIEW', 'ORPHAN_OR_DELETED_PARENT', 'UNSAFE_SOURCE_PATH', 'MISSING_SOURCE'];
 
-    public function run(bool $apply = false, int $limit = 100): array
+    public function run(bool $apply = false, int $limit = 100, int $offset = 0, bool $inventoryOnly = false, bool $resumeOnly = false): array
     {
-        if ($limit < 1 || $limit > 500) { throw new PrivateFileMigratorException('INVALID_BATCH_LIMIT'); }
+        if ($limit < 1 || $limit > 500 || $offset < 0 || ($inventoryOnly && $resumeOnly)) { throw new PrivateFileMigratorException('INVALID_BATCH_LIMIT'); }
         if ($apply && ! config('private-files.migration_enabled', false)) { throw new PrivateFileMigratorException('APPLY_SCOPE_NOT_APPROVED'); }
-        $counts = ['observed' => 0, 'public_assets' => 0, 'private_required' => 0, 'quarantined' => 0, 'verified' => 0, 'failed' => 0, 'pending' => 0];
+        $counts = ['observed' => 0, 'public_assets' => 0, 'private_required' => 0, 'quarantined' => 0, 'verified' => 0, 'failed' => 0, 'pending' => 0,
+            'inventory_complete' => $resumeOnly ? null : true, 'next_offset' => null,
+            'mode' => $apply ? ($inventoryOnly ? 'inventory_apply' : ($resumeOnly ? 'resume_apply' : 'apply')) : 'dry_run'];
+        $seen = 0;
         // Lazy filesystem iteration; no unbounded allFiles() materialization.
-        foreach (Storage::disk('public')->getDriver()->listContents('', true) as $entry) {
+        foreach ($resumeOnly ? [] : Storage::disk('public')->getDriver()->listContents('', true) as $entry) {
             if (! $entry->isFile()) { continue; }
-            if ($counts['observed'] >= $limit) { break; }
+            if ($seen++ < $offset) { continue; }
+            if ($counts['observed'] >= $limit) { $counts['inventory_complete'] = false; $counts['next_offset'] = $offset + $limit; break; }
             $path = $entry->path(); $counts['observed']++;
             $key = hash('sha256', 'public'."\0".$path."\0".'1');
             $existing = PrivateFileMigration::query()->where('inventory_key', $key)->first();
@@ -49,7 +54,8 @@ class PrivateAttachmentMigrator
             ]);
         }
         // Also reconcile metadata whose public source is missing, without declaring success.
-        $missing = Attachment::withTrashed()->where('disk', 'public')->orderBy('id')->limit($limit)->get();
+        $missing = $resumeOnly ? collect() : Attachment::withTrashed()->where('disk', 'public')->orderBy('id')->offset($offset)->limit($limit + 1)->get();
+        if ($missing->count() > $limit) { $counts['inventory_complete'] = false; $counts['next_offset'] = $offset + $limit; $missing = $missing->take($limit); }
         foreach ($missing as $record) {
             if (Storage::disk('public')->exists($record->file_path)) { continue; }
             $counts['quarantined']++;
@@ -62,11 +68,11 @@ class PrivateAttachmentMigrator
             }
         }
         if ($apply) {
-            foreach (PrivateFileMigration::query()->where('state', '!=', 'verified')->orderBy('id')->limit($limit)->get() as $manifest) {
-                if ($manifest->safe_failure_code && in_array($manifest->safe_failure_code, ['AMBIGUOUS_REFERENCE', 'ORPHAN_REQUIRES_REVIEW', 'ORPHAN_OR_DELETED_PARENT', 'UNSAFE_SOURCE_PATH', 'MISSING_SOURCE'], true)) { continue; }
+            foreach ($inventoryOnly ? [] : PrivateFileMigration::query()->where(fn ($q) => $q->whereNull('safe_failure_code')->orWhereNotIn('safe_failure_code', self::QUARANTINE))
+                ->orderByRaw("state = 'verified'")->orderBy('id')->limit($limit)->get() as $manifest) {
                 $this->migrate($manifest);
             }
-            $counts['verified'] = PrivateFileMigration::where('state', 'verified')->count();
+            $counts['verified'] = PrivateFileMigration::where('state', 'verified')->whereNull('safe_failure_code')->count();
             $counts['failed'] = PrivateFileMigration::whereNotNull('safe_failure_code')->count();
             $counts['pending'] = PrivateFileMigration::where('state', '!=', 'verified')->count();
         }
@@ -83,13 +89,22 @@ class PrivateAttachmentMigrator
             $acquired = (int) (DB::selectOne('SELECT GET_LOCK(?, 2) AS acquired', [$lock])->acquired ?? 0) === 1;
             if (! $acquired) { throw new PrivateFileMigratorException('LOCK_TIMEOUT'); }
             $manifest->refresh();
-            if ($manifest->state === 'verified') { return; }
+            if (! in_array($manifest->state, ['inventoried', 'copied_verified', 'metadata_switched', 'public_revoked', 'verified'], true)) { throw new PrivateFileMigratorException('INVALID_MANIFEST_STATE'); }
+            if ($manifest->state === 'verified') {
+                $this->assertFingerprint(app(PrivateFileReader::class)->physicalPath($manifest->destination_disk, $manifest->destination_path), $manifest);
+                if ($this->anonymousCopies($manifest->source_path) !== []) { throw new PrivateFileMigratorException('PUBLIC_REEXPOSURE'); }
+                return;
+            }
             if (! in_array($manifest->attachment_type, self::TYPES, true) || ! $manifest->attachment_id) { throw new PrivateFileMigratorException('ORPHAN_REQUIRES_REVIEW'); }
             if ($manifest->source_disk !== 'public' || ! in_array($manifest->destination_disk, ['local', 'school_attachments'], true)
+                || $manifest->destination_disk !== ($manifest->attachment_type === Attachment::class ? 'school_attachments' : 'local')
+                || $manifest->inventory_key !== hash('sha256', 'public'."\0".$manifest->source_path."\0".'1')
+                || (int) $manifest->schema_version !== 1 || $manifest->destination_path !== 'private-migrations/'.$manifest->inventory_key
                 || PublicAssetPath::normalize($manifest->destination_path) === null || ! $manifest->source_hash) { throw new PrivateFileMigratorException('INVALID_MANIFEST'); }
             if (in_array($manifest->state, ['inventoried', 'copied_verified'], true)) {
                 $source = $this->publicPhysicalPath($manifest->source_path);
                 $this->assertFingerprint($source, $manifest);
+                app(PrivateFileReader::class)->assertPrivateDisk($manifest->destination_disk);
                 $disk = Storage::disk($manifest->destination_disk);
                 if (! $disk->exists($manifest->destination_path)) {
                     $stream = fopen($source, 'rb');
@@ -171,6 +186,9 @@ class PrivateAttachmentMigrator
             if ($record->trashed()) { return false; }
             if ($record->ticket_message_id) {
                 $m = $record->message; $task = $m?->subtask; $parent = $task ?: $m?->ticket;
+                if (! in_array((string) $record->module, ['', 'tickets'], true)
+                    || (($record->attachable_type || $record->attachable_id) && ($record->attachable_type !== TicketMessage::class || (int) $record->attachable_id !== (int) $record->ticket_message_id))
+                    || ($task && $m->ticket_id && (int) $m->ticket_id !== (int) $task->ticket_id)) { return false; }
                 return $parent && (! $record->school_id || (int) $record->school_id === (int) $parent->school_id)
                     && (! $task || ($task->ticket && (int) $task->ticket->school_id === (int) $task->school_id));
             }

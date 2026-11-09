@@ -8,10 +8,21 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class PrivateFileReader
 {
+    public function assertPrivateDisk(string $disk): string
+    {
+        abort_unless(in_array($disk, ['local', 'school_attachments'], true), 404);
+        $root = realpath(Storage::disk($disk)->path(''));
+        abort_unless($root, 404);
+        foreach ([realpath(Storage::disk('public')->path('')), realpath(public_path())] as $public) {
+            abort_if($public && ($root === $public || str_starts_with($root, $public.DIRECTORY_SEPARATOR)), 404);
+        }
+        return $root;
+    }
+
     public function physicalPath(string $disk, string $path): string
     {
         abort_unless(in_array($disk, ['local', 'school_attachments'], true) && PublicAssetPath::normalize($path) !== null, 404);
-        $root = realpath(Storage::disk($disk)->path(''));
+        $root = $this->assertPrivateDisk($disk);
         $file = realpath(Storage::disk($disk)->path($path));
         abort_unless($root && $file && is_file($file) && str_starts_with($file, $root.DIRECTORY_SEPARATOR), 404);
         return $file;

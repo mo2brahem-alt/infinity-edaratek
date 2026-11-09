@@ -166,5 +166,36 @@ class PrivateAttachmentAuthorizationTest extends TestCase
         catch (\Illuminate\Validation\ValidationException) { $this->assertSame(0, Attachment::count()); }
         try { $service->storeManyForAttachable($s['A']['staff'], [$files[0]], $s['A']['manager'], ['module' => 'staff_documents', 'school_id' => $s['B']['school']->id]); $this->fail('Parent school mismatch bypassed'); }
         catch (\Illuminate\Validation\ValidationException) { $this->assertSame([], Storage::disk('school_attachments')->allFiles()); }
+        Storage::set('school_attachments', Storage::disk('public'));
+        try { $service->storeManyForAttachable($s['A']['staff'], [$files[0]], $s['A']['manager'], ['module' => 'staff_documents']); $this->fail('Public private-disk root accepted'); }
+        catch (\Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $error) { $this->assertSame(404, $error->getStatusCode()); $this->assertSame([], Storage::disk('public')->allFiles()); }
+    }
+
+    public function test_attendance_download_and_delete_require_current_permission_school_and_classroom(): void
+    {
+        $s = $this->schools(); $leave = $this->leave($s['A']); $classroom = $leave->student->classroom;
+        $file = \App\Models\SchoolAttendanceAttachment::create(['school_id' => $s['A']['school']->id, 'school_classroom_id' => $classroom->id,
+            'attendance_date' => '2026-11-09', 'file_name' => 'attendance.txt', 'file_path' => 'synthetic/attendance.txt',
+            'mime_type' => 'text/plain', 'file_size' => 10, 'uploaded_by' => $s['A']['manager']->id, 'uploaded_at' => now()]);
+        Storage::disk('local')->put($file->file_path, 'attendance');
+        $url = route('school.student_attendance.attachments.download', $file);
+        $this->actingAs($s['A']['staff'])->getJson($url)->assertForbidden();
+        $s['A']['staff']->update(['can_manage_student_attendance' => true]);
+        $this->actingAs($s['A']['staff'])->get($url)->assertOk();
+        $this->actingAs($s['B']['manager'])->getJson($url)->assertNotFound();
+        $this->deleteJson(route('school.student_attendance.attachments.destroy', $file))->assertNotFound();
+        Storage::disk('local')->assertExists($file->file_path);
+        $classroom->update(['school_id' => $s['B']['school']->id]);
+        $this->actingAs($s['A']['manager'])->getJson($url)->assertNotFound();
+    }
+
+    public function test_sensitive_reference_overrides_public_prefix_and_cms_preview_or_delete(): void
+    {
+        $s = $this->schools(); $a = $this->ticketFile($s['A'], ['file_path' => 'uploads/private.txt', 'disk' => 'public']);
+        $this->get('/storage/uploads/private.txt')->assertNotFound(); $this->get('/media-files/uploads/private.txt')->assertNotFound();
+        $media = \App\Models\Media::create(['file_name' => 'private.txt', 'file_path' => $a->file_path, 'file_type' => 'image', 'mime_type' => 'text/plain', 'file_size' => 16]);
+        $admin = User::factory()->create(['role' => 'super_admin']); $admin->assignRole('super_admin');
+        $this->actingAs($admin)->getJson(route('admin.media.preview', $media))->assertNotFound();
+        $this->deleteJson(route('admin.media.destroy', $media))->assertForbidden(); Storage::disk('public')->assertExists($a->file_path);
     }
 }

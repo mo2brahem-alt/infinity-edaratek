@@ -1389,6 +1389,7 @@ class StudentAttendanceController extends Controller
             $attendanceDate
         );
         \App\Support\UploadSecurity::validateProtected($file, 'features.uploads.student_attendance_attachment_mime_types', 'attachments');
+        app(\App\Services\Support\PrivateFileReader::class)->assertPrivateDisk('local');
         $path = $file->store($basePath, 'local');
         $originalFileName = trim(basename((string) $file->getClientOriginalName()));
 

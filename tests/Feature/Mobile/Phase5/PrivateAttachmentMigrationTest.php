@@ -33,7 +33,7 @@ class PrivateAttachmentMigrationTest extends TestCase
 
     public function test_dry_run_never_mutates_files_manifest_or_metadata(): void
     {
-        $a = $this->legacy(); $before = $a->getRawOriginal();
+        $a = $this->legacy(); $before = $a->fresh()->getRawOriginal();
         $counts = app(PrivateAttachmentMigrator::class)->run();
         $this->assertSame(1, $counts['private_required']); $this->assertSame(0, PrivateFileMigration::count());
         $this->assertSame($before, $a->fresh()->getRawOriginal());
@@ -157,5 +157,61 @@ class PrivateAttachmentMigrationTest extends TestCase
         $this->assertSame(0, PrivateFileMigration::count());
         Storage::disk('public')->put('uploads/logo.png', 'branding');
         $this->assertSame(1, app(PrivateAttachmentMigrator::class)->run(false, 1)['observed']);
+    }
+
+    public function test_inventory_continuation_does_not_mutate_sources_until_explicit_resume(): void
+    {
+        $a = $this->legacy(); Storage::disk('public')->put('uploads/logo.png', 'logo');
+        $service = app(PrivateAttachmentMigrator::class);
+        $first = $service->run(true, 1, 0, true);
+        $this->assertFalse($first['inventory_complete']); $this->assertSame(1, $first['next_offset']);
+        $second = $service->run(true, 1, $first['next_offset'], true);
+        $this->assertTrue($second['inventory_complete']); $this->assertSame('public', $a->fresh()->disk);
+        Storage::disk('public')->assertExists($a->file_path);
+        $last = $service->run(true, 1, 0, false, true);
+        $this->assertSame(1, $last['verified']); $this->assertNull($last['inventory_complete']);
+        Storage::disk('public')->assertExists('uploads/logo.png');
+    }
+
+    public function test_independent_connection_lock_blocks_a_duplicate_worker_without_copy_or_switch(): void
+    {
+        $a = $this->legacy(); app(PrivateAttachmentMigrator::class)->run(true, 100, 0, true);
+        $m = PrivateFileMigration::firstOrFail();
+        config(['database.connections.phase5_peer' => config('database.connections.mysql')]);
+        $peer = \Illuminate\Support\Facades\DB::connection('phase5_peer'); $lock = 'private_file_'.substr($m->inventory_key, 0, 40);
+        try {
+            $this->assertSame(1, (int) $peer->selectOne('SELECT GET_LOCK(?, 2) AS acquired', [$lock])->acquired);
+            app(PrivateAttachmentMigrator::class)->migrate($m);
+            $this->assertSame('LOCK_TIMEOUT', $m->fresh()->safe_failure_code); $this->assertSame('public', $a->fresh()->disk);
+            $this->assertSame([], Storage::disk('school_attachments')->allFiles());
+        } finally { $peer->selectOne('SELECT RELEASE_LOCK(?) AS released', [$lock]); \Illuminate\Support\Facades\DB::disconnect('phase5_peer'); }
+    }
+
+    public function test_verified_record_audit_detects_later_corruption_without_republishing_source(): void
+    {
+        $a = $this->legacy(); $service = app(PrivateAttachmentMigrator::class); $service->run(true);
+        $m = PrivateFileMigration::firstOrFail(); Storage::disk($m->destination_disk)->put($m->destination_path, 'corrupt-later');
+        $counts = $service->run(true, 100, 0, false, true);
+        $this->assertSame(0, $counts['verified']); $this->assertSame(1, $counts['failed']);
+        $this->assertSame('CHECKSUM_CONFLICT', $m->fresh()->safe_failure_code); Storage::disk('public')->assertMissing('ticketing/attachments/legacy.txt');
+        $migration = require database_path('migrations/2026_11_09_000000_create_private_file_migrations_table.php'); $migration->down();
+        $this->assertSame(1, PrivateFileMigration::count()); $this->assertSame('school_attachments', $a->fresh()->disk);
+        Storage::disk($m->destination_disk)->assertExists($m->destination_path);
+    }
+
+    public function test_large_inventory_counts_reconcile_across_bounded_read_only_batches(): void
+    {
+        $a = $this->legacy();
+        for ($i = 0; $i < 503; $i++) { Storage::disk('public')->put('uploads/logo-'.$i.'.txt', 'branding'); }
+        $observed = 0; $offset = 0; $service = app(PrivateAttachmentMigrator::class);
+        do {
+            $batch = $service->run(true, 100, $offset, true); $observed += $batch['observed'];
+            $this->assertLessThanOrEqual(100, $batch['observed']);
+            $offset = $batch['next_offset'];
+        } while ($offset !== null);
+        $this->assertSame(504, $observed); $this->assertTrue($batch['inventory_complete']);
+        $this->assertSame(1, PrivateFileMigration::count()); $this->assertSame('public', $a->fresh()->disk);
+        $this->assertSame(1, $service->run(true, 100, 0, false, true)['verified']);
+        $this->assertCount(503, Storage::disk('public')->allFiles());
     }
 }

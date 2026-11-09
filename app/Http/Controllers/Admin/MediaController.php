@@ -71,6 +71,7 @@ class MediaController extends Controller
 
     public function preview(Media $media)
     {
+        abort_if(\App\Services\Support\PrivateFileClassification::hasSensitiveReference((string) $media->file_path), 404);
         $path = $this->normalizePublicDiskPath((string) $media->file_path);
 
         if ($path === null || ! Storage::disk('public')->exists($path)) {
@@ -94,6 +95,7 @@ class MediaController extends Controller
     public function destroy($id)
     {
         $media = Media::findOrFail($id);
+        abort_if(\App\Services\Support\PrivateFileClassification::hasSensitiveReference((string) $media->file_path), 403);
         Storage::disk('public')->delete($media->file_path);
         $media->delete();
         return response()->json(['message' => 'Deleted']);

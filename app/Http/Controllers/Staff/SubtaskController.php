@@ -90,6 +90,7 @@ class SubtaskController extends Controller
 
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
+            app(\App\Services\Support\PrivateFileReader::class)->assertPrivateDisk('school_attachments');
             $path = $file->store('ticketing/attachments', 'school_attachments');
 
             Attachment::create([
