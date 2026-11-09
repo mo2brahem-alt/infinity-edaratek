@@ -74,6 +74,7 @@
     "Tests\\Feature\\Mobile\\Phase7\\MobilePaginationTest",
     "Tests\\Feature\\Mobile\\Phase7\\MobileRatePolicyTest",
     "Tests\\Feature\\Mobile\\Phase7\\MobileSerializationTest",
+    "Tests\\Feature\\Mobile\\Phase8\\LargePreparedListsTest",
     "Tests\\Feature\\PhoneStateCompatibilityTest",
     "Tests\\Feature\\PublicStorageLinkStructureTest",
     "Tests\\Feature\\QuickSetupStatusTest",
@@ -528,6 +529,10 @@
       "sha256": "d885e1cd9fc13211eda81194078c7f7f248bb2f446cffa1b693e85dbecfb90ab"
     },
     {
+      "path": "tests/Feature/Mobile/Phase8/LargePreparedListsTest.php",
+      "sha256": "665e01f9d191b6a6aa42bf721e8ea420ec6e0949b8ab9d0b564d0b0ef429d377"
+    },
+    {
       "path": "tests/Feature/OrgStructureRoleTemplateManagementTest.php",
       "sha256": "76a408b9d736bad0fa0eb25a679edd6314887f7b89be2e99b8237efebcddcea0"
     },
@@ -755,5 +760,7 @@
   "original_testcase_sha256": "c7c209f5579c42647c1f7b2a79ac828e8b54ac62a98442045a6e94fa2c0d0ebc",
   "archived_whatsapp_test": "Static hash only; never loaded/executed",
   "source_status_before": " M README.md\n D public/awstats-icon\n D public/awstatsicons\n D public/icon/mime/conf.png\n D public/icon/mime/csv.png\n D public/icon/mime/document.png\n D public/icon/mime/dtd.png\n D public/icon/mime/flv.png\n D public/icon/mime/fon.png\n D public/icon/mime/package.png\n D public/icon/mime/runtime.png\n D public/icon/mime/swf.png\n D public/icon/mime/vbs.png\n D public/icon/mime/xsl.png\n?? .agents/\n?? .specify/\n?? .well-known/\n?? docs/spec-kit.md\n?? specs/",
-  "readme_sha256": "1287b879863b9ba8e6081826afa5c9c6c72e7e84534e1bac6c2aea07e5b28092"
+  "readme_sha256": "1287b879863b9ba8e6081826afa5c9c6c72e7e84534e1bac6c2aea07e5b28092",
+  "phase8_additional_cases": 2,
+  "additional_test_reason": "Spec P2 requires >100 devices/files plus bounded histories/query growth; added two Phase8 cases, no existing test or API change."
 }

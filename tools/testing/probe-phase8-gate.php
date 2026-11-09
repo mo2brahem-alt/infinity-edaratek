@@ -31,15 +31,22 @@ try {
             $fullClasses[$class] = ($fullClasses[$class] ?? 0) + 1;
             if (isset($case->failure)) { $failures[] = $class.'::'.$method; }
         }
-        if (count($cases) !== $scope['baseline_total'] || $failures !== [$known]) { throw new RuntimeException('Full regression mismatch'); }
+        if (count($cases) !== $scope['baseline_total'] + $scope['phase8_additional_cases'] || $failures !== [$known]) { throw new RuntimeException('Full regression mismatch'); }
         foreach ($classes as $class => $count) { if (($fullClasses[$class] ?? 0) !== $count) { throw new RuntimeException('Focused/full mismatch'); } }
         sort($symbols); ksort($fullClasses); $fingerprints[] = hash('sha256', json_encode($symbols, JSON_THROW_ON_ERROR));
         $lanes[$lane] = ['total' => count($cases), 'passed' => count($cases)-1, 'failed' => 1, 'errors' => 0, 'skipped' => 0,
             'known_excel_only' => true, 'class_counts' => $fullClasses, 'case_symbol_sha256' => end($fingerprints)];
     }
     if ($fingerprints[0] !== $fingerprints[1] || (int) ($argv[1] ?? -1) !== 1 || (int) ($argv[2] ?? -1) !== 1) { throw new RuntimeException('Runner/exit mismatch'); }
+    if (($classes['Tests\\Feature\\Mobile\\Phase8\\LargePreparedListsTest'] ?? 0) !== $scope['phase8_additional_cases']) { throw new RuntimeException('Additional coverage missing'); }
+    $profiles = json_decode(file_get_contents('/tmp/phase8-large-lists.json'), true, 512, JSON_THROW_ON_ERROR);
+    foreach (['devices', 'task_attachments'] as $surface) {
+        $p = $profiles[$surface];
+        if ($p['status'] !== 'PASS' || $p['large']['rows'] <= 100 || $p['large']['returned_rows'] !== 100 || $p['large']['queries'] > $p['query_budget']) { throw new RuntimeException('List scale evidence missing'); }
+    }
     $record += ['PHASE_8_FOCUSED_PASS' => count($focused), 'PHASE_8_FOCUSED_TOTAL' => count($focused), 'focused_classes' => $classes,
-        'REGRESSION_STATUS' => 'PASS_FOR_CODE_AND_SYNTHETIC_SCOPE', 'FULL_SUITE_PASS' => $scope['baseline_total']-1, 'FULL_SUITE_TOTAL' => $scope['baseline_total'],
+        'REGRESSION_STATUS' => 'PASS_FOR_CODE_AND_SYNTHETIC_SCOPE', 'baseline_total' => $scope['baseline_total'], 'phase8_additional_cases' => $scope['phase8_additional_cases'],
+        'FULL_SUITE_PASS' => $scope['baseline_total']+$scope['phase8_additional_cases']-1, 'FULL_SUITE_TOTAL' => $scope['baseline_total']+$scope['phase8_additional_cases'], 'large_list_profiles' => $profiles,
         'KNOWN_EXCEL_FAILURE' => 'YES', 'RUNTIME_ERRORS' => 0, 'SKIPPED_TESTS' => 0, 'full_lanes' => $lanes, 'runner_case_symbols_match' => true,
         'FULL_SECURITY_REGRESSION_GATE_PASS' => 'BLOCKED', 'phase8_acceptance' => 'BLOCKED',
         'remaining_gate_evidence' => ['H01_ACTUAL_STORAGE_ALIAS_AND_CACHE_PROOF_UNVERIFIED', 'H05_ACTUAL_ENVIRONMENT_SAFETY_PROOF_UNVERIFIED'],
