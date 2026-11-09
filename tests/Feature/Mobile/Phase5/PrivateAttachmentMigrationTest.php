@@ -214,4 +214,25 @@ class PrivateAttachmentMigrationTest extends TestCase
         $this->assertSame(1, $service->run(true, 100, 0, false, true)['verified']);
         $this->assertCount(503, Storage::disk('public')->allFiles());
     }
+
+    public function test_alias_only_legacy_copy_migrates_without_requiring_a_canonical_public_copy(): void
+    {
+        $a = $this->legacy(); $old = $a->file_path;
+        $root = sys_get_temp_dir().'/edaratek_phase5_'.bin2hex(random_bytes(10)); mkdir($root);
+        $originalPublic = public_path(); $this->app->usePublicPath($root);
+        try {
+            $path = $root.'/storage/'.$old; mkdir(dirname($path), 0755, true); file_put_contents($path, 'conflicting-proof');
+            $conflict = app(PrivateAttachmentMigrator::class)->run(false, 100, 0, false, false, 'storage');
+            $this->assertSame(1, $conflict['quarantined']); $this->assertSame(0, PrivateFileMigration::count());
+            $this->assertSame('synthetic-proof', Storage::disk('public')->get($old));
+            file_put_contents($path, 'synthetic-proof');
+            Storage::disk('public')->delete($old);
+            $counts = app(PrivateAttachmentMigrator::class)->run(true, 100, 0, false, false, 'storage');
+            $this->assertSame(1, $counts['verified']); $this->assertFileDoesNotExist($path);
+            $this->assertSame('synthetic-proof', Storage::disk('school_attachments')->get($a->fresh()->file_path));
+        } finally {
+            $this->app->usePublicPath($originalPublic);
+            if (dirname($root) === sys_get_temp_dir() && str_starts_with(basename($root), 'edaratek_phase5_')) { (new \Illuminate\Filesystem\Filesystem)->deleteDirectory($root); }
+        }
+    }
 }

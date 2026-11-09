@@ -12,6 +12,9 @@ final class AttachmentController
     public function download(Request $request, string $attachment)
     {
         app(SubtaskAccessQuery::class)->rejectAuthority($request);
+        if (! $request->user()->school_id && ! $request->user()->hasSystemRole('super_admin') && ! $request->user()->hasSystemRole('supervisor')) {
+            app(\App\Services\School\SchoolContextResolver::class)->current($request->user());
+        }
         $file = Attachment::query()->findOrFail($this->id($attachment));
         app(AttachmentAccess::class)->authorize($request->user(), $file);
         return app(AttachmentService::class)->downloadInstitutionalAttachment($file, $request->user());

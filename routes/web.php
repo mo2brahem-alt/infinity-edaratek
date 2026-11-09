@@ -332,7 +332,7 @@ Route::middleware(['auth', 'active_school_association', 'student_attendance_acce
     Route::get('/school/student-attendance/report/export', [SchoolStudentAttendanceController::class, 'exportReportCsv'])->name('school.student_attendance.report.export');
 });
 
-Route::middleware(['auth', 'active_school_association'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/school/attachments/{attachment}/download', [SchoolAttachmentController::class, 'download'])
         ->name('school.attachments.download');
     Route::delete('/school/attachments/{attachment}', [SchoolAttachmentController::class, 'destroy'])

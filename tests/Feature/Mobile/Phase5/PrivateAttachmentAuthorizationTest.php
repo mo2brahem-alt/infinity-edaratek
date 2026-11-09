@@ -139,7 +139,10 @@ class PrivateAttachmentAuthorizationTest extends TestCase
         $url = '/api/v1/attachments/'.$a->id.'/download';
         $this->withToken($this->nativeToken($s['A']['manager']))->get($url)->assertOk();
         $this->withToken($this->nativeToken($s['A']['staff']))->getJson($url)->assertForbidden();
+        $this->actingAs($s['A']['staff'])->deleteJson(route('school.attachments.destroy', $a))->assertForbidden();
         $this->withToken($this->nativeToken($s['B']['manager']))->getJson($url)->assertNotFound();
+        $this->actingAs($s['B']['manager'])->deleteJson(route('school.attachments.destroy', $a))->assertNotFound();
+        $this->assertNotNull($a->fresh()); Storage::disk('school_attachments')->assertExists($a->file_path);
         $ticket = $this->ticketFile($s['A']);
         $this->actingAs($s['A']['staff'])->deleteJson(route('school.attachments.destroy', $ticket))->assertForbidden();
         $this->assertFalse($ticket->fresh()->trashed());
@@ -197,5 +200,16 @@ class PrivateAttachmentAuthorizationTest extends TestCase
         $admin = User::factory()->create(['role' => 'super_admin']); $admin->assignRole('super_admin');
         $this->actingAs($admin)->getJson(route('admin.media.preview', $media))->assertNotFound();
         $this->deleteJson(route('admin.media.destroy', $media))->assertForbidden(); Storage::disk('public')->assertExists($a->file_path);
+    }
+
+    public function test_supervisor_ticket_parent_read_remains_available_without_a_staff_membership(): void
+    {
+        $s = $this->schools(); $a = $this->ticketFile($s['A']);
+        $supervisor = $s['A']['supervisor']; $this->assertNull($supervisor->school_id);
+        $this->actingAs($supervisor)->get(route('school.attachments.download', $a))->assertOk();
+        $this->withToken($this->nativeToken($supervisor))->get('/api/v1/attachments/'.$a->id.'/download')->assertOk();
+        $s['A']['school']->update(['supervisor_id' => $s['B']['supervisor']->id]);
+        $this->getJson('/api/v1/attachments/'.$a->id.'/download')->assertNotFound();
+        $this->actingAs($supervisor)->getJson(route('school.attachments.download', $a))->assertNotFound();
     }
 }

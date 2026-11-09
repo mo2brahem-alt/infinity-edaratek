@@ -12,63 +12,37 @@ class PrivateAttachmentMigrator
     public const TYPES = [Attachment::class, SchoolStudentLeaveAttachment::class, SchoolAttendanceAttachment::class];
     private const QUARANTINE = ['AMBIGUOUS_REFERENCE', 'ORPHAN_REQUIRES_REVIEW', 'ORPHAN_OR_DELETED_PARENT', 'UNSAFE_SOURCE_PATH', 'MISSING_SOURCE'];
 
-    public function run(bool $apply = false, int $limit = 100, int $offset = 0, bool $inventoryOnly = false, bool $resumeOnly = false): array
+    public function run(bool $apply = false, int $limit = 100, int $offset = 0, bool $inventoryOnly = false, bool $resumeOnly = false, string $surface = 'public'): array
     {
-        if ($limit < 1 || $limit > 500 || $offset < 0 || ($inventoryOnly && $resumeOnly)) { throw new PrivateFileMigratorException('INVALID_BATCH_LIMIT'); }
+        if ($limit < 1 || $limit > 500 || $offset < 0 || ($inventoryOnly && $resumeOnly) || ! in_array($surface, ['public', 'storage', 'media-files'], true)) { throw new PrivateFileMigratorException('INVALID_BATCH_LIMIT'); }
         if ($apply && ! config('private-files.migration_enabled', false)) { throw new PrivateFileMigratorException('APPLY_SCOPE_NOT_APPROVED'); }
         $counts = ['observed' => 0, 'public_assets' => 0, 'private_required' => 0, 'quarantined' => 0, 'verified' => 0, 'failed' => 0, 'pending' => 0,
-            'inventory_complete' => $resumeOnly ? null : true, 'next_offset' => null,
+            'inventory_complete' => $resumeOnly ? null : true, 'next_offset' => null, 'metadata_only' => 0, 'inventory_surface' => $surface,
             'mode' => $apply ? ($inventoryOnly ? 'inventory_apply' : ($resumeOnly ? 'resume_apply' : 'apply')) : 'dry_run'];
         $seen = 0;
-        // Lazy filesystem iteration; no unbounded allFiles() materialization.
-        foreach ($resumeOnly ? [] : Storage::disk('public')->getDriver()->listContents('', true) as $entry) {
+        $source = $this->inventoryDisk($surface);
+        $batchPaths = [];
+        foreach ($resumeOnly || ! $source ? [] : $source->getDriver()->listContents('', true) as $entry) {
             if (! $entry->isFile()) { continue; }
             if ($seen++ < $offset) { continue; }
             if ($counts['observed'] >= $limit) { $counts['inventory_complete'] = false; $counts['next_offset'] = $offset + $limit; break; }
-            $path = $entry->path(); $counts['observed']++;
-            $key = hash('sha256', 'public'."\0".$path."\0".'1');
-            $existing = PrivateFileMigration::query()->where('inventory_key', $key)->first();
-            if ($existing) { continue; } // Pending manifests are resumed below, even after source revocation.
-            $refs = collect();
-            foreach (self::TYPES as $type) {
-                $query = $type === Attachment::class ? $type::withTrashed() : $type::query();
-                $refs = $refs->merge($query->where('file_path', $path)->get());
-            }
-            if ($refs->isEmpty() && PublicAssetPath::allows($path)) { $counts['public_assets']++; continue; }
-            $counts['private_required']++;
-            $record = $refs->count() === 1 ? $refs->first() : null;
-            $reason = $refs->count() > 1 ? 'AMBIGUOUS_REFERENCE' : ($record ? null : 'ORPHAN_REQUIRES_REVIEW');
-            if ($record && ! $this->validParent($record)) { $reason = 'ORPHAN_OR_DELETED_PARENT'; }
-            try { $source = $this->publicPhysicalPath($path); }
-            catch (\Throwable) { $source = null; $reason = 'UNSAFE_SOURCE_PATH'; }
-            if ($reason) { $counts['quarantined']++; }
-            if (! $apply) { continue; } // Dry-run has no manifest, file or metadata mutations.
-            $targetDisk = $record instanceof Attachment ? 'school_attachments' : 'local';
-            PrivateFileMigration::query()->firstOrCreate(['inventory_key' => $key], [
-                'schema_version' => 1, 'attachment_type' => $record ? $record::class : null, 'attachment_id' => $record?->id,
-                'source_disk' => 'public', 'source_path' => $path, 'destination_disk' => $targetDisk,
-                'destination_path' => 'private-migrations/'.$key, 'source_size' => $source ? filesize($source) : null,
-                'source_hash' => $source ? hash_file('sha256', $source) : null,
-                'observed_source_metadata' => $record ? $record->getRawOriginal() : null,
-                'safe_failure_code' => $reason,
-            ]);
+            $path = $entry->path(); $counts['observed']++; $batchPaths[$path] = true;
+            $result = $this->inventoryPath($path, $apply);
+            $counts[$result['kind']]++;
+            if ($result['quarantined']) { $counts['quarantined']++; }
         }
-        // Also reconcile metadata whose public source is missing, without declaring success.
+        // Reconcile source pointers even when canonical bytes exist only in a legacy physical alias.
         $missing = $resumeOnly ? collect() : Attachment::withTrashed()->where('disk', 'public')->orderBy('id')->offset($offset)->limit($limit + 1)->get();
         if ($missing->count() > $limit) { $counts['inventory_complete'] = false; $counts['next_offset'] = $offset + $limit; $missing = $missing->take($limit); }
         foreach ($missing as $record) {
-            if (Storage::disk('public')->exists($record->file_path)) { continue; }
-            $counts['quarantined']++;
-            if ($apply) {
-                $key = hash('sha256', 'public'."\0".$record->file_path."\0".'1');
-                PrivateFileMigration::firstOrCreate(['inventory_key' => $key], ['schema_version' => 1, 'attachment_type' => Attachment::class,
-                    'attachment_id' => $record->id, 'source_disk' => 'public', 'source_path' => $record->file_path,
-                    'destination_disk' => 'school_attachments', 'destination_path' => 'private-migrations/'.$key,
-                    'observed_source_metadata' => $record->getRawOriginal(), 'safe_failure_code' => 'MISSING_SOURCE']);
-            }
+            if (isset($batchPaths[$record->file_path]) || Storage::disk('public')->exists($record->file_path)) { continue; }
+            $batchPaths[$record->file_path] = true; $counts['metadata_only']++;
+            $result = $this->inventoryPath($record->file_path, $apply);
+            $counts[$result['kind']]++;
+            if ($result['quarantined']) { $counts['quarantined']++; }
         }
         if ($apply) {
-            foreach ($inventoryOnly ? [] : PrivateFileMigration::query()->where(fn ($q) => $q->whereNull('safe_failure_code')->orWhereNotIn('safe_failure_code', self::QUARANTINE))
+            foreach ($inventoryOnly ? [] : PrivateFileMigration::query()->whereNotNull('source_hash')->where(fn ($q) => $q->whereNull('safe_failure_code')->orWhereNotIn('safe_failure_code', self::QUARANTINE))
                 ->orderByRaw("state = 'verified'")->orderBy('id')->limit($limit)->get() as $manifest) {
                 $this->migrate($manifest);
             }
@@ -77,6 +51,42 @@ class PrivateAttachmentMigrator
             $counts['pending'] = PrivateFileMigration::where('state', '!=', 'verified')->count();
         }
         return $counts;
+    }
+
+    private function inventoryPath(string $path, bool $apply): array
+    {
+        $key = hash('sha256', 'public'."\0".$path."\0".'1');
+        $existing = PrivateFileMigration::query()->where('inventory_key', $key)->first();
+        if ($existing) { return ['kind' => 'private_required', 'quarantined' => in_array($existing->safe_failure_code, self::QUARANTINE, true)]; }
+        $refs = collect();
+        foreach (self::TYPES as $type) {
+            $query = $type === Attachment::class ? $type::withTrashed() : $type::query();
+            $refs = $refs->merge($query->where('file_path', $path)->limit(2)->get());
+            if ($refs->count() > 1) { break; }
+        }
+        if ($refs->isEmpty() && PublicAssetPath::allows($path)) { return ['kind' => 'public_assets', 'quarantined' => false]; }
+        $record = $refs->count() === 1 ? $refs->first() : null;
+        $reason = $refs->count() > 1 ? 'AMBIGUOUS_REFERENCE' : ($record ? null : 'ORPHAN_REQUIRES_REVIEW');
+        if ($record && ! $this->validParent($record)) { $reason = 'ORPHAN_OR_DELETED_PARENT'; }
+        try { $source = $this->publicPhysicalPath($path); }
+        catch (\Throwable $error) { $source = null; $reason = $reason ?: ($error instanceof PrivateFileMigratorException ? $error->getMessage() : 'UNSAFE_SOURCE_PATH'); }
+        if ($apply) {
+            PrivateFileMigration::firstOrCreate(['inventory_key' => $key], ['schema_version' => 1,
+                'attachment_type' => $record ? $record::class : null, 'attachment_id' => $record?->id, 'source_disk' => 'public', 'source_path' => $path,
+                'destination_disk' => $record instanceof Attachment ? 'school_attachments' : 'local', 'destination_path' => 'private-migrations/'.$key,
+                'source_size' => $source ? filesize($source) : null, 'source_hash' => $source ? hash_file('sha256', $source) : null,
+                'observed_source_metadata' => $record ? $record->getRawOriginal() : null, 'safe_failure_code' => $reason]);
+        }
+        return ['kind' => 'private_required', 'quarantined' => $reason !== null];
+    }
+
+    private function inventoryDisk(string $surface): ?\Illuminate\Contracts\Filesystem\Filesystem
+    {
+        if ($surface === 'public') { return Storage::disk('public'); }
+        $root = realpath(public_path($surface)); if (! $root) { return null; }
+        $public = realpath(public_path()); $canonical = realpath(Storage::disk('public')->path(''));
+        if (! is_dir($root) || ($root !== $canonical && (! $public || ! str_starts_with($root, $public.DIRECTORY_SEPARATOR)))) { throw new PrivateFileMigratorException('UNSAFE_ALIAS_ROOT'); }
+        return Storage::build(['driver' => 'local', 'root' => $root, 'throw' => true]);
     }
 
     public function migrate(PrivateFileMigration $manifest): void
@@ -161,9 +171,11 @@ class PrivateAttachmentMigrator
     private function publicPhysicalPath(string $path): string
     {
         if (PublicAssetPath::normalize($path) === null) { throw new PrivateFileMigratorException('UNSAFE_SOURCE_PATH'); }
-        $root = realpath(Storage::disk('public')->path('')); $real = realpath(Storage::disk('public')->path($path));
-        if (! $root || ! $real || ! is_file($real) || ! str_starts_with($real, $root.DIRECTORY_SEPARATOR)) { throw new PrivateFileMigratorException('MISSING_SOURCE'); }
-        return $real;
+        $copies = $this->anonymousCopies($path);
+        if ($copies === []) { throw new PrivateFileMigratorException('MISSING_SOURCE'); }
+        $hash = hash_file('sha256', $copies[0]);
+        foreach ($copies as $copy) { if (hash_file('sha256', $copy) !== $hash) { throw new PrivateFileMigratorException('CHECKSUM_CONFLICT'); } }
+        return $copies[0];
     }
 
     private function anonymousCopies(string $path): array

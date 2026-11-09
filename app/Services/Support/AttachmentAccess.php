@@ -31,7 +31,11 @@ final class AttachmentAccess
             abort_if($attachment->school_id && (int) $attachment->school_id !== (int) $parent->school_id, 404);
             // Surface suspension consistently while keeping invisible records hidden.
             if ((int) $actor->school_id === (int) $parent->school_id && $actor->hasSystemRole('staff')) { $this->schools->current($actor, purpose: 'staff'); }
-            abort_unless(Gate::forUser($actor)->allows('view', $parent), 404);
+            if ((int) $actor->school_id === (int) $parent->school_id && $actor->hasSystemRole('school_manager') && ! $actor->hasSystemRole('staff')) { $this->schools->current($actor, purpose: 'manager'); }
+            $ticket = $parent instanceof Subtask ? $parent->ticket : $parent;
+            // Existing supervisor ticket detail includes its subtask messages/attachments.
+            $supervisedParent = $actor->hasSystemRole('supervisor') && Gate::forUser($actor)->allows('view', $ticket);
+            abort_unless(Gate::forUser($actor)->allows('view', $parent) || $supervisedParent, 404);
             abort_unless($action === 'download', 403); // No new ticket-attachment delete product action.
             return;
         }
