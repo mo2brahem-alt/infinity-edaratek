@@ -43,6 +43,8 @@ class MobileApiContractTest extends TestCase
         $other = $this->nativeToken($a); $otherId = (int) explode('|', $other)[0];
         $foreign = $this->nativeToken($b); $a->createToken('integration', ['*'], now()->addDay());
         $expired = $a->createToken('native:'.\Illuminate\Support\Str::uuid().':Expired', ['native:access'], now()->subSecond());
+        $invalid = $a->createToken('native:'.\Illuminate\Support\Str::uuid().':Missing creation date', ['native:access'], now()->addDay());
+        $invalid->accessToken->update(['created_at' => null]);
         $this->withHeader('Authorization', 'Bearer '.$token);
         $r = $this->getJson('/api/v1/auth/devices')->assertOk()->assertJsonPath('meta.total', 2);
         foreach ($r->json('data') as $item) {

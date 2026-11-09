@@ -33,6 +33,7 @@ final class NativeTokenService
             && Str::isUuid($parts[1])
             && $parts[2] !== ''
             && array_values((array) $token->abilities) === [self::ABILITY]
+            && $token->created_at !== null
             && $token->expires_at !== null;
     }
 
@@ -50,6 +51,7 @@ final class NativeTokenService
     public function nativeTokens(User $user): MorphMany
     {
         return $user->tokens()
+            ->whereNotNull('created_at')
             // The normal MySQL collation is case-insensitive. The binary
             // expression keeps an unrelated token called "NATIVE:..." out of
             // the native lifecycle and its deletion path.

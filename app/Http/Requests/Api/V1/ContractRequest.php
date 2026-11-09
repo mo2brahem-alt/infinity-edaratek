@@ -12,6 +12,11 @@ abstract class ContractRequest extends FormRequest
     public function after(): array
     {
         return [function (Validator $validator): void {
+            foreach ($this->rules() as $field => $rules) {
+                if (in_array('prohibited', $rules, true) && array_key_exists($field, $this->all())) {
+                    $validator->errors()->add($field, 'This field is not accepted.');
+                }
+            }
             foreach (array_diff(array_keys($this->all()), array_keys($this->rules())) as $key) {
                 $validator->errors()->add($key, 'This field is not supported.');
             }

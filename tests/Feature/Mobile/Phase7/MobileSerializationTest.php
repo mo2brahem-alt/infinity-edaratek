@@ -44,7 +44,7 @@ class MobileSerializationTest extends TestCase
 
     public function test_large_synthetic_lists_keep_output_and_query_growth_bounded(): void
     {
-        $s=$this->schools(); $ticket=Ticket::create(['school_id'=>$s['A']['school']->id,'created_by'=>$s['A']['supervisor']->id,'assigned_to'=>$s['A']['manager']->id,'title'=>'Synthetic parent','status'=>Ticket::STATUS_OPEN]);
+        $s=$this->schools(); $ticket=Ticket::create(['school_id'=>$s['A']['school']->id,'created_by'=>$s['A']['supervisor']->id,'assigned_to'=>$s['A']['manager']->id,'title'=>'Synthetic parent','description'=>'Synthetic description','status'=>Ticket::STATUS_OPEN]);
         $rows=[]; for($i=0;$i<10;$i++){$rows[]=['ticket_id'=>$ticket->id,'school_id'=>$s['A']['school']->id,'created_by'=>$s['A']['manager']->id,'assigned_to'=>$s['A']['staff']->id,'title'=>'Synthetic '.$i,'status'=>Subtask::STATUS_OPEN];}
         Subtask::insert($rows);$this->bearer($s['A']['staff']);$this->getJson('/api/v1/staff/tasks')->assertOk();
         $profile=function(int$count) {DB::enableQueryLog();DB::flushQueryLog();$start=microtime(true);$r=$this->getJson('/api/v1/staff/tasks?per_page=100')->assertOk();$elapsed=(microtime(true)-$start)*1000;$queries=count(DB::getQueryLog());DB::disableQueryLog();$r->assertJsonPath('meta.total',$count);return[$queries,$elapsed,$r];};

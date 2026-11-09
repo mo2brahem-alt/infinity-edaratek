@@ -65,6 +65,18 @@ class MobileRatePolicyTest extends TestCase
 
     public static function budgetKinds(): array { return [['login',5],['read',120],['session',10],['reset',3]]; }
 
+    public function test_lock_timeout_denies_admission_without_token_or_unlocked_fallback(): void
+    {
+        $user=User::factory()->create();
+        $cache=\Mockery::mock(\Illuminate\Cache\Repository::class);
+        $lock=\Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+        $lock->shouldReceive('block')->once()->with(2)->andThrow(new \Illuminate\Contracts\Cache\LockTimeoutException);
+        $cache->shouldReceive('lock')->once()->andReturn($lock); Cache::shouldReceive('store')->once()->andReturn($cache);
+        $r=$this->postJson('/api/v1/auth/login',$this->credentials($user));
+        $this->assertSafeError($r,429,'RATE_LIMITED');$r->assertHeader('Retry-After','1')->assertJsonPath('retry_after',1);
+        $this->assertDatabaseCount('personal_access_tokens',0);
+    }
+
     #[DataProvider('budgetKinds')]
     public function test_independent_processes_cannot_overbook_a_shared_budget(string $kind,int $maximum): void
     {

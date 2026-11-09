@@ -40,6 +40,7 @@ class MobilePaginationTest extends TestCase
                 ->assertJsonPath('meta.current_page',3)->assertJsonPath('meta.from',null)->assertJsonPath('meta.to',null);
             foreach ($r->json('links') as $url) { if ($url !== null) { $this->assertStringStartsWith('/api/v1'.$path.'?', $url); $this->assertStringNotContainsString('token', $url); } }
             $this->assertNull($r->json('links.next')); $this->assertNotNull($r->json('links.prev'));
+            $this->getJson('/api/v1'.$path.'?page=2147483647&per_page=100')->assertOk()->assertJsonCount(0,'data')->assertJsonPath('meta.current_page',2147483647);
         }
     }
 

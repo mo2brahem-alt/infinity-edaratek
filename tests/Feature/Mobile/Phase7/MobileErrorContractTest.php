@@ -48,11 +48,19 @@ class MobileErrorContractTest extends TestCase
     #[DataProvider('badIds')]
     public function test_malformed_or_out_of_range_ids_cannot_coerce_to_existing_records(string $id): void
     {
-        $s = $this->schools(); $this->bearer($s['A']['staff']);
+        $s = $this->schools(); $s['A']['staff']->update(['can_manage_student_leaves' => true]); $this->bearer($s['A']['staff']);
         foreach ([['GET','/staff/tasks/'.$id], ['DELETE','/auth/devices/'.$id], ['GET','/attachments/'.$id.'/download'], ['GET','/student-leaves/'.$id.'/attachments/1/download']] as [$method,$path]) {
             $this->assertSafeError($this->json($method, '/api/v1'.$path), 404, 'NOT_FOUND');
         }
         $this->assertDatabaseCount('personal_access_tokens', 1);
+    }
+
+    public function test_leave_capability_denial_precedes_malformed_or_foreign_resource_disclosure(): void
+    {
+        $s = $this->schools(); $this->bearer($s['A']['staff']);
+        foreach (['not-an-id', '99999999'] as $id) {
+            $this->assertSafeError($this->getJson('/api/v1/student-leaves/'.$id.'/attachments/1/download'), 403, 'FORBIDDEN');
+        }
     }
 
     public static function accountStates(): array
@@ -86,6 +94,20 @@ class MobileErrorContractTest extends TestCase
     public static function rendererCases(): array
     {
         return [[409,'BUSINESS_CONFLICT'],[409,'IMPACT_CONFIRMATION_REQUIRED'],[429,'RATE_LIMITED'],[500,'INTERNAL_ERROR'],[405,'METHOD_NOT_ALLOWED'],[400,'BAD_REQUEST']];
+    }
+
+    public static function privilegedInputs(): array
+    {
+        return [['role', null], ['school_id', null], ['abilities', []], ['permissions', []], ['approval_status', ''], ['extra', 'ignored']];
+    }
+
+    #[DataProvider('privilegedInputs')]
+    public function test_login_rejects_even_empty_privileged_or_unsupported_fields(string $field, mixed $value): void
+    {
+        $user = User::factory()->create();
+        $r = $this->postJson('/api/v1/auth/login', $this->credentials($user, [$field => $value]));
+        $this->assertSafeError($r, 422, 'VALIDATION_FAILED'); $r->assertJsonStructure(['errors' => [$field]]);
+        $this->assertDatabaseCount('personal_access_tokens', 0);
     }
 
     #[DataProvider('rendererCases')]
