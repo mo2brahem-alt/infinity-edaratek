@@ -25,7 +25,7 @@ class PrivateAttachmentAuthorizationTest extends TestCase
         $message = TicketMessage::create(['subtask_id' => $task->id, 'user_id' => $s['staff']->id, 'message' => 'Synthetic', 'message_type' => 'reply']);
         $file = Attachment::create(array_merge(['school_id' => $s['school']->id, 'ticket_message_id' => $message->id,
             'attachable_type' => TicketMessage::class, 'attachable_id' => $message->id, 'module' => 'tickets',
-            'file_name' => 'proof.txt', 'file_path' => 'synthetic/'.$task->id.'.txt', 'disk' => 'school_attachments', 'mime_type' => 'text/html', 'file_size' => 16, 'is_private' => true], $attributes));
+            'uploaded_by' => $s['staff']->id, 'file_name' => 'proof.txt', 'file_path' => 'synthetic/'.$task->id.'.txt', 'disk' => 'school_attachments', 'mime_type' => 'text/html', 'file_size' => 16, 'is_private' => true], $attributes));
         Storage::disk($file->disk)->put($file->file_path, 'synthetic-bytes');
         return $file;
     }
@@ -94,6 +94,7 @@ class PrivateAttachmentAuthorizationTest extends TestCase
         Storage::disk('school_attachments')->assertExists($a->file_path); Storage::disk('public')->assertMissing($a->file_path);
         $this->postJson(route('staff.subtasks.reply', $task), ['message' => 'Denied', 'disk' => 'public', 'path' => '../other'])->assertUnprocessable();
         $this->postJson(route('staff.subtasks.reply', $task), ['message' => 'Denied', 'attachment' => UploadedFile::fake()->createWithContent('proof.php', '<?php echo 1;')])->assertUnprocessable();
+        $this->postJson(route('staff.subtasks.reply', $task), ['message' => 'Denied', 'attachment' => UploadedFile::fake()->create('large.pdf', 10241, 'application/pdf')])->assertUnprocessable();
     }
 
     public function test_leave_requires_operation_permission_and_matching_parent_for_web_and_native(): void
@@ -108,6 +109,9 @@ class PrivateAttachmentAuthorizationTest extends TestCase
         $this->actingAs($staff)->getJson(route('api.school.leaves.attachments.download', [$leave, $a]))->assertForbidden();
         $staff->update(['can_manage_student_leaves' => true]);
         $this->withToken($this->nativeToken($staff))->get($url)->assertOk();
+        $staff->update(['can_manage_student_leaves' => false]); $this->getJson($url)->assertForbidden();
+        $staff->update(['can_manage_student_leaves' => true, 'school_id' => null]); $this->getJson($url)->assertStatus(409);
+        $staff->update(['school_id' => $s['A']['school']->id]);
         $this->withToken($this->nativeToken($s['B']['manager']))->getJson($url)->assertNotFound();
         $otherLeave = $this->leave($s['B']);
         $this->withToken($this->nativeToken($s['A']['manager']))->getJson('/api/v1/student-leaves/'.$otherLeave->id.'/attachments/'.$a->id.'/download')->assertNotFound();
@@ -130,7 +134,7 @@ class PrivateAttachmentAuthorizationTest extends TestCase
     {
         $s = $this->schools();
         $a = Attachment::create(['school_id' => $s['A']['school']->id, 'attachable_type' => User::class, 'attachable_id' => $s['A']['staff']->id,
-            'module' => 'staff_documents', 'disk' => 'school_attachments', 'file_path' => 'synthetic/id.txt', 'file_name' => 'id.txt', 'file_size' => 2]);
+            'module' => 'staff_documents', 'disk' => 'school_attachments', 'file_path' => 'synthetic/id.txt', 'file_name' => 'id.txt', 'file_size' => 2, 'mime_type' => 'text/plain', 'uploaded_by' => $s['A']['manager']->id]);
         Storage::disk('school_attachments')->put($a->file_path, 'identity-bytes');
         $url = '/api/v1/attachments/'.$a->id.'/download';
         $this->withToken($this->nativeToken($s['A']['manager']))->get($url)->assertOk();
@@ -139,5 +143,28 @@ class PrivateAttachmentAuthorizationTest extends TestCase
         $ticket = $this->ticketFile($s['A']);
         $this->actingAs($s['A']['staff'])->deleteJson(route('school.attachments.destroy', $ticket))->assertForbidden();
         $this->assertFalse($ticket->fresh()->trashed());
+    }
+
+    public function test_pending_or_rejected_account_tokens_cannot_download_and_parent_deletion_hides_bytes(): void
+    {
+        $s = $this->schools(); $a = $this->ticketFile($s['A']); $manager = $s['A']['manager'];
+        $this->withToken($this->nativeToken($manager)); $url = '/api/v1/attachments/'.$a->id.'/download';
+        $this->get($url)->assertOk();
+        foreach ([User::APPROVAL_PENDING, User::APPROVAL_REJECTED] as $state) {
+            $manager->update(['approval_status' => $state]); $this->getJson($url)->assertForbidden();
+        }
+        $manager->update(['approval_status' => User::APPROVAL_APPROVED]);
+        $a->message->delete(); $this->getJson($url)->assertNotFound();
+        foreach (['bad', '0', '-1', '999999'] as $id) { $this->getJson('/api/v1/attachments/'.$id.'/download')->assertNotFound(); }
+    }
+
+    public function test_institutional_service_enforces_file_count_and_parent_school_without_partial_files(): void
+    {
+        $s = $this->schools(); $service = app(\App\Services\Support\AttachmentService::class);
+        $files = array_map(fn () => UploadedFile::fake()->create('proof.pdf', 2, 'application/pdf'), range(1, 11));
+        try { $service->storeManyForAttachable($s['A']['staff'], $files, $s['A']['manager'], ['module' => 'staff_documents']); $this->fail('Count limit bypassed'); }
+        catch (\Illuminate\Validation\ValidationException) { $this->assertSame(0, Attachment::count()); }
+        try { $service->storeManyForAttachable($s['A']['staff'], [$files[0]], $s['A']['manager'], ['module' => 'staff_documents', 'school_id' => $s['B']['school']->id]); $this->fail('Parent school mismatch bypassed'); }
+        catch (\Illuminate\Validation\ValidationException) { $this->assertSame([], Storage::disk('school_attachments')->allFiles()); }
     }
 }

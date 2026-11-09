@@ -290,6 +290,9 @@ foreach ($cases as $case) {
     if (preg_match('/Expected response status code \[([1-5][0-9]{2})\] but received ([1-5][0-9]{2})/', $body, $http)) {
         $httpStatus = ['expected' => (int) $http[1], 'actual' => (int) $http[2]];
     }
+    if (preg_match('/Failed asserting that ([1-5][0-9]{2}) is identical to ([1-5][0-9]{2})/', $body, $http)) {
+        $httpStatus = ['expected' => (int) $http[2], 'actual' => (int) $http[1]];
+    }
     $diagnostics[] = ['class' => $clean((string) $case['class']), 'method' => $clean($method),
         'type' => $clean((string) $node['type']), 'classification' => $classification,
         'sqlstate' => $sqlstate, 'sqlstate_class' => $sqlstate ? substr($sqlstate, 0, 2) : null,

@@ -26,7 +26,7 @@ class PrivateAttachmentMigrationTest extends TestCase
         $message = TicketMessage::create(['subtask_id' => $task->id, 'user_id' => $s['A']['staff']->id, 'message' => 'Synthetic', 'message_type' => 'reply']);
         $a = Attachment::create(['school_id' => $s['A']['school']->id, 'ticket_message_id' => $message->id,
             'module' => 'tickets', 'disk' => 'public', 'file_path' => 'ticketing/attachments/legacy.txt',
-            'file_name' => 'legacy.txt', 'file_size' => 15, 'mime_type' => 'text/plain', 'is_private' => false]);
+            'file_name' => 'legacy.txt', 'file_size' => 15, 'mime_type' => 'text/plain', 'is_private' => false, 'uploaded_by' => $s['A']['staff']->id]);
         Storage::disk('public')->put($a->file_path, 'synthetic-proof');
         return $a;
     }
@@ -53,6 +53,9 @@ class PrivateAttachmentMigrationTest extends TestCase
         $service->run(true); $this->assertSame(1, PrivateFileMigration::count());
         $this->assertCount(1, Storage::disk('school_attachments')->allFiles());
         $this->get('/storage/'.$old)->assertNotFound(); $this->get('/media-files/'.$old)->assertNotFound();
+        $staff = $a->message->subtask->assignee;
+        $response = $this->actingAs($staff)->get(route('school.attachments.download', $a));
+        $response->assertOk(); $this->assertSame('synthetic-proof', $response->streamedContent());
     }
 
     public function test_crash_after_copy_resumes_without_duplicate_or_source_loss(): void
@@ -107,7 +110,7 @@ class PrivateAttachmentMigrationTest extends TestCase
         $this->assertSame('METADATA_CONFLICT', $m->fresh()->safe_failure_code); $this->assertSame('public', $a->fresh()->disk);
     }
 
-    public function test_orphan_soft_deleted_missing_and_duplicate_paths_are_quarantined(): void
+    public function test_orphan_and_soft_deleted_decisions_are_quarantined_until_review(): void
     {
         $a = $this->legacy(); $a->delete(); Storage::disk('public')->put('unknown/orphan.bin', 'orphan');
         app(PrivateAttachmentMigrator::class)->run(true);
@@ -118,6 +121,33 @@ class PrivateAttachmentMigrationTest extends TestCase
         // Inventory keeps quarantined decisions immutable until reviewed; no automatic owner guess.
         app(PrivateAttachmentMigrator::class)->run(true);
         $this->assertSame(0, PrivateFileMigration::where('state', 'verified')->count());
+    }
+
+    public function test_missing_and_ambiguous_source_references_never_become_verified(): void
+    {
+        $a = $this->legacy(); $duplicate = $a->replicate(); $duplicate->save();
+        $missing = $a->replicate(); $missing->file_path = 'ticketing/attachments/missing.txt'; $missing->save();
+        app(PrivateAttachmentMigrator::class)->run(true);
+        $this->assertSame(0, PrivateFileMigration::where('state', 'verified')->count());
+        $this->assertTrue(PrivateFileMigration::where('safe_failure_code', 'AMBIGUOUS_REFERENCE')->exists());
+        $this->assertTrue(PrivateFileMigration::where('safe_failure_code', 'MISSING_SOURCE')->exists());
+        Storage::disk('public')->assertExists($a->file_path);
+    }
+
+    public function test_manifest_foreign_record_injection_cannot_switch_other_school_metadata(): void
+    {
+        $a = $this->legacy();
+        $schoolB = \App\Models\School::where('school_id', 'SYNTHETIC-B')->firstOrFail();
+        $staffB = \App\Models\User::where('school_id', $schoolB->id)->where('role', 'staff')->firstOrFail();
+        $b = Attachment::create(['school_id' => $schoolB->id, 'attachable_type' => \App\Models\User::class,
+            'attachable_id' => $staffB->id, 'module' => 'staff_documents', 'disk' => 'public', 'file_path' => 'staff/other.txt', 'file_name' => 'other.txt', 'mime_type' => 'text/plain', 'uploaded_by' => $staffB->id]);
+        Storage::disk('public')->put($b->file_path, 'other-school');
+        $interrupted = new class extends PrivateAttachmentMigrator { protected function checkpoint(PrivateFileMigration $m): void { throw new \RuntimeException('Synthetic interruption'); } };
+        $interrupted->run(true);
+        $m = PrivateFileMigration::where('attachment_id', $a->id)->firstOrFail(); $m->update(['attachment_id' => $b->id]);
+        app(PrivateAttachmentMigrator::class)->migrate($m);
+        $this->assertSame('METADATA_CONFLICT', $m->fresh()->safe_failure_code);
+        $this->assertSame('public', $b->fresh()->disk); Storage::disk('public')->assertExists($b->file_path);
     }
 
     public function test_apply_requires_operator_scope_and_batch_is_bounded(): void

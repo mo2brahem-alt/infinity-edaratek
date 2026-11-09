@@ -18,7 +18,7 @@ class PublicAssetCompatibilityTest extends TestCase
             Storage::disk('public')->put($path, 'sensitive-synthetic');
             foreach (['storage', 'media-files'] as $alias) { $this->get('/'.$alias.'/'.$path)->assertNotFound(); }
         }
-        foreach (['../.env', '%2e%2e/.env', 'uploads/%2e%2e/ticketing/proof', 'uploads\\..\\proof', '/etc/passwd'] as $path) {
+        foreach (['../.env', '%2e%2e/.env', 'uploads/%2e%2e/ticketing/proof', 'uploads/%5c..%5cproof', 'etc/passwd'] as $path) {
             $this->get('/media-files/'.$path)->assertNotFound();
         }
     }

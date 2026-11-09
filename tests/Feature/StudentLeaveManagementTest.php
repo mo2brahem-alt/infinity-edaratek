@@ -485,7 +485,8 @@ class StudentLeaveManagementTest extends TestCase
             ->postJson(route('api.school.leaves.attachments.store', $leave->id), [
                 'file' => UploadedFile::fake()->create('payload.php', 10, 'application/x-php'),
             ])
-            ->assertCreated();
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('file');
     }
 
     public function test_leave_listing_supports_grade_filter_within_stage_scope(): void

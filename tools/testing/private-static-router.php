@@ -15,5 +15,8 @@ $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $kernel->bootstrap();
 config(['filesystems.disks.public.root' => (string) getenv('EDARATEK_STATIC_PUBLIC_ROOT')]);
 Illuminate\Support\Facades\Storage::forgetDisk('public');
+// Match a front-controller rewrite even when a physical file already exists.
+$_SERVER['SCRIPT_FILENAME'] = $root.'/index.php';
+$_SERVER['SCRIPT_NAME'] = '/index.php'; $_SERVER['PHP_SELF'] = '/index.php';
 $request = Illuminate\Http\Request::capture();
 $response = $kernel->handle($request); $response->send(); $kernel->terminate($request, $response);
