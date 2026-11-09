@@ -10,6 +10,21 @@ final class AttachmentAccess
 {
     public function __construct(private readonly SchoolContextResolver $schools) {}
 
+    public function forSubtask(User $actor, Subtask $task): \Illuminate\Database\Eloquent\Builder
+    {
+        Gate::forUser($actor)->authorize('view', $task);
+        // Apply the same ticket-parent/metadata consistency checks before counting or paging.
+        return Attachment::query()->whereIn('ticket_message_id', $task->messages()
+            ->where(fn ($q) => $q->whereNull('ticket_id')->orWhere('ticket_id', $task->ticket_id))->select('id'))
+            ->where(fn ($q) => $q->whereNull('school_id')->orWhere('school_id', $task->school_id))
+            ->where(fn ($q) => $q->whereNull('module')->orWhereIn('module', ['', 'tickets']))
+            ->where(function ($q) {
+                $q->where(fn ($legacy) => $legacy->where(fn ($t) => $t->whereNull('attachable_type')->orWhere('attachable_type', ''))
+                    ->where(fn ($id) => $id->whereNull('attachable_id')->orWhere('attachable_id', 0)))
+                    ->orWhere(fn ($typed) => $typed->where('attachable_type', TicketMessage::class)->whereColumn('attachable_id', 'ticket_message_id'));
+            });
+    }
+
     public function authorize(User $actor, Attachment $attachment, string $action = 'download'): void
     {
         $actor = User::query()->findOrFail($actor->id);

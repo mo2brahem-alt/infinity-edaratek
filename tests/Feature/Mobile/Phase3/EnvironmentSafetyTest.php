@@ -27,7 +27,8 @@ class EnvironmentSafetyTest extends TestCase
         Route::get('/api/v1/__phase3_error', static function () use ($secret) {
             throw new \RuntimeException('SQL SELECT private_value /app/private/config.php '.$secret);
         });
-        Log::shouldReceive('error')->once()->with('native.internal_error', ['code' => 'INTERNAL_ERROR']);
+        Log::shouldReceive('error')->once()->with('native.internal_error', \Mockery::on(static fn ($context) =>
+            array_keys($context) === ['code', 'request_id'] && $context['code'] === 'INTERNAL_ERROR' && Str::isUuid($context['request_id'])));
         $response = $this->getJson('/api/v1/__phase3_error', ['X-Request-ID' => $secret]);
         $response->assertStatus(500)->assertJsonPath('code', 'INTERNAL_ERROR');
         $this->assertSame(['code', 'message', 'request_id'], array_keys($response->json()));

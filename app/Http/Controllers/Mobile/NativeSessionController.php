@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Mobile;
 
-use App\Http\Requests\Mobile\NativeLoginRequest;
-use App\Http\Requests\Mobile\NativePaginationRequest;
-use App\Http\Resources\Mobile\CurrentUserResource;
-use App\Http\Resources\Mobile\DeviceResource;
+use App\Http\Requests\Api\V1\NativeLoginRequest;
+use App\Http\Requests\Api\V1\NativePaginationRequest;
+use App\Http\Resources\Api\V1\CurrentUserResource;
+use App\Http\Resources\Api\V1\DeviceResource;
 use App\Models\User;
 use App\Services\Mobile\AccountAccessEvaluator;
 use App\Services\Mobile\NativeRateLimiter;
@@ -31,16 +31,13 @@ final class NativeSessionController
         $data = $request->validated();
         $email = (string) $data['email'];
 
-        if (($retryAfter = $this->limiter->loginAllowed($request)) !== null
-            || ($retryAfter = $this->limiter->invalidCredentialsAllowed($request, $email)) !== null) {
+        if (($retryAfter = $this->limiter->consumeLogin($request, $email)) !== null) {
             return $this->rateLimited($retryAfter);
         }
 
         $candidate = User::query()->where('email', $email)->first();
 
         if (! $candidate instanceof User || ! Hash::check((string) $data['password'], (string) $candidate->password)) {
-            $this->limiter->recordInvalidCredentials($request, $email);
-
             return NativeApiResponse::error('INVALID_CREDENTIALS', 401);
         }
 
@@ -50,15 +47,8 @@ final class NativeSessionController
             return NativeApiResponse::error('INVALID_CREDENTIALS', 401);
         }
 
-        if (($retryAfter = $this->limiter->loginAllowed($request, $user)) !== null) {
-            return $this->rateLimited($retryAfter);
-        }
-
         // Authentication occurs before eligibility; blocked credentials never
         // create a PAT and do not mutate a web session.
-        $this->limiter->recordLogin($request, $user);
-        $this->limiter->clearInvalidCredentials($request, $email);
-
         if (($denialCode = $this->accounts->denialCode($user)) !== null) {
             return NativeApiResponse::error($denialCode, 403);
         }
@@ -105,18 +95,7 @@ final class NativeSessionController
             return (new DeviceResource($token))->resolve($request);
         })->values()->all();
 
-        return response()->json([
-            'data' => $data,
-            'meta' => [
-                'current_page' => $tokens->currentPage(),
-                'per_page' => $tokens->perPage(),
-                'total' => $tokens->total(),
-                'last_page' => $tokens->lastPage(),
-                'from' => $tokens->firstItem(),
-                'to' => $tokens->lastItem(),
-            ],
-            'links' => $this->paginationLinks($tokens->currentPage(), $tokens->lastPage(), $perPage),
-        ]);
+        return response()->json(\App\Support\NativeCollection::envelope($tokens, $data, '/api/v1/auth/devices'));
     }
 
     public function destroyDevice(Request $request, string $token): Response
@@ -124,11 +103,7 @@ final class NativeSessionController
         /** @var User $user */
         $user = $request->user();
 
-        if (! ctype_digit($token) || (int) $token < 1) {
-            return NativeApiResponse::error('NOT_FOUND', 404);
-        }
-
-        $accessToken = $this->tokens->nativeTokens($user)->whereKey((int) $token)->first();
+        $accessToken = $this->tokens->nativeTokens($user)->whereKey(\App\Support\NativeId::parse($token))->first();
 
         if (! $accessToken instanceof PersonalAccessToken || ! $this->tokens->isNative($accessToken)) {
             return NativeApiResponse::error('NOT_FOUND', 404);
@@ -150,18 +125,6 @@ final class NativeSessionController
         return response()->noContent();
     }
 
-    /** @return array{first:string,last:string,prev:?string,next:?string} */
-    private function paginationLinks(int $page, int $lastPage, int $perPage): array
-    {
-        $url = static fn (int $targetPage): string => '/api/v1/auth/devices?page='.$targetPage.'&per_page='.$perPage;
-
-        return [
-            'first' => $url(1),
-            'last' => $url(max(1, $lastPage)),
-            'prev' => $page > 1 ? $url($page - 1) : null,
-            'next' => $page < $lastPage ? $url($page + 1) : null,
-        ];
-    }
 
     private function rateLimited(int $retryAfter): JsonResponse
     {

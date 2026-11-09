@@ -1,6 +1,8 @@
 # CLAUDE.md - دليل مشروع Edaratek
 
-> **قرار PM نافذ 2026-11-09:** WhatsApp خارج المشروع نهائياً. الإشعارات app/web فقط، وpush حيث يوجد مطلب معتمد قائم؛ لا delivery tests أو provider configuration. أي نص WhatsApp/OTP/control/kill-switch قديم أدناه HISTORICAL/SUPERSEDED وليس شرط قبول نشطاً. المرجع docs/notification-policy.md وevidence/phase-06/scope-decision.md. لا staging/production أو Phase7؛ actual aliases/CDN تبقى UNKNOWN.
+> **قرار PM نافذ 2026-11-09:** WhatsApp خارج المشروع نهائياً. الإشعارات app/web فقط، وpush حيث يوجد مطلب معتمد قائم؛ لا delivery tests أو provider configuration. أي نص WhatsApp/OTP/control/kill-switch قديم أدناه HISTORICAL/SUPERSEDED وليس شرط قبول نشطاً. المرجع docs/notification-policy.md وevidence/phase-06/scope-decision.md. لا staging/production أو Phase8؛ actual aliases/CDN تبقى UNKNOWN.
+
+> PM2026-11-09: Phase6 APPROVED; Phase7 T089-T102 authorized on the existing feature branch with isolated CI commits/pushes. STOP at Phase7 PM review. No Phase8 or environment/deployment action.
 
 ## 1. نظرة عامة على المشروع
 

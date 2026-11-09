@@ -50,6 +50,11 @@ done
 guard boot
 php -d memory_limit=512M tools/testing/probe-safety.php || fail phase1_safety_probe 28
 php tools/testing/probe-notification-scope.php || fail notification_scope_probe 29
+phase7_exit=0
+php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log tests/Feature/Mobile/Phase7 >/tmp/baseline.log 2>&1 || phase7_exit=$?
+php tools/testing/summarize-junit.php baseline "$phase7_exit" phase7 || fail phase7_focused_evidence 29
+[ "$phase7_exit" -eq 0 ] || fail phase7_focused_tests 29
+cp /tmp/baseline-junit.xml /tmp/phase7-focused-junit.xml
 phase6_exit=0
 php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --log-junit=/tmp/baseline-junit.xml --log-events-verbose-text=/tmp/baseline-events.log tests/Feature/Mobile/Phase6 tests/Feature/PhoneStateCompatibilityTest.php tests/Feature/RealtimeNotificationFlowTest.php >/tmp/baseline.log 2>&1 || phase6_exit=$?
 php tools/testing/summarize-junit.php baseline "$phase6_exit" phase6 || fail phase6_focused_evidence 29
@@ -88,4 +93,5 @@ php tools/testing/probe-phase3-gate.php "$test_exit" || fail phase3_acceptance_g
 php tools/testing/probe-phase4-gate.php "$test_exit" || fail phase4_acceptance_gate 29
 php tools/testing/probe-phase5-gate.php "$test_exit" || fail phase5_acceptance_gate 29
 php tools/testing/probe-phase6-gate.php "$test_exit" || fail phase6_acceptance_gate 29
+php tools/testing/probe-phase7-gate.php "$test_exit" || fail phase7_acceptance_gate 29
 exit "$test_exit"

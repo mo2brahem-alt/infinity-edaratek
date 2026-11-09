@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Mobile;
+namespace App\Http\Resources\Api\V1;
 
 use App\Models\User;
 use App\Services\Mobile\AccountAccessEvaluator;
@@ -30,7 +30,9 @@ final class CurrentUserResource extends JsonResource
                 'id' => (int) $school->getKey(),
                 'name' => (string) $school->name,
             ],
-            'phone_verified' => $user->phone_verified_at !== null,
+            // Reuse the existing pure phone utility; no messaging/OTP service.
+            'phone_verified' => $user->phone_verified_at !== null
+                && app(\App\Services\WhatsApp\PhoneNumberNormalizer::class)->normalize($user->mobile ?: $user->phone) !== null,
         ];
     }
 }

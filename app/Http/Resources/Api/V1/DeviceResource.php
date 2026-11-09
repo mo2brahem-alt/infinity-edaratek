@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Mobile;
+namespace App\Http\Resources\Api\V1;
 
 use App\Services\Mobile\NativeTokenService;
 use Illuminate\Http\Request;

@@ -3,79 +3,68 @@
 namespace App\Services\Mobile;
 
 use App\Models\User;
+use Illuminate\Cache\RateLimiter;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Cache;
 
 final class NativeRateLimiter
 {
-    public function loginAllowed(Request $request, ?User $user = null): ?int
+    public function consumeLogin(Request $request, string $email): ?int
     {
-        $keys = [
-            [$this->key('login-ip', $request->ip()), (int) config('mobile.login_ip_attempts_per_minute')],
-        ];
-
-        if ($user instanceof User) {
-            $keys[] = [$this->key('login-account', (string) $user->getKey()), (int) config('mobile.login_attempts_per_minute')];
-        }
-
-        return $this->availableFor($keys);
-    }
-
-    public function recordLogin(Request $request, ?User $user = null): void
-    {
-        RateLimiter::hit($this->key('login-ip', $request->ip()), 60);
-
-        if ($user instanceof User) {
-            RateLimiter::hit($this->key('login-account', (string) $user->getKey()), 60);
-        }
-    }
-
-    public function invalidCredentialsAllowed(Request $request, string $email): ?int
-    {
-        return $this->availableFor([[
-            $this->key('login-failed', mb_strtolower($email).'|'.$request->ip()),
-            (int) config('mobile.login_attempts_per_minute'),
-        ]]);
-    }
-
-    public function recordInvalidCredentials(Request $request, string $email): void
-    {
-        RateLimiter::hit($this->key('login-failed', mb_strtolower($email).'|'.$request->ip()), 60);
-        RateLimiter::hit($this->key('login-ip', $request->ip()), 60);
-    }
-
-    public function clearInvalidCredentials(Request $request, string $email): void
-    {
-        RateLimiter::clear($this->key('login-failed', mb_strtolower($email).'|'.$request->ip()));
-    }
-
-    public function requestAllowed(Request $request, User $user, string $kind): ?int
-    {
-        $accountLimit = (int) config("mobile.native_{$kind}_attempts_per_minute");
-        $ipLimit = (int) config("mobile.native_{$kind}_ip_attempts_per_minute");
-
-        return $this->availableFor([
-            [$this->key("{$kind}-account", (string) $user->getKey()), $accountLimit],
-            [$this->key("{$kind}-ip", $request->ip()), $ipLimit],
+        // All attempts count, including unknown identities and rotating IPs.
+        return $this->consume([
+            [$this->key('login-identity', mb_strtolower(trim($email))), (int) config('mobile.login_attempts_per_minute'), 60],
+            [$this->key('login-ip', (string) $request->ip()), (int) config('mobile.login_ip_attempts_per_minute'), 60],
         ]);
     }
 
-    public function recordRequest(Request $request, User $user, string $kind): void
+    public function consumeRequest(Request $request, User $user, string $kind): ?int
     {
-        RateLimiter::hit($this->key("{$kind}-account", (string) $user->getKey()), 60);
-        RateLimiter::hit($this->key("{$kind}-ip", $request->ip()), 60);
+        if (! in_array($kind, ['read', 'session'], true)) { throw new \InvalidArgumentException('Unknown limiter'); }
+        return $this->consume([
+            [$this->key($kind.'-account', (string) $user->getKey()), (int) config("mobile.native_{$kind}_attempts_per_minute"), 60],
+            [$this->key($kind.'-ip', (string) $request->ip()), (int) config("mobile.native_{$kind}_ip_attempts_per_minute"), 60],
+        ]);
     }
 
-    /** @param list<array{0:string,1:int}> $limits */
-    private function availableFor(array $limits): ?int
+    public function consumeReset(Request $request): ?int
     {
-        foreach ($limits as [$key, $limit]) {
-            if (RateLimiter::tooManyAttempts($key, max(1, $limit))) {
-                return max(1, RateLimiter::availableIn($key));
-            }
-        }
+        $email = $request->input('email');
+        $identity = is_string($email) ? mb_strtolower(trim($email)) : 'invalid';
+        return $this->consume([
+            [$this->key('reset-identity', $identity), (int) config('mobile.password_reset_identifier_per_hour'), 3600],
+            [$this->key('reset-ip', (string) $request->ip()), (int) config('mobile.password_reset_ip_per_hour'), 3600],
+        ]);
+    }
 
-        return null;
+    /** @param list<array{0:string,1:int,2:int}> $limits */
+    private function consume(array $limits): ?int
+    {
+        $cache = Cache::store(config('cache.limiter') ?: config('cache.default'));
+        $limiter = new RateLimiter($cache);
+        $locks = [];
+        usort($limits, static fn ($a, $b) => strcmp($a[0], $b[0]));
+        try {
+            // Lock each shared identity/IP key in deterministic order. Never fall back
+            // to unlocked admission on timeout, unavailable cache or missing lock support.
+            foreach ($limits as [$key]) {
+                $lock = $cache->lock('admission:'.$key, 10);
+                $lock->block(2);
+                $locks[] = $lock;
+            }
+            foreach ($limits as [$key, $maximum]) {
+                if ($limiter->tooManyAttempts($key, max(1, $maximum))) {
+                    return max(1, $limiter->availableIn($key));
+                }
+            }
+            foreach ($limits as [$key, , $window]) { $limiter->hit($key, $window); }
+            return null;
+        } catch (LockTimeoutException) {
+            return 1;
+        } finally {
+            foreach (array_reverse($locks) as $lock) { $lock->release(); }
+        }
     }
 
     private function key(string $scope, string $subject): string

@@ -40,6 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'native.account' => \App\Http\Middleware\EnsureNativeAccountAccess::class,
             'native.throttle' => \App\Http\Middleware\ThrottleNativeRequest::class,
             'native.staff_context' => \App\Http\Middleware\EnsureNativeStaffContext::class,
+            'password_reset.throttle' => \App\Http\Middleware\ThrottlePasswordReset::class,
         ]);
 
         $middleware->web(append: [
@@ -53,7 +54,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->report(function (\Throwable $exception) {
             if (app()->bound('request') && NativeApiResponse::isNativeRequest(request())) {
                 // Exception text may contain SQL, request values, or secrets.
-                \Illuminate\Support\Facades\Log::error('native.internal_error', ['code' => 'INTERNAL_ERROR']);
+                \Illuminate\Support\Facades\Log::error('native.internal_error', ['code' => 'INTERNAL_ERROR', 'request_id' => \App\Support\ApiError::requestId()]);
                 return false;
             }
             return null;
@@ -85,12 +86,22 @@ return Application::configure(basePath: dirname(__DIR__))
                 return NativeApiResponse::error($exception->errorCode, $status);
             }
 
+            if ($exception instanceof \App\Support\ApiError) {
+                return NativeApiResponse::error($exception->errorCode, $status);
+            }
+
             return NativeApiResponse::error(match (true) {
                 $status >= 500 => 'INTERNAL_ERROR',
                 $status === 401 => 'UNAUTHENTICATED',
                 $status === 404 => 'NOT_FOUND',
+                $status === 409 => 'BUSINESS_CONFLICT',
+                $status === 422 => 'VALIDATION_FAILED',
+                $status === 429 => 'RATE_LIMITED',
+                $status === 405 => 'METHOD_NOT_ALLOWED',
+                $status === 400 => 'BAD_REQUEST',
+                $status === 413 => 'PAYLOAD_TOO_LARGE',
                 default => 'FORBIDDEN',
-            }, $status);
+            }, $status, null, $exception->getHeaders());
         });
 
         $exceptions->render(function (\Throwable $exception, Request $request) {

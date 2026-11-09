@@ -1,6 +1,8 @@
 <?php
 
 return [
+    // Frozen v1 values: atomically reserve identifier/account AND IP budgets.
+    // Shared stores must support locks; no unlocked/fail-open fallback is allowed.
     'password_reset_identifier_per_hour' => 3,
     'password_reset_ip_per_hour' => 10,
     // Native access tokens are deliberately finite. This does not change the

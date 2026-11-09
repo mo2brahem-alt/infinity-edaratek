@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Mobile;
+namespace App\Http\Requests\Api\V1;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-final class NativePaginationRequest extends FormRequest
+class NativePaginationRequest extends ContractRequest
 {
     public function authorize(): bool
     {
@@ -14,8 +12,8 @@ final class NativePaginationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page' => ['nullable', 'integer', 'min:1'],
-            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'page' => ['sometimes', 'required', 'integer', 'min:1', 'max:2147483647'],
+            'per_page' => ['sometimes', 'required', 'integer', 'min:1', 'max:100'],
         ];
     }
 

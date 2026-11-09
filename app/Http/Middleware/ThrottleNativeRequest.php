@@ -23,15 +23,13 @@ final class ThrottleNativeRequest
             return NativeApiResponse::error('UNAUTHENTICATED', 401);
         }
 
-        $retryAfter = $this->limiter->requestAllowed($request, $user, $kind);
+        $retryAfter = $this->limiter->consumeRequest($request, $user, $kind);
 
         if ($retryAfter !== null) {
             return NativeApiResponse::error('RATE_LIMITED', 429, null, [
                 'Retry-After' => (string) $retryAfter,
             ]);
         }
-
-        $this->limiter->recordRequest($request, $user, $kind);
 
         return $next($request);
     }
