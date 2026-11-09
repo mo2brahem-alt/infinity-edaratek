@@ -64,7 +64,7 @@ class PrivateAttachmentMigrator
             $refs = $refs->merge($query->where('file_path', $path)->limit(2)->get());
             if ($refs->count() > 1) { break; }
         }
-        if ($refs->isEmpty() && PublicAssetPath::allows($path)) { return ['kind' => 'public_assets', 'quarantined' => false]; }
+        if ($refs->isEmpty() && PrivateFileClassification::isIntentionalPublic($path)) { return ['kind' => 'public_assets', 'quarantined' => false]; }
         $record = $refs->count() === 1 ? $refs->first() : null;
         $reason = $refs->count() > 1 ? 'AMBIGUOUS_REFERENCE' : ($record ? null : 'ORPHAN_REQUIRES_REVIEW');
         if ($record && ! $this->validParent($record)) { $reason = 'ORPHAN_OR_DELETED_PARENT'; }

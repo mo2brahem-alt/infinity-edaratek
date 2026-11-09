@@ -12,7 +12,8 @@ class PublicStorageController extends Controller
         $normalizedPath = $this->normalizePublicDiskPath($path);
 
         if ($normalizedPath === null || ! \App\Support\PublicAssetPath::allows($normalizedPath)
-            || \App\Services\Support\PrivateFileClassification::hasSensitiveReference($normalizedPath) || ! Storage::disk('public')->exists($normalizedPath)) {
+            || \App\Services\Support\PrivateFileClassification::hasSensitiveReference($normalizedPath)
+            || ! \App\Services\Support\PrivateFileClassification::isIntentionalPublic($normalizedPath) || ! Storage::disk('public')->exists($normalizedPath)) {
             abort(404, '', ['Cache-Control' => 'private, no-store']);
         }
 

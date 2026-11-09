@@ -16,6 +16,7 @@ class StaticPrivateUrlTest extends TestCase
         foreach (['copy', 'symlink'] as $mode) {
             $root = sys_get_temp_dir().'/edaratek_phase5_'.bin2hex(random_bytes(10)); mkdir($root);
             $process = null;
+            $asset = \App\Models\Media::create(['file_name' => 'logo.txt', 'file_path' => 'schools/logos/logo.txt', 'file_type' => 'image', 'mime_type' => 'text/plain', 'file_size' => 14]);
             try {
                 foreach (['storage', 'media-files'] as $alias) {
                     if ($mode === 'symlink') { $this->assertTrue(symlink(Storage::disk('public')->path(''), $root.'/'.$alias)); }
@@ -42,6 +43,7 @@ class StaticPrivateUrlTest extends TestCase
                 }
             } finally {
                 if (is_resource($process)) { proc_terminate($process); proc_close($process); }
+                $asset->delete();
                 foreach (['storage', 'media-files'] as $alias) { if (is_link($root.'/'.$alias)) { unlink($root.'/'.$alias); } }
                 if (dirname($root) === sys_get_temp_dir() && str_starts_with(basename($root), 'edaratek_phase5_')) { (new Filesystem)->deleteDirectory($root); }
             }

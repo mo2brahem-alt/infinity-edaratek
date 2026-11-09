@@ -156,12 +156,14 @@ class PrivateAttachmentMigrationTest extends TestCase
         $this->artisan('attachments:migrate-private', ['--apply' => true])->assertExitCode(1);
         $this->assertSame(0, PrivateFileMigration::count());
         Storage::disk('public')->put('uploads/logo.png', 'branding');
+        \App\Models\Media::create(['file_name' => 'logo.png', 'file_path' => 'uploads/logo.png', 'file_type' => 'image', 'mime_type' => 'text/plain', 'file_size' => 8]);
         $this->assertSame(1, app(PrivateAttachmentMigrator::class)->run(false, 1)['observed']);
     }
 
     public function test_inventory_continuation_does_not_mutate_sources_until_explicit_resume(): void
     {
         $a = $this->legacy(); Storage::disk('public')->put('uploads/logo.png', 'logo');
+        \App\Models\Media::create(['file_name' => 'logo.png', 'file_path' => 'uploads/logo.png', 'file_type' => 'image', 'mime_type' => 'text/plain', 'file_size' => 4]);
         $service = app(PrivateAttachmentMigrator::class);
         $first = $service->run(true, 1, 0, true);
         $this->assertFalse($first['inventory_complete']); $this->assertSame(1, $first['next_offset']);
@@ -202,7 +204,12 @@ class PrivateAttachmentMigrationTest extends TestCase
     public function test_large_inventory_counts_reconcile_across_bounded_read_only_batches(): void
     {
         $a = $this->legacy();
-        for ($i = 0; $i < 503; $i++) { Storage::disk('public')->put('uploads/logo-'.$i.'.txt', 'branding'); }
+        $assets = [];
+        for ($i = 0; $i < 503; $i++) {
+            $path = 'uploads/logo-'.$i.'.txt'; Storage::disk('public')->put($path, 'branding');
+            $assets[] = ['file_name' => basename($path), 'file_path' => $path, 'file_type' => 'image', 'mime_type' => 'text/plain', 'file_size' => 8];
+        }
+        \App\Models\Media::insert($assets);
         $observed = 0; $offset = 0; $service = app(PrivateAttachmentMigrator::class);
         do {
             $batch = $service->run(true, 100, $offset, true); $observed += $batch['observed'];
@@ -234,5 +241,18 @@ class PrivateAttachmentMigrationTest extends TestCase
             $this->app->usePublicPath($originalPublic);
             if (dirname($root) === sys_get_temp_dir() && str_starts_with(basename($root), 'edaratek_phase5_')) { (new \Illuminate\Filesystem\Filesystem)->deleteDirectory($root); }
         }
+    }
+
+    public function test_retained_manifest_blocks_public_reappearance_even_after_attachment_record_deletion(): void
+    {
+        $a = $this->legacy(); $old = 'uploads/misplaced.txt';
+        Storage::disk('public')->move($a->file_path, $old); $a->update(['file_path' => $old]);
+        \App\Models\Media::create(['file_name' => 'misplaced.txt', 'file_path' => $old, 'file_type' => 'image', 'mime_type' => 'text/plain', 'file_size' => 15]);
+        $service = app(PrivateAttachmentMigrator::class); $this->assertSame(1, $service->run(true)['verified']);
+        $a->forceDelete(); Storage::disk('public')->put($old, 'synthetic-proof');
+        $this->get('/storage/'.$old)->assertNotFound(); $this->get('/media-files/'.$old)->assertNotFound();
+        $counts = $service->run(true, 100, 0, false, true);
+        $this->assertSame(0, $counts['verified']);
+        $this->assertSame('PUBLIC_REEXPOSURE', PrivateFileMigration::firstOrFail()->safe_failure_code);
     }
 }

@@ -13,10 +13,11 @@ class MediaStorageUrlFallbackTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_public_storage_fallback_serves_public_disk_files_when_symlink_is_unavailable(): void
+    public function test_public_storage_fallback_serves_declared_public_media_when_symlink_is_unavailable(): void
     {
         Storage::fake('public');
         Storage::disk('public')->put('uploads/sample.txt', 'edaratek media file');
+        Media::create(['file_name' => 'sample.txt', 'file_path' => 'uploads/sample.txt', 'file_type' => 'image', 'mime_type' => 'text/plain', 'file_size' => 19]);
 
         $response = $this->get('/media-files/uploads/sample.txt');
 
