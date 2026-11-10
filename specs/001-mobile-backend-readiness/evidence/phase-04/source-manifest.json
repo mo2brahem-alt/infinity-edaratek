@@ -1,0 +1,145 @@
+{
+  "start_commit": "7b8fd762bf7b61325fecf51f1dc5adba015d8221",
+  "end_commit": "ff58fcdf0c71940d02e17905df1233691e0f0928",
+  "file_count": 34,
+  "files": [
+    {
+      "path": "app/Http/Controllers/Api/School/QuickSetupStatusController.php",
+      "sha256": "e50ceb2d0d67fc1b0fcb63124306344ff4b64abbbf646c434e8e3c2df4b2d42c"
+    },
+    {
+      "path": "app/Http/Controllers/Manager/DashboardController.php",
+      "sha256": "52ebd54856334194e28c18d9bdffdece4e16d243dcf86e9dffeb089fefa46707"
+    },
+    {
+      "path": "app/Http/Controllers/Manager/SubtaskController.php",
+      "sha256": "171cf157a3c8fcafe51b0a7fceb09bcd5bbe9d2e5a9e75154b11034262ee2a26"
+    },
+    {
+      "path": "app/Http/Controllers/Manager/TicketController.php",
+      "sha256": "07c73523e0db4fd48939023be618f8e116c472425a857646e40272d3b44b46d9"
+    },
+    {
+      "path": "app/Http/Controllers/Mobile/StaffTaskController.php",
+      "sha256": "1e22bd64079944eebf8589c8b3db76199c9cbde6399b3a39152302ed08209470"
+    },
+    {
+      "path": "app/Http/Controllers/Staff/SubtaskController.php",
+      "sha256": "dbf366cb23e2d7960d08cdf59f0442f29d4300e6c16ab0ec6a474fdff4ebdb38"
+    },
+    {
+      "path": "app/Http/Controllers/Supervisor/TicketController.php",
+      "sha256": "aa301d497aa673b3eafeb526d3995ac5faede70335b9e19d111ce7a517e91103"
+    },
+    {
+      "path": "app/Http/Middleware/EnsureAcademicPlanningAccess.php",
+      "sha256": "5d5ace7def655b9229de5fb5bf1cc6baa045823266a25e500dd3feafc30b0f48"
+    },
+    {
+      "path": "app/Http/Middleware/EnsureActiveSchoolAssociation.php",
+      "sha256": "b79324e7820ed05b88a5d235fea0a533af68540dce446d280dffe293f1908978"
+    },
+    {
+      "path": "app/Http/Middleware/EnsureManagerOwnsSchool.php",
+      "sha256": "fc16897cf4621171c500b1226c5c12b0ec4d2d798255df32949e61da5b4b6da9"
+    },
+    {
+      "path": "app/Http/Middleware/EnsureNativeStaffContext.php",
+      "sha256": "a2d7505475c5dbb4dda2f13a5160ea4beb9c0df0ef13e34eae4545fde7856ef0"
+    },
+    {
+      "path": "app/Http/Requests/Mobile/StaffTaskListRequest.php",
+      "sha256": "f9dfa752a3a2d258f6abfa2985696d103ecb39ae54e5e0e19aae42ae6b341e5c"
+    },
+    {
+      "path": "app/Http/Resources/Mobile/CurrentUserResource.php",
+      "sha256": "8f617dfbe4c49bcb1236d2590c271d26bb14b92c28d58a27e4d454d225a72065"
+    },
+    {
+      "path": "app/Models/User.php",
+      "sha256": "8769e8e429a176f367c47c783ff0919b2717ded57225256229011b79d9c91104"
+    },
+    {
+      "path": "app/Policies/SubtaskPolicy.php",
+      "sha256": "a8e5d1f37c423848132194f8fb2e9cbf9d39aadaadd17c97eecfebaab80af618"
+    },
+    {
+      "path": "app/Policies/TicketPolicy.php",
+      "sha256": "7c147ab59e725e6ba7cd21c9ec9434fa10fe1f27c46aabbda7bda4c9b85ef5d0"
+    },
+    {
+      "path": "app/Services/Mobile/AccountAccessEvaluator.php",
+      "sha256": "e191833d4348068b779bb00fb0637dca21ea6dbdef98783121a8392064e6eec1"
+    },
+    {
+      "path": "app/Services/School/SchoolContextException.php",
+      "sha256": "ef003f8308401bb576043db39cf72d22fe8ed311a44ef15dc6b788cdce532a2f"
+    },
+    {
+      "path": "app/Services/School/SchoolContextResolver.php",
+      "sha256": "58c417ae1d4d04e4329d70768cf50e92d7aa92fc9840fba59e3b4dd3e7fd4c4f"
+    },
+    {
+      "path": "app/Services/School/SchoolDashboardAnalyticsService.php",
+      "sha256": "242e47e94ff560c2edc8ec2c8cc2f61b2d0d6efb22bc81708a0d2aef6f17f1e5"
+    },
+    {
+      "path": "app/Services/Ticketing/SubtaskAccessQuery.php",
+      "sha256": "219e44cd20d6de48e9b81091029001f50c4e055d3f1b5cb0270f3ad251d490e0"
+    },
+    {
+      "path": "app/Services/Ticketing/TicketingService.php",
+      "sha256": "25c47c5a5c3988dfa966c9727600011750d629e7dffd004fbe9804a4e0fe96a9"
+    },
+    {
+      "path": "bootstrap/app.php",
+      "sha256": "f412487420de8199fa5866f66020456fc631f8a0e29984ca658dfe0ce5a65ac5"
+    },
+    {
+      "path": "routes/api.php",
+      "sha256": "61f8546b19a042211e3ff99300fde0401b8802bd8ff7d8498656b972cb863e10"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase4/CurrentTenantContextTest.php",
+      "sha256": "8d222587d5efad5d06b561c06a2efaa57205118178912f469424e4b3e8021e6c"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase4/ForeignRelationshipTest.php",
+      "sha256": "f56bbbbb549897e172a26edbae8daf6afe7a19fb847b637718cde7e8ff88789e"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase4/StaffTaskIsolationTest.php",
+      "sha256": "9a37de676a471758fbc5cb48e8d805d92b740366b3fc8c492daaae4f7a62f1eb"
+    },
+    {
+      "path": "tests/Feature/QuickSetupStatusTest.php",
+      "sha256": "758033819887ee6b5576e2fb49732970db271b3eb4d96d57ad8e004a7a17284e"
+    },
+    {
+      "path": "tests/Support/MobileSchoolFixtures.php",
+      "sha256": "8e5d720aa9536b2670c3641399b5ec48702aa98162d72a483bb644e616c78dc8"
+    },
+    {
+      "path": "tools/testing/probe-mobile-auth-gate.php",
+      "sha256": "588e49b6898f6c71be97535e6a9bc724d747b0a81759e3f439357ca592f33396"
+    },
+    {
+      "path": "tools/testing/probe-phase3-gate.php",
+      "sha256": "63099dede6d3d156cf6ffcc426f1ce4784a2ec88d1f9b88806075b3109ccf245"
+    },
+    {
+      "path": "tools/testing/probe-phase4-gate.php",
+      "sha256": "950216885831c903024b70843b21dfe97eb3b90b601d309d33033b1697a71758"
+    },
+    {
+      "path": "tools/testing/run-baseline.sh",
+      "sha256": "8c1fb03d0711f89001fc32821fc86c434baf5f56541e3641e1921241d2462be1"
+    },
+    {
+      "path": "tools/testing/summarize-junit.php",
+      "sha256": "a39731828a74e27a4f0c39befb5afe723109d4a1fb45c88849ef666bf5a4a234"
+    }
+  ],
+  "known_regression_paths_unchanged": true,
+  "deployment_workflow_unchanged": true
+}

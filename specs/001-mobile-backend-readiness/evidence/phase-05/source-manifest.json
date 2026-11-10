@@ -1,0 +1,177 @@
+{
+  "start_commit": "ff58fcdf0c71940d02e17905df1233691e0f0928",
+  "end_commit": "ecb6b7fd7d1b06bf7d4575f1b194ce77fa76fb54",
+  "file_count": 42,
+  "files": [
+    {
+      "path": "app/Console/Commands/MigratePrivateAttachments.php",
+      "sha256": "1d32811a6f7c9602c133dcb89d50e313fc4c87028cd8067278cb2acb4775bd9e"
+    },
+    {
+      "path": "app/Http/Controllers/Admin/MediaController.php",
+      "sha256": "9d0690e344b95e830815cac59c7ef15cbab4539147120fc36b305fcbc58eafb8"
+    },
+    {
+      "path": "app/Http/Controllers/Api/School/StudentLeaveManagementController.php",
+      "sha256": "68fad886994e8ce87a2153587f758e4fd3ab36f1dd65bfd5bc5a9304e4234896"
+    },
+    {
+      "path": "app/Http/Controllers/Mobile/AttachmentController.php",
+      "sha256": "5cd092135e23bd344252fef2af8907182f3658c0ef16bfb7e8ab1de0b804c911"
+    },
+    {
+      "path": "app/Http/Controllers/Mobile/StaffTaskController.php",
+      "sha256": "444a50ee09188fce174399b790955644e41627e3f588fae1ebb083068eece4b8"
+    },
+    {
+      "path": "app/Http/Controllers/PublicStorageController.php",
+      "sha256": "c681d9a5e0908229872e04e2107b46dc18bb57f3353cffe65745b9c3a3a7e2fb"
+    },
+    {
+      "path": "app/Http/Controllers/School/SchoolAttachmentController.php",
+      "sha256": "f44b0361558f45c1333d439587b83f4de51a50b6698082500939b70b95f5157c"
+    },
+    {
+      "path": "app/Http/Controllers/School/StudentAttendanceController.php",
+      "sha256": "774f27bfb253088a4c28eb27a0a50b1f9c3b0b399e8575ab4be0846a66a30b9c"
+    },
+    {
+      "path": "app/Http/Controllers/Staff/SubtaskController.php",
+      "sha256": "2100221ab8594db91aa98512b870aa1c233c82856cfeb6e756624b1f1a760778"
+    },
+    {
+      "path": "app/Models/Attachment.php",
+      "sha256": "866be846d2a4fb5b652d4f0012f9fef5420e017df5ef2bd572df99e00be74bf8"
+    },
+    {
+      "path": "app/Models/PrivateFileMigration.php",
+      "sha256": "7cee48ed2ac40fd671064cd0df4a490befc077d8f1635a6edb84f93cb06f061e"
+    },
+    {
+      "path": "app/Services/School/StudentLeaveService.php",
+      "sha256": "d6f7a90e6c40be65984609a9891cc369881ffe0f3a05c1eb0fe2aea705670ca6"
+    },
+    {
+      "path": "app/Services/Support/AttachmentAccess.php",
+      "sha256": "177b4b285b71dcfe954a65d6ba6518b8c97c7d3c789600a861b8b3a8ca596dc1"
+    },
+    {
+      "path": "app/Services/Support/AttachmentService.php",
+      "sha256": "c218bf34f72356ec4762eb4951ef9845f54502869c202e7becdfcdcdf4778f45"
+    },
+    {
+      "path": "app/Services/Support/PrivateAttachmentMigrator.php",
+      "sha256": "4fe8b328ccd699032baa16aa867adb6d419a2a30d1e2fcc9caaf14825ce2ec2e"
+    },
+    {
+      "path": "app/Services/Support/PrivateFileClassification.php",
+      "sha256": "a15a4c0e0668aa2d5ec65ff37531b68c32dfe098e429baac37c72b386ad60774"
+    },
+    {
+      "path": "app/Services/Support/PrivateFileMigratorException.php",
+      "sha256": "9baf57b506df865ac754ac070dad26f095a47a08beb0e153fa7d2f5f15cba403"
+    },
+    {
+      "path": "app/Services/Support/PrivateFileReader.php",
+      "sha256": "ef81b8ed0654693d392b38bb70c7f957a5fffca16b86a1d414effcc851293ad1"
+    },
+    {
+      "path": "app/Services/Ticketing/SubtaskAccessQuery.php",
+      "sha256": "45c70c7d0fac116ed9730216490a45517f7822e92548dc91a7e5e240f1aa0b13"
+    },
+    {
+      "path": "app/Support/PublicAssetPath.php",
+      "sha256": "776fa003dc7b7cfeae3924bed3cb64d851bc587862629193a6b212cf1b45b287"
+    },
+    {
+      "path": "app/Support/PublicStorageLinkMaintainer.php",
+      "sha256": "f72f72062baf77f1a9e4c2415f9603747fb73628d13a637406b26e2b01d757bb"
+    },
+    {
+      "path": "app/Support/UploadSecurity.php",
+      "sha256": "40ed6f2834dae2291970f5bb183e364f3387514df8766c53b21b20b04b722477"
+    },
+    {
+      "path": "config/private-files.php",
+      "sha256": "704a3116d4e0553f6aa88f23efc23dd57bfb53132c6017c818e7346538cae9df"
+    },
+    {
+      "path": "database/migrations/2026_11_09_000000_create_private_file_migrations_table.php",
+      "sha256": "59a332d2990fc46cae6b1d1a44af44a3d2c02505eb4be33628c1c82ed6253fe6"
+    },
+    {
+      "path": "routes/api.php",
+      "sha256": "5a8d29999684115f3f45042c87318dab5bf9793a430ddbc351dcc83256e0223a"
+    },
+    {
+      "path": "routes/web.php",
+      "sha256": "111c25e2933126f53ed2d1294f13b052840cc48b81a6cccde61354831de06842"
+    },
+    {
+      "path": "tests/Feature/MediaStorageUrlFallbackTest.php",
+      "sha256": "e35dc962c6a7c17abb195b345eecdf91a7e1a2845705f953029a2a763e7c3021"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/PrivateAttachmentAuthorizationTest.php",
+      "sha256": "ae5dde819edf13b7de452353dc62d46b6a882a5a04778e8a394390b5ef9e7b02"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/PrivateAttachmentMigrationTest.php",
+      "sha256": "fe1efd4289ef79e4ca17ec7f58c0db191b611675d09a568d3740878f9e40ee06"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/PublicAssetCompatibilityTest.php",
+      "sha256": "31336dc893a09980eb3b6c33841efcb9e99c35c339817430b099337cff5e3a09"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/StaticPrivateUrlTest.php",
+      "sha256": "aba52d78283edd55f17f610ace24cbdd95fdb1dd7a21fd39b782cc0baf9a49a6"
+    },
+    {
+      "path": "tests/Feature/PublicStorageLinkStructureTest.php",
+      "sha256": "1da55ee6d594b93c9b4e287c816bd47c7ba988cfeac910c6a36765f9c7128a3b"
+    },
+    {
+      "path": "tests/Feature/StudentLeaveManagementTest.php",
+      "sha256": "85213f4e10137c165757f292dafdce1df4fe55c7f3853803af8de566f0c3a0bd"
+    },
+    {
+      "path": "tools/testing/private-assets.apache.conf.example",
+      "sha256": "52c7f79106bdc5b4e56ac67a8255d3dc2f44b301d91382deb6a7c9058d03acd3"
+    },
+    {
+      "path": "tools/testing/private-static-router.php",
+      "sha256": "e609d770b20aab9023fc0cd9221f848a82522126382110b92c8279c0a27b84af"
+    },
+    {
+      "path": "tools/testing/probe-mobile-auth-gate.php",
+      "sha256": "24a920d835900d6598cd5bec3365afdd22a15025d7d77a2e823a71b2af03a8cc"
+    },
+    {
+      "path": "tools/testing/probe-native-pat-migration.php",
+      "sha256": "5866daedfa712fb34e55e4b0c75a9dfe7eb9beb3929eeed38ef931ec567ea0dc"
+    },
+    {
+      "path": "tools/testing/probe-phase4-gate.php",
+      "sha256": "d47de814609b295080563bc8fd299fe3f25764e59b4485933bcae8e300ecfd85"
+    },
+    {
+      "path": "tools/testing/probe-phase5-gate.php",
+      "sha256": "c9b9d26ae9357ce38ba8f6ee59ded41ff96d7b6f8a8068d472f0485c47e96e87"
+    },
+    {
+      "path": "tools/testing/probe-private-manifest-migration.php",
+      "sha256": "e67ff523101c09aaf4f24f651ea7d93a25aeda42f418ae149f4a4ed21a2d7427"
+    },
+    {
+      "path": "tools/testing/run-baseline.sh",
+      "sha256": "39104f6ee06e00dd2e3c5420d12a66658c3d4b94a1c3184246dfa1b914631a32"
+    },
+    {
+      "path": "tools/testing/summarize-junit.php",
+      "sha256": "292d68069e93f58ca1f09cc83bdcd3b78bb97a64cf2193dc920508fd9983e6b1"
+    }
+  ],
+  "known_regression_paths_unchanged": true,
+  "deployment_workflow_unchanged": true
+}

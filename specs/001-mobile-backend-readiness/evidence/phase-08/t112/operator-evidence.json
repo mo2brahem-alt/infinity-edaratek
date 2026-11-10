@@ -1,0 +1,84 @@
+{
+  "provenance": "User-supplied manual SSH output and subsequent explicit PM corrections; not a direct agent/FPM observation.",
+  "server_observed_at_utc": "2026-11-09T14:01:47Z",
+  "server_observed_at_africa_cairo": "2026-11-09T16:01:47+02:00",
+  "target": "test.edaratek.com",
+  "ssh_user": "root",
+  "app_canonical_path": "/home/test/public_html",
+  "test_environment_head": "12b9d5326d942acda55309aac05c6cee1bf928b0",
+  "feature_head": "fbc63a4615f48ac0f832d91945d9652aeabef466",
+  "test_environment_version_drift": "YES",
+  "server_commit_is_feature_ancestor": true,
+  "intentional_deployment_history_exception": "NOT_PROVEN",
+  "actual_worktree_matches_reported_git_head": "UNKNOWN",
+  "php_cli_version": "8.3.6",
+  "fpm_version": "UNKNOWN",
+  "reported_configuration": {
+    "APP_ENV": "production",
+    "APP_DEBUG": true,
+    "APP_URL": "https://test.edaratek.com",
+    "FILESYSTEM_DISK": "local",
+    "CACHE_STORE": "database",
+    "QUEUE_CONNECTION": "database",
+    "MAIL_MAILER": "smtp"
+  },
+  "configuration_provenance": "Cached configuration from first operator output; cached/source finding explicitly reaffirmed by subsequent PM correction. FPM effective value not established.",
+  "storage": {
+    "local": "/home/test/public_html/storage/app/private",
+    "public": "/home/test/public_html/storage/app/public",
+    "school_attachments": "/home/test/public_html/storage/app/private/school-attachments",
+    "public_url_host": "test.edaratek.com",
+    "public_visibility": "public",
+    "public_storage_symlink_target": "/home/test/public_html/storage/app/public",
+    "public_media_files": "ABSENT"
+  },
+  "apache": {
+    "candidate": "/etc/apache2/sites-available/test.edaratek.com.conf",
+    "server_name": "test.edaratek.com",
+    "document_root": "/home/test/public_html",
+    "unresolved_directive_lines": [
+      27,
+      70
+    ],
+    "raw_directive_values": "NOT_PROVIDED",
+    "enabled_site_link": "UNKNOWN"
+  },
+  "http": {
+    "root": 200,
+    "up": 200,
+    "api_v1_me": 404,
+    "tls_verify_result": 0,
+    "tls_verify_provenance": "Explicit user note; curl ssl_verify_result=0 means successful requested certificate verification, not a disabled switch."
+  },
+  "verdicts": {
+    "H01_STATUS": "BLOCKED",
+    "H05_STATUS": "BLOCKED",
+    "T112_STATUS": "BLOCKED",
+    "APP_DEBUG_CACHED_VALUE": "true",
+    "FPM_RUNTIME_DEBUG_VALUE": "UNKNOWN",
+    "FPM_DISPLAY_ERRORS": "UNKNOWN",
+    "RUNTIME_ERROR_DISCLOSURE_EVIDENCE": "UNAVAILABLE"
+  },
+  "finding": "H05-CFG-01: confirmed unsafe debug-enabled cached/source configuration in production mode. Actual web disclosure/equivalent protection remains unverified.",
+  "remote_operations_this_agent_pass": 0,
+  "app_suite_rerun": false,
+  "previous_ci_results_not_new_run": {
+    "focused_pass": 462,
+    "focused_total": 462,
+    "full_pass_each_runner": 724,
+    "full_total_each_runner": 725,
+    "known_excel_failure": true,
+    "errors": 0,
+    "skips": 0
+  },
+  "safety": {
+    "NO_CONFIG_CHANGES": "YES",
+    "NO_APPLICATION_CHANGES": "YES",
+    "NO_DEPLOYMENT": "YES",
+    "NO_SERVICE_RESTARTS": "YES",
+    "PRODUCTION_TOUCHED": "NO",
+    "REAL_FILES_MIGRATED": 0,
+    "REAL_WHATSAPP_SENDS": 0,
+    "PHASE_9_STARTED": "NO"
+  }
+}

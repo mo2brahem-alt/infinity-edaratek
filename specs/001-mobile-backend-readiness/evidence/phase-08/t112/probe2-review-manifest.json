@@ -1,0 +1,63 @@
+{
+  "date_africa_cairo": "2026-11-09",
+  "source_head": "fbc63a4615f48ac0f832d91945d9652aeabef466",
+  "accepted_operator_probe": "server-readonly-h05.sh",
+  "accepted_probe_execution": "SUCCESS",
+  "actual_server_execution_timestamp": "NOT_SUPPLIED",
+  "third_probe": "server-readonly-h05-wiring.sh",
+  "third_probe_execution": "NOT_RUN_ON_SERVER",
+  "verdicts": {
+    "H01_STATUS": "BLOCKED_INDEPENDENT_PRIVATE_FILE_PROOF_GAP",
+    "H05_STATUS": "BLOCKED_RUNTIME_AND_EQUIVALENT_NON_DISCLOSURE_UNPROVEN",
+    "T112_STATUS": "BLOCKED"
+  },
+  "checks": {
+    "bash_syntax": "PASS",
+    "python_ast": "PASS",
+    "in_memory_wiring_assertions": 9,
+    "immutable_sources_preserved": 162,
+    "previous_evidence_snapshots_preserved": 4,
+    "all_task_rows_preserved": 120,
+    "T112_unchecked": true,
+    "phase9_unchecked": 8,
+    "index_empty": true
+  },
+  "files": [
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe-2-operator-evidence.json",
+      "sha256": "ec5bb26a508055cfd2805b6e6a77c01743bc0742dbd317cd294b231c1e44d3fd"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/reassessment.md",
+      "sha256": "865f5fe67b9d315fa650d59df95a293c5278e4909ca0812d136112dcf3deb6c0"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05-wiring.sh",
+      "sha256": "532f4c8cf0473e61c756250670d2c1afe160d7f3e5d79b3c94361babda492766"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+      "sha256": "bb5987ec11d432c40bf7bba0c081cead08b3127b22f87157543f0dbbfc713ea7"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/acceptance.md",
+      "sha256": "10f1133371213204039ccc11e03f07c19287a1371d63b2917f0f1249dd391834"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/tasks.md",
+      "sha256": "817d8f0394de9f7ea5cf6c62998075152a90c5d776e48816526090effb72ce41"
+    }
+  ],
+  "prior_manifest": "h05-review-manifest.json is historical; original paths before this update map to probe2-checkpoint-preservation.json snapshots.",
+  "safety": {
+    "NO_WRITES_ON_SERVER": "YES",
+    "NO_CONFIG_CHANGES": "YES",
+    "NO_APPLICATION_CHANGES": "YES",
+    "NO_DEPLOYMENT": "YES",
+    "NO_SERVICE_RESTARTS": "YES",
+    "PRODUCTION_TOUCHED": "NO",
+    "REAL_FILES_MIGRATED": 0,
+    "REAL_WHATSAPP_SENDS": 0,
+    "PHASE_9_STARTED": "NO"
+  }
+}

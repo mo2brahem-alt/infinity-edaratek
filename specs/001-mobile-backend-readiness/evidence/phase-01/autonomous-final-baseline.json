@@ -1,0 +1,1345 @@
+{
+  "recorded_date": "2026-11-08",
+  "run_id": 42472192069,
+  "job_id": 128705353867,
+  "commit": "fab8eea5ecb2da1188ba0d9fa34070b68e4818f5",
+  "starting_commit": "64113bf8c9e0dec97969a3b71e164789ed8532f3",
+  "records": [
+    {
+      "kind": "guard",
+      "mode": "preflight",
+      "status": "PASS",
+      "database": "edaratek_test_8f53f65d5525",
+      "mysql_version": "8.0.46",
+      "db_target": "ephemeral_internal_service",
+      "cache": "array",
+      "queue": "sync_without_workers",
+      "mail": "array_and_fakes",
+      "provider_credentials": "absent",
+      "vite_manifest": "generated_and_verified",
+      "laravel_boot": "NOT_RUN"
+    },
+    {
+      "kind": "platform",
+      "php_version": "8.2.35",
+      "extensions": [
+        "Core",
+        "PDO",
+        "Phar",
+        "Reflection",
+        "SPL",
+        "SimpleXML",
+        "Zend OPcache",
+        "bcmath",
+        "ctype",
+        "curl",
+        "date",
+        "dom",
+        "fileinfo",
+        "filter",
+        "gd",
+        "hash",
+        "iconv",
+        "intl",
+        "json",
+        "libxml",
+        "mbstring",
+        "mysqlnd",
+        "openssl",
+        "pcntl",
+        "pcre",
+        "pdo_mysql",
+        "pdo_sqlite",
+        "posix",
+        "random",
+        "readline",
+        "session",
+        "sodium",
+        "sqlite3",
+        "standard",
+        "tokenizer",
+        "xml",
+        "xmlreader",
+        "xmlwriter",
+        "zip",
+        "zlib"
+      ],
+      "pdo_drivers": [
+        "sqlite",
+        "mysql"
+      ],
+      "composer_version": "2.11.1",
+      "php_requirement": "^8.2",
+      "phpunit_version": "11.5.51",
+      "laravel_version": "v12.50.0",
+      "frontend_node_version": "22.23.4",
+      "composer_validate_exit": 0,
+      "composer_strict_exit": 0,
+      "composer_strict_warning_present": false,
+      "composer_platform_exit": 0,
+      "platform_requirements": [
+        {
+          "name": "composer-runtime-api",
+          "status": "success",
+          "version": "2.2.2"
+        },
+        {
+          "name": "ext-ctype",
+          "status": "success",
+          "version": ""
+        },
+        {
+          "name": "ext-dom",
+          "status": "success",
+          "version": "20031129"
+        },
+        {
+          "name": "ext-fileinfo",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-filter",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-hash",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-iconv",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-json",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-libxml",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-mbstring",
+          "status": "success",
+          "version": ""
+        },
+        {
+          "name": "ext-openssl",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-pcre",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-phar",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-session",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-tokenizer",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-xml",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-xmlwriter",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "lib-pcre",
+          "status": "success",
+          "version": "10.40"
+        },
+        {
+          "name": "php",
+          "status": "success",
+          "version": "8.2.35"
+        }
+      ],
+      "runtime_network": "internal_only",
+      "dependency_network": "build_only"
+    },
+    {
+      "kind": "guard",
+      "mode": "boot",
+      "status": "PASS",
+      "database": "edaratek_test_8f53f65d5525",
+      "mysql_version": "8.0.46",
+      "db_target": "ephemeral_internal_service",
+      "cache": "array",
+      "queue": "sync_without_workers",
+      "mail": "array_and_fakes",
+      "provider_credentials": "absent",
+      "vite_manifest": "generated_and_verified",
+      "laravel_boot": "PASS"
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "phpunit_process_profile",
+      "PHP_MEMORY_LIMIT": "512M",
+      "PHP_MAX_EXECUTION_TIME": 0,
+      "cgroup_memory_events_before": {
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      }
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "baseline_process_exit",
+      "TEST_EXIT_CODE": 2
+    },
+    {
+      "kind": "infrastructure",
+      "TEST_EXIT_CODE": 2,
+      "PHP_MEMORY_LIMIT": "512M",
+      "PHP_MAX_EXECUTION_TIME": 0,
+      "cgroup_memory_events_before": {
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_memory_events_after": {
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_oom_kill_increased": false,
+      "event_file_present": true,
+      "event_file_bytes": 1566587,
+      "phpunit_finished_event": true,
+      "finished_shell_exit_code": 2,
+      "finished_event_count": 1,
+      "last_test_identity": {
+        "class": "Tests\\Feature\\WhatsAppIntegrationTest",
+        "method": "test_phone_number_normalization_is_strict_for_supported_saudi_and_egypt_numbers"
+      },
+      "last_phpunit_event_types": [
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Errored",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Suite Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Suite Finished",
+        "Test Suite Finished",
+        "Test Suite Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "PHPUnit Finished"
+      ],
+      "execution_classification": "COMPLETED_REQUIRES_EXIT_CHECK",
+      "junit_file_present": true,
+      "junit_bytes": 2553943,
+      "junit_sha256": "09cf1c9eb18ebdc17f9b182570cc38aa621b80c80c1550bab561b5d1de74e35f",
+      "utf8_valid": true,
+      "xml_declaration_present": true,
+      "contains_doctype_or_entity": false,
+      "starts_with_expected_xml_structure": true,
+      "ends_with_plausible_xml_structure": true,
+      "testcase_token_count": 523,
+      "testcase_token_count_is_diagnostic_only": true,
+      "libxml_errors": [],
+      "libxml_error_count": 0,
+      "baseline_log_present": true,
+      "baseline_log_bytes": 4475825,
+      "safe_phpunit_summary_lines": [
+        "Time: 44:09.033, Memory: 130.94 MB",
+        "ERRORS!",
+        "Tests: 523, Assertions: 441, Errors: 475, PHPUnit Deprecations: 1."
+      ],
+      "fatal_signature_categories": [],
+      "fatal_signatures_are_observations_only": true,
+      "status": "INFO",
+      "stage": "baseline_report_metadata"
+    },
+    {
+      "kind": "baseline",
+      "TOTAL": 523,
+      "PASSED": 48,
+      "FAILED": 0,
+      "ERRORS": 475,
+      "SKIPPED": 0,
+      "WARNINGS": 522,
+      "warning_events": {
+        "user": 0,
+        "php": 522,
+        "phpunit": 0,
+        "runner": 0
+      },
+      "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+      "TEST_EXIT_CODE": 2,
+      "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+      "phpunit_completed": true,
+      "test_suite_outcome": "NONZERO_EXIT",
+      "diagnostics": [
+        {
+          "class": "Tests\\Feature\\AcademicPlanningAccessTest",
+          "method": "test_manager_can_access_academic_planning_and_create_term_for_his_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningAccessTest",
+          "method": "test_staff_with_configured_permission_can_access_academic_planning",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningAccessTest",
+          "method": "test_staff_without_permission_is_forbidden_from_academic_planning",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningAccessTest",
+          "method": "test_approved_courses_tree_contains_current_school_courses_only",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningAccessTest",
+          "method": "test_schedule_listing_supports_grade_filter_within_current_school_only",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningAccessTest",
+          "method": "test_schedule_update_is_scoped_to_user_school_only",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningCentralValidationTest",
+          "method": "test_schedule_can_be_created_on_valid_working_day_within_same_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningCentralValidationTest",
+          "method": "test_schedule_creation_fails_for_weekly_off_day_with_arabic_message",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningCentralValidationTest",
+          "method": "test_schedule_creation_fails_when_term_session_date_is_holiday",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningCentralValidationTest",
+          "method": "test_schedule_creation_fails_when_term_session_date_is_exceptional_leave_day",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningCentralValidationTest",
+          "method": "test_schedule_creation_fails_when_time_is_outside_school_day_window",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningCentralValidationTest",
+          "method": "test_schedule_creation_fails_on_teacher_time_overlap_in_same_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningCentralValidationTest",
+          "method": "test_schedule_creation_fails_on_classroom_time_overlap_in_same_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningCentralValidationTest",
+          "method": "test_same_schedule_slot_can_be_created_in_other_school_without_cross_tenant_conflict",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningCentralValidationTest",
+          "method": "test_schedule_creation_fails_when_referencing_classroom_from_another_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningCentralValidationTest",
+          "method": "test_inactive_schedule_does_not_block_same_slot_or_time_conflicts",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningGridEditorTest",
+          "method": "test_weekly_grid_empty_selects_use_readable_placeholder_classes",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningGridEditorTest",
+          "method": "test_weekly_grid_entries_are_loaded_for_selected_context",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningGridEditorTest",
+          "method": "test_grid_sync_can_create_update_and_delete_weekly_slots",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningGridEditorTest",
+          "method": "test_grid_sync_rejects_weekly_off_days_server_side",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningGridEditorTest",
+          "method": "test_grid_sync_rejects_foreign_classroom_and_preserves_school_isolation",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningGridEditorTest",
+          "method": "test_word_export_returns_document_for_selected_weekly_grid",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningGridEditorTest",
+          "method": "test_pdf_export_returns_pdf_download_for_selected_weekly_grid",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningPageSegmentationTest",
+          "method": "test_index_exposes_selected_page_from_query",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningPageSegmentationTest",
+          "method": "test_index_falls_back_to_stages_for_invalid_page_query",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningPageSegmentationTest",
+          "method": "test_store_timetable_version_redirect_keeps_requested_page",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningPageSegmentationTest",
+          "method": "test_store_schedule_redirect_keeps_requested_page",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningSubjectManagementTest",
+          "method": "test_subject_code_is_auto_generated_and_scoped_per_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningSubjectManagementTest",
+          "method": "test_manager_can_assign_subject_to_educational_teacher_even_without_staff_role_assignment",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningSubjectManagementTest",
+          "method": "test_subject_branches_can_be_saved_and_updated",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningSubjectManagementTest",
+          "method": "test_manager_can_assign_subject_to_legacy_teacher_role_without_staff_type",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningSubjectManagementTest",
+          "method": "test_manager_can_assign_subject_to_staff_user_with_teacher_department_role_name",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningSubjectManagementTest",
+          "method": "test_subject_creation_rejects_foreign_school_teacher_assignment",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningSubjectManagementTest",
+          "method": "test_subject_creation_rejects_non_teacher_user_assignment",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningSubjectManagementTest",
+          "method": "test_manager_cannot_update_subject_in_another_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningSubjectManagementTest",
+          "method": "test_updating_subject_teachers_tracks_diff_and_writes_audit_log",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicPlanningSubjectManagementTest",
+          "method": "test_updating_subject_without_teacher_payload_keeps_existing_assignments",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicYearManagementTest",
+          "method": "test_manager_can_create_academic_year_and_link_term_to_it",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicYearManagementTest",
+          "method": "test_term_cannot_be_linked_to_academic_year_from_other_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicYearManagementTest",
+          "method": "test_staff_cannot_update_academic_year_of_another_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicYearManagementTest",
+          "method": "test_deleting_academic_year_nulls_related_term_reference",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicYearManagementTest",
+          "method": "test_manager_cannot_create_overlapping_academic_year_in_same_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicYearManagementTest",
+          "method": "test_manager_cannot_create_term_outside_linked_academic_year",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicYearManagementTest",
+          "method": "test_manager_cannot_create_overlapping_term_in_same_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AcademicYearManagementTest",
+          "method": "test_manager_can_update_legacy_overlapping_year_name_when_dates_do_not_change",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_supervisor_registration_creates_pending_account_redirects_home_and_sends_notifications",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_manager_registration_creates_pending_account_redirects_home_and_sends_notifications",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_pending_account_cannot_login_or_enter_dashboard_before_approval",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_super_admin_can_approve_pending_account_and_activate_subscription",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_super_admin_approval_activates_linked_school_manager_school",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_super_admin_approval_keeps_manager_school_suspended_without_current_subscription",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_activate_approved_schools_command_dry_run_does_not_change_data",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_activate_approved_schools_command_activates_matching_schools_only",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_super_admin_can_reject_pending_account_and_keep_it_blocked",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_approved_account_can_login_after_super_admin_approval_and_resume_its_role_flow",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_non_super_admin_cannot_approve_or_reject_pending_accounts",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_super_admin_users_index_exposes_pending_approvals",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_super_admin_users_index_exposes_school_account_overview",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_welcome_page_exposes_pending_registration_notice_when_query_flag_is_present",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_super_admin_seeder_creates_sultan_account_once_with_hashed_password",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AccountApprovalFlowTest",
+          "method": "test_admin_created_manager_is_immediately_approved_without_pending_queue",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest",
+          "method": "test_manager_can_access_dashboard_when_school_is_active_without_supervisor_association",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest",
+          "method": "test_manager_is_blocked_from_operational_routes_when_school_is_suspended",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest",
+          "method": "test_manager_can_access_requests_page_before_association_activation",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest",
+          "method": "test_staff_can_access_dashboard_and_delegated_modules_when_school_is_active_without_supervisor_association",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest",
+          "method": "test_staff_is_blocked_when_school_is_suspended_even_if_role_is_valid",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest",
+          "method": "test_staff_without_school_is_blocked_with_clear_arabic_message",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest",
+          "method": "test_staff_still_cannot_access_module_without_delegated_permission",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest",
+          "method": "test_manager_can_access_managed_routes_when_association_is_active",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest",
+          "method": "test_manager_can_access_managed_routes_even_when_school_flags_are_waiting_with_manager_approval_request",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminDefaultStageTemplateLinkingTest",
+          "method": "test_super_admin_can_persist_master_education_stage_link_on_default_stage_template",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminDirectorateManagementTest",
+          "method": "test_super_admin_can_create_governorate_and_education_type_entry",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminDirectorateManagementTest",
+          "method": "test_super_admin_can_update_education_type_within_governorate",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminDirectorateManagementTest",
+          "method": "test_super_admin_cannot_create_school_from_admin_panel_anymore",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminEducationStageManagementTest",
+          "method": "test_super_admin_can_manage_education_stages_from_school_defaults_feature",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminEducationStageManagementTest",
+          "method": "test_school_manager_cannot_manage_global_education_stages",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminEducationStageManagementTest",
+          "method": "test_super_admin_cannot_delete_education_stage_used_by_school_or_template_stage",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminEducationStageManagementTest",
+          "method": "test_super_admin_cannot_delete_education_stage_used_by_linked_template_stage_even_when_template_name_differs",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminGlobalTaxonomySyncTest",
+          "method": "test_super_admin_cannot_create_country_manually_anymore",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminGlobalTaxonomySyncTest",
+          "method": "test_super_admin_cannot_create_governorate_manually_anymore",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminGlobalTaxonomySyncTest",
+          "method": "test_super_admin_can_sync_countries_from_global_api_without_duplicating_existing_aliases",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminGlobalTaxonomySyncTest",
+          "method": "test_super_admin_can_sync_governorates_for_selected_country_from_global_api",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminGlobalTaxonomySyncTest",
+          "method": "test_super_admin_governorate_sync_skips_country_that_already_has_local_governorates",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultEducationTypeManagementTest",
+          "method": "test_super_admin_can_manage_education_types_from_school_defaults_feature",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultEducationTypeManagementTest",
+          "method": "test_super_admin_cannot_delete_education_type_used_by_default_templates",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_school_defaults_index_renders_the_standalone_page_when_not_embedded",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_school_defaults_index_renders_embedded_editor_mode_for_selected_country_and_education_type",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_settings_default_templates_tab_query_redirects_to_the_standalone_page",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_super_admin_can_store_template_scope_configuration_and_json_payload_lists_it",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_country_reference_endpoint_returns_supported_public_holidays_payload",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_country_reference_endpoint_uses_saudi_snapshot_when_external_holiday_api_returns_no_content",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_re_saving_same_scope_does_not_duplicate_auto_generated_defaults",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_partial_existing_template_data_is_completed_by_fallback_defaults_without_overwriting_it",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_template_availability_respects_country_and_education_type_templates",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_super_admin_can_store_a_country_and_education_type_scoped_academic_year_template",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_client_reference_snapshot_is_persisted_and_refreshing_it_updates_matching_holidays_without_duplication",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_auto_generated_current_academic_year_is_copied_to_school_when_importing_templates",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_importing_a_country_and_education_type_template_copies_it_into_school_scoped_records",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+          "method": "test_super_admin_can_delete_a_saved_template_scope_without_affecting_school_copies",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ApiRateLimitingTest",
+          "method": "test_system_api_uses_configured_rate_limit",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ApiRateLimitingTest",
+          "method": "test_school_api_uses_configured_rate_limit",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ArabicValidationMessagesTest",
+          "method": "test_registration_validation_errors_are_returned_in_arabic",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ArabicValidationMessagesTest",
+          "method": "test_login_failure_message_is_returned_in_arabic",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ArabicValidationMessagesTest",
+          "method": "test_manager_onboarding_json_validation_errors_are_returned_in_arabic",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ArabicValidationMessagesTest",
+          "method": "test_manager_onboarding_duplicate_school_name_error_is_returned_in_arabic",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ArabicValidationMessagesTest",
+          "method": "test_manager_onboarding_duplicate_school_phone_error_is_returned_in_arabic",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\ArabicValidationMessagesTest",
+          "method": "test_manager_onboarding_duplicate_school_email_error_is_returned_in_arabic",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AssociationHandshakeTest",
+          "method": "test_legacy_manager_registration_page_redirects_to_plan_based_registration",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AssociationHandshakeTest",
+          "method": "test_legacy_manager_registration_submission_redirects_without_creating_manager_account",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\AttendancePerformanceIndexesTest",
+          "method": "test_attendance_and_leave_tables_have_performance_indexes_for_reporting_queries",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\AuthenticationTest",
+          "method": "test_login_screen_can_be_rendered",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\AuthenticationTest",
+          "method": "test_users_can_authenticate_using_the_login_screen",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\AuthenticationTest",
+          "method": "test_users_can_not_authenticate_with_invalid_password",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\AuthenticationTest",
+          "method": "test_inactive_users_cannot_authenticate",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\AuthenticationTest",
+          "method": "test_users_can_logout",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\EmailVerificationTest",
+          "method": "test_email_verification_screen_can_be_rendered",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\EmailVerificationTest",
+          "method": "test_email_can_be_verified",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\EmailVerificationTest",
+          "method": "test_email_is_not_verified_with_invalid_hash",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\PasswordConfirmationTest",
+          "method": "test_confirm_password_screen_can_be_rendered",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\PasswordConfirmationTest",
+          "method": "test_password_can_be_confirmed",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\PasswordConfirmationTest",
+          "method": "test_password_is_not_confirmed_with_invalid_password",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\PasswordResetTest",
+          "method": "test_reset_password_link_screen_can_be_rendered",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\PasswordResetTest",
+          "method": "test_reset_password_link_can_be_requested",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\PasswordResetTest",
+          "method": "test_reset_password_screen_can_be_rendered",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\PasswordResetTest",
+          "method": "test_password_can_be_reset_with_valid_token",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\PasswordUpdateTest",
+          "method": "test_password_can_be_updated",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\PasswordUpdateTest",
+          "method": "test_correct_password_must_be_provided_to_update_password",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        },
+        {
+          "class": "Tests\\Feature\\Auth\\RegistrationTest",
+          "method": "test_registration_screen_can_be_rendered",
+          "type": "Illuminate\\Database\\QueryException",
+          "classification": "ENVIRONMENTAL",
+          "sanitized_message": "ENVIRONMENTAL",
+          "raw_message_exported": false
+        }
+      ],
+      "diagnostics_truncated": true
+    }
+  ],
+  "review": {
+    "baseline_error_classification": "UNKNOWN",
+    "errors_assigned": 475,
+    "diagnostics_emitted": 128,
+    "diagnostics_not_emitted": 347,
+    "reason": "SQLSTATE alone does not establish ENVIRONMENTAL or PRE_EXISTING_APPLICATION_FAILURE; per-case causes remain unproven. No source/test expectations changed.",
+    "owner": "Application/test owners; PM baseline review",
+    "mandatory_failures_waived": false
+  },
+  "TEST_RUNTIME_READY": "PASS",
+  "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+  "PHASE_1_ACCEPTANCE": "PASS_AWAITING_PM_REVIEW",
+  "MOBILE_BACKEND_STATUS": "MOBILE_BACKEND_NOT_READY"
+}

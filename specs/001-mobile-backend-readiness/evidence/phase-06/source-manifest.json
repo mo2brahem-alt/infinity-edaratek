@@ -1,0 +1,207 @@
+{
+  "start_commit": "ecb6b7fd7d1b06bf7d4575f1b194ce77fa76fb54",
+  "end_commit": "d1810ccef7c8c64651098eecd33f0fbe017bfb62",
+  "committed_file_count": 24,
+  "local_spec_file_count": 11,
+  "file_count": 39,
+  "files": [
+    {
+      "path": "CLAUDE.md",
+      "scope": "committed_source",
+      "sha256": "7086df3f4f150d333bd8e4cbcf918531ccad111e4ba0932f49a3534fb7d10047"
+    },
+    {
+      "path": "PROJECT_DETAILS.md",
+      "scope": "committed_source",
+      "sha256": "78b24e477407ac971e803a59e704d1d6aa576ea7572427a1b14114bd17cfca66"
+    },
+    {
+      "path": "app/Http/Controllers/RetiredNotificationChannelController.php",
+      "scope": "committed_source",
+      "sha256": "9f76cbd9eb533474ed1f8103a30834f6561d018b249423826278e6b34c23e2eb"
+    },
+    {
+      "path": "app/Jobs/DispatchWhatsAppNotification.php",
+      "scope": "committed_source",
+      "sha256": "931f6a07702d319660f3e44a9ff9926ff899f5c1103adb9b6eab77592d86807e"
+    },
+    {
+      "path": "app/Jobs/DispatchWhatsAppOtp.php",
+      "scope": "committed_source",
+      "sha256": "0f9086acd36331b2537d3b8bd9f94e6195ca61ce2ccbd74acfae930146035a07"
+    },
+    {
+      "path": "app/Services/Support/NotificationService.php",
+      "scope": "committed_source",
+      "sha256": "27d0673ac1a577d4f5b7539013d56e63098a7a779822294c0a0286c2a7ed694c"
+    },
+    {
+      "path": "app/Services/WhatsApp/N8nWhatsAppClient.php",
+      "scope": "committed_source",
+      "sha256": "f5a555e966c71c9d9cd8c8e1b5b297c452e70114f417517d32ca39a4e05e8981"
+    },
+    {
+      "path": "app/Services/WhatsApp/WhatsAppNotificationService.php",
+      "scope": "committed_source",
+      "sha256": "e6e5c4d4d9afdde563453a970c8e038c3c7a80090034e81f7f9bb86e07c68044"
+    },
+    {
+      "path": "app/Services/WhatsApp/WhatsAppOtpService.php",
+      "scope": "committed_source",
+      "sha256": "fd5b8e33cc69ff162af53460bb987b0ee00f6d71ffe050c58b72346f2e1c052f"
+    },
+    {
+      "path": "config/services.php",
+      "scope": "committed_source",
+      "sha256": "42556ab8becbe83b23847faa1919f545e8567a2e7d24dd1412b437916d5f8309"
+    },
+    {
+      "path": "docs/notification-policy.md",
+      "scope": "committed_source",
+      "sha256": "39aeef17778f76b54d74b7904764e77ab985ad0c0ee8a4af7e0afcbe03a4c1b2"
+    },
+    {
+      "path": "phpunit.mysql.xml",
+      "scope": "committed_source",
+      "sha256": "ca648185f36344887344ff98ee2abd506c61b183a552c79963ba73adad0729c9"
+    },
+    {
+      "path": "phpunit.xml",
+      "scope": "committed_source",
+      "sha256": "20c135f3ebf1b8d3e59c402f714a5e190328cd74e25b0b132d06cba0b7eb997f"
+    },
+    {
+      "path": "routes/web.php",
+      "scope": "committed_source",
+      "sha256": "664d8dcc57c2e8a9b616c839b4ea71f94225b174c401aed103d81b91e93dbdff"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase6/NotificationChannelPolicyTest.php",
+      "scope": "committed_source",
+      "sha256": "05249adb9775e8ce8abf3201dfd026270d45438f4f263e3d65cb3eabce2e8140"
+    },
+    {
+      "path": "tests/Feature/PhoneStateCompatibilityTest.php",
+      "scope": "committed_source",
+      "sha256": "49381b8bb98cad732a1bb601f3ca9f1aa1f84a7df8c57c4754605db7bf39487a"
+    },
+    {
+      "path": "tools/testing/Dockerfile",
+      "scope": "committed_source",
+      "sha256": "d24417576243b6dc1ba2ac63cc0ac42bd8c2c9b49d120a02011db4584d1cce2a"
+    },
+    {
+      "path": "tools/testing/probe-mobile-auth-gate.php",
+      "scope": "committed_source",
+      "sha256": "1538234d64cff37719d8c8ba12b50b91e6bb2b3b8bb887c224bdd7a18e070f56"
+    },
+    {
+      "path": "tools/testing/probe-notification-scope.php",
+      "scope": "committed_source",
+      "sha256": "09aacb41f926f1e2a147afe1736dc2c0c1e9d2c0415ecaf66c395d842784ecd8"
+    },
+    {
+      "path": "tools/testing/probe-phase5-gate.php",
+      "scope": "committed_source",
+      "sha256": "7dc4bcc30beccd7cc075ddb3975cbe118269da124fc929db243a2e5eed386694"
+    },
+    {
+      "path": "tools/testing/probe-phase6-gate.php",
+      "scope": "committed_source",
+      "sha256": "692f65988fdfad093cb049ededca4035d1aa157992c4c74589b5bc390f944c18"
+    },
+    {
+      "path": "tools/testing/run-baseline.sh",
+      "scope": "committed_source",
+      "sha256": "ad0ff8e3ddf97eef2e175abf8ac8d2bf371ba39dfb4a1d5024607bd680917bef"
+    },
+    {
+      "path": "tools/testing/summarize-junit.php",
+      "scope": "committed_source",
+      "sha256": "fb7c9c5b673c1eabe5864d8ae61e57ad72f9a5eb90b09bf7fc144af3ecb94eff"
+    },
+    {
+      "path": "tools/testing/superseded-requirements.json",
+      "scope": "committed_source",
+      "sha256": "b0f2f4f187f93703fbe59c57f59994b1403a820cbdd964708716dbfeca8d901e"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "scope": "local_spec_kit",
+      "sha256": "65ab6de7e107f5a4102ea363541b287d68a3aa9e98125cf25f1bcc156668d732"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/spec.md",
+      "scope": "local_spec_kit",
+      "sha256": "aa88711199990a00d2fa30791ef1cdd4704711e31ca95d9cc94790fe7d831c12"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/plan.md",
+      "scope": "local_spec_kit",
+      "sha256": "a48cbe0de6ca66b20ff510ae03d0ec5d6889e3d2eb006405fa1d8b60440dbd92"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/tasks.md",
+      "scope": "local_spec_kit",
+      "sha256": "1ee632f333588d53bcaf74b33629e6c5aa6269be2ec2631b1304e0a248a11c63"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/research.md",
+      "scope": "local_spec_kit",
+      "sha256": "97be9c1135e8a2c38c681cfa4196419fd5735818eb64f95aec474fa4280db1db"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/data-model.md",
+      "scope": "local_spec_kit",
+      "sha256": "bd80b5c51a2c1ab77d1939ad3ef69219887f544ce86a7fb3321549ec0f3dc097"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/quickstart.md",
+      "scope": "local_spec_kit",
+      "sha256": "11e409fb901d8353445bffad44f9c3759f04ae95c7737db270db607dcab090c1"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/contracts/mobile-api.md",
+      "scope": "local_spec_kit",
+      "sha256": "9f885574b3c998e0923a9e71e24c5efa9f0de6441e9635ecd1674c473c94fe59"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/contracts/security-protocols.md",
+      "scope": "local_spec_kit",
+      "sha256": "0ae908c03dbd641c28a1c53934c41515b459de46c6ffa8c9fb2e59a8cb5d832c"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/checklists/readiness-security.md",
+      "scope": "local_spec_kit",
+      "sha256": "17d046a3856f05e49b159f94a8bb46db1336b49ebb33fd2d5bf5fac99c163f6e"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/checklists/requirements.md",
+      "scope": "local_spec_kit",
+      "sha256": "b28d0db26405be34d958324c4369391bea4f4333383a7ab47f381950ca1f9369"
+    },
+    {
+      "path": "tests/Feature/WhatsAppIntegrationTest.php",
+      "scope": "preserved_reference",
+      "sha256": "97447e224e8761cd91758d124baa1bc837db6aec5aba713a6dda43aa064e2349"
+    },
+    {
+      "path": "tests/Feature/StudentExcelImportTest.php",
+      "scope": "preserved_reference",
+      "sha256": "facfb5c3d4f0f1a45ffad2dd93cab5d0e1f4d1f9f1041a92dc692294acbf62d6"
+    },
+    {
+      "path": "app/Services/School/StudentImportService.php",
+      "scope": "preserved_reference",
+      "sha256": "fad0e59a9b87fde756bbb5b8d6caef5f8bdb7505cecb1d08f87a3272fbb69e36"
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "scope": "preserved_reference",
+      "sha256": "349264dca87ac571ae508f130a9d79267e67ef18a0c1e52f640633d488e2c317"
+    }
+  ],
+  "known_regression_paths_unchanged": true,
+  "deployment_workflow_unchanged": true,
+  "archived_whatsapp_test_unchanged": true
+}

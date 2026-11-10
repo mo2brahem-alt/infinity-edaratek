@@ -1,0 +1,127 @@
+{
+  "target": "test.edaratek.com",
+  "run_id": "c34a0579-da76-4bb8-83b3-cd7a81fc1b21",
+  "completed_utc": "2026-11-09T13:42:35.322Z",
+  "scope": "Unauthenticated HTTPS observations only; no redirects, no uploads/cache writes, no real resource identifiers.",
+  "certificate_validation_bypassed": false,
+  "observations": [
+    {
+      "method": "HEAD",
+      "pathname": "/",
+      "timestamp_utc": "2026-11-09T13:42:33.868Z",
+      "status": "HTTP_RESPONSE",
+      "http_status": 200,
+      "tls_authorized": true,
+      "tls_certificate_fingerprint256": "CA:F8:C1:4A:9B:6F:18:24:1E:B5:3E:9A:88:EE:03:26:2E:DE:98:33:F5:F7:08:DB:14:77:5E:AC:C6:E5:10:6C",
+      "safe_headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-cache, private",
+        "x-content-type-options": "nosniff"
+      },
+      "redirect": null,
+      "received_bytes": 0,
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "debug_markers_observed": false,
+      "api_shape": null,
+      "raw_body_exported": false,
+      "cookies_exported": false
+    },
+    {
+      "method": "GET",
+      "pathname": "/up",
+      "timestamp_utc": "2026-11-09T13:42:34.350Z",
+      "status": "HTTP_RESPONSE",
+      "http_status": 200,
+      "tls_authorized": true,
+      "tls_certificate_fingerprint256": "CA:F8:C1:4A:9B:6F:18:24:1E:B5:3E:9A:88:EE:03:26:2E:DE:98:33:F5:F7:08:DB:14:77:5E:AC:C6:E5:10:6C",
+      "safe_headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-cache, private"
+      },
+      "redirect": null,
+      "received_bytes": 1830,
+      "body_sha256": "9b7498f7dbd252264a364fd6a4cdf262e7bd68f1521edc087d30eeb85dc8f08a",
+      "debug_markers_observed": false,
+      "api_shape": null,
+      "raw_body_exported": false,
+      "cookies_exported": false
+    },
+    {
+      "method": "GET",
+      "pathname": "/api/v1/me",
+      "timestamp_utc": "2026-11-09T13:42:34.586Z",
+      "status": "HTTP_RESPONSE",
+      "http_status": 404,
+      "tls_authorized": true,
+      "tls_certificate_fingerprint256": "CA:F8:C1:4A:9B:6F:18:24:1E:B5:3E:9A:88:EE:03:26:2E:DE:98:33:F5:F7:08:DB:14:77:5E:AC:C6:E5:10:6C",
+      "safe_headers": {
+        "content-type": "application/json",
+        "cache-control": "no-cache, private"
+      },
+      "redirect": null,
+      "received_bytes": 55,
+      "body_sha256": "1e302daa34cda166c1c59afab8ea10746312038296a9935263461cdefc6ab883",
+      "debug_markers_observed": false,
+      "api_shape": {
+        "top_level_keys": [
+          "message"
+        ],
+        "error_object": false,
+        "code": null,
+        "request_id_present": false
+      },
+      "raw_body_exported": false,
+      "cookies_exported": false
+    },
+    {
+      "method": "HEAD",
+      "pathname": "/storage/edaratek-t112-qa-c34a0579-da76-4bb8-83b3-cd7a81fc1b21-absent.txt",
+      "timestamp_utc": "2026-11-09T13:42:34.810Z",
+      "status": "HTTP_RESPONSE",
+      "http_status": 404,
+      "tls_authorized": true,
+      "tls_certificate_fingerprint256": "CA:F8:C1:4A:9B:6F:18:24:1E:B5:3E:9A:88:EE:03:26:2E:DE:98:33:F5:F7:08:DB:14:77:5E:AC:C6:E5:10:6C",
+      "safe_headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-cache, private",
+        "x-content-type-options": "nosniff"
+      },
+      "redirect": null,
+      "received_bytes": 0,
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "debug_markers_observed": false,
+      "api_shape": null,
+      "raw_body_exported": false,
+      "cookies_exported": false
+    },
+    {
+      "method": "HEAD",
+      "pathname": "/media-files/edaratek-t112-qa-c34a0579-da76-4bb8-83b3-cd7a81fc1b21-absent.txt",
+      "timestamp_utc": "2026-11-09T13:42:35.062Z",
+      "status": "HTTP_RESPONSE",
+      "http_status": 404,
+      "tls_authorized": true,
+      "tls_certificate_fingerprint256": "CA:F8:C1:4A:9B:6F:18:24:1E:B5:3E:9A:88:EE:03:26:2E:DE:98:33:F5:F7:08:DB:14:77:5E:AC:C6:E5:10:6C",
+      "safe_headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-cache, private",
+        "x-content-type-options": "nosniff"
+      },
+      "redirect": null,
+      "received_bytes": 0,
+      "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "debug_markers_observed": false,
+      "api_shape": null,
+      "raw_body_exported": false,
+      "cookies_exported": false
+    }
+  ],
+  "limitations": [
+    "Missing-file probes cannot prove denial of existing private bytes.",
+    "HTTP headers cannot certify physical storage/aliases/CDN topology, effective debug/cache isolation or deployed revision.",
+    "Absence of debug markers in these responses is not a forced-error redaction test."
+  ],
+  "production_accessed": false,
+  "server_configuration_modified": false,
+  "real_files_migrated": 0
+}

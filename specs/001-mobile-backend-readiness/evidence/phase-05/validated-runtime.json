@@ -1,0 +1,1483 @@
+{
+  "report": "EDARATEK_PHASE_5_EXECUTION_REPORT",
+  "feature": "001-mobile-backend-readiness",
+  "scope": "Repository code and isolated synthetic MySQL/files/HTTP fixture topology only; actual environment inventory/aliases/caches unverified.",
+  "starting_commit": "ff58fcdf0c71940d02e17905df1233691e0f0928",
+  "ending_commit": "ecb6b7fd7d1b06bf7d4575f1b194ce77fa76fb54",
+  "ci": {
+    "run_id": 42598238825,
+    "job_id": 129096063283,
+    "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42598238825",
+    "workflow_conclusion": "failure",
+    "expected_exit": 1,
+    "reason": "Only unchanged known StudentExcelImportTest remains failing; Phase2, Phase3, Phase4 and Phase5 acceptance probes PASS."
+  },
+  "records": [
+    {
+      "kind": "guard",
+      "mode": "preflight",
+      "status": "PASS",
+      "database": "edaratek_test_36270de454ba",
+      "mysql_version": "8.0.46",
+      "db_target": "ephemeral_internal_service",
+      "cache": "array",
+      "queue": "sync_without_workers",
+      "mail": "array_and_fakes",
+      "provider_credentials": "absent",
+      "vite_manifest": "generated_and_verified",
+      "laravel_boot": "NOT_RUN"
+    },
+    {
+      "kind": "platform",
+      "php_version": "8.2.35",
+      "extensions": [
+        "Core",
+        "PDO",
+        "Phar",
+        "Reflection",
+        "SPL",
+        "SimpleXML",
+        "Zend OPcache",
+        "bcmath",
+        "ctype",
+        "curl",
+        "date",
+        "dom",
+        "fileinfo",
+        "filter",
+        "gd",
+        "hash",
+        "iconv",
+        "intl",
+        "json",
+        "libxml",
+        "mbstring",
+        "mysqlnd",
+        "openssl",
+        "pcntl",
+        "pcre",
+        "pdo_mysql",
+        "pdo_sqlite",
+        "posix",
+        "random",
+        "readline",
+        "session",
+        "sodium",
+        "sqlite3",
+        "standard",
+        "tokenizer",
+        "xml",
+        "xmlreader",
+        "xmlwriter",
+        "zip",
+        "zlib"
+      ],
+      "pdo_drivers": [
+        "sqlite",
+        "mysql"
+      ],
+      "composer_version": "2.11.1",
+      "php_requirement": "^8.2",
+      "phpunit_version": "11.5.51",
+      "laravel_version": "v12.50.0",
+      "frontend_node_version": "22.23.4",
+      "composer_validate_exit": 0,
+      "composer_strict_exit": 0,
+      "composer_strict_warning_present": false,
+      "composer_platform_exit": 0,
+      "platform_requirements": [
+        {
+          "name": "composer-runtime-api",
+          "status": "success",
+          "version": "2.2.2"
+        },
+        {
+          "name": "ext-ctype",
+          "status": "success",
+          "version": ""
+        },
+        {
+          "name": "ext-dom",
+          "status": "success",
+          "version": "20031129"
+        },
+        {
+          "name": "ext-fileinfo",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-filter",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-hash",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-iconv",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-json",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-libxml",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-mbstring",
+          "status": "success",
+          "version": ""
+        },
+        {
+          "name": "ext-openssl",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-pcre",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-phar",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-session",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-tokenizer",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-xml",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-xmlwriter",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "lib-pcre",
+          "status": "success",
+          "version": "10.40"
+        },
+        {
+          "name": "php",
+          "status": "success",
+          "version": "8.2.35"
+        }
+      ],
+      "runtime_network": "internal_only",
+      "dependency_network": "build_only"
+    },
+    {
+      "kind": "guard",
+      "mode": "boot",
+      "status": "PASS",
+      "database": "edaratek_test_36270de454ba",
+      "mysql_version": "8.0.46",
+      "db_target": "ephemeral_internal_service",
+      "cache": "array",
+      "queue": "sync_without_workers",
+      "mail": "array_and_fakes",
+      "provider_credentials": "absent",
+      "vite_manifest": "generated_and_verified",
+      "laravel_boot": "PASS"
+    },
+    {
+      "kind": "infrastructure",
+      "stage": "migration_schema_probe",
+      "MIGRATION_GATE": "PASS",
+      "operation_stage": "package_discovery_after_migration",
+      "migration_file_count": 114,
+      "migrations_table_before": false,
+      "applied_migrations_before": 0,
+      "charset_name": "utf8mb4",
+      "collation_name": "utf8mb4_0900_ai_ci",
+      "sql_mode": "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION",
+      "migrate_fresh_exit": 0,
+      "migrations_table_after": true,
+      "applied_migrations_after": 114,
+      "expected_tables": {
+        "users": true,
+        "schools": true,
+        "roles": true,
+        "permissions": true
+      },
+      "user_factory_insert": true,
+      "package_discovery_exit": 0,
+      "status": "PASS"
+    },
+    {
+      "kind": "infrastructure",
+      "stage": "native_pat_migration_rehearsal",
+      "status": "PASS",
+      "NATIVE_PAT_MIGRATION_GATE": "PASS",
+      "schema_before": true,
+      "columns_before": true,
+      "migration_recorded_before": true,
+      "unrelated_users_before": 1,
+      "rollback_exit": 0,
+      "schema_after_rollback": false,
+      "unrelated_users_after_rollback": 1,
+      "migrate_exit": 0,
+      "repeat_migrate_exit": 0,
+      "schema_after_repeat": true,
+      "columns_after_repeat": true,
+      "migration_recorded_after": true
+    },
+    {
+      "kind": "infrastructure",
+      "stage": "private_manifest_migration_rehearsal",
+      "status": "PASS",
+      "rollback_exit": 0,
+      "manifest_retained_on_rollback": true,
+      "reapply_exit": 0,
+      "repeat_exit": 0,
+      "existing_record_preserved": true,
+      "unrelated_users_preserved": true
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "baseline_process_exit",
+      "TEST_EXIT_CODE": 0
+    },
+    {
+      "kind": "infrastructure",
+      "TEST_EXIT_CODE": 0,
+      "run_kind": "diagnostic_subset",
+      "event_file_present": true,
+      "event_file_bytes": 9980,
+      "phpunit_finished_event": true,
+      "finished_shell_exit_code": 0,
+      "finished_event_count": 1,
+      "last_test_identity": {
+        "class": "Tests\\Feature\\Auth\\AuthenticationTest",
+        "method": "test_users_can_logout"
+      },
+      "last_phpunit_event_types": [
+        "Test Prepared",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Prepared",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Suite Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "PHPUnit Finished"
+      ],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 5
+        }
+      ],
+      "execution_classification": "COMPLETED_REQUIRES_EXIT_CHECK",
+      "junit_file_present": true,
+      "junit_bytes": 1545,
+      "junit_sha256": "691e3274209bc1ab3a8f650521071f4270b9b386b4faee9bcf63633a5afe721e",
+      "utf8_valid": true,
+      "xml_declaration_present": true,
+      "contains_doctype_or_entity": false,
+      "starts_with_expected_xml_structure": true,
+      "ends_with_plausible_xml_structure": true,
+      "testcase_token_count": 5,
+      "testcase_token_count_is_diagnostic_only": true,
+      "libxml_errors": [],
+      "libxml_error_count": 0,
+      "baseline_log_present": true,
+      "baseline_log_bytes": 533,
+      "safe_phpunit_summary_lines": [],
+      "fatal_signature_categories": [],
+      "fatal_signatures_are_observations_only": true,
+      "status": "INFO",
+      "stage": "baseline_report_metadata"
+    },
+    {
+      "kind": "baseline",
+      "TOTAL": 5,
+      "run_kind": "diagnostic_subset",
+      "database_error_groups": [],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 5
+        }
+      ],
+      "PASSED": 5,
+      "FAILED": 0,
+      "ERRORS": 0,
+      "SKIPPED": 0,
+      "WARNINGS": 5,
+      "warning_events": {
+        "user": 0,
+        "php": 5,
+        "phpunit": 0,
+        "runner": 0
+      },
+      "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+      "TEST_EXIT_CODE": 0,
+      "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+      "phpunit_completed": true,
+      "test_suite_outcome": "PASS",
+      "diagnostics": [],
+      "diagnostics_truncated": false
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "baseline_process_exit",
+      "TEST_EXIT_CODE": 0
+    },
+    {
+      "kind": "infrastructure",
+      "TEST_EXIT_CODE": 0,
+      "run_kind": "diagnostic_subset",
+      "event_file_present": true,
+      "event_file_bytes": 12583,
+      "phpunit_finished_event": true,
+      "finished_shell_exit_code": 0,
+      "finished_event_count": 1,
+      "last_test_identity": {
+        "class": "Tests\\Feature\\AcademicPlanningAccessTest",
+        "method": "test_schedule_update_is_scoped_to_user_school_only"
+      },
+      "last_phpunit_event_types": [
+        "Test Prepared",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Prepared",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Suite Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "PHPUnit Finished"
+      ],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 6
+        }
+      ],
+      "execution_classification": "COMPLETED_REQUIRES_EXIT_CHECK",
+      "junit_file_present": true,
+      "junit_bytes": 2016,
+      "junit_sha256": "55c2510330ed0697f20bfe6f7444148956f8d4c5ed8361a195ad329c43711f6e",
+      "utf8_valid": true,
+      "xml_declaration_present": true,
+      "contains_doctype_or_entity": false,
+      "starts_with_expected_xml_structure": true,
+      "ends_with_plausible_xml_structure": true,
+      "testcase_token_count": 6,
+      "testcase_token_count_is_diagnostic_only": true,
+      "libxml_errors": [],
+      "libxml_error_count": 0,
+      "baseline_log_present": true,
+      "baseline_log_bytes": 267,
+      "safe_phpunit_summary_lines": [
+        "Time: 00:11.216, Memory: 62.50 MB",
+        "OK (6 tests, 70 assertions)"
+      ],
+      "fatal_signature_categories": [],
+      "fatal_signatures_are_observations_only": true,
+      "status": "INFO",
+      "stage": "baseline_report_metadata"
+    },
+    {
+      "kind": "baseline",
+      "TOTAL": 6,
+      "run_kind": "diagnostic_subset",
+      "database_error_groups": [],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 6
+        }
+      ],
+      "PASSED": 6,
+      "FAILED": 0,
+      "ERRORS": 0,
+      "SKIPPED": 0,
+      "WARNINGS": 6,
+      "warning_events": {
+        "user": 0,
+        "php": 6,
+        "phpunit": 0,
+        "runner": 0
+      },
+      "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+      "TEST_EXIT_CODE": 0,
+      "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+      "phpunit_completed": true,
+      "test_suite_outcome": "PASS",
+      "diagnostics": [],
+      "diagnostics_truncated": false
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "baseline_process_exit",
+      "TEST_EXIT_CODE": 0
+    },
+    {
+      "kind": "infrastructure",
+      "TEST_EXIT_CODE": 0,
+      "run_kind": "diagnostic_subset",
+      "event_file_present": true,
+      "event_file_bytes": 31023,
+      "phpunit_finished_event": true,
+      "finished_shell_exit_code": 0,
+      "finished_event_count": 1,
+      "last_test_identity": {
+        "class": "Tests\\Feature\\AccountApprovalFlowTest",
+        "method": "test_admin_created_manager_is_immediately_approved_without_pending_queue"
+      },
+      "last_phpunit_event_types": [
+        "Test Prepared",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Prepared",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Suite Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "PHPUnit Finished"
+      ],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 16
+        }
+      ],
+      "execution_classification": "COMPLETED_REQUIRES_EXIT_CHECK",
+      "junit_file_present": true,
+      "junit_bytes": 4885,
+      "junit_sha256": "b99cdac90641e7375e3fa48f81bee069ab65a1fd136eaf4b330fb6314b76d79b",
+      "utf8_valid": true,
+      "xml_declaration_present": true,
+      "contains_doctype_or_entity": false,
+      "starts_with_expected_xml_structure": true,
+      "ends_with_plausible_xml_structure": true,
+      "testcase_token_count": 16,
+      "testcase_token_count_is_diagnostic_only": true,
+      "libxml_errors": [],
+      "libxml_error_count": 0,
+      "baseline_log_present": true,
+      "baseline_log_bytes": 846,
+      "safe_phpunit_summary_lines": [
+        "Time: 00:10.854, Memory: 64.50 MB",
+        "OK (16 tests, 128 assertions)"
+      ],
+      "fatal_signature_categories": [],
+      "fatal_signatures_are_observations_only": true,
+      "status": "INFO",
+      "stage": "baseline_report_metadata"
+    },
+    {
+      "kind": "baseline",
+      "TOTAL": 16,
+      "run_kind": "diagnostic_subset",
+      "database_error_groups": [],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 16
+        }
+      ],
+      "PASSED": 16,
+      "FAILED": 0,
+      "ERRORS": 0,
+      "SKIPPED": 0,
+      "WARNINGS": 16,
+      "warning_events": {
+        "user": 0,
+        "php": 16,
+        "phpunit": 0,
+        "runner": 0
+      },
+      "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+      "TEST_EXIT_CODE": 0,
+      "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+      "phpunit_completed": true,
+      "test_suite_outcome": "PASS",
+      "diagnostics": [],
+      "diagnostics_truncated": false
+    },
+    {
+      "kind": "guard",
+      "mode": "boot",
+      "status": "PASS",
+      "database": "edaratek_test_36270de454ba",
+      "mysql_version": "8.0.46",
+      "db_target": "ephemeral_internal_service",
+      "cache": "array",
+      "queue": "sync_without_workers",
+      "mail": "array_and_fakes",
+      "provider_credentials": "absent",
+      "vite_manifest": "generated_and_verified",
+      "laravel_boot": "PASS"
+    },
+    {
+      "kind": "infrastructure",
+      "stage": "phase1_safety_probe",
+      "T005_GATE": "PASS",
+      "negative_cases": {
+        "non_testing_environment": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "unsafe_db_host": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "unsafe_db_name": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "provider_credential_present": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "cloud_credential_present": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "live_hostname_present": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "unsafe_smtp_host": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "debug_enabled": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "unsafe_config_cache": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "unsafe_events_cache": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "unsafe_packages_cache": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "unsafe_routes_cache": {
+          "rejected_before_database": true,
+          "exit": 20
+        },
+        "unsafe_services_cache": {
+          "rejected_before_database": true,
+          "exit": 20
+        }
+      },
+      "unmocked_fixture_domain_has_dns_records": false,
+      "dns_fixture_valid_email_accepted": true,
+      "dns_fixture_reserved_domain_rejected": true,
+      "dns_fixture_malformed_email_rejected": true,
+      "http_stray_request_blocked_without_transport": true,
+      "http_fake_executed": true,
+      "mail_fake_intercepted": true,
+      "notification_fake_intercepted": true,
+      "controlled_sync_job_executed_without_worker": true,
+      "external_testnet_tcp_blocked": true,
+      "independent_connections_shared_mysql_lock": true,
+      "future_worker_races_proven": false,
+      "status": "PASS"
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "baseline_process_exit",
+      "TEST_EXIT_CODE": 0
+    },
+    {
+      "kind": "infrastructure",
+      "TEST_EXIT_CODE": 0,
+      "run_kind": "phase5_focused",
+      "event_file_present": true,
+      "event_file_bytes": 201510,
+      "phpunit_finished_event": true,
+      "finished_shell_exit_code": 0,
+      "finished_event_count": 1,
+      "last_test_identity": {
+        "class": "Tests\\Feature\\MediaStorageUrlFallbackTest",
+        "method": "test_admin_media_preview_serves_public_disk_files"
+      },
+      "last_phpunit_event_types": [
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Prepared",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Suite Finished",
+        "Test Suite Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "PHPUnit Finished"
+      ],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 100
+        }
+      ],
+      "execution_classification": "COMPLETED_REQUIRES_EXIT_CHECK",
+      "junit_file_present": true,
+      "junit_bytes": 34933,
+      "junit_sha256": "1b6b836957723f5c6fab4beb8a9d4d16b9e7b27c79fa212ca15f7df73fea8e45",
+      "utf8_valid": true,
+      "xml_declaration_present": true,
+      "contains_doctype_or_entity": false,
+      "starts_with_expected_xml_structure": true,
+      "ends_with_plausible_xml_structure": true,
+      "testcase_token_count": 100,
+      "testcase_token_count_is_diagnostic_only": true,
+      "libxml_errors": [],
+      "libxml_error_count": 0,
+      "baseline_log_present": true,
+      "baseline_log_bytes": 797,
+      "safe_phpunit_summary_lines": [
+        "Time: 00:22.144, Memory: 82.50 MB",
+        "OK (100 tests, 614 assertions)"
+      ],
+      "fatal_signature_categories": [],
+      "fatal_signatures_are_observations_only": true,
+      "status": "INFO",
+      "stage": "baseline_report_metadata"
+    },
+    {
+      "kind": "baseline",
+      "TOTAL": 100,
+      "run_kind": "phase5_focused",
+      "database_error_groups": [],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 100
+        }
+      ],
+      "PASSED": 100,
+      "FAILED": 0,
+      "ERRORS": 0,
+      "SKIPPED": 0,
+      "WARNINGS": 100,
+      "warning_events": {
+        "user": 0,
+        "php": 100,
+        "phpunit": 0,
+        "runner": 0
+      },
+      "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+      "TEST_EXIT_CODE": 0,
+      "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+      "phpunit_completed": true,
+      "test_suite_outcome": "PASS",
+      "diagnostics": [],
+      "diagnostics_truncated": false
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "baseline_process_exit",
+      "TEST_EXIT_CODE": 0
+    },
+    {
+      "kind": "infrastructure",
+      "TEST_EXIT_CODE": 0,
+      "run_kind": "phase4_focused",
+      "event_file_present": true,
+      "event_file_bytes": 131669,
+      "phpunit_finished_event": true,
+      "finished_shell_exit_code": 0,
+      "finished_event_count": 1,
+      "last_test_identity": {
+        "class": "Tests\\Feature\\SchoolTenantIsolationTest",
+        "method": "test_manager_cannot_cancel_certificate_belonging_to_another_school"
+      },
+      "last_phpunit_event_types": [
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Prepared",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Suite Finished",
+        "Test Suite Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "PHPUnit Finished"
+      ],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 65
+        }
+      ],
+      "execution_classification": "COMPLETED_REQUIRES_EXIT_CHECK",
+      "junit_file_present": true,
+      "junit_bytes": 22923,
+      "junit_sha256": "466e1b8e8cc816bde0131ac1e294785c75e1f1f91bb541a3b07431a4e4197003",
+      "utf8_valid": true,
+      "xml_declaration_present": true,
+      "contains_doctype_or_entity": false,
+      "starts_with_expected_xml_structure": true,
+      "ends_with_plausible_xml_structure": true,
+      "testcase_token_count": 65,
+      "testcase_token_count_is_diagnostic_only": true,
+      "libxml_errors": [],
+      "libxml_error_count": 0,
+      "baseline_log_present": true,
+      "baseline_log_bytes": 369,
+      "safe_phpunit_summary_lines": [
+        "Time: 00:20.124, Memory: 74.50 MB",
+        "OK (65 tests, 544 assertions)"
+      ],
+      "fatal_signature_categories": [],
+      "fatal_signatures_are_observations_only": true,
+      "status": "INFO",
+      "stage": "baseline_report_metadata"
+    },
+    {
+      "kind": "baseline",
+      "TOTAL": 65,
+      "run_kind": "phase4_focused",
+      "database_error_groups": [],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 65
+        }
+      ],
+      "PASSED": 65,
+      "FAILED": 0,
+      "ERRORS": 0,
+      "SKIPPED": 0,
+      "WARNINGS": 65,
+      "warning_events": {
+        "user": 0,
+        "php": 65,
+        "phpunit": 0,
+        "runner": 0
+      },
+      "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+      "TEST_EXIT_CODE": 0,
+      "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+      "phpunit_completed": true,
+      "test_suite_outcome": "PASS",
+      "diagnostics": [],
+      "diagnostics_truncated": false
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "baseline_process_exit",
+      "TEST_EXIT_CODE": 0
+    },
+    {
+      "kind": "infrastructure",
+      "TEST_EXIT_CODE": 0,
+      "run_kind": "phase3_focused",
+      "event_file_present": true,
+      "event_file_bytes": 258118,
+      "phpunit_finished_event": true,
+      "finished_shell_exit_code": 0,
+      "finished_event_count": 1,
+      "last_test_identity": {
+        "class": "Tests\\Feature\\SubscriptionBillingAndSeatsTest",
+        "method": "test_extra_seat_calculation_is_scoped_to_current_school_and_ignores_tampered_ids"
+      },
+      "last_phpunit_event_types": [
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Prepared",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Suite Finished",
+        "Test Suite Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "PHPUnit Finished"
+      ],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 128
+        }
+      ],
+      "execution_classification": "COMPLETED_REQUIRES_EXIT_CHECK",
+      "junit_file_present": true,
+      "junit_bytes": 45413,
+      "junit_sha256": "3634c2bf903e46cd1008fa9580687e23eae5a9970dd03ca78b1fef92c67d9ee1",
+      "utf8_valid": true,
+      "xml_declaration_present": true,
+      "contains_doctype_or_entity": false,
+      "starts_with_expected_xml_structure": true,
+      "ends_with_plausible_xml_structure": true,
+      "testcase_token_count": 128,
+      "testcase_token_count_is_diagnostic_only": true,
+      "libxml_errors": [],
+      "libxml_error_count": 0,
+      "baseline_log_present": true,
+      "baseline_log_bytes": 6751,
+      "safe_phpunit_summary_lines": [
+        "Time: 00:22.416, Memory: 80.50 MB",
+        "OK (128 tests, 886 assertions)"
+      ],
+      "fatal_signature_categories": [],
+      "fatal_signatures_are_observations_only": true,
+      "status": "INFO",
+      "stage": "baseline_report_metadata"
+    },
+    {
+      "kind": "baseline",
+      "TOTAL": 128,
+      "run_kind": "phase3_focused",
+      "database_error_groups": [],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 128
+        }
+      ],
+      "PASSED": 128,
+      "FAILED": 0,
+      "ERRORS": 0,
+      "SKIPPED": 0,
+      "WARNINGS": 128,
+      "warning_events": {
+        "user": 0,
+        "php": 128,
+        "phpunit": 0,
+        "runner": 0
+      },
+      "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+      "TEST_EXIT_CODE": 0,
+      "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+      "phpunit_completed": true,
+      "test_suite_outcome": "PASS",
+      "diagnostics": [],
+      "diagnostics_truncated": false
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "baseline_process_exit",
+      "TEST_EXIT_CODE": 0
+    },
+    {
+      "kind": "infrastructure",
+      "TEST_EXIT_CODE": 0,
+      "run_kind": "phase2_regression",
+      "event_file_present": true,
+      "event_file_bytes": 33763,
+      "phpunit_finished_event": true,
+      "finished_shell_exit_code": 0,
+      "finished_event_count": 1,
+      "last_test_identity": {
+        "class": "Tests\\Feature\\Mobile\\NativeWebCompatibilityTest",
+        "method": "test_web_login_stays_session_based_while_bearer_identity_stays_native_only"
+      },
+      "last_phpunit_event_types": [
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Suite Finished",
+        "Test Suite Started",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Prepared",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Suite Finished",
+        "Test Suite Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "PHPUnit Finished"
+      ],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 16
+        }
+      ],
+      "execution_classification": "COMPLETED_REQUIRES_EXIT_CHECK",
+      "junit_file_present": true,
+      "junit_bytes": 5990,
+      "junit_sha256": "a02d21b996dc40c581c512b4316e9b4b86f53574b4b52c1f7948059befc0bb4a",
+      "utf8_valid": true,
+      "xml_declaration_present": true,
+      "contains_doctype_or_entity": false,
+      "starts_with_expected_xml_structure": true,
+      "ends_with_plausible_xml_structure": true,
+      "testcase_token_count": 16,
+      "testcase_token_count_is_diagnostic_only": true,
+      "libxml_errors": [],
+      "libxml_error_count": 0,
+      "baseline_log_present": true,
+      "baseline_log_bytes": 962,
+      "safe_phpunit_summary_lines": [
+        "Time: 00:10.456, Memory: 62.50 MB",
+        "OK (16 tests, 113 assertions)"
+      ],
+      "fatal_signature_categories": [],
+      "fatal_signatures_are_observations_only": true,
+      "status": "INFO",
+      "stage": "baseline_report_metadata"
+    },
+    {
+      "kind": "baseline",
+      "TOTAL": 16,
+      "run_kind": "phase2_regression",
+      "database_error_groups": [],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 16
+        }
+      ],
+      "PASSED": 16,
+      "FAILED": 0,
+      "ERRORS": 0,
+      "SKIPPED": 0,
+      "WARNINGS": 16,
+      "warning_events": {
+        "user": 0,
+        "php": 16,
+        "phpunit": 0,
+        "runner": 0
+      },
+      "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+      "TEST_EXIT_CODE": 0,
+      "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+      "phpunit_completed": true,
+      "test_suite_outcome": "PASS",
+      "diagnostics": [],
+      "diagnostics_truncated": false
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "phpunit_process_profile",
+      "PHP_MEMORY_LIMIT": "512M",
+      "PHP_MAX_EXECUTION_TIME": 0,
+      "cgroup_memory_events_before": {
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      }
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "baseline_process_exit",
+      "TEST_EXIT_CODE": 1
+    },
+    {
+      "kind": "infrastructure",
+      "TEST_EXIT_CODE": 1,
+      "run_kind": "authoritative_full",
+      "PHP_MEMORY_LIMIT": "512M",
+      "PHP_MAX_EXECUTION_TIME": 0,
+      "cgroup_memory_events_before": {
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_memory_events_after": {
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_oom_kill_increased": false,
+      "event_file_present": true,
+      "event_file_bytes": 1396741,
+      "phpunit_finished_event": true,
+      "finished_shell_exit_code": 1,
+      "finished_event_count": 1,
+      "last_test_identity": {
+        "class": "Tests\\Feature\\WhatsAppIntegrationTest",
+        "method": "test_phone_number_normalization_is_strict_for_supported_saudi_and_egypt_numbers"
+      },
+      "last_phpunit_event_types": [
+        "Test Passed",
+        "Test Finished",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Prepared",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Passed",
+        "Test Finished",
+        "Test Suite Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Suite Finished",
+        "Test Suite Finished",
+        "Test Suite Finished",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "PHPUnit Finished"
+      ],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 669
+        }
+      ],
+      "execution_classification": "COMPLETED_REQUIRES_EXIT_CHECK",
+      "junit_file_present": true,
+      "junit_bytes": 270235,
+      "junit_sha256": "aa0f3ba3e28ad4018aaabcfd201d57fad458317d79c65ac3436ba07a8af19c3c",
+      "utf8_valid": true,
+      "xml_declaration_present": true,
+      "contains_doctype_or_entity": false,
+      "starts_with_expected_xml_structure": true,
+      "ends_with_plausible_xml_structure": true,
+      "testcase_token_count": 670,
+      "testcase_token_count_is_diagnostic_only": true,
+      "libxml_errors": [],
+      "libxml_error_count": 0,
+      "baseline_log_present": true,
+      "baseline_log_bytes": 96150,
+      "safe_phpunit_summary_lines": [
+        "Time: 01:41.320, Memory: 158.50 MB",
+        "FAILURES!",
+        "Tests: 670, Assertions: 4344, Failures: 1, PHPUnit Deprecations: 1."
+      ],
+      "fatal_signature_categories": [],
+      "fatal_signatures_are_observations_only": true,
+      "status": "INFO",
+      "stage": "baseline_report_metadata"
+    },
+    {
+      "kind": "baseline",
+      "TOTAL": 670,
+      "run_kind": "authoritative_full",
+      "database_error_groups": [
+        {
+          "sqlstate": "42S22",
+          "sqlstate_class": "42",
+          "driver_error_code": 1054,
+          "count": 1
+        }
+      ],
+      "php_warning_sources": [
+        {
+          "category": "PHP_WARNING",
+          "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+          "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+          "source_line": 73,
+          "count": 669
+        }
+      ],
+      "PASSED": 669,
+      "FAILED": 1,
+      "ERRORS": 0,
+      "SKIPPED": 0,
+      "WARNINGS": 669,
+      "warning_events": {
+        "user": 0,
+        "php": 669,
+        "phpunit": 0,
+        "runner": 0
+      },
+      "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+      "TEST_EXIT_CODE": 1,
+      "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+      "phpunit_completed": true,
+      "test_suite_outcome": "NONZERO_EXIT",
+      "diagnostics": [
+        {
+          "class": "Tests\\Feature\\StudentExcelImportTest",
+          "method": "test_valid_excel_import_creates_students_inside_current_school",
+          "type": "PHPUnit\\Framework\\ExpectationFailedException",
+          "classification": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+          "sqlstate": "42S22",
+          "sqlstate_class": "42",
+          "driver_error_code": 1054,
+          "test_source": {
+            "file": "tests/Feature/StudentExcelImportTest.php",
+            "line": 53
+          },
+          "http_status": null,
+          "sanitized_message": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+          "raw_message_exported": false
+        }
+      ],
+      "diagnostics_truncated": false
+    },
+    {
+      "kind": "infrastructure",
+      "stage": "mobile_auth_foundation_gate",
+      "status": "PASS",
+      "MOBILE_AUTH_FOUNDATION_PASS": "PASS",
+      "TEST_EXIT_CODE": 1,
+      "mobile_test_cases": 16,
+      "mobile_test_failures": 0,
+      "full_suite_failure_count": 1,
+      "known_preexisting_regression_only": true
+    },
+    {
+      "kind": "infrastructure",
+      "stage": "phase3_acceptance_gate",
+      "status": "PASS",
+      "ACCOUNT_APPROVAL_HARDENING": "PASS",
+      "AUTHORIZATION_HARDENING": "PASS",
+      "PHASE_3_ACCEPTANCE": "PASS",
+      "focused_total": 128,
+      "focused_passed": 128,
+      "focused_classes": {
+        "Tests\\Feature\\Mobile\\Phase3\\AccountApprovalMatrixTest": 53,
+        "Tests\\Feature\\Mobile\\Phase3\\EnvironmentSafetyTest": 4,
+        "Tests\\Feature\\Mobile\\Phase3\\PrivilegeEscalationTest": 5,
+        "Tests\\Feature\\Mobile\\Phase3\\WebSessionSafetyTest": 1,
+        "Tests\\Feature\\SafeAdminSeederTest": 4,
+        "Tests\\Feature\\Auth\\PasswordResetTest": 7,
+        "Tests\\Feature\\AccountApprovalFlowTest": 16,
+        "Tests\\Feature\\SchoolUserRoleAssignmentApiTest": 30,
+        "Tests\\Feature\\SubscriptionBillingAndSeatsTest": 8
+      },
+      "full_total": 670,
+      "full_passed": 669,
+      "full_failed": 1,
+      "full_errors": 0,
+      "full_skipped": 0,
+      "known_preexisting_regression_only": true,
+      "run_kind": "phase3_regression"
+    },
+    {
+      "kind": "infrastructure",
+      "stage": "phase4_acceptance_gate",
+      "status": "PASS",
+      "TENANT_ISOLATION": "PASS",
+      "STAFF_TASK_SECURITY": "PASS",
+      "PHASE_4_ACCEPTANCE": "PASS",
+      "focused_total": 65,
+      "focused_passed": 65,
+      "focused_classes": {
+        "Tests\\Feature\\Mobile\\Phase4\\CurrentTenantContextTest": 8,
+        "Tests\\Feature\\Mobile\\Phase4\\ForeignRelationshipTest": 8,
+        "Tests\\Feature\\Mobile\\Phase4\\StaffTaskIsolationTest": 7,
+        "Tests\\Feature\\TicketWorkflowAuthorizationTest": 1,
+        "Tests\\Feature\\HeavyEndpointsPaginationTest": 4,
+        "Tests\\Feature\\RealtimeNotificationFlowTest": 2,
+        "Tests\\Feature\\ManagerDashboardAnalyticsTest": 6,
+        "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest": 9,
+        "Tests\\Feature\\AcademicPlanningAccessTest": 6,
+        "Tests\\Feature\\QuickSetupStatusTest": 6,
+        "Tests\\Feature\\SchoolTenantIsolationTest": 8
+      },
+      "full_total": 670,
+      "full_passed": 669,
+      "full_failed": 1,
+      "full_errors": 0,
+      "full_skipped": 0,
+      "known_preexisting_regression_only": true,
+      "run_kind": "phase4_regression"
+    },
+    {
+      "kind": "infrastructure",
+      "stage": "phase5_acceptance_gate",
+      "status": "PASS",
+      "PRIVATE_ATTACHMENT_STORAGE": "PASS",
+      "ATTACHMENT_AUTHORIZATION": "PASS",
+      "PRIVATE_FILE_MIGRATION": "PASS",
+      "PHASE_5_ACCEPTANCE": "PASS",
+      "focused_total": 100,
+      "focused_passed": 100,
+      "focused_classes": {
+        "Tests\\Feature\\Mobile\\Phase5\\PrivateAttachmentAuthorizationTest": 12,
+        "Tests\\Feature\\Mobile\\Phase5\\PrivateAttachmentMigrationTest": 18,
+        "Tests\\Feature\\Mobile\\Phase5\\PublicAssetCompatibilityTest": 1,
+        "Tests\\Feature\\Mobile\\Phase5\\StaticPrivateUrlTest": 1,
+        "Tests\\Feature\\SchoolAttachmentManagementTest": 13,
+        "Tests\\Feature\\StudentLeaveManagementTest": 10,
+        "Tests\\Feature\\StudentAttendanceAccessTest": 23,
+        "Tests\\Feature\\StudentCertificateFeatureTest": 6,
+        "Tests\\Feature\\UploadValidationFeatureFlagTest": 5,
+        "Tests\\Feature\\PublicStorageLinkStructureTest": 2,
+        "Tests\\Feature\\ManagerOnboardingLogoUploadTest": 3,
+        "Tests\\Feature\\MediaStorageUrlFallbackTest": 6
+      },
+      "full_total": 670,
+      "full_passed": 669,
+      "full_failed": 1,
+      "full_errors": 0,
+      "full_skipped": 0,
+      "known_preexisting_regression_only": true,
+      "PHASE_6_STARTED": false
+    }
+  ],
+  "previous_attempts": [
+    {
+      "commit": "3b76000d10f802abb7657a0534fcb49a2c8c28b1",
+      "run_id": 42593000887,
+      "focused_total": 85,
+      "passed": 69,
+      "failed": 2,
+      "errors": 14,
+      "classification": "Required attachment fixture fields missing; malformed raw URL fixture; HTTP front-controller fixture routing; obsolete unsafe PHP upload expectation. Gate rejected."
+    },
+    {
+      "commit": "5b411f0b21fc5ef6848c65c1a6b0f5d9c2505de0",
+      "run_id": 42593807511,
+      "focused_total": 89,
+      "passed": 88,
+      "failed": 1,
+      "errors": 0,
+      "classification": "Dry-run no-mutation comparison captured Eloquent pre-refresh raw value types. Changed to compare database snapshots. Gate rejected."
+    },
+    {
+      "commit": "3fd874322bd80dd8070d596b578f27ae620c87c6",
+      "run_id": 42594891121,
+      "focused_total": 95,
+      "passed": 95,
+      "failed": 0,
+      "errors": 0,
+      "full_total": 665,
+      "full_passed": 664,
+      "known_failure_only": true
+    },
+    {
+      "commit": "ee2edb5726debc504d0c0a1576062098ddf88d7c",
+      "run_id": 42595939699,
+      "focused_total": 97,
+      "passed": 97,
+      "failed": 0,
+      "errors": 0,
+      "full_total": 667,
+      "full_passed": 666,
+      "known_failure_only": true
+    },
+    {
+      "commit": "34cc9c25609b52d703879de3cf3ba186ba4cda4d",
+      "run_id": 42596790230,
+      "focused_total": 98,
+      "passed": 98,
+      "failed": 0,
+      "errors": 0,
+      "full_total": 668,
+      "full_passed": 667,
+      "known_failure_only": true
+    }
+  ],
+  "gates": {
+    "PRIVATE_ATTACHMENT_STORAGE": "PASS",
+    "ATTACHMENT_AUTHORIZATION": "PASS",
+    "PRIVATE_FILE_MIGRATION": "PASS",
+    "PHASE_5_ACCEPTANCE": "PASS",
+    "PRIVATE_ATTACHMENT_SECURITY_PASS": "PASS",
+    "final_status": "PHASE_5_PASS_AWAITING_PM_REVIEW",
+    "mobile_backend": "NOT_READY"
+  },
+  "final_git_verification": {
+    "verified_feature_head": "ecb6b7fd7d1b06bf7d4575f1b194ce77fa76fb54",
+    "remote_feature_head": "ecb6b7fd7d1b06bf7d4575f1b194ce77fa76fb54",
+    "local_and_remote_main": "12b9d5326d942acda55309aac05c6cee1bf928b0",
+    "index_empty": true,
+    "preexisting_dirty_paths_preserved": true,
+    "source_manifest_verified_file_count": 42,
+    "workflows": [
+      {
+        "conclusion": "failure",
+        "databaseId": 42593000887,
+        "headSha": "3b76000d10f802abb7657a0534fcb49a2c8c28b1",
+        "status": "completed",
+        "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42593000887",
+        "workflowName": "Isolated mobile backend baseline"
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 42593807511,
+        "headSha": "5b411f0b21fc5ef6848c65c1a6b0f5d9c2505de0",
+        "status": "completed",
+        "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42593807511",
+        "workflowName": "Isolated mobile backend baseline"
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 42594891121,
+        "headSha": "3fd874322bd80dd8070d596b578f27ae620c87c6",
+        "status": "completed",
+        "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42594891121",
+        "workflowName": "Isolated mobile backend baseline"
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 42595939699,
+        "headSha": "ee2edb5726debc504d0c0a1576062098ddf88d7c",
+        "status": "completed",
+        "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42595939699",
+        "workflowName": "Isolated mobile backend baseline"
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 42596790230,
+        "headSha": "34cc9c25609b52d703879de3cf3ba186ba4cda4d",
+        "status": "completed",
+        "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42596790230",
+        "workflowName": "Isolated mobile backend baseline"
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 42598238825,
+        "headSha": "ecb6b7fd7d1b06bf7d4575f1b194ce77fa76fb54",
+        "status": "completed",
+        "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42598238825",
+        "workflowName": "Isolated mobile backend baseline"
+      }
+    ],
+    "unexpected_deploy_trigger": false,
+    "evidence_files_local_untracked": true
+  },
+  "safety": {
+    "PUSH_TO_MAIN": "NO",
+    "MERGE_PERFORMED": "NO",
+    "DEPLOYMENT_PERFORMED": "NO",
+    "STAGING_MODIFIED": "NO",
+    "PRODUCTION_TOUCHED": "NO",
+    "REAL_FILES_MIGRATED": 0,
+    "REAL_WHATSAPP_SENDS": 0,
+    "PHASE_6_STARTED": "NO"
+  },
+  "remaining_environment_blockers": [
+    "Actual private-file inventory and unknown/orphan references have not been inspected.",
+    "Actual document roots, physical copies, static aliases and origin/proxy/CDN caches are unverified; fixture configuration was not installed on real servers.",
+    "Any real data/file moves/deletions, schema changes or cache purge require separately authorized environment/data scope."
+  ]
+}

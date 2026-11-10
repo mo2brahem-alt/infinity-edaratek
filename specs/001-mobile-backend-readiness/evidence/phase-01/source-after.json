@@ -1,0 +1,94 @@
+{
+  "app": {
+    "sha256": "3af5e44abe82c5b8a7b6ee5b653eb04160fd5981ebf624e30a4c9539d898a6f4",
+    "files": 267
+  },
+  "bootstrap": {
+    "sha256": "a7c40ff05fc52d73f41ead6a48c60ac5734c288a98b7affaba81bec3bb2ab2c1",
+    "files": 8
+  },
+  "config": {
+    "sha256": "dc3c7a31ca4799f1813c36b78d797e5b1d899c36be0ab54fbd95abed671419c2",
+    "files": 12
+  },
+  "database": {
+    "sha256": "721cc1008478ebf14bb2c5538635283d4255a3ca0b7677e8223ef2324010195d",
+    "files": 124
+  },
+  "resources": {
+    "sha256": "a3bedf47b0028e8efb9d9907410212eb588fbd528f15d1eed061ce5f96859ab7",
+    "files": 113
+  },
+  "routes": {
+    "sha256": "26882b566ab872898042a262bf14d331abdea9e8d056e2d160211c44ef978a44",
+    "files": 3
+  },
+  "tests": {
+    "sha256": "af6c77b5cbbfe2c7dcc54f9947784c2e4d2c5dc08047b75f81d76b87a03de36a",
+    "files": 98
+  },
+  ".specify": {
+    "sha256": "e324391e92b168fc74ef270c5efbbb5bd78ed00efd580b021053fb88a76192b8",
+    "files": 20
+  },
+  ".agents": {
+    "sha256": "67d0658c1fab6e983915f404a1e2a6fae3e6ae883b86a911120b169107f47f0e",
+    "files": 10
+  },
+  "docs": {
+    "sha256": "0c019b22c6ca1b1e1f4bac103a452108434b25ae116eb25f973772f7f4a7a081",
+    "files": 14
+  },
+  "public": {
+    "sha256": "eeb05366f90e206c2b3759084504b45ec89da4a3774d18a2aa239a8ecbc17eb6",
+    "files": 688
+  },
+  ".github": {
+    "sha256": "acd6021517a7df65b9a2165e6cc0bd5845de9003bcab7928cc5383b52ffa77d1",
+    "files": 2
+  },
+  "README.md": {
+    "sha256": "78b2aab4f0fc20c6c5f1716551dd767fc5da584e47265018820359cb096222ff",
+    "files": 1
+  },
+  "CLAUDE.md": {
+    "sha256": "21ab7b14ea85b0479da5488dd131abb2f44a5f6731b6d6602cdc11cfb22e8d99",
+    "files": 1
+  },
+  "PROJECT_DETAILS.md": {
+    "sha256": "ef53a54e5edd3b60982a104653ef1d1d38f1e56eb9f6da1e2d4f266e36fbdf57",
+    "files": 1
+  },
+  "composer.json": {
+    "sha256": "22968ab1234c4cb987302a3fd152133ca09e28792dda9ad34324394d8cf40048",
+    "files": 1
+  },
+  "composer.lock": {
+    "sha256": "d36df176188ccf6423671ed5124a71fd8686b1415dfe9ec33d5fc36c0bf4fc43",
+    "files": 1
+  },
+  "package.json": {
+    "sha256": "d3c3b0c512506071564c9a20aa6acbfc5d5c90fa1ca71f1782fca2d5d1b4aca8",
+    "files": 1
+  },
+  "package-lock.json": {
+    "sha256": "7952a17b6f0144f72edfa4056a9569ccedcd5ecf4504963e66c3e5d953550706",
+    "files": 1
+  },
+  "vite.config.js": {
+    "sha256": "039a32c60909e9ee657d4d2327f97bb3691788316c46c45208da932224c49c0b",
+    "files": 1
+  },
+  "phpunit.xml": {
+    "sha256": "c8698a4f8802f12ea18b6b686e8a0688f4d13c600b3e7c17776a7fdcabd2ea25",
+    "files": 1
+  },
+  ".gitignore": {
+    "sha256": "036ed021e86109bc3e5cdbe1b804b91d469afcdb33ece80c13ad83b89590bf7e",
+    "files": 1
+  },
+  ".env": {
+    "sha256": "94e341678f619f61ddf83566eb8866580420915b413f429c51daa5afb97e9675",
+    "files": 1
+  }
+}

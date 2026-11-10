@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-09",
+  "prior_manifest_sha256": "2b6051591f3ca104d27fa52ac7ac752e497006c36676c7ae79283b104b3b74c6",
+  "prior_manifest_files_verified": 6,
+  "snapshots": [
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/reassessment.md",
+      "snapshot": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/reassessment-before-probe2.md",
+      "sha256": "f4a5036a38014af18318f4268ab6bed9cf258e277031a2f37c32f4478072fecd"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+      "snapshot": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT-before-probe2.md",
+      "sha256": "b4b52152dd68eaecca8fe09774bb4628879592a552a8b17d0d947e9407d21835"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/acceptance.md",
+      "snapshot": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance-before-probe2.md",
+      "sha256": "6fc4a4ca89b22fd2a607c03db153f4341d3d3dca291012767c04daa0a5963e5f"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/tasks.md",
+      "snapshot": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks-before-probe2.md",
+      "sha256": "982ee64657acaf39fdba2c0356daa127156772fe316b223b1bbb8ed706b73e6d"
+    }
+  ]
+}

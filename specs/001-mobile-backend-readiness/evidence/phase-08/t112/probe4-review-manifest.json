@@ -1,0 +1,75 @@
+{
+  "date_africa_cairo": "2026-11-10",
+  "feature_head": "fbc63a4615f48ac0f832d91945d9652aeabef466",
+  "accepted_output": "server-readonly-h05-cgi.sh operator summary and nested supplement",
+  "verdicts": {
+    "H01_STATUS": "BLOCKED_INDEPENDENT_PRIVATE_FILE_EVIDENCE_GAP",
+    "H05_STATUS": "BLOCKED_PHPRC_INI_LOADING_EFFECTIVE_CGI_AND_EQUIVALENT_NON_DISCLOSURE_UNPROVEN",
+    "T112_STATUS": "BLOCKED"
+  },
+  "PHP_HANDLER": "CGI_WRAPPER",
+  "PHP_EXECUTABLE": "/bin/php-cgi8.3",
+  "FPM_NOT_APPLICABLE_FOR_THIS_VHOST": "YES",
+  "CGI_WRAPPER_PATH": "/home/test/fcgi-bin/php8.3.fcgi",
+  "CGI_PHPRC": "UNKNOWN_DYNAMIC_OR_SUPPRESSED",
+  "CGI_PHP_INI_SCAN_DIR": "UNSET_IN_WRAPPER_DEFAULT_UNKNOWN",
+  "checks": {
+    "supplement_received": true,
+    "missing_output_sections": 0,
+    "reported_ini_sources": 0,
+    "reported_findings": 0,
+    "no_safety_inferred_from_empty_findings": true,
+    "immutable_sources_preserved": 162,
+    "previous_snapshots_preserved": 4,
+    "all_task_rows_preserved": 120,
+    "T112_unchecked": true,
+    "phase9_unchecked": 8,
+    "original_historical_report_preserved": true,
+    "relative_links_verified": 37,
+    "index_empty": true,
+    "probe4_script_unchanged": true,
+    "fifth_probe_created": false,
+    "no_new_remote_execution": true
+  },
+  "files": [
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe-4-operator-evidence.json",
+      "sha256": "c4647dd6664eee4fde7791d87cb2ec2afec80a7f6a6694bc4c9e232a8c6c3e84"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/reassessment.md",
+      "sha256": "6fca5b2ef3c583ab671f1edfdb37f6b49bd7a2bcd275aead9a149c19fb4063d8"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+      "sha256": "e796be92eca497db958875ea2d315993f0f6f4f9b8a60c29aef62c9526d45a43"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/acceptance.md",
+      "sha256": "07903de2ae9702011fdf5ade7bd660dd3e50ee8963ca60a0d5866c6bb4a41dd3"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/tasks.md",
+      "sha256": "88b4aa6373d4f9ac2eac5d4e8585fe2f668d213dd75177a1863c8ccdc5e7cdb0"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05-cgi.sh",
+      "sha256": "a6ba20b88c6c2548582f866175d1024344ee1378d025150283179714987ee36b"
+    }
+  ],
+  "historical_manifest": "probe3-review-manifest.json retained; original changed-path bytes map to probe4-checkpoint-preservation.json snapshots.",
+  "safety": {
+    "NO_WRITES": "YES",
+    "NO_PHP_EXECUTION": "YES",
+    "NO_LARAVEL_BOOT": "YES",
+    "NO_HTTP_OR_FCGI_REQUESTS": "YES",
+    "NO_CONFIG_CHANGES": "YES",
+    "NO_SERVICE_RESTARTS": "YES",
+    "NO_DEPLOYMENT": "YES",
+    "PRODUCTION_TOUCHED": "NO",
+    "REAL_FILES_MIGRATED": 0,
+    "REAL_WHATSAPP_SENDS": 0,
+    "PHASE_9_STARTED": "NO"
+  },
+  "new_commits": []
+}

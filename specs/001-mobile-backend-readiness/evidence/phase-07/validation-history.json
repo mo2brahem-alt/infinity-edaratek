@@ -1,0 +1,682 @@
+{
+  "attempts": [
+    {
+      "commit": "b5552887ecbd6b62aebd2c74ed90076e75fef8d4",
+      "run_id": 42611731015,
+      "job_id": 129141570801,
+      "conclusion": "failure",
+      "focused": {
+        "kind": "baseline",
+        "TOTAL": 67,
+        "run_kind": "phase7_focused",
+        "database_error_groups": [
+          {
+            "sqlstate": "HY000",
+            "sqlstate_class": "HY",
+            "driver_error_code": 1364,
+            "count": 1
+          }
+        ],
+        "php_warning_sources": [
+          {
+            "category": "PHP_WARNING",
+            "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+            "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+            "source_line": 73,
+            "count": 67
+          }
+        ],
+        "PASSED": 59,
+        "FAILED": 7,
+        "ERRORS": 1,
+        "SKIPPED": 0,
+        "WARNINGS": 67,
+        "warning_events": {
+          "user": 0,
+          "php": 67,
+          "phpunit": 0,
+          "runner": 0
+        },
+        "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+        "TEST_EXIT_CODE": 2,
+        "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+        "phpunit_completed": true,
+        "test_suite_outcome": "NONZERO_EXIT",
+        "diagnostics": [
+          {
+            "class": "Tests\\Feature\\Mobile\\Phase7\\MobileErrorContractTest",
+            "method": "test_malformed_or_out_of_range_ids_cannot_coerce_to_existing_records",
+            "type": "PHPUnit\\Framework\\ExpectationFailedException",
+            "classification": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "sqlstate": null,
+            "sqlstate_class": null,
+            "driver_error_code": null,
+            "test_source": {
+              "file": "tests/Support/MobileContractFixtures.php",
+              "line": 57
+            },
+            "http_status": {
+              "expected": 404,
+              "actual": 403
+            },
+            "sanitized_message": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "raw_message_exported": false
+          },
+          {
+            "class": "Tests\\Feature\\Mobile\\Phase7\\MobileErrorContractTest",
+            "method": "test_malformed_or_out_of_range_ids_cannot_coerce_to_existing_records",
+            "type": "PHPUnit\\Framework\\ExpectationFailedException",
+            "classification": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "sqlstate": null,
+            "sqlstate_class": null,
+            "driver_error_code": null,
+            "test_source": {
+              "file": "tests/Support/MobileContractFixtures.php",
+              "line": 57
+            },
+            "http_status": {
+              "expected": 404,
+              "actual": 403
+            },
+            "sanitized_message": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "raw_message_exported": false
+          },
+          {
+            "class": "Tests\\Feature\\Mobile\\Phase7\\MobileErrorContractTest",
+            "method": "test_malformed_or_out_of_range_ids_cannot_coerce_to_existing_records",
+            "type": "PHPUnit\\Framework\\ExpectationFailedException",
+            "classification": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "sqlstate": null,
+            "sqlstate_class": null,
+            "driver_error_code": null,
+            "test_source": {
+              "file": "tests/Support/MobileContractFixtures.php",
+              "line": 57
+            },
+            "http_status": {
+              "expected": 404,
+              "actual": 403
+            },
+            "sanitized_message": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "raw_message_exported": false
+          },
+          {
+            "class": "Tests\\Feature\\Mobile\\Phase7\\MobileErrorContractTest",
+            "method": "test_malformed_or_out_of_range_ids_cannot_coerce_to_existing_records",
+            "type": "PHPUnit\\Framework\\ExpectationFailedException",
+            "classification": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "sqlstate": null,
+            "sqlstate_class": null,
+            "driver_error_code": null,
+            "test_source": {
+              "file": "tests/Support/MobileContractFixtures.php",
+              "line": 57
+            },
+            "http_status": {
+              "expected": 404,
+              "actual": 403
+            },
+            "sanitized_message": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "raw_message_exported": false
+          },
+          {
+            "class": "Tests\\Feature\\Mobile\\Phase7\\MobileErrorContractTest",
+            "method": "test_malformed_or_out_of_range_ids_cannot_coerce_to_existing_records",
+            "type": "PHPUnit\\Framework\\ExpectationFailedException",
+            "classification": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "sqlstate": null,
+            "sqlstate_class": null,
+            "driver_error_code": null,
+            "test_source": {
+              "file": "tests/Support/MobileContractFixtures.php",
+              "line": 57
+            },
+            "http_status": {
+              "expected": 404,
+              "actual": 403
+            },
+            "sanitized_message": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "raw_message_exported": false
+          },
+          {
+            "class": "Tests\\Feature\\Mobile\\Phase7\\MobileErrorContractTest",
+            "method": "test_malformed_or_out_of_range_ids_cannot_coerce_to_existing_records",
+            "type": "PHPUnit\\Framework\\ExpectationFailedException",
+            "classification": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "sqlstate": null,
+            "sqlstate_class": null,
+            "driver_error_code": null,
+            "test_source": {
+              "file": "tests/Support/MobileContractFixtures.php",
+              "line": 57
+            },
+            "http_status": {
+              "expected": 404,
+              "actual": 403
+            },
+            "sanitized_message": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "raw_message_exported": false
+          },
+          {
+            "class": "Tests\\Feature\\Mobile\\Phase7\\MobileErrorContractTest",
+            "method": "test_malformed_or_out_of_range_ids_cannot_coerce_to_existing_records",
+            "type": "PHPUnit\\Framework\\ExpectationFailedException",
+            "classification": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "sqlstate": null,
+            "sqlstate_class": null,
+            "driver_error_code": null,
+            "test_source": {
+              "file": "tests/Support/MobileContractFixtures.php",
+              "line": 57
+            },
+            "http_status": {
+              "expected": 404,
+              "actual": 403
+            },
+            "sanitized_message": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "raw_message_exported": false
+          },
+          {
+            "class": "Tests\\Feature\\Mobile\\Phase7\\MobileSerializationTest",
+            "method": "test_large_synthetic_lists_keep_output_and_query_growth_bounded",
+            "type": "Illuminate\\Database\\QueryException",
+            "classification": "UNKNOWN_REQUIRES_REVIEW",
+            "sqlstate": "HY000",
+            "sqlstate_class": "HY",
+            "driver_error_code": 1364,
+            "test_source": {
+              "file": "tests/Feature/Mobile/Phase7/MobileSerializationTest.php",
+              "line": 47
+            },
+            "http_status": null,
+            "sanitized_message": "UNKNOWN_REQUIRES_REVIEW",
+            "raw_message_exported": false
+          }
+        ],
+        "diagnostics_truncated": false
+      },
+      "metadata": {
+        "kind": "infrastructure",
+        "TEST_EXIT_CODE": 2,
+        "run_kind": "phase7_focused",
+        "event_file_present": true,
+        "event_file_bytes": 145098,
+        "phpunit_finished_event": true,
+        "finished_shell_exit_code": 2,
+        "finished_event_count": 1,
+        "last_test_identity": {
+          "class": "Tests\\Feature\\Mobile\\Phase7\\MobileSerializationTest",
+          "method": "test_large_synthetic_lists_keep_output_and_query_growth_bounded"
+        },
+        "last_phpunit_event_types": [
+          "After Test Method Called",
+          "OTHER_PHPUNIT_EVENT",
+          "Test Passed",
+          "Test Finished",
+          "Test Preparation Started",
+          "Test Triggered PHP Warning",
+          "Before Test Method Called",
+          "OTHER_PHPUNIT_EVENT",
+          "Test Prepared",
+          "Test Errored",
+          "After Test Method Called",
+          "OTHER_PHPUNIT_EVENT",
+          "Test Finished",
+          "OTHER_PHPUNIT_EVENT",
+          "OTHER_PHPUNIT_EVENT",
+          "Test Suite Finished",
+          "Test Suite Finished",
+          "OTHER_PHPUNIT_EVENT",
+          "OTHER_PHPUNIT_EVENT",
+          "PHPUnit Finished"
+        ],
+        "php_warning_sources": [
+          {
+            "category": "PHP_WARNING",
+            "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+            "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+            "source_line": 73,
+            "count": 67
+          }
+        ],
+        "execution_classification": "COMPLETED_REQUIRES_EXIT_CHECK",
+        "junit_file_present": true,
+        "junit_bytes": 32082,
+        "junit_sha256": "718996c5eaa03bca9c2baf29f62ca0180314ac3b360ca226e25ee980984fe031",
+        "utf8_valid": true,
+        "xml_declaration_present": true,
+        "contains_doctype_or_entity": false,
+        "starts_with_expected_xml_structure": true,
+        "ends_with_plausible_xml_structure": true,
+        "testcase_token_count": 67,
+        "testcase_token_count_is_diagnostic_only": true,
+        "libxml_errors": [],
+        "libxml_error_count": 0,
+        "baseline_log_present": true,
+        "baseline_log_bytes": 8731,
+        "safe_phpunit_summary_lines": [
+          "Time: 00:14.143, Memory: 64.50 MB",
+          "ERRORS!",
+          "Tests: 67, Assertions: 2234, Errors: 1, Failures: 7."
+        ],
+        "fatal_signature_categories": [],
+        "fatal_signatures_are_observations_only": true,
+        "status": "INFO",
+        "stage": "baseline_report_metadata"
+      },
+      "classification": "A: new Phase7 test fixture defects, not accepted as a product baseline. Seven expected404/actual403 cases lacked leave capability; one Ticket fixture omitted mandatory description (HY000/1364).",
+      "resolution": "Grant capability only to malformed-ID parser fixture, add explicit403 precedence case, supply required description. Source authorization and schema unchanged to satisfy fixtures.",
+      "later_phases_executed": false,
+      "full_suite_executed": false
+    },
+    {
+      "commit": "e5ca33e774226834cdba1dba7c76f36b3d171cc9",
+      "run_id": 42612419769,
+      "job_id": 129143920336,
+      "conclusion": "failure",
+      "focused": {
+        "kind": "baseline",
+        "TOTAL": 75,
+        "run_kind": "phase7_focused",
+        "database_error_groups": [],
+        "php_warning_sources": [
+          {
+            "category": "PHP_WARNING",
+            "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+            "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+            "source_line": 73,
+            "count": 75
+          }
+        ],
+        "PASSED": 74,
+        "FAILED": 1,
+        "ERRORS": 0,
+        "SKIPPED": 0,
+        "WARNINGS": 75,
+        "warning_events": {
+          "user": 0,
+          "php": 75,
+          "phpunit": 0,
+          "runner": 0
+        },
+        "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+        "TEST_EXIT_CODE": 1,
+        "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+        "phpunit_completed": true,
+        "test_suite_outcome": "NONZERO_EXIT",
+        "diagnostics": [
+          {
+            "class": "Tests\\Feature\\Mobile\\Phase7\\MobileApiContractTest",
+            "method": "test_device_dto_expiry_owner_and_all_three_empty_mutation_contracts",
+            "type": "PHPUnit\\Framework\\ExpectationFailedException",
+            "classification": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "sqlstate": null,
+            "sqlstate_class": null,
+            "driver_error_code": null,
+            "test_source": {
+              "file": "tests/Feature/Mobile/Phase7/MobileApiContractTest.php",
+              "line": 49
+            },
+            "http_status": null,
+            "sanitized_message": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "raw_message_exported": false
+          }
+        ],
+        "diagnostics_truncated": false
+      },
+      "metadata": {
+        "kind": "infrastructure",
+        "TEST_EXIT_CODE": 1,
+        "run_kind": "phase7_focused",
+        "event_file_present": true,
+        "event_file_bytes": 159742,
+        "phpunit_finished_event": true,
+        "finished_shell_exit_code": 1,
+        "finished_event_count": 1,
+        "last_test_identity": {
+          "class": "Tests\\Feature\\Mobile\\Phase7\\MobileSerializationTest",
+          "method": "test_large_synthetic_lists_keep_output_and_query_growth_bounded"
+        },
+        "last_phpunit_event_types": [
+          "After Test Method Called",
+          "OTHER_PHPUNIT_EVENT",
+          "Test Passed",
+          "Test Finished",
+          "Test Preparation Started",
+          "Test Triggered PHP Warning",
+          "Before Test Method Called",
+          "OTHER_PHPUNIT_EVENT",
+          "Test Prepared",
+          "After Test Method Called",
+          "OTHER_PHPUNIT_EVENT",
+          "Test Passed",
+          "Test Finished",
+          "OTHER_PHPUNIT_EVENT",
+          "OTHER_PHPUNIT_EVENT",
+          "Test Suite Finished",
+          "Test Suite Finished",
+          "OTHER_PHPUNIT_EVENT",
+          "OTHER_PHPUNIT_EVENT",
+          "PHPUnit Finished"
+        ],
+        "php_warning_sources": [
+          {
+            "category": "PHP_WARNING",
+            "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+            "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+            "source_line": 73,
+            "count": 75
+          }
+        ],
+        "execution_classification": "COMPLETED_REQUIRES_EXIT_CHECK",
+        "junit_file_present": true,
+        "junit_bytes": 29418,
+        "junit_sha256": "6b5dff36680396f8bcc8c74307f8f391ca9db131ee542091f658954b9f091f3a",
+        "utf8_valid": true,
+        "xml_declaration_present": true,
+        "contains_doctype_or_entity": false,
+        "starts_with_expected_xml_structure": true,
+        "ends_with_plausible_xml_structure": true,
+        "testcase_token_count": 75,
+        "testcase_token_count_is_diagnostic_only": true,
+        "libxml_errors": [],
+        "libxml_error_count": 0,
+        "baseline_log_present": true,
+        "baseline_log_bytes": 2108,
+        "safe_phpunit_summary_lines": [
+          "Time: 00:18.510, Memory: 66.50 MB",
+          "FAILURES!",
+          "Tests: 75, Assertions: 2420, Failures: 1."
+        ],
+        "fatal_signature_categories": [],
+        "fatal_signatures_are_observations_only": true,
+        "status": "INFO",
+        "stage": "baseline_report_metadata"
+      },
+      "classification": "A: new Phase7 incomplete-token fixture did not persist null created_at because mass assignment guards ignored it.",
+      "resolution": "Use forceFill/save only in isolated synthetic fixture, assert DB null and isNative=false before endpoint response. Keep strict source invariant and expected total2.",
+      "later_phases_executed": false,
+      "full_suite_executed": false
+    },
+    {
+      "commit": "feda39918fb346f83977deed9df6727eead928c5",
+      "run_id": 42613022621,
+      "job_id": 129145939165,
+      "conclusion": "failure",
+      "focused": {
+        "kind": "baseline",
+        "TOTAL": 75,
+        "run_kind": "phase7_focused",
+        "database_error_groups": [],
+        "php_warning_sources": [
+          {
+            "category": "PHP_WARNING",
+            "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+            "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+            "source_line": 73,
+            "count": 75
+          }
+        ],
+        "PASSED": 75,
+        "FAILED": 0,
+        "ERRORS": 0,
+        "SKIPPED": 0,
+        "WARNINGS": 75,
+        "warning_events": {
+          "user": 0,
+          "php": 75,
+          "phpunit": 0,
+          "runner": 0
+        },
+        "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+        "TEST_EXIT_CODE": 0,
+        "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+        "phpunit_completed": true,
+        "test_suite_outcome": "PASS",
+        "diagnostics": [],
+        "diagnostics_truncated": false
+      },
+      "full": {
+        "kind": "baseline",
+        "TOTAL": 722,
+        "run_kind": "authoritative_full",
+        "database_error_groups": [
+          {
+            "sqlstate": "42S22",
+            "sqlstate_class": "42",
+            "driver_error_code": 1054,
+            "count": 1
+          }
+        ],
+        "php_warning_sources": [
+          {
+            "category": "PHP_WARNING",
+            "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+            "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+            "source_line": 73,
+            "count": 721
+          }
+        ],
+        "PASSED": 721,
+        "FAILED": 1,
+        "ERRORS": 0,
+        "SKIPPED": 0,
+        "WARNINGS": 721,
+        "warning_events": {
+          "user": 0,
+          "php": 721,
+          "phpunit": 0,
+          "runner": 0
+        },
+        "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+        "TEST_EXIT_CODE": 1,
+        "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+        "phpunit_completed": true,
+        "test_suite_outcome": "NONZERO_EXIT",
+        "diagnostics": [
+          {
+            "class": "Tests\\Feature\\StudentExcelImportTest",
+            "method": "test_valid_excel_import_creates_students_inside_current_school",
+            "type": "PHPUnit\\Framework\\ExpectationFailedException",
+            "classification": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "sqlstate": "42S22",
+            "sqlstate_class": "42",
+            "driver_error_code": 1054,
+            "test_source": {
+              "file": "tests/Feature/StudentExcelImportTest.php",
+              "line": 53
+            },
+            "http_status": null,
+            "sanitized_message": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "raw_message_exported": false
+          }
+        ],
+        "diagnostics_truncated": false
+      },
+      "gate": {
+        "kind": "infrastructure",
+        "stage": "phase7_acceptance_gate",
+        "status": "PASS",
+        "MOBILE_API_CONTRACT_PASS": "PASS",
+        "focused_total": 75,
+        "focused_passed": 75,
+        "focused_classes": {
+          "Tests\\Feature\\Mobile\\Phase7\\MobileApiContractTest": 4,
+          "Tests\\Feature\\Mobile\\Phase7\\MobileErrorContractTest": 35,
+          "Tests\\Feature\\Mobile\\Phase7\\MobilePaginationTest": 20,
+          "Tests\\Feature\\Mobile\\Phase7\\MobileRatePolicyTest": 10,
+          "Tests\\Feature\\Mobile\\Phase7\\MobileSerializationTest": 6
+        },
+        "full_total": 722,
+        "full_passed": 721,
+        "full_failed": 1,
+        "full_errors": 0,
+        "full_skipped": 0,
+        "phase6_baseline_total": 647,
+        "new_contract_cases": 75,
+        "known_preexisting_regression_only": true,
+        "query_profile": {
+          "small_rows": 10,
+          "large_rows": 1001,
+          "small_queries": 17,
+          "large_queries": 17,
+          "query_budget": 19,
+          "small_ms": 5.096,
+          "large_ms": 8.684,
+          "returned_rows": 100,
+          "output_bytes": 7681,
+          "status": "PASS"
+        },
+        "WHATSAPP_IN_SCOPE": "NO",
+        "PHASE_8_STARTED": false
+      },
+      "classification": "B: known Excel only; all measured gates PASS. Acceptance remained provisional: final review added distinct-date/session-IP assertions and identified T096 known-account identity budget gap. Not the final accepted source.",
+      "full_suite_executed": true
+    },
+    {
+      "commit": "6fa8573aa3227e46aa0cc1fb724fd7365cda219d",
+      "run_id": 42614076898,
+      "job_id": 129149483178,
+      "conclusion": "cancelled",
+      "classification": "Superseded by account-bound login security fix8020e8b. Existing feature workflow concurrency cancels an older run; no accepted test counts from this cancelled run.",
+      "full_suite_executed": null,
+      "accepted_test_results": false
+    },
+    {
+      "commit": "8020e8b9363e1d100a1012c9b0a68d245169f2c1",
+      "run_id": 42614974604,
+      "job_id": 129152556298,
+      "conclusion": "failure",
+      "focused": {
+        "kind": "baseline",
+        "TOTAL": 76,
+        "run_kind": "phase7_focused",
+        "database_error_groups": [],
+        "php_warning_sources": [
+          {
+            "category": "PHP_WARNING",
+            "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+            "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+            "source_line": 73,
+            "count": 76
+          }
+        ],
+        "PASSED": 76,
+        "FAILED": 0,
+        "ERRORS": 0,
+        "SKIPPED": 0,
+        "WARNINGS": 76,
+        "warning_events": {
+          "user": 0,
+          "php": 76,
+          "phpunit": 0,
+          "runner": 0
+        },
+        "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+        "TEST_EXIT_CODE": 0,
+        "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+        "phpunit_completed": true,
+        "test_suite_outcome": "PASS",
+        "diagnostics": [],
+        "diagnostics_truncated": false
+      },
+      "full": {
+        "kind": "baseline",
+        "TOTAL": 723,
+        "run_kind": "authoritative_full",
+        "database_error_groups": [
+          {
+            "sqlstate": "42S22",
+            "sqlstate_class": "42",
+            "driver_error_code": 1054,
+            "count": 1
+          }
+        ],
+        "php_warning_sources": [
+          {
+            "category": "PHP_WARNING",
+            "signature_sha256": "29850f1c3c9f0a5f7f50bfc840a3d002d63b04b010f143ff2726246b87a883fd",
+            "source_file": "vendor/vlucas/phpdotenv/src/Store/File/Reader.php",
+            "source_line": 73,
+            "count": 722
+          }
+        ],
+        "PASSED": 722,
+        "FAILED": 1,
+        "ERRORS": 0,
+        "SKIPPED": 0,
+        "WARNINGS": 722,
+        "warning_events": {
+          "user": 0,
+          "php": 722,
+          "phpunit": 0,
+          "runner": 0
+        },
+        "warning_basis": "PHPUnit 11.5.51 verbose warning events; events, not affected tests",
+        "TEST_EXIT_CODE": 1,
+        "BASELINE_TEST_RESULTS_RECORDED": "PASS",
+        "phpunit_completed": true,
+        "test_suite_outcome": "NONZERO_EXIT",
+        "diagnostics": [
+          {
+            "class": "Tests\\Feature\\StudentExcelImportTest",
+            "method": "test_valid_excel_import_creates_students_inside_current_school",
+            "type": "PHPUnit\\Framework\\ExpectationFailedException",
+            "classification": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "sqlstate": "42S22",
+            "sqlstate_class": "42",
+            "driver_error_code": 1054,
+            "test_source": {
+              "file": "tests/Feature/StudentExcelImportTest.php",
+              "line": 53
+            },
+            "http_status": null,
+            "sanitized_message": "ASSERTION_FAILURE_REQUIRES_REVIEW",
+            "raw_message_exported": false
+          }
+        ],
+        "diagnostics_truncated": false
+      },
+      "gate": {
+        "kind": "infrastructure",
+        "stage": "phase7_acceptance_gate",
+        "status": "PASS",
+        "MOBILE_API_CONTRACT_PASS": "PASS",
+        "focused_total": 76,
+        "focused_passed": 76,
+        "focused_classes": {
+          "Tests\\Feature\\Mobile\\Phase7\\MobileApiContractTest": 4,
+          "Tests\\Feature\\Mobile\\Phase7\\MobileErrorContractTest": 35,
+          "Tests\\Feature\\Mobile\\Phase7\\MobilePaginationTest": 20,
+          "Tests\\Feature\\Mobile\\Phase7\\MobileRatePolicyTest": 11,
+          "Tests\\Feature\\Mobile\\Phase7\\MobileSerializationTest": 6
+        },
+        "full_total": 723,
+        "full_passed": 722,
+        "full_failed": 1,
+        "full_errors": 0,
+        "full_skipped": 0,
+        "phase6_baseline_total": 647,
+        "new_contract_cases": 76,
+        "known_preexisting_regression_only": true,
+        "query_profile": {
+          "small_rows": 10,
+          "large_rows": 1001,
+          "small_queries": 17,
+          "large_queries": 17,
+          "query_budget": 19,
+          "small_ms": 6.461,
+          "large_ms": 9.591,
+          "returned_rows": 100,
+          "output_bytes": 7681,
+          "status": "PASS"
+        },
+        "WHATSAPP_IN_SCOPE": "NO",
+        "PHASE_8_STARTED": false
+      },
+      "classification": "Final accepted source:76/76 focused;722/723 full, only B known Excel, zero new regressions/errors/skips. T096 account-global budget covered before password check across identifiers/IPs and independent processes.",
+      "full_suite_executed": true
+    }
+  ],
+  "raw_failure_messages_exported": false
+}

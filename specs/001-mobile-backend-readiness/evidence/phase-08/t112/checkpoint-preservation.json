@@ -1,0 +1,24 @@
+{
+  "source_checkpoint": "fbc63a4615f48ac0f832d91945d9652aeabef466",
+  "historical_manifest_verified_files": 40,
+  "all_original_hashes_matched_before_T112_updates": true,
+  "historical_manifest_sha256": "1054df855fec3f047c6b8b648bbe90c6deaf7e57527b174e5a16fa136d09bf85",
+  "snapshots": [
+    {
+      "original_path": "specs/001-mobile-backend-readiness/tasks.md",
+      "snapshot_path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks.md",
+      "sha256": "4a1a625d400df566681254d03b87d4952fd45fde4b7ba6df660bfdbb6086fd4e"
+    },
+    {
+      "original_path": "specs/001-mobile-backend-readiness/evidence/phase-08/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+      "snapshot_path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+      "sha256": "a11e549e7b009ced6cd77f579ee75a7b73234786c801012b1d0331d5728c2df0"
+    },
+    {
+      "original_path": "specs/001-mobile-backend-readiness/evidence/phase-08/acceptance.md",
+      "snapshot_path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance.md",
+      "sha256": "8b11c49554effdb5e872a94cf1726636f5793f3f31f6c60272e24114be5da96a"
+    }
+  ],
+  "reason": "Append current authorized T112 observations without destroying the historical report/task/acceptance evidence. The original manifest is historical; changed current paths are mapped to exact snapshots."
+}

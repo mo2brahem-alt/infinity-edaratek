@@ -9,3 +9,10 @@
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+
+# Preserve exact Spec Kit/evidence bytes: historical manifests hash these files.
+.agents/** -text
+.specify/** -text
+specs/** -text
+docs/audits/EDARATEK_MOBILE_BACKEND_AUDIT.md -text
+docs/spec-kit.md -text

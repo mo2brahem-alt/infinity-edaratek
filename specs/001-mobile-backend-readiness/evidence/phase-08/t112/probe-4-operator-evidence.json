@@ -1,0 +1,71 @@
+{
+  "provenance": "User-supplied manual probe4 summary plus requested static_configuration_evidence and CGI_CONFIGURATION_FINDINGS supplement; not an agent/server measurement.",
+  "target": "test.edaratek.com",
+  "reported_date_africa_cairo": "2026-11-10",
+  "server_execution_timestamp": null,
+  "probe": "server-readonly-h05-cgi.sh",
+  "execution_result_received": true,
+  "observations": {
+    "PHP_HANDLER": "CGI_WRAPPER",
+    "PHP_EXECUTABLE": "/bin/php-cgi8.3",
+    "FPM_NOT_APPLICABLE_FOR_THIS_VHOST": "YES",
+    "CGI_WRAPPER_PATH": "/home/test/fcgi-bin/php8.3.fcgi",
+    "CGI_PHPRC": "UNKNOWN_DYNAMIC_OR_SUPPRESSED",
+    "CGI_PHP_INI_SCAN_DIR": "UNSET_IN_WRAPPER_DEFAULT_UNKNOWN",
+    "CGI_DISPLAY_ERRORS": "UNKNOWN",
+    "CGI_DISPLAY_STARTUP_ERRORS": "UNKNOWN",
+    "CGI_LOG_ERRORS": "UNKNOWN",
+    "CGI_ERROR_REPORTING": "UNKNOWN",
+    "APP_DEBUG_CACHED_VALUE": true,
+    "RUNTIME_ERROR_DISCLOSURE_EVIDENCE": "UNAVAILABLE",
+    "H05_STATUS": "BLOCKED",
+    "H01_STATUS": "BLOCKED",
+    "T112_STATUS": "BLOCKED"
+  },
+  "missing_output_sections": [],
+  "interpretation": [
+    "Actual wrapper path is newly confirmed by the operator output.",
+    "PHPRC status is a conservative static parser outcome, not proof of a broken or absent configuration.",
+    "Scan-dir status means no literal assignment was resolved in the wrapper; it does not establish an empty scan set or runtime environment.",
+    "The four CGI error-setting UNKNOWN fields are intentionally not runtime measurements; no PHP/CGI execution occurred.",
+    "APP_DEBUG_CACHED_VALUE=true repeats prior accepted cached/source evidence, not a new read by probe4.",
+    "No H01 private-file serving/authorization/cache evidence was collected by this CGI-only probe.",
+    "The supplied findings list is empty, but ini_sources is also empty: no effective error-configuration safety can be inferred.",
+    "No literal parsed relevant -d or related env mentions were reported; inherited/default/per-request/application settings remain unproven.",
+    "wrapper_readable=true establishes read access for the probe, not the effective PHPRC value or loaded INI set."
+  ],
+  "next_action": {
+    "type": "AUTHORITATIVE_OPERATIONS_EVIDENCE_REQUIRED",
+    "request": "Resolve PHPRC/INI loading for the proven test CGI path and provide approved effective-setting/equivalent non-disclosure evidence. No further probe or change is initiated by this record.",
+    "fifth_probe_created": false
+  },
+  "agent_remote_actions": 0,
+  "safety": {
+    "NO_WRITES": "YES",
+    "NO_PHP_EXECUTION": "YES",
+    "NO_LARAVEL_BOOT": "YES",
+    "NO_HTTP_OR_FCGI_REQUESTS": "YES",
+    "NO_CONFIG_CHANGES": "YES",
+    "NO_SERVICE_RESTARTS": "YES",
+    "NO_DEPLOYMENT": "YES",
+    "PRODUCTION_TOUCHED": "NO",
+    "REAL_FILES_MIGRATED": 0,
+    "REAL_WHATSAPP_SENDS": 0,
+    "PHASE_9_STARTED": "NO"
+  },
+  "supplement_received": true,
+  "static_configuration_evidence": [
+    {
+      "wrapper": "/home/test/fcgi-bin/php8.3.fcgi",
+      "wrapper_readable": true,
+      "executable": "/bin/php-cgi8.3",
+      "PHPRC": "UNKNOWN_DYNAMIC_OR_SUPPRESSED",
+      "PHP_INI_SCAN_DIR": "UNSET_IN_WRAPPER_DEFAULT_UNKNOWN",
+      "ini_sources": [],
+      "command_line_defines": [],
+      "related_environment_mentions": [],
+      "notes": []
+    }
+  ],
+  "CGI_CONFIGURATION_FINDINGS": []
+}

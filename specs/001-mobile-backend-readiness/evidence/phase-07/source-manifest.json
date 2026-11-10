@@ -1,0 +1,410 @@
+{
+  "start_commit": "d1810ccef7c8c64651098eecd33f0fbe017bfb62",
+  "end_commit": "8020e8b9363e1d100a1012c9b0a68d245169f2c1",
+  "branch": "001-mobile-backend-readiness",
+  "committed_current_file_count": 42,
+  "local_spec_file_count": 10,
+  "file_count": 68,
+  "files": [
+    {
+      "path": "CLAUDE.md",
+      "scope": "committed_source",
+      "sha256": "92e6f89e225c2117c63aa0ded3461d919e2fadbeceac400ea11d05e72ffdb774"
+    },
+    {
+      "path": "PROJECT_DETAILS.md",
+      "scope": "committed_source",
+      "sha256": "377f71961ebe6b3521119c20f676581c7b97797e06d5ae2fd54eb620cf7d37b3"
+    },
+    {
+      "path": "app/Http/Controllers/Mobile/AttachmentController.php",
+      "scope": "committed_source",
+      "sha256": "c51726de45d9ed9386e34ea3ae8a0dd59870777b7aa60145d3b3c4c894c93e62"
+    },
+    {
+      "path": "app/Http/Controllers/Mobile/NativeSessionController.php",
+      "scope": "committed_source",
+      "sha256": "815cf377e3bada46d55572f5b142146086c5566312b2fa2ffd502326bd285bf4"
+    },
+    {
+      "path": "app/Http/Controllers/Mobile/StaffTaskController.php",
+      "scope": "committed_source",
+      "sha256": "7111f7b155c9e189443f6779369803debecea55dc4222c51242ad7d543b68676"
+    },
+    {
+      "path": "app/Http/Middleware/ThrottleNativeRequest.php",
+      "scope": "committed_source",
+      "sha256": "7c013b6e759e55a666e77dd8e81958f063fb018307603f8b66715729188d28f2"
+    },
+    {
+      "path": "app/Http/Middleware/ThrottlePasswordReset.php",
+      "scope": "committed_source",
+      "sha256": "ab5b462d2839f41777d56ca4cf3b4916e8c4734d7268f996e51eaee580c20f66"
+    },
+    {
+      "path": "app/Http/Requests/Api/V1/ContractRequest.php",
+      "scope": "committed_source",
+      "sha256": "8b3adef6efff54c82b4da3f1ab145d6ae08cefba1710460d9fd9aa685a47a0d8"
+    },
+    {
+      "path": "app/Http/Requests/Api/V1/NativeLoginRequest.php",
+      "scope": "committed_source",
+      "sha256": "89cd1d98d434edb4aa531c95313d57e187481189949ff15637fc50ea6ea7a2ed"
+    },
+    {
+      "path": "app/Http/Requests/Api/V1/NativePaginationRequest.php",
+      "scope": "committed_source",
+      "sha256": "c25bcfadf1d104b9c2c24ec551ec8e65500ad2bd512955cc861ad9caddffe55c"
+    },
+    {
+      "path": "app/Http/Requests/Api/V1/StaffTaskListRequest.php",
+      "scope": "committed_source",
+      "sha256": "8697a2c70f4493d700433001b40219d7df38acffd1530eadc544aefd1831d5f3"
+    },
+    {
+      "path": "app/Http/Resources/Api/V1/AttachmentResource.php",
+      "scope": "committed_source",
+      "sha256": "cd3c700993baeda5d9c8bc40d7e1eb1f8fa2669726e1f73eeb20f1fa3a9bd222"
+    },
+    {
+      "path": "app/Http/Resources/Api/V1/CurrentUserResource.php",
+      "scope": "committed_source",
+      "sha256": "e9ce3ad72fbc01c5e3e181a008f5d061b20f5c787d662c2aaa80f70caa0d3543"
+    },
+    {
+      "path": "app/Http/Resources/Api/V1/DeviceResource.php",
+      "scope": "committed_source",
+      "sha256": "aab21d247b601263c7690c886c1ba29d54f8a5ddb68db65e9b1c03c4ce6d102a"
+    },
+    {
+      "path": "app/Http/Resources/Api/V1/TaskDetailResource.php",
+      "scope": "committed_source",
+      "sha256": "f832cc12948872e57b7f0d2af5b75781a17768b8991dde71ab2d73f9c4fc24c4"
+    },
+    {
+      "path": "app/Http/Resources/Api/V1/TaskSummaryResource.php",
+      "scope": "committed_source",
+      "sha256": "968832c79704cd1e69dc2a4169c0006fb74df463477b3eac57deed150e6ba1b7"
+    },
+    {
+      "path": "app/Providers/AppServiceProvider.php",
+      "scope": "committed_source",
+      "sha256": "3242e8d5fd52a47da33e1a2f6ff761e47e35422aec114ecf439d1f5b0d74823f"
+    },
+    {
+      "path": "app/Services/Mobile/NativeRateLimiter.php",
+      "scope": "committed_source",
+      "sha256": "7fb53c630169d05f476b1ecca39e4715bb4c3a4e26b8872c4d03ca53dd89a62d"
+    },
+    {
+      "path": "app/Services/Mobile/NativeTokenService.php",
+      "scope": "committed_source",
+      "sha256": "22c27722c76e561e60f5001d52915c23fb35aa4bfe396de7a5ea04fc4c114027"
+    },
+    {
+      "path": "app/Services/Support/AttachmentAccess.php",
+      "scope": "committed_source",
+      "sha256": "cb15132369123a9a8a6370b868ee5a3962a35cdc0d50adf39f4b09826f0e17b3"
+    },
+    {
+      "path": "app/Support/ApiError.php",
+      "scope": "committed_source",
+      "sha256": "a537e33e7195c34255aaf8a6c248c38f55b31a8dd57ff9429dd4900644a4f9f3"
+    },
+    {
+      "path": "app/Support/NativeApiResponse.php",
+      "scope": "committed_source",
+      "sha256": "63c020daedb43be9820652ac9fde281a6c1200b9853bb5dbe103b046bed34437"
+    },
+    {
+      "path": "app/Support/NativeCollection.php",
+      "scope": "committed_source",
+      "sha256": "812dbc493727eed7028f88d893ccaa1251587bc9ec91e179b1a2b607e5030bc6"
+    },
+    {
+      "path": "app/Support/NativeId.php",
+      "scope": "committed_source",
+      "sha256": "d9ce927c00e8a4c6a310a12aebc6306727fbce04a4d17d8a8f8a15ebe52e0351"
+    },
+    {
+      "path": "bootstrap/app.php",
+      "scope": "committed_source",
+      "sha256": "d122fa3b2096e3695aa9960ecd313d34229a72fd56ea0650597983711abbf4be"
+    },
+    {
+      "path": "config/mobile.php",
+      "scope": "committed_source",
+      "sha256": "84b7bd4d4102f3d0bf79a932d8fdf7d32bd28dc51c00d95abfd643154853dc2e"
+    },
+    {
+      "path": "docs/mobile-api-v1.md",
+      "scope": "committed_source",
+      "sha256": "b6af6078e34320536e553814d1bb4fd688e75891c753e8c1bd217954f33be836"
+    },
+    {
+      "path": "routes/auth.php",
+      "scope": "committed_source",
+      "sha256": "ae7dfbb54542b3dc26d5f8ea92cf93621776141c427a2302cc6a652bbbc25a12"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/EnvironmentSafetyTest.php",
+      "scope": "committed_source",
+      "sha256": "d26b59dc04af694484199f26901da89211dd093b9a691bab98ddd6611c1f2b6d"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileApiContractTest.php",
+      "scope": "committed_source",
+      "sha256": "5c30d122bf322f3f9a7053fe5f8fe46b1667149a821e15be2d380bbb66777f94"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileErrorContractTest.php",
+      "scope": "committed_source",
+      "sha256": "4335d5ffa36e273db4ab8b10971b1f7be2afc6d68ab6c506079af59070d7de18"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobilePaginationTest.php",
+      "scope": "committed_source",
+      "sha256": "68092aa241604d32403a47c15dade67d556b47553354fd7bca02e885ddf1075b"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileRatePolicyTest.php",
+      "scope": "committed_source",
+      "sha256": "9b6d4801f1d35db64078cc13e39345eb33b86071f31d0c87cf28df81bf83ea61"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileSerializationTest.php",
+      "scope": "committed_source",
+      "sha256": "d885e1cd9fc13211eda81194078c7f7f248bb2f446cffa1b693e85dbecfb90ab"
+    },
+    {
+      "path": "tests/Support/MobileContractFixtures.php",
+      "scope": "committed_source",
+      "sha256": "7b652732896bc3adf690df7c49c9cc0953cea1c20e3ec9f956e26a51833ab94c"
+    },
+    {
+      "path": "tools/testing/Dockerfile",
+      "scope": "committed_source",
+      "sha256": "17e39dac93c6361032790f1eb9ef0ab3c50aa5727c447dfddb5dc89cd5a88672"
+    },
+    {
+      "path": "tools/testing/native-rate-worker.php",
+      "scope": "committed_source",
+      "sha256": "7c5d14b802f584d882d0de54a802506b1af072541c37ad0863a9861cf6af5c45"
+    },
+    {
+      "path": "tools/testing/probe-mobile-auth-gate.php",
+      "scope": "committed_source",
+      "sha256": "321dbb8f93ea83222ed08ccba79fbf73fab25366ad5e33c2171bfce2def8d49a"
+    },
+    {
+      "path": "tools/testing/probe-phase6-gate.php",
+      "scope": "committed_source",
+      "sha256": "1cf8089dc6a7daf5d002c258eae8fa5b6c5eb3420ee43126e6b4d6aa56e17c69"
+    },
+    {
+      "path": "tools/testing/probe-phase7-gate.php",
+      "scope": "committed_source",
+      "sha256": "211472d5e3c679dff699d6b17287b2a50b6f7947401e5c020550e53ab12d501c"
+    },
+    {
+      "path": "tools/testing/run-baseline.sh",
+      "scope": "committed_source",
+      "sha256": "ef777a90040e9d91fae7f41b71553b2f87ede4b95489c40e387070a5a550bf08"
+    },
+    {
+      "path": "tools/testing/summarize-junit.php",
+      "scope": "committed_source",
+      "sha256": "d1ad00d0e53cdfa0b32e0fa31eec01c31e30cad66701867771d658fc4959a280"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "scope": "local_spec_kit",
+      "sha256": "a67601cedd703b23738a33b3a210a17248b2fdf2dcaafbd8677eefb58cf123cf"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/spec.md",
+      "scope": "local_spec_kit",
+      "sha256": "c1b6b5e0a2f8fe5b4379972c962e674979e9a87700acc486c94f5b5d969b6dbe"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/plan.md",
+      "scope": "local_spec_kit",
+      "sha256": "f68bff529e3660b5674ef173d424188fa9b1eaadb0cf9ae704e5ee689ea0416e"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/tasks.md",
+      "scope": "local_spec_kit",
+      "sha256": "6ea0dcc9ae5785cdd1fe53b0a2f9299158cf64276ccf047b5765f1f2a1cad5cb"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/research.md",
+      "scope": "local_spec_kit",
+      "sha256": "8101caafe40dacf8600f193d0bc0b4db6dd92cefc591d077195af787719b4ab9"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/data-model.md",
+      "scope": "local_spec_kit",
+      "sha256": "a8d828b4faa488d2967fb037238ef3dcc6eeaece18d0361d9a747030a2d34da1"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/quickstart.md",
+      "scope": "local_spec_kit",
+      "sha256": "ce7cab459b0cceff174086b7742d52909917979e88e66d33771d26f3f59eb3ee"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/contracts/mobile-api.md",
+      "scope": "local_spec_kit",
+      "sha256": "61e779b104daf77e1b07f25176d335c22151686eed5c5081cee6c2c3ad6b871b"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/contracts/security-protocols.md",
+      "scope": "local_spec_kit",
+      "sha256": "5487a98b302442dae240ff63603fe670776161bbc0ff820a226ec75d1fe60e59"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/checklists/readiness-security.md",
+      "scope": "local_spec_kit",
+      "sha256": "89a874549e82a39aee62f59f37779d3febdeb25d550077769f03f5ab15655227"
+    },
+    {
+      "path": "routes/api.php",
+      "scope": "preserved_reference",
+      "sha256": "5a8d29999684115f3f45042c87318dab5bf9793a430ddbc351dcc83256e0223a"
+    },
+    {
+      "path": "routes/web.php",
+      "scope": "preserved_reference",
+      "sha256": "664d8dcc57c2e8a9b616c839b4ea71f94225b174c401aed103d81b91e93dbdff"
+    },
+    {
+      "path": "app/Services/Support/NotificationService.php",
+      "scope": "preserved_reference",
+      "sha256": "27d0673ac1a577d4f5b7539013d56e63098a7a779822294c0a0286c2a7ed694c"
+    },
+    {
+      "path": "config/services.php",
+      "scope": "preserved_reference",
+      "sha256": "42556ab8becbe83b23847faa1919f545e8567a2e7d24dd1412b437916d5f8309"
+    },
+    {
+      "path": "app/Jobs/DispatchWhatsAppNotification.php",
+      "scope": "preserved_reference",
+      "sha256": "931f6a07702d319660f3e44a9ff9926ff899f5c1103adb9b6eab77592d86807e"
+    },
+    {
+      "path": "app/Jobs/DispatchWhatsAppOtp.php",
+      "scope": "preserved_reference",
+      "sha256": "0f9086acd36331b2537d3b8bd9f94e6195ca61ce2ccbd74acfae930146035a07"
+    },
+    {
+      "path": "app/Services/WhatsApp/N8nWhatsAppClient.php",
+      "scope": "preserved_reference",
+      "sha256": "f5a555e966c71c9d9cd8c8e1b5b297c452e70114f417517d32ca39a4e05e8981"
+    },
+    {
+      "path": "tests/Feature/WhatsAppIntegrationTest.php",
+      "scope": "preserved_reference",
+      "sha256": "97447e224e8761cd91758d124baa1bc837db6aec5aba713a6dda43aa064e2349"
+    },
+    {
+      "path": "tests/Feature/StudentExcelImportTest.php",
+      "scope": "preserved_reference",
+      "sha256": "facfb5c3d4f0f1a45ffad2dd93cab5d0e1f4d1f9f1041a92dc692294acbf62d6"
+    },
+    {
+      "path": "app/Services/School/StudentImportService.php",
+      "scope": "preserved_reference",
+      "sha256": "fad0e59a9b87fde756bbb5b8d6caef5f8bdb7505cecb1d08f87a3272fbb69e36"
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "scope": "preserved_reference",
+      "sha256": "349264dca87ac571ae508f130a9d79267e67ef18a0c1e52f640633d488e2c317"
+    },
+    {
+      "path": ".github/workflows/mobile-backend-tests.yml",
+      "scope": "preserved_reference",
+      "sha256": "6d6c9c2f9b750f49898118b1645fcf95778ee60192f45606ecef1351b8a900b6"
+    },
+    {
+      "path": "phpunit.xml",
+      "scope": "preserved_reference",
+      "sha256": "20c135f3ebf1b8d3e59c402f714a5e190328cd74e25b0b132d06cba0b7eb997f"
+    },
+    {
+      "path": "phpunit.mysql.xml",
+      "scope": "preserved_reference",
+      "sha256": "ca648185f36344887344ff98ee2abd506c61b183a552c79963ba73adad0729c9"
+    },
+    {
+      "path": "docs/notification-policy.md",
+      "scope": "preserved_reference",
+      "sha256": "39aeef17778f76b54d74b7904764e77ab985ad0c0ee8a4af7e0afcbe03a4c1b2"
+    },
+    {
+      "path": "README.md",
+      "scope": "preexisting_user_reference",
+      "sha256": "1287b879863b9ba8e6081826afa5c9c6c72e7e84534e1bac6c2aea07e5b28092"
+    }
+  ],
+  "moved_old_class_paths": [
+    "app/Http/Requests/Mobile/NativeLoginRequest.php",
+    "app/Http/Requests/Mobile/NativePaginationRequest.php",
+    "app/Http/Requests/Mobile/StaffTaskListRequest.php",
+    "app/Http/Resources/Mobile/CurrentUserResource.php",
+    "app/Http/Resources/Mobile/DeviceResource.php"
+  ],
+  "moved_old_paths_absent": true,
+  "migration_file_count": 114,
+  "migration_diff_unchanged": true,
+  "known_regression_paths_unchanged": true,
+  "deployment_workflow_unchanged": true,
+  "portable_definition_matches_local_contract": true,
+  "readme_preexisting_hash_preserved": true,
+  "git_status_after": " M README.md\n D public/awstats-icon\n D public/awstatsicons\n D public/icon/mime/conf.png\n D public/icon/mime/csv.png\n D public/icon/mime/document.png\n D public/icon/mime/dtd.png\n D public/icon/mime/flv.png\n D public/icon/mime/fon.png\n D public/icon/mime/package.png\n D public/icon/mime/runtime.png\n D public/icon/mime/swf.png\n D public/icon/mime/vbs.png\n D public/icon/mime/xsl.png\n?? .agents/\n?? .specify/\n?? .well-known/\n?? docs/spec-kit.md\n?? specs/",
+  "index_empty": true,
+  "workflow_inventory": [
+    {
+      "conclusion": "failure",
+      "databaseId": 42611731015,
+      "headSha": "b5552887ecbd6b62aebd2c74ed90076e75fef8d4",
+      "status": "completed",
+      "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42611731015",
+      "workflowName": "Isolated mobile backend baseline"
+    },
+    {
+      "conclusion": "failure",
+      "databaseId": 42612419769,
+      "headSha": "e5ca33e774226834cdba1dba7c76f36b3d171cc9",
+      "status": "completed",
+      "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42612419769",
+      "workflowName": "Isolated mobile backend baseline"
+    },
+    {
+      "conclusion": "failure",
+      "databaseId": 42613022621,
+      "headSha": "feda39918fb346f83977deed9df6727eead928c5",
+      "status": "completed",
+      "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42613022621",
+      "workflowName": "Isolated mobile backend baseline"
+    },
+    {
+      "conclusion": "cancelled",
+      "databaseId": 42614076898,
+      "headSha": "6fa8573aa3227e46aa0cc1fb724fd7365cda219d",
+      "status": "completed",
+      "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42614076898",
+      "workflowName": "Isolated mobile backend baseline"
+    },
+    {
+      "conclusion": "failure",
+      "databaseId": 42614974604,
+      "headSha": "8020e8b9363e1d100a1012c9b0a68d245169f2c1",
+      "status": "completed",
+      "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42614974604",
+      "workflowName": "Isolated mobile backend baseline"
+    }
+  ],
+  "remote_feature_head": "8020e8b9363e1d100a1012c9b0a68d245169f2c1",
+  "remote_main_unchanged": "12b9d5326d942acda55309aac05c6cee1bf928b0"
+}

@@ -1,0 +1,1586 @@
+{
+  "basis": "Static method names only, not executed case counts; runtime class counts are in validated-runtime.json. Frozen source hash verified before/after tests. Archived WhatsApp class statically inventoried, never loaded/executed.",
+  "files": [
+    {
+      "path": "tests/Feature/AcademicPlanningAccessTest.php",
+      "class": "Tests\\Feature\\AcademicPlanningAccessTest",
+      "methods_static": [
+        "test_manager_can_access_academic_planning_and_create_term_for_his_school",
+        "test_staff_with_configured_permission_can_access_academic_planning",
+        "test_staff_without_permission_is_forbidden_from_academic_planning",
+        "test_approved_courses_tree_contains_current_school_courses_only",
+        "test_schedule_listing_supports_grade_filter_within_current_school_only",
+        "test_schedule_update_is_scoped_to_user_school_only"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AcademicPlanningCentralValidationTest.php",
+      "class": "Tests\\Feature\\AcademicPlanningCentralValidationTest",
+      "methods_static": [
+        "test_schedule_can_be_created_on_valid_working_day_within_same_school",
+        "test_schedule_creation_fails_for_weekly_off_day_with_arabic_message",
+        "test_schedule_creation_fails_when_term_session_date_is_holiday",
+        "test_schedule_creation_fails_when_term_session_date_is_exceptional_leave_day",
+        "test_schedule_creation_fails_when_time_is_outside_school_day_window",
+        "test_schedule_creation_fails_on_teacher_time_overlap_in_same_school",
+        "test_schedule_creation_fails_on_classroom_time_overlap_in_same_school",
+        "test_same_schedule_slot_can_be_created_in_other_school_without_cross_tenant_conflict",
+        "test_schedule_creation_fails_when_referencing_classroom_from_another_school",
+        "test_inactive_schedule_does_not_block_same_slot_or_time_conflicts"
+      ],
+      "static_method_count": 10,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AcademicPlanningGridEditorTest.php",
+      "class": "Tests\\Feature\\AcademicPlanningGridEditorTest",
+      "methods_static": [
+        "test_weekly_grid_empty_selects_use_readable_placeholder_classes",
+        "test_weekly_grid_entries_are_loaded_for_selected_context",
+        "test_grid_sync_can_create_update_and_delete_weekly_slots",
+        "test_grid_sync_rejects_weekly_off_days_server_side",
+        "test_grid_sync_rejects_foreign_classroom_and_preserves_school_isolation",
+        "test_word_export_returns_document_for_selected_weekly_grid",
+        "test_pdf_export_returns_pdf_download_for_selected_weekly_grid"
+      ],
+      "static_method_count": 7,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AcademicPlanningPageSegmentationTest.php",
+      "class": "Tests\\Feature\\AcademicPlanningPageSegmentationTest",
+      "methods_static": [
+        "test_index_exposes_selected_page_from_query",
+        "test_index_falls_back_to_stages_for_invalid_page_query",
+        "test_store_timetable_version_redirect_keeps_requested_page",
+        "test_store_schedule_redirect_keeps_requested_page"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AcademicPlanningSubjectManagementTest.php",
+      "class": "Tests\\Feature\\AcademicPlanningSubjectManagementTest",
+      "methods_static": [
+        "test_subject_code_is_auto_generated_and_scoped_per_school",
+        "test_manager_can_assign_subject_to_educational_teacher_even_without_staff_role_assignment",
+        "test_subject_branches_can_be_saved_and_updated",
+        "test_manager_can_assign_subject_to_legacy_teacher_role_without_staff_type",
+        "test_manager_can_assign_subject_to_staff_user_with_teacher_department_role_name",
+        "test_subject_creation_rejects_foreign_school_teacher_assignment",
+        "test_subject_creation_rejects_non_teacher_user_assignment",
+        "test_manager_cannot_update_subject_in_another_school",
+        "test_updating_subject_teachers_tracks_diff_and_writes_audit_log",
+        "test_updating_subject_without_teacher_payload_keeps_existing_assignments"
+      ],
+      "static_method_count": 10,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AcademicYearManagementTest.php",
+      "class": "Tests\\Feature\\AcademicYearManagementTest",
+      "methods_static": [
+        "test_manager_can_create_academic_year_and_link_term_to_it",
+        "test_term_cannot_be_linked_to_academic_year_from_other_school",
+        "test_staff_cannot_update_academic_year_of_another_school",
+        "test_deleting_academic_year_nulls_related_term_reference",
+        "test_manager_cannot_create_overlapping_academic_year_in_same_school",
+        "test_manager_cannot_create_term_outside_linked_academic_year",
+        "test_manager_cannot_create_overlapping_term_in_same_school",
+        "test_manager_can_update_legacy_overlapping_year_name_when_dates_do_not_change"
+      ],
+      "static_method_count": 8,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AccountApprovalFlowTest.php",
+      "class": "Tests\\Feature\\AccountApprovalFlowTest",
+      "methods_static": [
+        "test_supervisor_registration_creates_pending_account_redirects_home_and_sends_notifications",
+        "test_manager_registration_creates_pending_account_redirects_home_and_sends_notifications",
+        "test_pending_account_cannot_login_or_enter_dashboard_before_approval",
+        "test_super_admin_can_approve_pending_account_and_activate_subscription",
+        "test_super_admin_approval_activates_linked_school_manager_school",
+        "test_super_admin_approval_keeps_manager_school_suspended_without_current_subscription",
+        "test_activate_approved_schools_command_dry_run_does_not_change_data",
+        "test_activate_approved_schools_command_activates_matching_schools_only",
+        "test_super_admin_can_reject_pending_account_and_keep_it_blocked",
+        "test_approved_account_can_login_after_super_admin_approval_and_resume_its_role_flow",
+        "test_non_super_admin_cannot_approve_or_reject_pending_accounts",
+        "test_super_admin_users_index_exposes_pending_approvals",
+        "test_super_admin_users_index_exposes_school_account_overview",
+        "test_welcome_page_exposes_pending_registration_notice_when_query_flag_is_present",
+        "test_super_admin_seeder_without_explicit_provisioning_creates_no_accounts",
+        "test_admin_created_manager_is_immediately_approved_without_pending_queue"
+      ],
+      "static_method_count": 16,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ActiveSchoolAssociationMiddlewareTest.php",
+      "class": "Tests\\Feature\\ActiveSchoolAssociationMiddlewareTest",
+      "methods_static": [
+        "test_manager_can_access_dashboard_when_school_is_active_without_supervisor_association",
+        "test_manager_is_blocked_from_operational_routes_when_school_is_suspended",
+        "test_manager_can_access_requests_page_before_association_activation",
+        "test_staff_can_access_dashboard_and_delegated_modules_when_school_is_active_without_supervisor_association",
+        "test_staff_is_blocked_when_school_is_suspended_even_if_role_is_valid",
+        "test_staff_without_school_is_blocked_with_clear_arabic_message",
+        "test_staff_still_cannot_access_module_without_delegated_permission",
+        "test_manager_can_access_managed_routes_when_association_is_active",
+        "test_manager_can_access_managed_routes_even_when_school_flags_are_waiting_with_manager_approval_request"
+      ],
+      "static_method_count": 9,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminDashboardPageDesignTest.php",
+      "class": "Tests\\Feature\\AdminDashboardPageDesignTest",
+      "methods_static": [
+        "test_admin_dashboard_uses_real_metrics_structure_and_shared_dashboard_primitives"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminDefaultStageTemplateLinkingTest.php",
+      "class": "Tests\\Feature\\AdminDefaultStageTemplateLinkingTest",
+      "methods_static": [
+        "test_super_admin_can_persist_master_education_stage_link_on_default_stage_template"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminDirectorateManagementTest.php",
+      "class": "Tests\\Feature\\AdminDirectorateManagementTest",
+      "methods_static": [
+        "test_super_admin_can_create_governorate_and_education_type_entry",
+        "test_super_admin_can_update_education_type_within_governorate",
+        "test_super_admin_cannot_create_school_from_admin_panel_anymore"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminEducationStageManagementTest.php",
+      "class": "Tests\\Feature\\AdminEducationStageManagementTest",
+      "methods_static": [
+        "test_super_admin_can_manage_education_stages_from_school_defaults_feature",
+        "test_school_manager_cannot_manage_global_education_stages",
+        "test_super_admin_cannot_delete_education_stage_used_by_school_or_template_stage",
+        "test_super_admin_cannot_delete_education_stage_used_by_linked_template_stage_even_when_template_name_differs"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminGlobalTaxonomySyncTest.php",
+      "class": "Tests\\Feature\\AdminGlobalTaxonomySyncTest",
+      "methods_static": [
+        "test_super_admin_cannot_create_country_manually_anymore",
+        "test_super_admin_cannot_create_governorate_manually_anymore",
+        "test_super_admin_can_sync_countries_from_global_api_without_duplicating_existing_aliases",
+        "test_super_admin_can_sync_governorates_for_selected_country_from_global_api",
+        "test_super_admin_governorate_sync_skips_country_that_already_has_local_governorates"
+      ],
+      "static_method_count": 5,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminModalStructureTest.php",
+      "class": "Tests\\Feature\\AdminModalStructureTest",
+      "methods_static": [
+        "test_shared_app_modal_provides_accessible_dialog_contract",
+        "test_supervisor_assignments_page_uses_modal_for_creation_flow",
+        "test_footer_page_uses_modal_for_column_creation_and_no_longer_embeds_inline_form"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminPlansPageDesignTest.php",
+      "class": "Tests\\Feature\\AdminPlansPageDesignTest",
+      "methods_static": [
+        "test_admin_plans_page_uses_shared_filter_search_and_state_primitives"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminSchoolDefaultEducationTypeManagementTest.php",
+      "class": "Tests\\Feature\\AdminSchoolDefaultEducationTypeManagementTest",
+      "methods_static": [
+        "test_super_admin_can_manage_education_types_from_school_defaults_feature",
+        "test_super_admin_cannot_delete_education_type_used_by_default_templates"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminSchoolDefaultTemplateSettingsTest.php",
+      "class": "Tests\\Feature\\AdminSchoolDefaultTemplateSettingsTest",
+      "methods_static": [
+        "test_school_defaults_index_renders_the_standalone_page_when_not_embedded",
+        "test_school_defaults_index_renders_embedded_editor_mode_for_selected_country_and_education_type",
+        "test_settings_default_templates_tab_query_redirects_to_the_standalone_page",
+        "test_super_admin_can_store_template_scope_configuration_and_json_payload_lists_it",
+        "test_country_reference_endpoint_returns_supported_public_holidays_payload",
+        "test_country_reference_endpoint_uses_saudi_snapshot_when_external_holiday_api_returns_no_content",
+        "test_re_saving_same_scope_does_not_duplicate_auto_generated_defaults",
+        "test_partial_existing_template_data_is_completed_by_fallback_defaults_without_overwriting_it",
+        "test_template_availability_respects_country_and_education_type_templates",
+        "test_super_admin_can_store_a_country_and_education_type_scoped_academic_year_template",
+        "test_client_reference_snapshot_is_persisted_and_refreshing_it_updates_matching_holidays_without_duplication",
+        "test_auto_generated_current_academic_year_is_copied_to_school_when_importing_templates",
+        "test_importing_a_country_and_education_type_template_copies_it_into_school_scoped_records",
+        "test_super_admin_can_delete_a_saved_template_scope_without_affecting_school_copies"
+      ],
+      "static_method_count": 14,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminSchoolManagementStructureTest.php",
+      "class": "Tests\\Feature\\AdminSchoolManagementStructureTest",
+      "methods_static": [
+        "test_admin_school_management_hides_standalone_taxonomy_integration_ui",
+        "test_admin_school_management_removes_filter_bar_from_education_types_and_directorates_page",
+        "test_admin_school_management_uses_enhanced_reference_layout_for_taxonomy_sections"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminSchoolsPageDesignTest.php",
+      "class": "Tests\\Feature\\AdminSchoolsPageDesignTest",
+      "methods_static": [
+        "test_admin_schools_page_uses_shared_filter_and_state_primitives"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminSettingsPageDesignTest.php",
+      "class": "Tests\\Feature\\AdminSettingsPageDesignTest",
+      "methods_static": [
+        "test_admin_settings_page_uses_shared_feedback_and_settings_grouping_primitives"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminSidebarLayoutTest.php",
+      "class": "Tests\\Feature\\AdminSidebarLayoutTest",
+      "methods_static": [
+        "test_super_admin_sidebar_has_required_labels_and_order",
+        "test_super_admin_sidebar_uses_unified_shell_cards_and_routes"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AdminUsersPageDesignTest.php",
+      "class": "Tests\\Feature\\AdminUsersPageDesignTest",
+      "methods_static": [
+        "test_admin_users_page_uses_unified_filters_table_and_dialog_patterns"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ApiRateLimitingTest.php",
+      "class": "Tests\\Feature\\ApiRateLimitingTest",
+      "methods_static": [
+        "test_system_api_uses_configured_rate_limit",
+        "test_school_api_uses_configured_rate_limit"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ArabicValidationMessagesTest.php",
+      "class": "Tests\\Feature\\ArabicValidationMessagesTest",
+      "methods_static": [
+        "test_registration_validation_errors_are_returned_in_arabic",
+        "test_login_failure_message_is_returned_in_arabic",
+        "test_manager_onboarding_json_validation_errors_are_returned_in_arabic",
+        "test_manager_onboarding_duplicate_school_name_error_is_returned_in_arabic",
+        "test_manager_onboarding_duplicate_school_phone_error_is_returned_in_arabic",
+        "test_manager_onboarding_duplicate_school_email_error_is_returned_in_arabic"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AssociationHandshakeTest.php",
+      "class": "Tests\\Feature\\AssociationHandshakeTest",
+      "methods_static": [
+        "test_legacy_manager_registration_page_redirects_to_plan_based_registration",
+        "test_legacy_manager_registration_submission_redirects_without_creating_manager_account"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/AttendancePerformanceIndexesTest.php",
+      "class": "Tests\\Feature\\AttendancePerformanceIndexesTest",
+      "methods_static": [
+        "test_attendance_and_leave_tables_have_performance_indexes_for_reporting_queries"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Auth/AuthenticationTest.php",
+      "class": "Tests\\Feature\\Auth\\AuthenticationTest",
+      "methods_static": [
+        "test_login_screen_can_be_rendered",
+        "test_users_can_authenticate_using_the_login_screen",
+        "test_users_can_not_authenticate_with_invalid_password",
+        "test_inactive_users_cannot_authenticate",
+        "test_users_can_logout"
+      ],
+      "static_method_count": 5,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Auth/EmailVerificationTest.php",
+      "class": "Tests\\Feature\\Auth\\EmailVerificationTest",
+      "methods_static": [
+        "test_email_verification_screen_can_be_rendered",
+        "test_email_can_be_verified",
+        "test_email_is_not_verified_with_invalid_hash"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Auth/PasswordConfirmationTest.php",
+      "class": "Tests\\Feature\\Auth\\PasswordConfirmationTest",
+      "methods_static": [
+        "test_confirm_password_screen_can_be_rendered",
+        "test_password_can_be_confirmed",
+        "test_password_is_not_confirmed_with_invalid_password"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Auth/PasswordResetTest.php",
+      "class": "Tests\\Feature\\Auth\\PasswordResetTest",
+      "methods_static": [
+        "test_reset_password_link_screen_can_be_rendered",
+        "test_reset_password_link_can_be_requested",
+        "test_reset_password_screen_can_be_rendered",
+        "test_password_can_be_reset_with_valid_token",
+        "test_known_unknown_and_broker_cooldown_have_identical_general_outcome",
+        "test_identifier_budget_survives_ip_rotation_and_recovers_after_window",
+        "test_ip_budget_limits_rotating_identifiers"
+      ],
+      "static_method_count": 7,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Auth/PasswordUpdateTest.php",
+      "class": "Tests\\Feature\\Auth\\PasswordUpdateTest",
+      "methods_static": [
+        "test_password_can_be_updated",
+        "test_correct_password_must_be_provided_to_update_password"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Auth/RegistrationTest.php",
+      "class": "Tests\\Feature\\Auth\\RegistrationTest",
+      "methods_static": [
+        "test_registration_screen_can_be_rendered",
+        "test_new_users_can_register",
+        "test_registration_is_rate_limited_after_repeated_attempts"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/CountryReferenceHolidayTemplateImportTest.php",
+      "class": "Tests\\Feature\\CountryReferenceHolidayTemplateImportTest",
+      "methods_static": [
+        "test_super_admin_can_preview_and_import_country_holidays_into_scoped_template",
+        "test_non_islamic_country_does_not_receive_islamic_holiday_defaults_automatically"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/CourseOfferingAssignmentTest.php",
+      "class": "Tests\\Feature\\CourseOfferingAssignmentTest",
+      "methods_static": [
+        "test_planner_can_create_course_offering_and_assign_teacher",
+        "test_course_offering_update_is_scoped_to_user_school_only",
+        "test_schedule_requires_course_offering_and_assignment_when_feature_flag_enabled",
+        "test_schedule_passes_with_course_offering_and_assignment_when_feature_flag_enabled"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/CourseStudyPlanScopeTest.php",
+      "class": "Tests\\Feature\\CourseStudyPlanScopeTest",
+      "methods_static": [
+        "test_planner_can_create_course_offering_with_study_plan_and_alert_days",
+        "test_course_offering_creation_fails_when_unit_starts_before_term",
+        "test_course_offering_creation_fails_when_unit_branch_is_not_configured_for_subject",
+        "test_course_offering_creation_fails_when_stage_grade_outside_school_scope",
+        "test_course_offering_creation_fails_when_unit_ends_after_term",
+        "test_course_offering_creation_fails_when_multiple_units_exceed_term_boundaries",
+        "test_course_offering_creation_fails_when_alert_days_exceed_term_length",
+        "test_course_offering_creation_fails_when_study_plan_is_missing",
+        "test_course_offering_creation_fails_when_alert_days_is_not_integer",
+        "test_assignment_can_scope_teacher_to_selected_classrooms_within_same_grade",
+        "test_assignment_rejects_classrooms_outside_grade_and_outside_school_scope"
+      ],
+      "static_method_count": 11,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/DepartmentRolesStructureTest.php",
+      "class": "Tests\\Feature\\DepartmentRolesStructureTest",
+      "methods_static": [
+        "test_super_admin_can_define_department_type_and_roles",
+        "test_super_admin_student_structure_permission_input_is_ignored_when_manager_assigns_permissions",
+        "test_student_structure_permission_is_not_enabled_for_educational_department_roles",
+        "test_super_admin_student_attendance_permission_input_is_ignored_when_manager_assigns_permissions",
+        "test_student_attendance_permission_is_not_enabled_for_educational_department_roles",
+        "test_super_admin_academic_planning_permission_input_is_ignored_when_manager_assigns_permissions",
+        "test_academic_planning_permission_is_not_enabled_for_educational_department_roles",
+        "test_manager_can_create_staff_user_only_from_super_admin_defined_structure_roles",
+        "test_manager_cannot_assign_role_that_belongs_to_another_department",
+        "test_manager_can_create_school_departments_directly_inside_his_school",
+        "test_manager_can_update_school_department_and_manage_internal_roles",
+        "test_manager_cannot_update_department_from_another_school",
+        "test_manager_cannot_delete_school_department_when_users_are_still_assigned",
+        "test_manager_cannot_remove_department_role_when_users_are_still_assigned"
+      ],
+      "static_method_count": 14,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ExampleTest.php",
+      "class": "Tests\\Feature\\ExampleTest",
+      "methods_static": [
+        "test_the_application_returns_a_successful_response"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/GulfCountriesAndGovernoratesSeederTest.php",
+      "class": "Tests\\Feature\\GulfCountriesAndGovernoratesSeederTest",
+      "methods_static": [
+        "test_it_syncs_gulf_countries_and_governorates_from_external_apis_without_duplicates"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/HeavyEndpointsPaginationTest.php",
+      "class": "Tests\\Feature\\HeavyEndpointsPaginationTest",
+      "methods_static": [
+        "test_admin_media_index_supports_optional_pagination",
+        "test_manager_tickets_index_supports_optional_pagination_without_data_leakage",
+        "test_supervisor_tickets_index_supports_optional_pagination_without_data_leakage",
+        "test_staff_subtasks_index_supports_optional_pagination_without_data_leakage"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/LightModeThemeDesignTest.php",
+      "class": "Tests\\Feature\\LightModeThemeDesignTest",
+      "methods_static": [
+        "test_shared_light_mode_palette_uses_tinted_surfaces_instead_of_flat_white",
+        "test_school_defaults_page_extends_light_mode_tuning_to_page_level_badges_and_reference_panels",
+        "test_admin_dialogs_use_shared_light_mode_modal_shell"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ManagerDashboardAnalyticsTest.php",
+      "class": "Tests\\Feature\\ManagerDashboardAnalyticsTest",
+      "methods_static": [
+        "test_school_manager_sees_only_his_school_analytics",
+        "test_dashboard_filters_ignore_classroom_from_another_school",
+        "test_dashboard_filters_ignore_teacher_from_another_school",
+        "test_dashboard_returns_safe_chart_arrays_when_school_has_no_records",
+        "test_dashboard_attendance_trend_uses_database_safe_leave_alias",
+        "test_subscription_days_remaining_is_returned_as_integer"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ManagerOnboardingCountryEducationTypeTemplateMatchTest.php",
+      "class": "Tests\\Feature\\ManagerOnboardingCountryEducationTypeTemplateMatchTest",
+      "methods_static": [
+        "test_manager_school_creation_uses_country_governorate_and_education_type_to_import_only_selected_stage_templates",
+        "test_manager_can_load_only_templates_matching_selected_country_and_education_type",
+        "test_manager_regions_payload_returns_only_active_education_stages_for_school_creation",
+        "test_manager_school_creation_imports_selected_stage_templates_even_when_legacy_template_names_differ_from_master_stage_names"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ManagerOnboardingGovernorateSyncTest.php",
+      "class": "Tests\\Feature\\ManagerOnboardingGovernorateSyncTest",
+      "methods_static": [
+        "test_manager_can_load_governorates_for_selected_country_from_global_api",
+        "test_manager_governorate_endpoint_reuses_local_governorates_without_external_request"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ManagerOnboardingLogoUploadTest.php",
+      "class": "Tests\\Feature\\ManagerOnboardingLogoUploadTest",
+      "methods_static": [
+        "test_manager_can_create_school_with_logo_during_onboarding",
+        "test_manager_can_update_logo_for_his_current_school_only",
+        "test_manager_cannot_update_logo_for_school_owned_by_another_manager"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ManagerOnboardingStructureTest.php",
+      "class": "Tests\\Feature\\ManagerOnboardingStructureTest",
+      "methods_static": [
+        "test_manager_onboarding_hides_creation_selectors_after_first_school",
+        "test_manager_onboarding_keeps_edit_only_flow_for_current_school",
+        "test_manager_onboarding_uses_shared_dashboard_primitives_for_logo_upload_and_feedback"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ManagerSchoolOwnershipMiddlewareTest.php",
+      "class": "Tests\\Feature\\ManagerSchoolOwnershipMiddlewareTest",
+      "methods_static": [
+        "test_non_primary_manager_is_blocked_from_managed_routes_and_redirected_to_onboarding",
+        "test_approved_manager_without_school_is_redirected_to_onboarding_instead_of_raw_403",
+        "test_approved_manager_without_school_is_redirected_from_school_modules_to_onboarding",
+        "test_missing_manager_school_json_request_returns_arabic_setup_message",
+        "test_onboarding_exposes_approved_but_school_missing_account_status",
+        "test_non_primary_manager_can_recover_by_selecting_an_available_school_during_onboarding"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ManagerSchoolStructurePermissionIndicatorTest.php",
+      "class": "Tests\\Feature\\ManagerSchoolStructurePermissionIndicatorTest",
+      "methods_static": [
+        "test_manager_school_structure_uses_checkmark_for_selected_permission_cards"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ManagerStructurePageDesignTest.php",
+      "class": "Tests\\Feature\\ManagerStructurePageDesignTest",
+      "methods_static": [
+        "test_manager_structure_page_uses_shared_shell_and_surface_primitives",
+        "test_manager_structure_page_contains_updated_sections_and_filters"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/MediaStorageUrlFallbackTest.php",
+      "class": "Tests\\Feature\\MediaStorageUrlFallbackTest",
+      "methods_static": [
+        "test_public_storage_fallback_serves_declared_public_media_when_symlink_is_unavailable",
+        "test_public_htaccess_routes_storage_requests_through_laravel",
+        "test_project_root_htaccess_routes_storage_requests_to_public_index",
+        "test_public_storage_fallback_rejects_path_traversal",
+        "test_admin_media_index_returns_authenticated_preview_urls",
+        "test_admin_media_preview_serves_public_disk_files"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/NativeAccountStateTest.php",
+      "class": "Tests\\Feature\\Mobile\\NativeAccountStateTest",
+      "methods_static": [
+        "test_pending_and_rejected_statuses_precede_inactive_for_approval_roles",
+        "test_inactive_account_cannot_login_or_use_an_existing_native_token_but_can_logout",
+        "test_current_role_permission_and_approval_changes_are_reloaded_for_each_request",
+        "test_legacy_and_spatie_roles_are_combined_for_approval",
+        "test_deleted_user_cannot_use_an_already_issued_token",
+        "test_rejected_manager_loses_access_after_a_token_has_been_issued"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/NativeAuthenticationTest.php",
+      "class": "Tests\\Feature\\Mobile\\NativeAuthenticationTest",
+      "methods_static": [
+        "test_login_issues_a_hashed_finite_native_bearer_token",
+        "test_unknown_and_wrong_credentials_have_the_same_safe_response",
+        "test_native_routes_reject_web_cookie_query_token_and_non_native_ability",
+        "test_expired_deleted_and_malformed_tokens_are_unauthenticated",
+        "test_login_rejects_tenant_or_privilege_payloads",
+        "test_native_login_rate_limit_returns_retry_after_without_raw_keys"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/NativeDeviceLifecycleTest.php",
+      "class": "Tests\\Feature\\Mobile\\NativeDeviceLifecycleTest",
+      "methods_static": [
+        "test_owner_lists_only_active_native_devices_without_secret_fields",
+        "test_owner_can_revoke_current_or_all_native_devices_without_touching_other_pat_classes",
+        "test_foreign_or_invalid_device_identifiers_are_not_disclosed"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/NativeWebCompatibilityTest.php",
+      "class": "Tests\\Feature\\Mobile\\NativeWebCompatibilityTest",
+      "methods_static": [
+        "test_web_login_stays_session_based_while_bearer_identity_stays_native_only"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/AccountApprovalMatrixTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase3\\AccountApprovalMatrixTest",
+      "methods_static": [
+        "test_account_union_state_is_identical_for_native_and_web_helpers",
+        "test_missing_approval_does_not_default_to_approved_for_sensitive_account",
+        "test_sensitive_role_added_after_loaded_collection_blocks_web_and_native",
+        "test_admin_queue_discovers_sensitive_role_in_either_representation_without_duplicates",
+        "test_role_changes_never_approve_or_activate_and_removed_sensitive_role_does_not_revive_token",
+        "test_approval_service_rejects_nonadmin_actor_without_state_mutation"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/EnvironmentSafetyTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase3\\EnvironmentSafetyTest",
+      "methods_static": [
+        "test_v1_unhandled_error_has_only_safe_fields_and_sanitized_log",
+        "test_v1_http_500_is_also_generic_with_debug_enabled",
+        "test_auth_denial_logging_accepts_only_safe_bounded_metadata_and_throttles_duplicates"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/PrivilegeEscalationTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase3\\PrivilegeEscalationTest",
+      "methods_static": [
+        "test_profile_rejects_privilege_and_tenant_fields_from_body_and_query",
+        "test_public_registration_cannot_assign_privileged_fields_even_if_empty",
+        "test_current_permission_and_role_removal_change_me_without_reissuing_token",
+        "test_sensitive_registration_never_accepts_account_authority_from_client",
+        "test_nonadmin_cannot_reach_system_role_or_approval_mutations"
+      ],
+      "static_method_count": 5,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/WebSessionSafetyTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase3\\WebSessionSafetyTest",
+      "methods_static": [
+        "test_real_csrf_remains_required_and_valid_web_session_survives_native_denial"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase4/CurrentTenantContextTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase4\\CurrentTenantContextTest",
+      "methods_static": [
+        "test_unlinked_identity_is_null_and_school_operation_requires_context_without_provisioning",
+        "test_suspension_after_issuance_denies_tasks_and_manager_quick_setup",
+        "test_role_and_assignment_removal_apply_to_existing_token",
+        "test_headers_and_raw_manager_school_id_cannot_impersonate_membership",
+        "test_delegated_groups_are_fresh_and_scoped_to_current_school_even_when_loaded",
+        "test_supervisor_current_relationship_removal_hides_list_count_and_denies_actions",
+        "test_manager_ownership_removal_changes_existing_token_identity_and_web_access",
+        "test_unconfirmed_legacy_supervision_is_excluded_from_lists_until_current_confirmation"
+      ],
+      "static_method_count": 8,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase4/ForeignRelationshipTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase4\\ForeignRelationshipTest",
+      "methods_static": [
+        "test_manager_foreign_parent_and_assignee_cannot_create_or_reassign",
+        "test_authority_body_query_and_nested_ids_are_rejected_without_writes",
+        "test_ticket_methods_cannot_read_or_mutate_foreign_school",
+        "test_service_rejects_foreign_actor_even_without_controller",
+        "test_elevated_roles_preserve_only_their_existing_policy_powers",
+        "test_inconsistent_nested_subtask_is_hidden_from_ticket_readers",
+        "test_supervision_on_another_school_does_not_grant_manager_assignment_powers",
+        "test_manager_updates_and_approves_allowed_task_and_rejects_authority_and_foreign_creation"
+      ],
+      "static_method_count": 8,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase4/StaffTaskIsolationTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase4\\StaffTaskIsolationTest",
+      "methods_static": [
+        "test_native_list_detail_and_counts_share_assignment_school_and_parent_scope",
+        "test_transferred_user_cannot_list_show_reply_or_submit_historical_tasks",
+        "test_web_workflow_keeps_its_shapes_but_excludes_foreign_parent_records",
+        "test_filters_pagination_and_selectors_cannot_broaden_scope",
+        "test_narrowing_filters_literal_search_and_sort_keep_counts_private",
+        "test_native_tasks_require_bearer_even_with_valid_web_session",
+        "test_dashboard_uses_current_owned_school_and_excludes_inconsistent_parent_counts"
+      ],
+      "static_method_count": 7,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/PrivateAttachmentAuthorizationTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase5\\PrivateAttachmentAuthorizationTest",
+      "methods_static": [
+        "test_ticket_bytes_headers_metadata_and_native_bearer_only",
+        "test_ticket_other_assignee_foreign_ids_nested_school_and_transfer_are_hidden",
+        "test_private_reader_rejects_paths_public_fallback_and_missing_or_deleted_records",
+        "test_upload_is_private_named_by_server_and_cannot_override_storage_authority",
+        "test_leave_requires_operation_permission_and_matching_parent_for_web_and_native",
+        "test_current_account_role_and_school_revocation_apply_to_existing_token",
+        "test_institutional_documents_require_capability_and_cannot_delete_by_viewing_ticket",
+        "test_pending_or_rejected_account_tokens_cannot_download_and_parent_deletion_hides_bytes",
+        "test_institutional_service_enforces_file_count_and_parent_school_without_partial_files",
+        "test_attendance_download_and_delete_require_current_permission_school_and_classroom",
+        "test_sensitive_reference_overrides_public_prefix_and_cms_preview_or_delete",
+        "test_supervisor_ticket_parent_read_remains_available_without_a_staff_membership"
+      ],
+      "static_method_count": 12,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/PrivateAttachmentMigrationTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase5\\PrivateAttachmentMigrationTest",
+      "methods_static": [
+        "test_dry_run_never_mutates_files_manifest_or_metadata",
+        "test_copy_verify_switch_revoke_and_repeat_are_idempotent",
+        "test_crash_after_copy_resumes_without_duplicate_or_source_loss",
+        "test_crash_after_metadata_switch_preserves_private_bytes_and_resumes_revocation",
+        "test_changed_source_after_inventory_never_switches_metadata_or_removes_source",
+        "test_destination_checksum_failure_and_concurrent_metadata_change_fail_closed",
+        "test_orphan_and_soft_deleted_decisions_are_quarantined_until_review",
+        "test_missing_and_ambiguous_source_references_never_become_verified",
+        "test_manifest_foreign_record_injection_cannot_switch_other_school_metadata",
+        "test_apply_requires_operator_scope_and_batch_is_bounded",
+        "test_inventory_continuation_does_not_mutate_sources_until_explicit_resume",
+        "test_independent_connection_lock_blocks_a_duplicate_worker_without_copy_or_switch",
+        "test_verified_record_audit_detects_later_corruption_without_republishing_source",
+        "test_large_inventory_counts_reconcile_across_bounded_read_only_batches",
+        "test_alias_only_legacy_copy_migrates_without_requiring_a_canonical_public_copy",
+        "test_retained_manifest_blocks_public_reappearance_even_after_attachment_record_deletion",
+        "test_stale_public_copy_cannot_replace_an_existing_private_current_file",
+        "test_concurrent_private_file_change_is_rechecked_before_metadata_switch"
+      ],
+      "static_method_count": 18,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/PublicAssetCompatibilityTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase5\\PublicAssetCompatibilityTest",
+      "methods_static": [
+        "test_branding_remains_public_but_sensitive_and_unclassified_paths_do_not"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase5/StaticPrivateUrlTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase5\\StaticPrivateUrlTest",
+      "methods_static": [
+        "test_http_layer_denies_sensitive_physical_copies_and_symlinks_on_both_aliases"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase6/NotificationChannelPolicyTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase6\\NotificationChannelPolicyTest",
+      "methods_static": [
+        "test_application_notification_does_not_resolve_a_retired_channel_dependency",
+        "test_batch_notification_preserves_recipient_deduplication_and_does_not_fan_out",
+        "test_web_list_and_read_actions_remain_owned_and_cannot_read_another_recipient",
+        "test_read_all_changes_only_current_recipient_and_reports_its_actual_count",
+        "test_notification_web_entry_points_still_require_authentication",
+        "test_stale_configuration_cannot_restore_a_removed_notification_channel",
+        "test_retired_local_entry_points_are_gone_without_echo_or_state_mutation",
+        "test_active_notifications_do_not_rewrite_historical_channel_records"
+      ],
+      "static_method_count": 8,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileApiContractTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase7\\MobileApiContractTest",
+      "methods_static": [
+        "test_login_and_identity_have_only_declared_fields_and_native_types",
+        "test_device_dto_expiry_owner_and_all_three_empty_mutation_contracts",
+        "test_task_resources_and_private_downloads_include_no_internal_or_unbounded_relations",
+        "test_native_reads_do_not_provision_domain_defaults_or_roles_and_capabilities_recompute"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileErrorContractTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase7\\MobileErrorContractTest",
+      "methods_static": [
+        "test_every_protected_endpoint_rejects_anonymous_callers",
+        "test_wrong_role_foreign_missing_suspended_and_unlinked_context_errors_are_stable",
+        "test_malformed_or_out_of_range_ids_cannot_coerce_to_existing_records",
+        "test_leave_capability_denial_precedes_malformed_or_foreign_resource_disclosure",
+        "test_account_denial_precedes_business_access_and_has_no_user_payload",
+        "test_validation_and_invalid_credentials_never_echo_input_or_arbitrary_exception_messages",
+        "test_login_rejects_even_empty_privileged_or_unsupported_fields",
+        "test_scoped_renderer_covers_conflict_throttle_and_routing_without_secret_text",
+        "test_debug_error_correlates_only_generated_request_id_in_safe_log"
+      ],
+      "static_method_count": 9,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobilePaginationTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase7\\MobilePaginationTest",
+      "methods_static": [
+        "test_device_and_task_lists_and_attachment_pages_reject_invalid_or_unsupported_input",
+        "test_default_explicit_empty_and_overrun_envelopes_have_stable_relative_links_and_counts",
+        "test_title_literal_search_status_sorts_ties_nulls_and_foreign_counts",
+        "test_detail_attachments_are_bounded_with_consistent_authorized_metadata_count"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileRatePolicyTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase7\\MobileRatePolicyTest",
+      "methods_static": [
+        "test_identity_limit_covers_unknown_credentials_and_ip_rotation_and_recovers",
+        "test_login_ip_limit_covers_rotating_unknown_accounts",
+        "test_account_budget_survives_identifier_changes_and_rotating_ips_before_credentials",
+        "test_read_and_session_http_boundaries_and_cooldown_are_actual_configured_values",
+        "test_shared_read_ip_budget_covers_multiple_accounts_without_exposing_keys",
+        "test_cache_failure_is_generic_error_and_cannot_create_a_token",
+        "test_lock_timeout_denies_admission_without_token_or_unlocked_fallback",
+        "test_independent_processes_cannot_overbook_a_shared_budget"
+      ],
+      "static_method_count": 8,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase7/MobileSerializationTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase7\\MobileSerializationTest",
+      "methods_static": [
+        "test_date_only_survives_timezone_dst_arabic_and_null_with_stable_enums",
+        "test_instants_are_utc_strings_and_large_persisted_ids_remain_json_integers",
+        "test_large_synthetic_lists_keep_output_and_query_growth_bounded"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase8/LargePreparedListsTest.php",
+      "class": "Tests\\Feature\\Mobile\\Phase8\\LargePreparedListsTest",
+      "methods_static": [
+        "test_device_list_over_one_hundred_preserves_owner_expiry_bounds_and_query_budget",
+        "test_attachment_metadata_over_one_hundred_and_many_histories_is_bounded_before_serialization"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/OrgStructureRoleTemplateManagementTest.php",
+      "class": "Tests\\Feature\\OrgStructureRoleTemplateManagementTest",
+      "methods_static": [
+        "test_super_admin_can_create_update_and_disable_org_structure_role_template",
+        "test_non_super_admin_cannot_manage_org_structure_role_templates",
+        "test_departments_store_rejects_legacy_role_name_payload_and_requires_templates",
+        "test_super_admin_can_create_org_structure_template_without_code_via_json_and_code_is_generated",
+        "test_generated_org_structure_template_code_is_unique_when_names_normalize_to_same_value",
+        "test_update_generates_code_when_legacy_template_has_no_code_and_json_mode_is_used",
+        "test_non_json_create_without_code_remains_backward_compatible_and_redirects",
+        "test_super_admin_cannot_create_template_with_duplicate_code"
+      ],
+      "static_method_count": 8,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/PhoneStateCompatibilityTest.php",
+      "class": "Tests\\Feature\\PhoneStateCompatibilityTest",
+      "methods_static": [
+        "test_phone_change_invalidates_phone_verification",
+        "test_phone_number_normalization_is_strict_for_supported_saudi_and_egypt_numbers"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ProfilePageDesignTest.php",
+      "class": "Tests\\Feature\\ProfilePageDesignTest",
+      "methods_static": [
+        "test_profile_page_uses_account_center_layout_and_accessible_photo_controls"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/ProfileTest.php",
+      "class": "Tests\\Feature\\ProfileTest",
+      "methods_static": [
+        "test_profile_page_is_displayed",
+        "test_profile_information_can_be_updated",
+        "test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged",
+        "test_user_can_delete_their_account",
+        "test_correct_password_must_be_provided_to_delete_account"
+      ],
+      "static_method_count": 5,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/PublicContentSanitizationTest.php",
+      "class": "Tests\\Feature\\PublicContentSanitizationTest",
+      "methods_static": [
+        "test_welcome_page_exposes_sanitized_home_content",
+        "test_page_viewer_exposes_sanitized_page_and_component_html"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/PublicHomepageBannerSettingsIntegrationTest.php",
+      "class": "Tests\\Feature\\PublicHomepageBannerSettingsIntegrationTest",
+      "methods_static": [
+        "test_public_homepage_receives_updated_banner_layout_settings_from_super_admin_component_editor"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/PublicHomepageSettingsIntegrationTest.php",
+      "class": "Tests\\Feature\\PublicHomepageSettingsIntegrationTest",
+      "methods_static": [
+        "test_public_homepage_reads_updated_super_admin_settings_after_admin_save",
+        "test_public_homepage_receives_header_logo_visibility_position_and_spacing_settings_after_admin_save",
+        "test_public_homepage_receives_site_icon_and_background_effect_setting",
+        "test_public_homepage_ignores_inactive_components_and_strips_their_shortcodes",
+        "test_public_homepage_normalizes_legacy_component_background_settings_for_render",
+        "test_public_homepage_shared_footer_payload_ignores_inactive_columns_and_items"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/PublicPricingTableThemeIsolationTest.php",
+      "class": "Tests\\Feature\\PublicPricingTableThemeIsolationTest",
+      "methods_static": [
+        "test_public_pricing_cards_are_isolated_from_dashboard_light_theme"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/PublicStorageLinkStructureTest.php",
+      "class": "Tests\\Feature\\PublicStorageLinkStructureTest",
+      "methods_static": [
+        "test_app_service_provider_bootstraps_public_storage_link_maintenance",
+        "test_public_storage_link_maintainer_does_not_move_or_copy_existing_legacy_directories"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/QuickSetupStatusTest.php",
+      "class": "Tests\\Feature\\QuickSetupStatusTest",
+      "methods_static": [
+        "test_manager_can_fetch_quick_setup_status_for_his_school",
+        "test_status_endpoint_is_tenant_scoped",
+        "test_staff_with_academic_planning_permission_can_access_status_and_users_step_is_read_only",
+        "test_staff_without_academic_planning_permission_is_forbidden",
+        "test_manager_can_fetch_status_when_school_association_is_not_active",
+        "test_suspended_school_denies_quick_setup_even_with_manager_approval_request"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/QuickSetupWizardStructureTest.php",
+      "class": "Tests\\Feature\\QuickSetupWizardStructureTest",
+      "methods_static": [
+        "test_quick_setup_prerequisites_use_rtl_friendly_list_structure"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/RealtimeNotificationFlowTest.php",
+      "class": "Tests\\Feature\\RealtimeNotificationFlowTest",
+      "methods_static": [
+        "test_manager_school_creation_notifies_super_admin_and_responsible_supervisor_with_action_routes",
+        "test_supervision_and_ticket_workflow_emits_role_scoped_notifications_with_action_routes"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SafeAdminSeederTest.php",
+      "class": "Tests\\Feature\\SafeAdminSeederTest",
+      "methods_static": [
+        "test_disabled_provisioning_performs_no_account_or_role_write",
+        "test_explicit_new_provisioning_is_hashed_and_repeat_preserves_credentials_roles_and_state",
+        "test_existing_nonadmin_is_not_promoted_or_reactivated",
+        "test_missing_explicit_secret_fails_without_creating_user"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SaudiAcademicYear20252026DefaultTemplateSeederTest.php",
+      "class": "Tests\\Feature\\SaudiAcademicYear20252026DefaultTemplateSeederTest",
+      "methods_static": [
+        "test_it_seeds_the_saudi_2025_2026_default_academic_year_template_without_manual_country_creation"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SchoolAttachmentManagementTest.php",
+      "class": "Tests\\Feature\\SchoolAttachmentManagementTest",
+      "methods_static": [
+        "test_manager_can_create_exam_with_private_attachment_inside_same_school",
+        "test_authorized_manager_can_download_and_delete_exam_attachment",
+        "test_same_school_staff_without_exam_permission_cannot_download_exam_attachment",
+        "test_other_school_manager_cannot_access_exam_attachment_or_attach_to_foreign_exam",
+        "test_disallowed_file_type_is_rejected_for_exam_attachment_uploads",
+        "test_manager_can_create_timetable_version_with_attachment",
+        "test_manager_can_attach_teacher_preparation_to_course_offering_assignment",
+        "test_other_school_manager_cannot_access_teacher_preparation_attachment",
+        "test_syncing_course_offering_assignment_preserves_the_same_assignment_record_for_attachments",
+        "test_manager_can_create_student_with_private_attachment_inside_same_school",
+        "test_other_school_manager_cannot_access_student_attachment",
+        "test_manager_can_create_school_user_with_private_attachment_inside_same_school",
+        "test_other_school_manager_cannot_access_school_user_attachment"
+      ],
+      "static_method_count": 13,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SchoolCalendarManagementApiTest.php",
+      "class": "Tests\\Feature\\SchoolCalendarManagementApiTest",
+      "methods_static": [
+        "test_staff_with_granted_leave_calendar_permissions_can_manage_related_endpoints",
+        "test_holiday_end_and_return_dates_skip_weekly_off_days_when_days_count_is_used",
+        "test_staff_without_permissions_is_forbidden_from_leave_type_calendar_and_holiday_management",
+        "test_holiday_actions_are_tenant_scoped",
+        "test_holiday_creation_fails_when_period_is_outside_configured_academic_year",
+        "test_leave_type_name_must_be_unique_per_school_case_insensitive",
+        "test_leave_type_actions_are_tenant_scoped",
+        "test_leave_type_semantic_update_is_blocked_when_requests_exist",
+        "test_leave_type_disable_requires_confirmation_when_pending_requests_exist",
+        "test_holiday_update_and_disable_require_confirmation_when_attendance_exists",
+        "test_impact_preview_endpoints_are_tenant_scoped"
+      ],
+      "static_method_count": 11,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SchoolDefaultDataProvisioningTest.php",
+      "class": "Tests\\Feature\\SchoolDefaultDataProvisioningTest",
+      "methods_static": [
+        "test_super_admin_can_create_global_templates_and_manager_can_reimport_without_duplicate_records",
+        "test_manager_can_import_new_matching_templates_later_without_overwriting_existing_school_data",
+        "test_scoped_school_import_falls_back_to_global_templates_when_no_scoped_templates_exist_for_that_section",
+        "test_scoped_school_does_not_seed_legacy_leave_types_when_global_templates_exist",
+        "test_updating_platform_templates_does_not_change_existing_school_copy_and_new_school_gets_latest_version",
+        "test_staff_needs_full_cross_module_permissions_to_import_school_default_data",
+        "test_platform_leave_type_templates_stop_legacy_defaults_until_school_import_runs",
+        "test_school_import_uses_only_templates_matching_school_country_and_education_type",
+        "test_manager_onboarding_school_creation_auto_imports_matching_scoped_template"
+      ],
+      "static_method_count": 9,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SchoolExamManagementTest.php",
+      "class": "Tests\\Feature\\SchoolExamManagementTest",
+      "methods_static": [
+        "test_manager_can_create_exam_template_within_school_scope",
+        "test_manager_cannot_modify_exam_template_from_other_school",
+        "test_teacher_can_create_exam_for_assigned_subject",
+        "test_teacher_sees_only_assignment_scoped_exam_data",
+        "test_exam_index_handles_legacy_attachments_table_without_polymorphic_columns",
+        "test_teacher_without_teaching_assignment_cannot_create_exam",
+        "test_manager_can_sync_course_offering_assignment_with_exam_permissions",
+        "test_exam_page_teacher_options_include_course_offering_assignment_even_without_subject_teacher_link",
+        "test_manager_can_create_question_bank_item_with_course_unit_chapter_and_lesson_scope",
+        "test_question_bank_index_returns_school_scoped_hierarchical_tree",
+        "test_question_bank_item_requires_unit_chapter_and_lesson_when_course_offering_is_selected",
+        "test_question_bank_item_rejects_topic_that_is_not_linked_to_selected_lesson",
+        "test_question_bank_item_requires_branch_when_course_offering_is_selected",
+        "test_teacher_cannot_create_exam_when_assignment_disables_create_exam",
+        "test_teacher_cannot_create_exam_for_unassigned_subject",
+        "test_teacher_cannot_create_exam_for_unassigned_classroom",
+        "test_exam_creation_fails_on_weekly_off_day",
+        "test_exam_creation_fails_on_holiday_date",
+        "test_exam_creation_fails_when_course_offering_is_not_usable_in_exams",
+        "test_exam_creation_fails_when_classroom_has_overlapping_exam",
+        "test_exam_creation_fails_on_schedule_conflict_with_non_subject_session",
+        "test_exam_creation_allows_same_subject_schedule_overlap_when_enabled",
+        "test_exam_creation_same_slot_in_another_school_is_allowed",
+        "test_sync_exam_questions_fails_with_question_from_other_subject",
+        "test_sync_exam_questions_fails_with_question_from_other_school",
+        "test_teacher_cannot_sync_exam_questions_without_question_bank_permission",
+        "test_score_above_exam_max_is_rejected",
+        "test_teacher_can_record_scores_for_targeted_students_within_school_scope",
+        "test_teacher_cannot_edit_scores_when_assignment_disables_edit_scores"
+      ],
+      "static_method_count": 29,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SchoolExportDocumentServiceTest.php",
+      "class": "Tests\\Feature\\SchoolExportDocumentServiceTest",
+      "methods_static": [
+        "test_csv_preamble_uses_utf8_bom_and_arabic_school_metadata",
+        "test_safe_filename_uses_school_code_and_timestamp_safe_segments",
+        "test_word_headers_use_utf8_and_attachment_download",
+        "test_report_dataset_view_declares_utf8_rtl_and_arabic_content"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SchoolReportsPageDesignTest.php",
+      "class": "Tests\\Feature\\SchoolReportsPageDesignTest",
+      "methods_static": [
+        "test_school_reports_page_uses_shared_filters_search_and_no_results_state"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SchoolReportsTest.php",
+      "class": "Tests\\Feature\\SchoolReportsTest",
+      "methods_static": [
+        "test_manager_can_view_school_reports_with_tenant_scoped_data_and_export_json",
+        "test_staff_without_any_school_module_permission_cannot_access_reports_page"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SchoolSidebarStructureLabelsTest.php",
+      "class": "Tests\\Feature\\SchoolSidebarStructureLabelsTest",
+      "methods_static": [
+        "test_role_layout_contains_required_sidebar_group_and_page_labels",
+        "test_role_layout_uses_scrollable_content_shell_and_full_width_footer"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SchoolStructureCompatibilityTest.php",
+      "class": "Tests\\Feature\\SchoolStructureCompatibilityTest",
+      "methods_static": [
+        "test_manager_structure_page_works_when_user_permission_columns_are_missing",
+        "test_school_users_api_index_works_when_user_permission_columns_are_missing"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SchoolTenantIsolationTest.php",
+      "class": "Tests\\Feature\\SchoolTenantIsolationTest",
+      "methods_static": [
+        "test_reports_rejects_stage_id_belonging_to_another_school",
+        "test_reports_rejects_classroom_id_belonging_to_another_school",
+        "test_reports_rejects_student_id_belonging_to_another_school",
+        "test_reports_rejects_teacher_id_belonging_to_another_school",
+        "test_manager_cannot_update_certificate_template_belonging_to_another_school",
+        "test_manager_cannot_delete_certificate_template_belonging_to_another_school",
+        "test_manager_cannot_delete_certificate_signature_belonging_to_another_school",
+        "test_manager_cannot_cancel_certificate_belonging_to_another_school"
+      ],
+      "static_method_count": 8,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SchoolUserRoleAssignmentApiTest.php",
+      "class": "Tests\\Feature\\SchoolUserRoleAssignmentApiTest",
+      "methods_static": [
+        "test_manager_can_list_assignable_roles_and_create_user_for_his_school",
+        "test_manager_can_create_user_with_school_owned_department",
+        "test_manager_assignable_roles_list_keeps_staff_visible_for_legacy_staff_flags",
+        "test_manager_assignable_roles_list_restores_missing_staff_role",
+        "test_manager_cannot_assign_system_or_non_assignable_role_when_creating_user",
+        "test_manager_cannot_sync_roles_for_user_outside_his_school",
+        "test_manager_can_sync_assignable_roles_for_user_in_his_school",
+        "test_manager_can_update_school_user_profile_and_roles_in_his_school",
+        "test_manager_can_list_active_org_structure_role_templates_for_school_context",
+        "test_manager_can_create_user_when_staff_role_flags_are_legacy_but_role_name_is_staff",
+        "test_manager_can_create_user_when_staff_role_is_missing_from_roles_table",
+        "test_manager_cannot_assign_department_role_linked_to_disabled_org_structure_template",
+        "test_manager_can_update_user_and_keep_current_department_role_even_if_template_was_disabled_later",
+        "test_manager_update_without_permission_fields_keeps_existing_structure_permissions",
+        "test_manager_only_sees_his_school_users_in_school_users_index",
+        "test_manager_can_paginate_school_users_index_without_cross_tenant_leakage",
+        "test_manager_school_users_index_rejects_invalid_per_page_value",
+        "test_manager_cannot_update_school_user_profile_outside_his_school",
+        "test_manager_can_create_and_list_school_permission_groups_inside_his_school_only",
+        "test_manager_cannot_assign_school_permission_group_from_another_school",
+        "test_manager_can_assign_school_permission_groups_to_user_and_effective_permissions_follow_group_membership",
+        "test_manager_cannot_assign_non_manager_assignable_school_permission_even_if_request_is_forged",
+        "test_manager_can_assign_reports_view_permission_without_export_permission",
+        "test_manager_can_assign_direct_exam_permission_without_granting_academic_planning",
+        "test_manager_role_sync_rejects_account_authority_tampering_without_mutation",
+        "test_valid_role_sync_does_not_approve_or_activate_target",
+        "test_current_manager_membership_removal_and_forged_selector_cannot_restore_access",
+        "test_current_suspension_or_removed_ownership_blocks_existing_manager_session",
+        "test_removed_manager_role_blocks_privileged_operation_without_new_login",
+        "test_permission_removal_denies_existing_operational_web_request_without_new_login"
+      ],
+      "static_method_count": 30,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SecurityHeadersTest.php",
+      "class": "Tests\\Feature\\SecurityHeadersTest",
+      "methods_static": [
+        "test_public_routes_include_security_headers",
+        "test_authenticated_routes_include_security_headers"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SharedFilterFeedbackFoundationTest.php",
+      "class": "Tests\\Feature\\SharedFilterFeedbackFoundationTest",
+      "methods_static": [
+        "test_shared_filter_search_and_feedback_components_exist_with_expected_contracts",
+        "test_inertia_middleware_and_dashboard_layouts_share_and_render_page_feedback"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SharedUiCacheTest.php",
+      "class": "Tests\\Feature\\SharedUiCacheTest",
+      "methods_static": [
+        "test_shared_ui_cache_returns_cached_settings_until_cleared",
+        "test_settings_update_clears_shared_ui_cache",
+        "test_settings_update_updates_home_content_when_media_settings_already_exist",
+        "test_settings_update_saves_site_icon_and_home_background_effect_toggle",
+        "test_settings_update_saves_global_logo_controls_for_dashboard_layouts",
+        "test_header_menu_store_clears_shared_ui_cache",
+        "test_footer_column_store_clears_shared_ui_cache",
+        "test_shared_auth_payload_includes_leave_management_permissions",
+        "test_shared_payload_includes_student_leaves_feature_flag"
+      ],
+      "static_method_count": 9,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/StudentAttendanceAccessTest.php",
+      "class": "Tests\\Feature\\StudentAttendanceAccessTest",
+      "methods_static": [
+        "test_daily_attendance_index_auto_initializes_present_records_for_active_students",
+        "test_daily_attendance_auto_initialization_skips_non_school_days",
+        "test_daily_attendance_auto_initialization_is_scoped_to_the_authenticated_managers_school",
+        "test_manager_can_access_student_attendance_and_save_records_for_his_school",
+        "test_manager_saves_complete_daily_attendance_list_with_exception_rows",
+        "test_daily_attendance_save_requires_all_active_students_in_classroom",
+        "test_leave_status_cannot_be_set_manually_without_approved_leave_request",
+        "test_staff_with_attendance_permission_can_access_student_attendance",
+        "test_staff_without_attendance_permission_is_forbidden",
+        "test_attendance_write_is_scoped_to_user_school_only",
+        "test_attendance_report_separates_leave_days_from_unexcused_absence_days",
+        "test_attendance_report_can_filter_by_day_type_and_holiday_name",
+        "test_attendance_report_can_filter_by_leave_type",
+        "test_manager_can_upload_daily_attendance_attachments_and_download_them",
+        "test_daily_attendance_attachment_download_is_tenant_scoped",
+        "test_manager_can_upload_daily_attendance_attachment_without_resubmitting_records",
+        "test_manager_cannot_upload_daily_attendance_attachment_to_foreign_classroom",
+        "test_manager_can_delete_daily_attendance_attachment_and_preserve_selected_filters",
+        "test_manager_can_export_attendance_report_csv_for_his_school_classroom",
+        "test_export_report_rejects_classroom_from_other_school",
+        "test_daily_attendance_auto_initialization_skips_dates_outside_academic_period_when_references_exist",
+        "test_manager_cannot_save_attendance_outside_registered_academic_term",
+        "test_manager_can_save_attendance_inside_registered_academic_term"
+      ],
+      "static_method_count": 23,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/StudentCertificateFeatureTest.php",
+      "class": "Tests\\Feature\\StudentCertificateFeatureTest",
+      "methods_static": [
+        "test_manager_can_create_certificate_template_inside_school_scope",
+        "test_staff_without_certificate_permission_cannot_access_certificates",
+        "test_authorized_staff_can_issue_certificate_for_same_school_student_only",
+        "test_authorized_staff_can_issue_certificate_for_school_user_only",
+        "test_certificate_delegation_template_and_catalog_are_available",
+        "test_certificate_print_html_embeds_school_logo"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/StudentExcelImportTest.php",
+      "class": "Tests\\Feature\\StudentExcelImportTest",
+      "methods_static": [
+        "test_authorized_manager_can_download_student_import_template",
+        "test_valid_excel_import_creates_students_inside_current_school",
+        "test_excel_import_rejects_classroom_from_another_school",
+        "test_staff_without_student_structure_permission_cannot_import_students"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/StudentLeaveManagementTest.php",
+      "class": "Tests\\Feature\\StudentLeaveManagementTest",
+      "methods_static": [
+        "test_manager_can_create_and_approve_preapproved_leave_and_absence_is_saved_as_leave",
+        "test_approving_retroactive_leave_converts_absence_and_records_audit_and_history",
+        "test_leave_api_is_tenant_scoped_for_listing_and_actions",
+        "test_staff_leave_access_depends_on_permission_flag",
+        "test_manager_is_redirected_when_student_leaves_feature_is_disabled",
+        "test_overlapping_approved_leaves_are_rejected",
+        "test_leave_attachment_upload_is_tenant_scoped_and_download_url_is_exposed_without_raw_storage_path",
+        "test_leave_attachment_download_denies_legacy_public_storage_until_verified_private_migration",
+        "test_leave_attachment_upload_rejects_disallowed_mime_types_by_default",
+        "test_leave_listing_supports_grade_filter_within_stage_scope"
+      ],
+      "static_method_count": 10,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/StudentStructureAccessTest.php",
+      "class": "Tests\\Feature\\StudentStructureAccessTest",
+      "methods_static": [
+        "test_manager_can_access_student_structure_and_create_stage_for_his_school",
+        "test_staff_with_configured_permission_can_access_student_structure",
+        "test_staff_without_permission_is_forbidden_from_student_structure",
+        "test_student_structure_update_is_scoped_to_staff_school_only",
+        "test_manager_cannot_delete_stage_or_classroom_or_student_when_dependencies_exist",
+        "test_student_structure_delete_is_tenant_scoped"
+      ],
+      "static_method_count": 6,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/StudentStructureEnhancementsTest.php",
+      "class": "Tests\\Feature\\StudentStructureEnhancementsTest",
+      "methods_static": [
+        "test_manager_can_create_stage_with_school_day_times_and_auto_generated_code",
+        "test_stage_creation_rejects_invalid_school_day_range",
+        "test_classroom_and_student_codes_are_auto_generated_per_school",
+        "test_stage_code_generation_is_sequential_and_scoped_per_school",
+        "test_stage_time_update_is_tenant_scoped",
+        "test_stage_code_must_be_unique_within_same_school",
+        "test_classroom_name_can_repeat_in_same_stage_with_different_grades",
+        "test_student_create_rejects_stage_or_grade_mismatch_with_selected_classroom",
+        "test_manager_can_create_stage_grade_and_action_is_tenant_scoped",
+        "test_stage_grade_delete_is_blocked_when_related_classroom_exists",
+        "test_classroom_creation_without_grade_uses_first_configured_stage_grade",
+        "test_classroom_creation_with_manual_grade_auto_registers_stage_grade_for_backward_compatibility"
+      ],
+      "static_method_count": 12,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/StudentStructureTreeViewTest.php",
+      "class": "Tests\\Feature\\StudentStructureTreeViewTest",
+      "methods_static": [
+        "test_manager_receives_only_his_school_tree_data",
+        "test_student_structure_returns_empty_stage_array_for_school_without_structure",
+        "test_student_structure_returns_empty_child_arrays_for_stage_without_children"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SubscriptionBillingAndSeatsTest.php",
+      "class": "Tests\\Feature\\SubscriptionBillingAndSeatsTest",
+      "methods_static": [
+        "test_super_admin_can_create_plan_with_monthly_yearly_and_extra_seat_pricing",
+        "test_subscription_service_stores_monthly_and_yearly_snapshots",
+        "test_initial_manager_registration_estimate_counts_extra_users_for_monthly_and_yearly_cycles",
+        "test_manager_registration_stores_server_calculated_extra_user_total_snapshot",
+        "test_extra_seat_cost_uses_fixed_30_day_accounting_month",
+        "test_expired_subscription_cannot_add_extra_seats",
+        "test_adding_user_inside_included_limit_does_not_create_extra_addon",
+        "test_extra_seat_calculation_is_scoped_to_current_school_and_ignores_tampered_ids"
+      ],
+      "static_method_count": 8,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SubscriptionHandshakeFlowTest.php",
+      "class": "Tests\\Feature\\SubscriptionHandshakeFlowTest",
+      "methods_static": [
+        "test_end_to_end_subscription_onboarding_and_two_step_handshake",
+        "test_supervisor_selection_handles_legacy_stale_manager_reference_without_fk_failure",
+        "test_manager_cannot_select_school_linked_to_another_manager",
+        "test_manager_can_create_school_during_onboarding_and_complete_same_supervision_workflow",
+        "test_manager_cannot_create_new_school_if_he_already_owns_another_school"
+      ],
+      "static_method_count": 5,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SupervisorAssignmentConstraintsTest.php",
+      "class": "Tests\\Feature\\SupervisorAssignmentConstraintsTest",
+      "methods_static": [
+        "test_school_cannot_have_more_than_one_supervisor_and_supervisor_can_manage_multiple_schools"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SupervisorOnboardingGovernorateSchoolFilterTest.php",
+      "class": "Tests\\Feature\\SupervisorOnboardingGovernorateSchoolFilterTest",
+      "methods_static": [
+        "test_supervisor_can_load_only_schools_for_selected_country_and_governorate",
+        "test_supervisor_selection_rejects_schools_from_other_governorates_even_if_posted_manually"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/SystemRoleManagementApiTest.php",
+      "class": "Tests\\Feature\\SystemRoleManagementApiTest",
+      "methods_static": [
+        "test_super_admin_can_create_role_and_sync_permissions_via_system_api",
+        "test_school_manager_is_forbidden_from_system_roles_api",
+        "test_super_admin_cannot_delete_system_role_from_system_api"
+      ],
+      "static_method_count": 3,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/TeacherAvailabilitySchedulingTest.php",
+      "class": "Tests\\Feature\\TeacherAvailabilitySchedulingTest",
+      "methods_static": [
+        "test_planner_can_sync_teacher_weekly_availability_for_his_school",
+        "test_teacher_availability_sync_is_scoped_to_staff_school",
+        "test_weekly_schedule_rejects_teacher_conflict_across_classrooms",
+        "test_weekly_schedule_respects_configured_teacher_availability"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/TicketWorkflowAuthorizationTest.php",
+      "class": "Tests\\Feature\\TicketWorkflowAuthorizationTest",
+      "methods_static": [
+        "test_ticket_and_subtask_workflow_with_role_restrictions"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/TimetableVersionManagementTest.php",
+      "class": "Tests\\Feature\\TimetableVersionManagementTest",
+      "methods_static": [
+        "test_planner_can_create_update_and_publish_timetable_versions_for_his_school",
+        "test_staff_cannot_update_or_publish_timetable_version_of_another_school",
+        "test_schedule_accepts_valid_timetable_version_for_same_school_and_term",
+        "test_schedule_rejects_timetable_version_from_other_school"
+      ],
+      "static_method_count": 4,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/UploadValidationFeatureFlagTest.php",
+      "class": "Tests\\Feature\\UploadValidationFeatureFlagTest",
+      "methods_static": [
+        "test_admin_media_upload_keeps_legacy_behavior_when_strict_validation_is_disabled",
+        "test_admin_media_upload_rejects_disallowed_mime_when_strict_validation_is_enabled",
+        "test_admin_media_upload_accepts_safe_svg_when_strict_validation_is_enabled",
+        "test_admin_media_upload_rejects_unsafe_svg_content",
+        "test_staff_subtask_reply_attachment_enforces_strict_mime_validation_when_enabled"
+      ],
+      "static_method_count": 5,
+      "active": true
+    },
+    {
+      "path": "tests/Feature/WhatsAppIntegrationTest.php",
+      "class": "Tests\\Feature\\WhatsAppIntegrationTest",
+      "methods_static": [],
+      "static_method_count": 33,
+      "active": false
+    },
+    {
+      "path": "tests/Unit/ArabicInputGuardsStructureTest.php",
+      "class": "Tests\\Unit\\ArabicInputGuardsStructureTest",
+      "methods_static": [
+        "test_app_bootstraps_shared_input_guards",
+        "test_shared_input_guards_define_arabic_validation_messages"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Unit/ExampleTest.php",
+      "class": "Tests\\Unit\\ExampleTest",
+      "methods_static": [
+        "test_that_true_is_true"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Unit/NativeDialogRegressionTest.php",
+      "class": "Tests\\Unit\\NativeDialogRegressionTest",
+      "methods_static": [
+        "test_representative_frontend_flows_do_not_use_native_browser_dialogs"
+      ],
+      "static_method_count": 1,
+      "active": true
+    },
+    {
+      "path": "tests/Unit/PublicHtmlSanitizerTest.php",
+      "class": "Tests\\Unit\\PublicHtmlSanitizerTest",
+      "methods_static": [
+        "test_it_removes_script_event_handlers_and_javascript_urls",
+        "test_it_preserves_allowed_markup_and_safe_links"
+      ],
+      "static_method_count": 2,
+      "active": true
+    },
+    {
+      "path": "tests/Unit/ThemeModeStructureTest.php",
+      "class": "Tests\\Unit\\ThemeModeStructureTest",
+      "methods_static": [
+        "test_theme_css_contains_shared_tokens_for_light_and_dark_modes",
+        "test_theme_mode_composable_updates_dom_theme_attributes"
+      ],
+      "static_method_count": 2,
+      "active": true
+    }
+  ]
+}

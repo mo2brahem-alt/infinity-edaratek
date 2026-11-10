@@ -1,0 +1,26 @@
+{
+  "starting_commit": "40e580fdfb2ab49df2b24f14e86bf7c22c6c8313",
+  "migration": "database/migrations/2026_03_11_100200_create_school_teaching_assignment_classrooms_table.php",
+  "dependency_search": "Entire local repository via rg --hidden --no-ignore, excluding only .git metadata; old FK names occurred only in evidence, not executable source. Table/column uses and all dropForeign/information_schema references reviewed; no downstream constraint-name dependency.",
+  "identifiers": [
+    {"kind": "foreign", "column": "school_id", "before": "school_teaching_assignment_classrooms_school_id_foreign", "before_length": 55, "after": "school_teaching_assignment_classrooms_school_id_foreign", "after_length": 55},
+    {"kind": "foreign", "column": "school_teaching_assignment_id", "before": "school_teaching_assignment_classrooms_school_teaching_assignment_id_foreign", "before_length": 75, "after": "sta_classrooms_assignment_fk", "after_length": 28},
+    {"kind": "foreign", "column": "school_classroom_id", "before": "school_teaching_assignment_classrooms_school_classroom_id_foreign", "before_length": 65, "after": "sta_classrooms_classroom_fk", "after_length": 27},
+    {"kind": "unique", "before": "school_teaching_assignment_classrooms_unique_assignment_classroom", "before_length": 65, "after": "sta_classrooms_assignment_classroom_unique", "after_length": 42},
+    {"kind": "index", "before": "school_teaching_assignment_classrooms_scope_classroom_index", "before_length": 59, "after": "school_teaching_assignment_classrooms_scope_classroom_index", "after_length": 59}
+  ],
+  "all_after_lengths_at_most_64": true,
+  "fk_repair_commit": "5a52075a892eb972a42803a7a48fbf6ccd5aea86",
+  "remaining_unique_identifier_reproduced_run": 42480584971,
+  "unique_identifier_repair_commit": "81ff8215bc16aa3fb8461ac7754150afd170af1e",
+  "first_schema_pass_run": 42481027336,
+  "applied_migrations": 112,
+  "migration_files": 112,
+  "columns_types_nullability_references_cascades_unique_columns_index_columns_changed": false,
+  "down_uses_constraint_names": false,
+  "down_behavior": "Drops the whole table, unchanged",
+  "EXISTING_DATABASE_DATA_CHANGE_REQUIRED": false,
+  "already_applied_migration_behavior": "No automatic re-execution or DB alteration; historical migration repair affects future clean installs/migrate:fresh",
+  "schema_name_drift": "Existing databases may retain prior/default names; fresh databases use deterministic short names. No executable repository operation depends on the changed names.",
+  "shared_or_live_database_access": false
+}

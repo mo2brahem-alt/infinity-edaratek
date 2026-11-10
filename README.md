@@ -7,6 +7,12 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## تطوير Edaratek باستخدام Spec Kit
+
+تم إعداد GitHub Spec Kit لتنظيم المواصفات والخطط والمهام مع Codex.
+راجع [دليل الاستخدام بالعربية](docs/spec-kit.md) و[مبادئ المشروع](.specify/memory/constitution.md).
+لنقل المشروع إلى جهاز آخر، ابدأ من [نقطة التسليم الحالية](docs/workstation-migration.md).
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

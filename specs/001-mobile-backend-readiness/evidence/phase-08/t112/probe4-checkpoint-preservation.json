@@ -1,0 +1,28 @@
+{
+  "date_africa_cairo": "2026-11-10",
+  "prior_manifest": "probe3-review-manifest.json",
+  "prior_manifest_sha256": "12455241ab0aa1803615395d77b4c2b8791712e703b93d3efa0fa1d7aeafd97b",
+  "prior_files_verified": 6,
+  "snapshots": [
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/reassessment.md",
+      "snapshot": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/reassessment-before-probe4.md",
+      "sha256": "93920d50d76a70871d099396a98e067536da27cf7afeb92ef6a5b19088ad70a8"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+      "snapshot": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT-before-probe4.md",
+      "sha256": "fc0bd88ef007916fef5fc973a31b5b8c8cea198c8571c748c911918bfe4f7374"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/acceptance.md",
+      "snapshot": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance-before-probe4.md",
+      "sha256": "0aabdfbcc2b3eadb26de96b43ba835cccc159eecd69141b8ff48bcd2392275bf"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/tasks.md",
+      "snapshot": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks-before-probe4.md",
+      "sha256": "224b4872150395a1454e1654f2c7021b4a986df7d4c1e40b21132595073f33bd"
+    }
+  ]
+}

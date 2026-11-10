@@ -1,0 +1,78 @@
+{
+  "phase": 8,
+  "attempts": [
+    {
+      "sha": "b81d17190f5ee8d536c6d3618223b9e9e09fb537",
+      "run_id": 42619442662,
+      "job_id": 129167494631,
+      "outcome": "FAIL_CLOSED_BEFORE_TESTS",
+      "cause": "Four passive tracked reference files absent from filtered image context.",
+      "fix": "Explicit four-file reference allowlist in 3a0fea7; no workflow execution/secret copying.",
+      "accepted_full_counts": null,
+      "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42619442662",
+      "workflow_conclusion": "failure",
+      "deployment": false
+    },
+    {
+      "sha": "3a0fea756171baf4ab5fe873afbd18266eec4a1e",
+      "run_id": 42620017956,
+      "job_id": 129169431490,
+      "outcome": "INCOMPLETE_NOT_ACCEPTED",
+      "focused": {
+        "passed": 460,
+        "total": 460
+      },
+      "cause": "Artisan child PHP exhausted default memory. Exit255, empty JUnit, no completed event; cgroup OOM did not increase. Last identity/378 warnings are not an executed-test count.",
+      "fix": "512M default in disposable test image in 48c34c4. No host/production INI change.",
+      "accepted_full_counts": null,
+      "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42620017956",
+      "workflow_conclusion": "failure",
+      "deployment": false
+    },
+    {
+      "sha": "48c34c459d1012a154ae919aed47b0bff792d62c",
+      "run_id": 42621041261,
+      "job_id": 129172937434,
+      "outcome": "TECHNICAL_PASS_ACCEPTANCE_BLOCKED",
+      "focused": {
+        "passed": 460,
+        "total": 460
+      },
+      "full_each_runner": {
+        "passed": 722,
+        "total": 723,
+        "failures": 1,
+        "errors": 0,
+        "skips": 0
+      },
+      "cause": "Only known Excel failure. T112 blocked H01/H05 evidence. Later T103 review required missing >100-device/attachment scale proof.",
+      "fix": "Two legitimate P2 regression cases added in fbc63a4. No application or old-test changes.",
+      "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42621041261",
+      "workflow_conclusion": "failure",
+      "deployment": false
+    },
+    {
+      "sha": "fbc63a4615f48ac0f832d91945d9652aeabef466",
+      "run_id": 42622792050,
+      "job_id": 129178897906,
+      "outcome": "TECHNICAL_PASS_ACCEPTANCE_BLOCKED",
+      "focused": {
+        "passed": 462,
+        "total": 462,
+        "classes": 58
+      },
+      "full_each_runner": {
+        "passed": 724,
+        "total": 725,
+        "failures": 1,
+        "errors": 0,
+        "skips": 0
+      },
+      "cause": "Only known Excel test failure. Unresolved H01/H05 authoritative environment evidence blocks strict T112.",
+      "fix": "No test/code repair remains; retain gate pending separately authorized environment evidence and PM review.",
+      "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/42622792050",
+      "workflow_conclusion": "failure",
+      "deployment": false
+    }
+  ]
+}

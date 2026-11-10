@@ -1,0 +1,56 @@
+{
+  "provenance": "Manual trusted SSH execution reported by user; explicitly accepted as successful probe execution. Not an agent measurement.",
+  "target": "test.edaratek.com",
+  "reported_date_africa_cairo": "2026-11-09",
+  "server_execution_timestamp": null,
+  "probe": "server-readonly-h05.sh",
+  "probe_execution_status": "SUCCESS",
+  "security_acceptance_status": "BLOCKED",
+  "observations": {
+    "enabled_site_link_matches_candidate": true,
+    "target_apache_wiring_and_overrides": [
+      {
+        "block": 1,
+        "directive": "proxypass",
+        "operands": "NOT_PROVIDED"
+      },
+      {
+        "block": 2,
+        "directive": "proxypass",
+        "operands": "NOT_PROVIDED"
+      }
+    ],
+    "test_owned_php83_fpm_workers": [],
+    "socket_linked_test_pools": [],
+    "fpm_php_ini_error_settings": []
+  },
+  "verdicts": {
+    "H01_STATUS": "BLOCKED",
+    "H05_STATUS": "BLOCKED",
+    "T112_STATUS": "BLOCKED",
+    "FPM_RUNTIME_DEBUG_VALUE": "UNKNOWN",
+    "FPM_DISPLAY_ERRORS": "UNKNOWN",
+    "RUNTIME_ERROR_DISCLOSURE_EVIDENCE": "UNAVAILABLE"
+  },
+  "interpretation": [
+    "Successful execution does not establish live runtime values or equivalent disclosure protection.",
+    "Empty matches do not prove FPM absent or display_errors off.",
+    "ProxyPass directive names alone do not distinguish exclusions, reverse-proxy routing or FCGI.",
+    "No new private-file serving/authorization/cache evidence was obtained; H01 is evaluated independently."
+  ],
+  "follow_up": {
+    "probe": "server-readonly-h05-wiring.sh",
+    "status": "PREPARED_NOT_EXECUTED",
+    "scope": "Only sanitized target-vhost backend/exclusion/socket/CGI-wrapper mapping and exactly linked PHP8.3 pool/INI candidates. No broad config/process sweep or endpoint creation."
+  },
+  "safety": {
+    "NO_CONFIG_CHANGES": "YES",
+    "NO_APPLICATION_CHANGES": "YES",
+    "NO_DEPLOYMENT": "YES",
+    "NO_SERVICE_RESTARTS": "YES",
+    "PRODUCTION_TOUCHED": "NO",
+    "REAL_FILES_MIGRATED": 0,
+    "REAL_WHATSAPP_SENDS": 0,
+    "PHASE_9_STARTED": "NO"
+  }
+}

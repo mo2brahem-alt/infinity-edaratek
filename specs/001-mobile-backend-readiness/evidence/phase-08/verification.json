@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-09",
+  "status": "PASS_LOCAL_ARTIFACT_VERIFICATION",
+  "phase8_acceptance": "BLOCKED",
+  "checks": {
+    "branch_head_feature_match": true,
+    "main_unchanged": true,
+    "index_empty": true,
+    "preexisting_status_preserved": true,
+    "readme_hash_preserved": true,
+    "immutable_sources": 162,
+    "image_overrides": 2,
+    "host_testcase_unchanged": true,
+    "old_tests_unchanged": true,
+    "application_api_schema_workflow_diff_empty": true,
+    "local_contract_matches_phase7": true,
+    "portable_contract_matches_phase7": true,
+    "portable_definition_is_local_prefix": true,
+    "local_contract_historical_T101_footer_preserved": true,
+    "phase7_ancestors": 5,
+    "total_task_rows": 120,
+    "phase8_complete": 9,
+    "T112": "BLOCKED_UNCHECKED",
+    "phase9_unchecked": 8,
+    "checklist_rows": 84,
+    "relative_evidence_links_verified": 16,
+    "stale_runtime_pending_rows": 0,
+    "measured_counts_match": true,
+    "dual_runner_case_symbols_match": true
+  },
+  "limitations": [
+    "Local artifact/source verification cannot certify actual serving/environment state.",
+    "Known Excel retains CI failure; strict T112 is BLOCKED by H01/H05 evidence.",
+    "Local P7 contract already includes a historical T101 evidence footer after the identical portable definition. Both files match their own P7 hashes."
+  ]
+}

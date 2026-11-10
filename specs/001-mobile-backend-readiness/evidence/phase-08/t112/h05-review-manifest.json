@@ -1,0 +1,65 @@
+{
+  "date": "2026-11-09",
+  "feature_head": "fbc63a4615f48ac0f832d91945d9652aeabef466",
+  "server_reported_head": "12b9d5326d942acda55309aac05c6cee1bf928b0",
+  "verdicts": {
+    "H01_STATUS": "BLOCKED",
+    "H05_STATUS": "BLOCKED",
+    "T112_STATUS": "BLOCKED",
+    "APP_DEBUG_CACHED_VALUE": "true",
+    "FPM_RUNTIME_DEBUG_VALUE": "UNKNOWN",
+    "FPM_DISPLAY_ERRORS": "UNKNOWN",
+    "RUNTIME_ERROR_DISCLOSURE_EVIDENCE": "UNAVAILABLE"
+  },
+  "scope": "Local evidence and H05-only probe preparation; no remote execution/config/application/service/deployment changes.",
+  "verification": {
+    "bash_syntax": "PASS",
+    "python_ast": "PASS",
+    "allowlist_redaction_synthetic_checks": 7,
+    "probe_executed_on_server": false,
+    "immutable_sources_preserved": 162,
+    "original_checkpoint_snapshots_preserved": 3,
+    "all_task_rows_preserved": 120,
+    "phase9_unchecked": 8,
+    "relative_reassessment_links_verified": 2,
+    "index_empty": true
+  },
+  "files": [
+    {
+      "path": "specs/001-mobile-backend-readiness/tasks.md",
+      "sha256": "982ee64657acaf39fdba2c0356daa127156772fe316b223b1bbb8ed706b73e6d"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+      "sha256": "b4b52152dd68eaecca8fe09774bb4628879592a552a8b17d0d947e9407d21835"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/acceptance.md",
+      "sha256": "6fc4a4ca89b22fd2a607c03db153f4341d3d3dca291012767c04daa0a5963e5f"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/operator-evidence.json",
+      "sha256": "3d7c30971d9d1929c96167c17e607326293d1f3309fd36ecf5e4782e1b7262ec"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/reassessment.md",
+      "sha256": "f4a5036a38014af18318f4268ab6bed9cf258e277031a2f37c32f4478072fecd"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05.sh",
+      "sha256": "3f2f30b37e893bdfd6fdb7ab5506bb2c7bc797b08eaa877d99af8af70218c015"
+    }
+  ],
+  "historical_source_manifest": "../source-manifest.json remains the original Phase8 checkpoint; three updated current paths map to exact t112/checkpoint snapshots.",
+  "new_commits": [],
+  "safety": {
+    "NO_CONFIG_CHANGES": "YES",
+    "NO_APPLICATION_CHANGES": "YES",
+    "NO_DEPLOYMENT": "YES",
+    "NO_SERVICE_RESTARTS": "YES",
+    "PRODUCTION_TOUCHED": "NO",
+    "REAL_FILES_MIGRATED": 0,
+    "REAL_WHATSAPP_SENDS": 0,
+    "PHASE_9_STARTED": "NO"
+  }
+}

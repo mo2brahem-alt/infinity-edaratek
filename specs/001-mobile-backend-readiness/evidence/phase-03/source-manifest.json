@@ -1,0 +1,177 @@
+{
+  "source": "7b8fd762bf7b61325fecf51f1dc5adba015d8221",
+  "starting_source": "e448618bffe70e10352b52bf20d3ffc6f43b14f5",
+  "changed_file_count": 34,
+  "files": [
+    {
+      "path": "app/Http/Controllers/Auth/PasswordResetLinkController.php",
+      "git_blob": "4c17ea335809138a76d930c6626998e43657249e",
+      "local_sha256": "0f92e6de96d4c107bb102784386154deeabf7e7c9fc1ae1f80e3cf3e22e4b752"
+    },
+    {
+      "path": "app/Http/Controllers/Auth/RegisterManagerSubscriptionController.php",
+      "git_blob": "2c643c70e229eb3930fb6a9114071b54d7e68d80",
+      "local_sha256": "716103afe209f09447afd9836e2070a7b96a0b4b37f5f1aa756f6fbc48e52273"
+    },
+    {
+      "path": "app/Http/Controllers/Auth/RegisterSupervisorController.php",
+      "git_blob": "b2f2b2f92a714d5ff84e4cf725a3ab0a4471a55e",
+      "local_sha256": "8c052517db073a7cca76544aa0c1b07ac460c3098de705804648ec145822759d"
+    },
+    {
+      "path": "app/Http/Controllers/Auth/RegisteredUserController.php",
+      "git_blob": "873a7178067d0f4694811c9eb4900044532bdeb9",
+      "local_sha256": "672d94e62a085350d6f08187749d117c1b94f4d9dd3ad8807ae8724804c206ec"
+    },
+    {
+      "path": "app/Http/Controllers/ProfileController.php",
+      "git_blob": "289e76d659189463c088231290463b260511d5b4",
+      "local_sha256": "5344e03f6c79fcef707c228f32d9bafa83fd94597d42c1b58bd9907741243587"
+    },
+    {
+      "path": "app/Http/Middleware/AuthenticateNativeBearer.php",
+      "git_blob": "9428edae70fae70907c7a77efa7d9ea477eb5655",
+      "local_sha256": "c0b4748ef7f860c1e020ac5aa25047c9c7804e0b4b1ce89faa0f1970347f8387"
+    },
+    {
+      "path": "app/Http/Middleware/EnsureApprovedAccount.php",
+      "git_blob": "2f13b1a604816e255f4d40089c9688ef03a01647",
+      "local_sha256": "d258f98a556340258c4d3c39419de3300ada43439795d8d302e14e472806c74b"
+    },
+    {
+      "path": "app/Http/Middleware/EnsureNativeAccountAccess.php",
+      "git_blob": "68e3a01847d13e66c240c60df066a53bccaa028f",
+      "local_sha256": "63a12d2089230fe06a85960ed365d8c03f1e6b94aa4b2364fd1b51a6b5f9247f"
+    },
+    {
+      "path": "app/Http/Requests/School/StoreSchoolUserWithRolesRequest.php",
+      "git_blob": "4e31976015a4b88592373686ae0a5ab98a70749f",
+      "local_sha256": "50704637c7109594c30fe402b0979453f2aa1481c71a9ce4c62878fd786354b2"
+    },
+    {
+      "path": "app/Http/Requests/School/SyncSchoolUserRolesRequest.php",
+      "git_blob": "43bb1c59afd52687d38a715256706676a8c55d1b",
+      "local_sha256": "4e28d2594214af4019b18d7c42b6c8dc97cf647d86d8766d1abed83a78eb74f8"
+    },
+    {
+      "path": "app/Http/Requests/School/UpdateSchoolUserWithRolesRequest.php",
+      "git_blob": "af0c4b9808548f854acf9ebd660119426103f07e",
+      "local_sha256": "55b81a2d136b9e212e86c38716d586b9ba4fa5fefb1d07940633b2e0e2008fd2"
+    },
+    {
+      "path": "app/Models/User.php",
+      "git_blob": "58c25f852a6f310345203f5fcb815b9eb7221b42",
+      "local_sha256": "1a479bbcdaed72d3c8954a2bfeb71c7b1d8d0360ea2ec4ad45d3f4cf033a62fa"
+    },
+    {
+      "path": "app/Providers/AppServiceProvider.php",
+      "git_blob": "98d7716283a1ee17f2f446b9996bddb56556fd89",
+      "local_sha256": "5f788a6991bf3122f7b0733e89e6778034208f7e7c208ddc3f034ea2b8db30fa"
+    },
+    {
+      "path": "app/Services/Auth/UserApprovalService.php",
+      "git_blob": "d3d83051ce47252f116e267eeee898f67d5a7f6a",
+      "local_sha256": "273a7ad3baf53d3844ffb7a34aaa409cbc219e1f9b43f80997dd3f18e216d8ff"
+    },
+    {
+      "path": "app/Services/Mobile/AccountAccessEvaluator.php",
+      "git_blob": "a789107b2b65366f53c97f8367d9c6f0f31f047f",
+      "local_sha256": "dd81f16cd3a2dce60a9b9f453507ef5bc1deedf547a1613735b35d8139ddca63"
+    },
+    {
+      "path": "app/Support/AuthSecurityLog.php",
+      "git_blob": "48ba10ae11b5223f38f006baeaf25cf8176f2339",
+      "local_sha256": "f27d576123b459559bbc96e938b6169dfeb0361ac53fb216ab66ed7b1b705fdf"
+    },
+    {
+      "path": "app/Support/UserAuthorityFields.php",
+      "git_blob": "af3fa56119441b3b6e3aaf1fd3833921f6ba428d",
+      "local_sha256": "42d60d354ecd09daddf03626277e9ff3705cba1707adea9bfb6d935ce2370062"
+    },
+    {
+      "path": "bootstrap/app.php",
+      "git_blob": "ee243f9bb5d9aff5ae0bf145b84d9d2c43e80f42",
+      "local_sha256": "bfbbdba1fa79a3bc859505c2cb31b03a53176e475f5ea579a55514f0e749a734"
+    },
+    {
+      "path": "config/mobile.php",
+      "git_blob": "3f880a5156b2d5a26b05ea425ff172876b5b0719",
+      "local_sha256": "f6444bcb2fef7c4623d937387081bb756bae2fc086b35c9219db6a21e8090218"
+    },
+    {
+      "path": "config/provisioning.php",
+      "git_blob": "db72b250d6943b96e49b9893a28109466cbabe1c",
+      "local_sha256": "575656ee4ef94590caebda5a6bd5d4fcdfeb1bea0c746caecf32bf262dc06f0c"
+    },
+    {
+      "path": "database/seeders/SuperAdminSeeder.php",
+      "git_blob": "9e49649202cd50b04e083258929a23067ea5fd22",
+      "local_sha256": "b5b762bf6324ea488e04040bcac8fbd6271533670c74ba83f5bf2f7ed5387eca"
+    },
+    {
+      "path": "routes/auth.php",
+      "git_blob": "60e24b3af638cde568becc85b15be2ef96d6d490",
+      "local_sha256": "5a6a63e5ec745ec853b9c6750e1d31183dd9277c0bbb0ee41a31c5df98db6a0d"
+    },
+    {
+      "path": "tests/Feature/AccountApprovalFlowTest.php",
+      "git_blob": "b00783554c1ebc7314a8ca9809f5e5cd539dd5e1",
+      "local_sha256": "bfadcfacd2969b3d7e79b1d77adb47b674c3680cee61bdc7f3dd2b329b0e5f54"
+    },
+    {
+      "path": "tests/Feature/Auth/PasswordResetTest.php",
+      "git_blob": "ae7aa5239029b6200b5440b0a0dae628d407aa0f",
+      "local_sha256": "6c714682a271a4dcc725cd5fea4bdde651638580af526541b641b13991b847ec"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/AccountApprovalMatrixTest.php",
+      "git_blob": "af2a8e9a38979f41e3838425eff879836772a554",
+      "local_sha256": "a3b1c583f40249013b0718204cb9466c17e49aaeccfd93e947866fa7c87376cd"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/EnvironmentSafetyTest.php",
+      "git_blob": "dc04b53b92d75a461482cbc8e48573714b593243",
+      "local_sha256": "2f024845dc15ce5351c73d9afe1021a9b96c6e69caa4765527b0408fd4e2def5"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/PrivilegeEscalationTest.php",
+      "git_blob": "573f8cd2afa34bb38d045f027b45a610c92b3930",
+      "local_sha256": "bd6ed4a1ca7041e93b43b7463bc7c9b232bbb47d87a7debbff73f10ef43832b7"
+    },
+    {
+      "path": "tests/Feature/Mobile/Phase3/WebSessionSafetyTest.php",
+      "git_blob": "e24775ecbf57361b33172576d3bbe3acea37e5a9",
+      "local_sha256": "e8a5e321295b9492fc5d98bc3cbe6540fd4d76db925e69373c1172913f57bba6"
+    },
+    {
+      "path": "tests/Feature/SafeAdminSeederTest.php",
+      "git_blob": "dbc3b396aff92b0542cce7266067da96e2d6a05c",
+      "local_sha256": "d27a28e42a89baaed357c18a1f0be993c912e8fb1a33c71b2fb592920851a2c2"
+    },
+    {
+      "path": "tests/Feature/SchoolUserRoleAssignmentApiTest.php",
+      "git_blob": "aa0faa93c415c431022d7d95ac8cbae0df92a1ce",
+      "local_sha256": "929053c8d0820b94d0e637d94db5a95df4605fe5889c6c74228dda60527444ca"
+    },
+    {
+      "path": "tools/testing/probe-mobile-auth-gate.php",
+      "git_blob": "e2fb5064ae0e7cb17792cf7132ef30ae1f3de5dc",
+      "local_sha256": "32a7e6e860c8278e4c30e6e71c92ad60110d6a2c4d9777672e83e786e5621ef1"
+    },
+    {
+      "path": "tools/testing/probe-phase3-gate.php",
+      "git_blob": "8a35defe5e9b11f80ec85a07720d1e6add5d4832",
+      "local_sha256": "b52c721ca3f24274280b1b64e1f0bc5334bea0a2b08ed18386a82de8cfe08c27"
+    },
+    {
+      "path": "tools/testing/run-baseline.sh",
+      "git_blob": "bb6e204455d0fb42a19fde5e73506a06bfee6ff4",
+      "local_sha256": "5eecfbcbf00b55fc95adcea3dbad0ad9ccd1114f453daf432f9b7d8d7224bd30"
+    },
+    {
+      "path": "tools/testing/summarize-junit.php",
+      "git_blob": "1f0dfb8de98ad3d55d6179c3fd6f71b6a35de444",
+      "local_sha256": "ab4378d16ced1f33e8e0a77b0d20ea35b090f0ebbffb03f9c3179a1ef1cdc239"
+    }
+  ]
+}

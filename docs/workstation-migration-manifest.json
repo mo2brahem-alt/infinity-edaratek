@@ -1,0 +1,1096 @@
+{
+  "date_africa_cairo": "2026-11-10",
+  "purpose": "Reliable Git checkpoint only; no new Phase8 investigation, probe, deployment or application change.",
+  "current_branch": "001-mobile-backend-readiness",
+  "starting_head": "fbc63a4615f48ac0f832d91945d9652aeabef466",
+  "origin_main_before": "12b9d5326d942acda55309aac05c6cee1bf928b0",
+  "authoritative_state": "PHASE_8_BLOCKED_AWAITING_PM_REVIEW",
+  "verdicts": {
+    "H01_STATUS": "BLOCKED",
+    "H05_STATUS": "BLOCKED",
+    "T112_STATUS": "BLOCKED",
+    "PHASE_9_STARTED": "NO"
+  },
+  "current_findings": {
+    "PHP_HANDLER": "CGI_WRAPPER",
+    "PHP_EXECUTABLE": "/bin/php-cgi8.3",
+    "FPM_NOT_APPLICABLE_FOR_THIS_VHOST": "YES",
+    "CGI_WRAPPER_PATH": "/home/test/fcgi-bin/php8.3.fcgi",
+    "CGI_PHPRC": "UNKNOWN_DYNAMIC_OR_SUPPRESSED",
+    "CGI_PHP_INI_SCAN_DIR": "UNSET_IN_WRAPPER_DEFAULT_UNKNOWN",
+    "APP_DEBUG_CACHED_VALUE": true
+  },
+  "review": {
+    "existing_specs_files": 150,
+    "agent_skill_files": 10,
+    "portable_specify_files": 20,
+    "README": "Reviewed intentional Edaratek Spec Kit introduction; migration guide link added.",
+    "well_known": "Reviewed ACME-challenge authentication rule; environment-specific, excluded.",
+    "hosting_static_deletions": "All13 original symlink deletions excluded and left untouched.",
+    "credential_scan": "No private-key/access-token material found. Three assignment-shaped matches reviewed as schema string declarations. No environment/runtime/credential files added.",
+    "exact_bytes": "Git attributes disable text conversion only for Spec Kit/specs and copied historical audit to preserve recorded hashes."
+  },
+  "reviewed_commit_paths": [
+    ".agents/skills/speckit-analyze/SKILL.md",
+    ".agents/skills/speckit-checklist/SKILL.md",
+    ".agents/skills/speckit-clarify/SKILL.md",
+    ".agents/skills/speckit-constitution/SKILL.md",
+    ".agents/skills/speckit-converge/SKILL.md",
+    ".agents/skills/speckit-implement/SKILL.md",
+    ".agents/skills/speckit-plan/SKILL.md",
+    ".agents/skills/speckit-specify/SKILL.md",
+    ".agents/skills/speckit-tasks/SKILL.md",
+    ".agents/skills/speckit-taskstoissues/SKILL.md",
+    ".gitattributes",
+    ".specify/.gitignore",
+    ".specify/init-options.json",
+    ".specify/integration.json",
+    ".specify/integrations/codex.manifest.json",
+    ".specify/integrations/speckit.manifest.json",
+    ".specify/memory/.constitution-template.json",
+    ".specify/memory/constitution.md",
+    ".specify/scripts/powershell/check-prerequisites.ps1",
+    ".specify/scripts/powershell/common.ps1",
+    ".specify/scripts/powershell/create-new-feature.ps1",
+    ".specify/scripts/powershell/resolve-template.ps1",
+    ".specify/scripts/powershell/setup-plan.ps1",
+    ".specify/scripts/powershell/setup-tasks.ps1",
+    ".specify/templates/checklist-template.md",
+    ".specify/templates/constitution-template.md",
+    ".specify/templates/plan-template.md",
+    ".specify/templates/spec-template.md",
+    ".specify/templates/tasks-template.md",
+    ".specify/workflows/speckit/workflow.yml",
+    ".specify/workflows/workflow-registry.json",
+    "README.md",
+    "docs/audits/EDARATEK_MOBILE_BACKEND_AUDIT.md",
+    "docs/spec-kit.md",
+    "docs/workstation-migration-manifest.json",
+    "docs/workstation-migration.md",
+    "specs/001-mobile-backend-readiness/checklists/readiness-security.md",
+    "specs/001-mobile-backend-readiness/checklists/requirements.md",
+    "specs/001-mobile-backend-readiness/contracts/mobile-api.md",
+    "specs/001-mobile-backend-readiness/contracts/security-protocols.md",
+    "specs/001-mobile-backend-readiness/data-model.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/acceptance.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/autonomous-crash-diagnostics.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/autonomous-execution-report.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/autonomous-final-baseline.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/baseline-blockers.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/baseline-results.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/checklist-evidence.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/ci-push-run-report.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/context-repair-baseline.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/fk-repair-schema-probe.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/formal-acceptance-after-repair.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/migration-identifier-repair-review.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/platform.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/runtime-matrix.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/schema-safety-and-interim-baseline.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/scope.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/second-ci-run-report.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/second-ci-runtime.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/source-after.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/source-before.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/startup.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/static-checks.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/systemic-database-probe.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/systemic-validation-report.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/third-ci-run-report.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/third-ci-runtime.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-01/validated-phase1-runtime.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-02/acceptance.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-02/auth-design.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-02/migration.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-02/results.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-03/acceptance.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-03/design.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-03/execution-report.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-03/results.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-03/run-01.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-03/run-02.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-03/scope.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-03/seeding.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-03/source-manifest.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-03/validated-runtime.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-04/EDARATEK_PHASE_4_EXECUTION_REPORT.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-04/acceptance.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-04/current-context.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-04/endpoint-matrix.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-04/isolation.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-04/results.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-04/source-manifest.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-04/task-traceability.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-04/validated-runtime.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/EDARATEK_PHASE_5_EXECUTION_REPORT.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/acceptance.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/checklist-evidence.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/download-design.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/inventory.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/migration-design.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/migration-results.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/operational-boundaries.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/results.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/source-manifest.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/static-results.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/task-traceability.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-05/validated-runtime.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/EDARATEK_PHASE_6_EXECUTION_REPORT.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/acceptance.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/admission-design.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/checklist-evidence.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/migration.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/original-requirements.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/results.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/retired-test-inventory.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/scope-decision.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/source-manifest.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/task-traceability.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-06/validated-runtime.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/EDARATEK_PHASE_7_EXECUTION_REPORT.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/acceptance.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/checklist-evidence.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/compatibility.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/contract-inventory.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/implementation.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/pre-freeze-contract.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/results.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/source-manifest.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/task-traceability.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/validated-runtime.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-07/validation-history.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/acceptance.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/access-security.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/audit-closure.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/contracts-and-config.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/coverage.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/failure-register.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/file-security.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/full-results.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/queue-security.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/review.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/source-manifest.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint-preservation.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT-before-probe2.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT-before-probe3.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT-before-probe4.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance-before-probe2.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance-before-probe3.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance-before-probe4.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/reassessment-before-probe2.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/reassessment-before-probe3.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/reassessment-before-probe4.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks-before-probe2.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks-before-probe3.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks-before-probe4.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/h05-review-manifest.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/http-observations.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/http-validation.mjs",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/operations-handoff.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/operator-evidence.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe-2-operator-evidence.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe-3-operator-evidence.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe-4-operator-evidence.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe2-checkpoint-preservation.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe2-review-manifest.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe3-checkpoint-preservation.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe3-review-manifest.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe4-checkpoint-preservation.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe4-review-manifest.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/reassessment.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05-cgi.sh",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05-wiring.sh",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05.sh",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly.sh",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/t112/validation-plan.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/task-traceability.md",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/test-inventory.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/validated-runtime.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/validation-history.json",
+    "specs/001-mobile-backend-readiness/evidence/phase-08/verification.json",
+    "specs/001-mobile-backend-readiness/plan.md",
+    "specs/001-mobile-backend-readiness/quickstart.md",
+    "specs/001-mobile-backend-readiness/research.md",
+    "specs/001-mobile-backend-readiness/spec.md",
+    "specs/001-mobile-backend-readiness/tasks.md"
+  ],
+  "files": [
+    {
+      "path": ".agents/skills/speckit-analyze/SKILL.md",
+      "sha256": "fad1c37a451e017995b15fc3eefe243274642fbb3ff7c8a5ab021908df71aa93"
+    },
+    {
+      "path": ".agents/skills/speckit-checklist/SKILL.md",
+      "sha256": "5c1dce9333a2b733422e2dc75de7fc4d63ba91a460833d14ef3966a672328b9d"
+    },
+    {
+      "path": ".agents/skills/speckit-clarify/SKILL.md",
+      "sha256": "1e9de2b2a673c923f7ca650fc40e4d5f24654163c577e0f1ceb70edfaa08114b"
+    },
+    {
+      "path": ".agents/skills/speckit-constitution/SKILL.md",
+      "sha256": "ff6604c8424d4f4edf80f19ccfda1ede1a1dc5091a397cc1f0078a0bc3b0a538"
+    },
+    {
+      "path": ".agents/skills/speckit-converge/SKILL.md",
+      "sha256": "369e168cbcc9f903d1b8f3f360a32d24a7ebf3d07066b8676032cffcafbebd9e"
+    },
+    {
+      "path": ".agents/skills/speckit-implement/SKILL.md",
+      "sha256": "4d58a80ede8d837798d13a838b83a88fd4335104d0806d27f8018664a1ee0b85"
+    },
+    {
+      "path": ".agents/skills/speckit-plan/SKILL.md",
+      "sha256": "0834b2298c078b0a89ee64a3e47e140cc9b31c4049492bd504491199a0fe3e73"
+    },
+    {
+      "path": ".agents/skills/speckit-specify/SKILL.md",
+      "sha256": "37417c591b037e48507a622950f0b5b3596f65bfc0726eb544052dceedcaa92c"
+    },
+    {
+      "path": ".agents/skills/speckit-tasks/SKILL.md",
+      "sha256": "1e1d18b34e39d62d6388297f035505905741b07973102e0d44aa8647d85ab093"
+    },
+    {
+      "path": ".agents/skills/speckit-taskstoissues/SKILL.md",
+      "sha256": "47d5a13f2a39f2e40d8915feef7ff08cd36e08b176c7f28d107758e9e983b4d2"
+    },
+    {
+      "path": ".gitattributes",
+      "sha256": "262a39f8fb35c3fa860b0a145531a30c899ca8d46b2fa6db9754f10faf3f7238"
+    },
+    {
+      "path": ".specify/.gitignore",
+      "sha256": "0a61c5378b0bb2e0f85babff99c8b166f2170a2c12378cd17d929aa19296ec88"
+    },
+    {
+      "path": ".specify/init-options.json",
+      "sha256": "6cb22ac7cd7eab957058c70db1b2b304bc9cdb28e849ba19e82c48426e56e8b8"
+    },
+    {
+      "path": ".specify/integration.json",
+      "sha256": "5edf6313276d6d74f03ac09dbe7278094e1cf19e833fe256893eb9ad4f2e32c3"
+    },
+    {
+      "path": ".specify/integrations/codex.manifest.json",
+      "sha256": "7189bc7ea81ed39c6c26d95c4bc4ced92415520bd91a6d6df9092cce99c96824"
+    },
+    {
+      "path": ".specify/integrations/speckit.manifest.json",
+      "sha256": "a557537dc4c665884a11a81eff3868d2f5b788930e9b90e652653c1341464247"
+    },
+    {
+      "path": ".specify/memory/.constitution-template.json",
+      "sha256": "8fc4b39294bae0c10d59547ad7d415b6f0e890d656cbf7171dd567f4e9054711"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "sha256": "1a5ecc00e7ecd9b607533262dd90607cf48d8b54de92080a712256054129e918"
+    },
+    {
+      "path": ".specify/scripts/powershell/check-prerequisites.ps1",
+      "sha256": "f48e586b57cc049ea83ade5acecb466f861aee4fb444dab54bbafc813222da10"
+    },
+    {
+      "path": ".specify/scripts/powershell/common.ps1",
+      "sha256": "54b59523b13fd8f884ff8b6b4e74fded922cdcc884965ff720392ca64ec1aa47"
+    },
+    {
+      "path": ".specify/scripts/powershell/create-new-feature.ps1",
+      "sha256": "481c7368541a816b1679e5ed65fa9e5aea84b09f8be3a02ff8a340e3b48dd58a"
+    },
+    {
+      "path": ".specify/scripts/powershell/resolve-template.ps1",
+      "sha256": "e49c565a09902e4ebd4b5a51c4e014d5067fdee5b1592f15cb44ef31f430d745"
+    },
+    {
+      "path": ".specify/scripts/powershell/setup-plan.ps1",
+      "sha256": "5939ef98418e8dc8cc722ef53ba359fc814f3d2a9fd7620f04e8d145a7041f1a"
+    },
+    {
+      "path": ".specify/scripts/powershell/setup-tasks.ps1",
+      "sha256": "a1a5002280b3016e5f5b150719eb5442b8505abf325ef266139becde2c070d33"
+    },
+    {
+      "path": ".specify/templates/checklist-template.md",
+      "sha256": "70bbc48e884fab372ffb09e83e78ff983e28b69caebf8cd9964a02b6836683ac"
+    },
+    {
+      "path": ".specify/templates/constitution-template.md",
+      "sha256": "ce7549540fa45543cca797a150201d868e64495fdff39dc38246fb17bd4024b3"
+    },
+    {
+      "path": ".specify/templates/plan-template.md",
+      "sha256": "a828ad6206526574ab3fc99be6d0154588cb1c9774c5919d71b81ab5b2dbffa0"
+    },
+    {
+      "path": ".specify/templates/spec-template.md",
+      "sha256": "3945437fc35cd30a5b2bf7beea680337c3516826d3efa5a6b92c4a7eca1ba28e"
+    },
+    {
+      "path": ".specify/templates/tasks-template.md",
+      "sha256": "b0f527d41e546af0c31903e04f9b20965b6b497b573792198f663a64ce128863"
+    },
+    {
+      "path": ".specify/workflows/speckit/workflow.yml",
+      "sha256": "177761c5e7df28126beea043b5cb45aeaf7958090c022dc11ac71399422fcfbc"
+    },
+    {
+      "path": ".specify/workflows/workflow-registry.json",
+      "sha256": "8b71e1d4e3231816c00779557484aad38b4a07b6fda82ee40b0bce189b5e471f"
+    },
+    {
+      "path": "README.md",
+      "sha256": "c947b7854daf89d5753bdede975c70483cd2311a4fa85a8928c29978a8651359"
+    },
+    {
+      "path": "docs/audits/EDARATEK_MOBILE_BACKEND_AUDIT.md",
+      "sha256": "95402d30296c68be3363ceb27a7fddafb05c813ff6827e9db483231d258aee60"
+    },
+    {
+      "path": "docs/spec-kit.md",
+      "sha256": "f5e82e7d15c7897005dc9c29b02142815795edc22aac216a0079daacc28661c9"
+    },
+    {
+      "path": "docs/workstation-migration.md",
+      "sha256": "83c259b9f9c2f4949544a52b889fb80a100c97b5aa193fae00cc6f67bf7049b1"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/checklists/readiness-security.md",
+      "sha256": "7a84f3609ed8e83ee98fb10ab3f26e0bed5fed06065a0c3cd3ecb2df157e92f6"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/checklists/requirements.md",
+      "sha256": "b28d0db26405be34d958324c4369391bea4f4333383a7ab47f381950ca1f9369"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/contracts/mobile-api.md",
+      "sha256": "61e779b104daf77e1b07f25176d335c22151686eed5c5081cee6c2c3ad6b871b"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/contracts/security-protocols.md",
+      "sha256": "77ff5be376e4f38924c4b457d30e1bdaf5dcd2665ba4f681a975250241c923d0"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/data-model.md",
+      "sha256": "5a110612129a40453d732b4e5e0a0522479b741c3e153c3fcab9fb74ebeeb677"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/acceptance.md",
+      "sha256": "f1d8ce1c211f0e799e83b73f717c1eeac08abe12c501e656df2dd4b7c7743a8c"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/autonomous-crash-diagnostics.json",
+      "sha256": "2d48cc46b8f7e8285f86d4010a2fef880385186ad86966298e77ff5053a7328a"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/autonomous-execution-report.md",
+      "sha256": "ab5ffb9eb8af183ace693385144f9787841b4916f75b31ef6eee0d85538a9dea"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/autonomous-final-baseline.json",
+      "sha256": "2f71183b4e37cf05e199d2fde0223b8de95061d62e110586e5630d89f31f744a"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/baseline-blockers.md",
+      "sha256": "536c384fc6973e81b2f40685eba288c8df9838d76a25767ee0da8b01bcceafda"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/baseline-results.md",
+      "sha256": "fa68cd441bbce5a3ff843e851189104471efd2e38d070487aa75f09791accc36"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/checklist-evidence.md",
+      "sha256": "28dc25323d3ee56e47eb0bb52eb177f1678a68a8ddc8a8d044038d670eb87169"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/ci-push-run-report.md",
+      "sha256": "f00ca96a81a5fdb0862d51c04a7bde7f83346116a781e071642e600a62463d98"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/context-repair-baseline.json",
+      "sha256": "c7ef81b071ae3bb86d5ddc1426cd93f9a4a54dee22fb925a877444cae4184820"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/fk-repair-schema-probe.json",
+      "sha256": "26ff3051805b15c5e655c5c7105a4ccfd87dc524c44a46c89961644758fdbdb9"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/formal-acceptance-after-repair.md",
+      "sha256": "369b8f2d285393899062f0b32c079e18ccc75e8c3ea1aa38450fc7cb2fbfe77c"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/migration-identifier-repair-review.json",
+      "sha256": "8c0dff65400c193750c7228870039e9ebff241fab9adf64bd7fe923da999f1ee"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/platform.md",
+      "sha256": "3092b05d31d7c68e14d600a77dd7adaec9eef2e4c5c5f0de91d6280328f2e759"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/runtime-matrix.md",
+      "sha256": "5e1bbcf7c2368375126deeb47c9c645c0be7a61f7e4220ab35186b378bae4961"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/schema-safety-and-interim-baseline.json",
+      "sha256": "f2956722f2ce531a168dbbfe81e54849a433c9d4e0341e82354a95711c0a5e3c"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/scope.md",
+      "sha256": "87a299941c7d19f82baafe3c56184481436f43878d2abbe2aa069762ce0b38ae"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/second-ci-run-report.md",
+      "sha256": "c0efa6dcd07050383ae87950a689575bdcdfd39da48f3c1e5e897861e6b0719a"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/second-ci-runtime.json",
+      "sha256": "58f5cdf85a1b0f00d37a67261882aeb1ed4387ad95f0a4edd6be775c1c631aaa"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/source-after.json",
+      "sha256": "3982844d1420ef4d9838737852590b9f51dd36f54faea321e885a757368a7a1b"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/source-before.json",
+      "sha256": "dbf675bf728629db5a97dc4c8af6d83f40eab75fba7ccfb0ad29e19348e4faba"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/startup.md",
+      "sha256": "6c5822db32245bf30bd1a064ae42958e7df30c95e789f59c8b32b65ddbb41b4d"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/static-checks.json",
+      "sha256": "83aea2ccbcd343787c4a38b4e2cd8454650d7aee0556678fc80342b2cbf88907"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/systemic-database-probe.json",
+      "sha256": "064ac404b7f9209731b816a434e7cb139380808adaffbd7b92a2980dd08df664"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/systemic-validation-report.md",
+      "sha256": "086cdcc8e1187ab02c81539577cc20906263b84703737bacfaf67432008273ee"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/third-ci-run-report.md",
+      "sha256": "6c9618f73b93acf1addcf58952fae46292303d90f8467a8789c2751ab800f4f1"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/third-ci-runtime.json",
+      "sha256": "a7aef79825810709b114ee9e918a4dd938c423d5d411bf4474926ac03405b0cf"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/validated-phase1-runtime.json",
+      "sha256": "63c2788aee646622952dd059f6c414729320da03dfe9c9779b419a6934d2cbd0"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-02/acceptance.md",
+      "sha256": "a93dce52215d666ee73932eca4411c409206178839b65b9dcaae046e3a18fdce"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-02/auth-design.md",
+      "sha256": "3fa8a807ed98f5a3fe7d1899edc5cfc1a90469cb33763c4af6f0ad642fff65e9"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-02/migration.md",
+      "sha256": "94a2d4a2cdbf9f5629dc068552ca7b0fc01c6f10fd11472f6e1fc324f1948775"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-02/results.md",
+      "sha256": "cccc3ea25f50fbc1cdfe57fde70b9ee2465e0d2fcd334fab52ce69460b3d1e92"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/acceptance.md",
+      "sha256": "1f6b263424cd4680699ff869ec58d2880fc326e34adc6daa1278bbda8c9f092f"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/design.md",
+      "sha256": "6db6585c243440089bec9a6d30bd550b510bd16b35be262d15813565bb761e6d"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/execution-report.md",
+      "sha256": "8edc00094f8c36b530ba82be9c230e85d27a71ea0de392085bfc3b4e22a9fe54"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/results.md",
+      "sha256": "73ba734e81579d55e21f6dec5f67a0c6e72ed4532cbde974493037d6ef29d2bc"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/run-01.json",
+      "sha256": "175780c3a89a38a01a12025b3507b5dc89dabf50fc59e9edb2b5424ca92e5c4c"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/run-02.json",
+      "sha256": "7c8952b58a2bcf777b12457ab53753f375c3f118936f1a422508dbabdb117a25"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/scope.md",
+      "sha256": "af4cd013555a86a1775f72751ef63e8c1d99f526e97df2bc335a9fff7e147ebb"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/seeding.md",
+      "sha256": "0efa525dee2e26a76f11fc0cb646942f436cc78c26ae233bac5ee0a675a34bd5"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/source-manifest.json",
+      "sha256": "d6722533a15d1e4815482d2b71f84c4f1948d1a23d6de4f611fc739c563e9035"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/validated-runtime.json",
+      "sha256": "0f313816a61eecab0509d90494d82438ec2f3af2b9cc40417378b36b0309747b"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/EDARATEK_PHASE_4_EXECUTION_REPORT.md",
+      "sha256": "03701fae41bdd6f106839df937b48575b72d4ba2e0526d911f444f8fb95a3fa2"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/acceptance.md",
+      "sha256": "dde696bb274b63a019c13362949695e2a88a4046921dc8e6ff39015d627dc015"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/current-context.md",
+      "sha256": "042173fa423ffee9ae390e8611a7d07483cafcb338cc704a423e91e530f22747"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/endpoint-matrix.md",
+      "sha256": "dea2c870c9971c54fa71a0b90871b675b7627c19b86236fcee9106d1bf478e6c"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/isolation.md",
+      "sha256": "acc219db1f74981fa7dba990cdbe76da59f7d4f39ea962b98dd2661e234ad19e"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/results.md",
+      "sha256": "e660b1a22bb043bde1b7df18b4de6fd173c3aa4aa1d1fa71de8c793fb2d9e044"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/source-manifest.json",
+      "sha256": "3a3ebd676b63b8283cd3eb4c5a56d07ac8c9e1af80f81ade8634a68beeb7ba2e"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/task-traceability.md",
+      "sha256": "dadb0cc5f9d184fbfa3b6a6a34d28d9ca278b424d589b93b9c6a45a62c2dd916"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/validated-runtime.json",
+      "sha256": "1d3dfb9e0a6c916e96ad61daa07c9f8c1236372b50df701f5d7d8e9dc5e97261"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/EDARATEK_PHASE_5_EXECUTION_REPORT.md",
+      "sha256": "e677ac3896a40ce5a02981d7e0a18b9e92a34a7b138f6a367fb2d6ec2294da8c"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/acceptance.md",
+      "sha256": "e95a084e76b61d7e3bc6f2ad8e04e7a07fb31d80db02fb4c0b4ea30b6e6edc74"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/checklist-evidence.md",
+      "sha256": "22168d4cf7b32cafbc4c2e67e948c2f5e07530b18d99b8affbb49bce3afcbb15"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/download-design.md",
+      "sha256": "e1cc0a9a9e47fd682ae8ea463d889524e4487bca0dfb49a36dc0e37d8d17aa6b"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/inventory.md",
+      "sha256": "65d5bf764af8c78b3fbd5ae87501a0a4a19e0de5ade83aa841dfcc621276a3ee"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/migration-design.md",
+      "sha256": "34945707dd5c7f0f3993d63ba20b6bc9f948452ad77bdbf7e792212a3b45681f"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/migration-results.md",
+      "sha256": "757b44866554f6b619dae3c929189ae3e008e8ca63565a6962191a5d6e1002be"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/operational-boundaries.md",
+      "sha256": "7b20606d808b8a7efec6dd6742cd23aaaf105aa313bc9c5a731d951cd64cf38f"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/results.md",
+      "sha256": "6050fa2f86bd7b7745e275506b596670feda733549c5c2b8a3319e34cfed9a07"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/source-manifest.json",
+      "sha256": "e13280c2a667045b993089c2eeca7678d541af1d4fa7d7c4f293cff4866e60a2"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/static-results.md",
+      "sha256": "ae2e86791c21bc1004d5f0a617b784b9b4de8c0807fadbbf02246fee465a5de4"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/task-traceability.md",
+      "sha256": "dd1a5f9314c683e2956f44652464e3f0b7ba1eab33d4a3bc8d0a09982658747f"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/validated-runtime.json",
+      "sha256": "cc96e02dc35699d0a6dcab1bf4fc17435f066e791fe34e561387c9e609cb3cd6"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/EDARATEK_PHASE_6_EXECUTION_REPORT.md",
+      "sha256": "9363e1c8e53afbd14098b0aa861994c87e1a4aad5ca81eaa5a1538219f950ed9"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/acceptance.md",
+      "sha256": "27fa78f85d9b7eb37d578df14761364e0028bb5a2f6ce69ad7efa76a7d026c44"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/admission-design.md",
+      "sha256": "d27b139f10f1223d4a606cc775663df6ea18148f9f782a6cbed38138a31fd0aa"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/checklist-evidence.md",
+      "sha256": "575c55af49411f2bfe5fe58f9d21fb515b26d673c00b484b1c8d4fae06cc40cf"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/migration.md",
+      "sha256": "ab1fc3b5301cc9940dc32d2bb7399c0d99889645a12b1ce3f6f8bee5f8c85c15"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/original-requirements.md",
+      "sha256": "053c06ca33facee437a672bf6d572d5fc4c4ae587eea3854f832477240f13662"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/results.md",
+      "sha256": "cb8fdd9e9acebf5d9f5915e771aa00ffd8680e171285347de5ba0afcf98ff2ce"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/retired-test-inventory.json",
+      "sha256": "3c7cfe09f0ef05b3aec50cc1aec7c57ef0765f263cbeab73b42fd3d49fc9fc49"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/scope-decision.md",
+      "sha256": "63d8e8e31eab6020c87d20eb8fe553b84275a05e0e55c6f36a24a7ed675d7115"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/source-manifest.json",
+      "sha256": "7cd1381e147bd93ea3257daaf0de1e5901422ac96f8cd39bf8e179cb7b31594b"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/task-traceability.md",
+      "sha256": "583b67a5b737754bf4f245ea80c9d468b767c19b291f84dac062e34f2061b193"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/validated-runtime.json",
+      "sha256": "83f8efebd9f2741f0128d849a86d01fd8e612b08b76897f961185b5eaabca218"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/EDARATEK_PHASE_7_EXECUTION_REPORT.md",
+      "sha256": "2f6572f20bb60ddfa1fc60fe5d0652305d3aeffe9572b06a83b2b1fb26c11f64"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/acceptance.md",
+      "sha256": "510776feb960087cd99bd5a85e71e2a7aa2728c30af730212f0607563624d56a"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/checklist-evidence.md",
+      "sha256": "1ce0f998c025aca1b815d9d0c69dcb9bd417a3e2f604a4bb81887b123f36761f"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/compatibility.md",
+      "sha256": "3e1ac4c3805103cf8829815d98c2c5a6387f39b2f681806a861a9d37f6b77c51"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/contract-inventory.md",
+      "sha256": "b5d6a3e6a99c26be53246579815fb8db95b1cc298bfc641672bab218e0e40f10"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/implementation.md",
+      "sha256": "7e92a0346537ce3dcfd70ced08b74c16ac94bdf92c6795341be050b23dcc6a06"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/pre-freeze-contract.md",
+      "sha256": "29966f35e6403871acd781bf666ecba758b4c81fa5a89a5fbb481c90cf940982"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/results.md",
+      "sha256": "00e877c7c6a72fc97ee36792dcacfd14aa790502a0e8662c1df08be8dd981afb"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/source-manifest.json",
+      "sha256": "ac125231074d9eca91edc15f0e67fd227e83eaae3f25f7130d91fb56c6eeea4f"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/task-traceability.md",
+      "sha256": "2832ba8d439f3122e89dc1d69d6263edb73f2f3c743ca299f5a86d3335343207"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/validated-runtime.json",
+      "sha256": "7e2086eaf88861ad07a9ab78728535622146021139d082f57c2e5934ecaae03e"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/validation-history.json",
+      "sha256": "d5167617b450738d89c4e5dde19bc66c0b3e5ef6446b8d1048383a11373b43d0"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+      "sha256": "e796be92eca497db958875ea2d315993f0f6f4f9b8a60c29aef62c9526d45a43"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/acceptance.md",
+      "sha256": "07903de2ae9702011fdf5ade7bd660dd3e50ee8963ca60a0d5866c6bb4a41dd3"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/access-security.md",
+      "sha256": "9f03026cc1e3f30ed3ec6558dbbfeaec9727ab734c988c27064286fc1ed9a7e9"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/audit-closure.md",
+      "sha256": "2372b419243914b397e7fb20e51cc7055054de4360893ea8886706fcd3d2bf6e"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/contracts-and-config.md",
+      "sha256": "5bfb5956a3d18740a0b875e21ba2faa3c79ca5957022118c05a51991919b67cd"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/coverage.md",
+      "sha256": "e07c375fd11bfd88eb05053117831ce624860ed4333e59381e28728c7ab4ecd3"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/failure-register.md",
+      "sha256": "3efaf1e9798d219014ec4a4a04b157b44e401a97019215b736b56e0767089154"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/file-security.md",
+      "sha256": "de6f17afdf4a8856d04cbcc9be22f272887f780b868a7260e00fed7b45f54346"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/full-results.md",
+      "sha256": "04d708ac583c25b97837ea20b1f78d4ce593b78d3d94b5cc2bb9163a70d266fc"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/queue-security.md",
+      "sha256": "f262436f05c7140fea25215e306d69da50cbcbd2e6587b9f99d9515f0aa88740"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/review.md",
+      "sha256": "0182234b44bc5aff38761372aab4f75af643c4fef30db187360c2e9f80b7f57a"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/source-manifest.json",
+      "sha256": "1054df855fec3f047c6b8b648bbe90c6deaf7e57527b174e5a16fa136d09bf85"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint-preservation.json",
+      "sha256": "6a0b605bd7997d712f0cc8d1e9ae8498bebf93eff559cdfc119adccad1bbb08e"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT-before-probe2.md",
+      "sha256": "b4b52152dd68eaecca8fe09774bb4628879592a552a8b17d0d947e9407d21835"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT-before-probe3.md",
+      "sha256": "bb5987ec11d432c40bf7bba0c081cead08b3127b22f87157543f0dbbfc713ea7"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT-before-probe4.md",
+      "sha256": "fc0bd88ef007916fef5fc973a31b5b8c8cea198c8571c748c911918bfe4f7374"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+      "sha256": "a11e549e7b009ced6cd77f579ee75a7b73234786c801012b1d0331d5728c2df0"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance-before-probe2.md",
+      "sha256": "6fc4a4ca89b22fd2a607c03db153f4341d3d3dca291012767c04daa0a5963e5f"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance-before-probe3.md",
+      "sha256": "10f1133371213204039ccc11e03f07c19287a1371d63b2917f0f1249dd391834"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance-before-probe4.md",
+      "sha256": "0aabdfbcc2b3eadb26de96b43ba835cccc159eecd69141b8ff48bcd2392275bf"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance.md",
+      "sha256": "8b11c49554effdb5e872a94cf1726636f5793f3f31f6c60272e24114be5da96a"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/reassessment-before-probe2.md",
+      "sha256": "f4a5036a38014af18318f4268ab6bed9cf258e277031a2f37c32f4478072fecd"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/reassessment-before-probe3.md",
+      "sha256": "865f5fe67b9d315fa650d59df95a293c5278e4909ca0812d136112dcf3deb6c0"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/reassessment-before-probe4.md",
+      "sha256": "93920d50d76a70871d099396a98e067536da27cf7afeb92ef6a5b19088ad70a8"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks-before-probe2.md",
+      "sha256": "982ee64657acaf39fdba2c0356daa127156772fe316b223b1bbb8ed706b73e6d"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks-before-probe3.md",
+      "sha256": "817d8f0394de9f7ea5cf6c62998075152a90c5d776e48816526090effb72ce41"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks-before-probe4.md",
+      "sha256": "224b4872150395a1454e1654f2c7021b4a986df7d4c1e40b21132595073f33bd"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks.md",
+      "sha256": "4a1a625d400df566681254d03b87d4952fd45fde4b7ba6df660bfdbb6086fd4e"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/h05-review-manifest.json",
+      "sha256": "2b6051591f3ca104d27fa52ac7ac752e497006c36676c7ae79283b104b3b74c6"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/http-observations.json",
+      "sha256": "9a9ca0894bfacd545882b3d111bb2758affc322912bc090bb48c225e5671fb3a"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/http-validation.mjs",
+      "sha256": "3f1ddc9f11b88602816ebd96dcf3ac07ea53795db06ff0de109a5572f6646ff4"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/operations-handoff.md",
+      "sha256": "f4f543b4cf3965915f6f25d1164e13df9daece653c3dacc8045fbec3399443e2"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/operator-evidence.json",
+      "sha256": "3d7c30971d9d1929c96167c17e607326293d1f3309fd36ecf5e4782e1b7262ec"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe-2-operator-evidence.json",
+      "sha256": "ec5bb26a508055cfd2805b6e6a77c01743bc0742dbd317cd294b231c1e44d3fd"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe-3-operator-evidence.json",
+      "sha256": "58a82eb4edad2e4fc8429392b681f6b49908346fed45a567aad8108d6ae42330"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe-4-operator-evidence.json",
+      "sha256": "c4647dd6664eee4fde7791d87cb2ec2afec80a7f6a6694bc4c9e232a8c6c3e84"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe2-checkpoint-preservation.json",
+      "sha256": "49517508f2e47a881bd1fff19a9b7dd9f78f7e38e64087235671a8da22354024"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe2-review-manifest.json",
+      "sha256": "26b32cdf0970d40b61384460bce43e4b3bb913c675399f966993b63cf6fcb4e1"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe3-checkpoint-preservation.json",
+      "sha256": "80d87d7d1886ddf67b55793163a3b502544bee14dd605cee624801f331637110"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe3-review-manifest.json",
+      "sha256": "12455241ab0aa1803615395d77b4c2b8791712e703b93d3efa0fa1d7aeafd97b"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe4-checkpoint-preservation.json",
+      "sha256": "2d85e8b8b359cbb5d309ec539ebeff6ee17cffb6f030007ea078c158209d6aea"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe4-review-manifest.json",
+      "sha256": "ab1864e6c0794a9d391338f0ce2ee0e6d04b76d2b73a0ea69144365c5fdeec89"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/reassessment.md",
+      "sha256": "6fca5b2ef3c583ab671f1edfdb37f6b49bd7a2bcd275aead9a149c19fb4063d8"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05-cgi.sh",
+      "sha256": "a6ba20b88c6c2548582f866175d1024344ee1378d025150283179714987ee36b"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05-wiring.sh",
+      "sha256": "532f4c8cf0473e61c756250670d2c1afe160d7f3e5d79b3c94361babda492766"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05.sh",
+      "sha256": "3f2f30b37e893bdfd6fdb7ab5506bb2c7bc797b08eaa877d99af8af70218c015"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly.sh",
+      "sha256": "99f0eee7bc40697f7353a93b6770d2f134718cc8b377973f9e006cd1f6380486"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/validation-plan.md",
+      "sha256": "a343f12dce2e6e894c3b15b8b44a6af74233575c940af2805a1bf13ec153deff"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/task-traceability.md",
+      "sha256": "43aa1ae3b6005193d4e8ba1ab6f23037b4321789442b1694b1906ae880ac6a08"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/test-inventory.json",
+      "sha256": "531c41e2262bc39d2907666fe7b5715685bb171e861f2be187383b8943d763b8"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/validated-runtime.json",
+      "sha256": "f011269a88adcea821161cc909cfb454bbfe7e3644b7fea0edaa6afecf7f0cd0"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/validation-history.json",
+      "sha256": "6e55f9abdd372aa24a7cd7fc4f6bfc9e10ddf21bb4af16f1f91a1e8164a57081"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/verification.json",
+      "sha256": "cbcbb3434fb496bb7bd13c86f288ceca8f4d29161e3034ee2b7a0fc869afdf42"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/plan.md",
+      "sha256": "467e69847a00ba1f8d101eb77f576b7f3043f831c291544d7350c33d452d7595"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/quickstart.md",
+      "sha256": "6c4cb1a9ce700b91c05ce6aaf631bcb87ad17607d2f45646d3abec525c981564"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/research.md",
+      "sha256": "9ebf61f6cdfc30c5500982684b6904502115c2aaf58c42fe2851e0fce80ff960"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/spec.md",
+      "sha256": "7e6805e26b4cf070bcf3b8a68218a1afd01ce7bf02f23374e3195ce8ecef1025"
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/tasks.md",
+      "sha256": "88b4aa6373d4f9ac2eac5d4e8585fe2f668d213dd75177a1863c8ccdc5e7cdb0"
+    }
+  ],
+  "manifest_self_hash_excluded": true,
+  "important_previously_tracked_files": [
+    {
+      "path": "CLAUDE.md",
+      "sha256": "97ad480b325e709556701152df5db2936e617697950560b153916753dcf14811",
+      "git_blob": "fc1946c5f20a185280b4d955517f3e355355d92f"
+    },
+    {
+      "path": "PROJECT_DETAILS.md",
+      "sha256": "f804291775afaf83548ebbc3d26d28683486b8f675ce724a6c4e4fb1030575aa",
+      "git_blob": "c41a9887984ce715afe8644dc07b2afc4d6809df"
+    },
+    {
+      "path": "docs/mobile-api-v1.md",
+      "sha256": "b6af6078e34320536e553814d1bb4fd688e75891c753e8c1bd217954f33be836",
+      "git_blob": "30d3ffd679498bcc3b33f54817d2946ec1361c5b"
+    },
+    {
+      "path": "docs/notification-policy.md",
+      "sha256": "39aeef17778f76b54d74b7904764e77ab985ad0c0ee8a4af7e0afcbe03a4c1b2",
+      "git_blob": "b634540f5b58e733ea6698a2bcd92ce693a88e8b"
+    },
+    {
+      "path": "docs/mobile-backend-phase8-gate.md",
+      "sha256": "88821996a9ea8cf08fb5d5dccfb848120a3ec657950c1324bc307c0b975c22d7",
+      "git_blob": "29b64141cc4404965cdf391584800142ece3f9a9"
+    },
+    {
+      "path": "tools/testing/phase8-scope.json",
+      "sha256": "5862f8395099ac4546ec5a4252443fb5b40ec1c76b978d0233d556702ac9df3d",
+      "git_blob": "d4783ce3b59cfca67d487a8cf7e51f407fdaf8e6"
+    },
+    {
+      "path": "tools/testing/run-tests.ps1",
+      "sha256": "f40b89064cc91c76c5d7389b8caf1d01cb682d4696e66fd528df323feb77b9c7",
+      "git_blob": "1e7946c7246c875383afdc06a4e153ccd7beebea"
+    },
+    {
+      "path": "tools/testing/run-baseline.sh",
+      "sha256": "c5e11757c60375cf6c85851489fd8b7ca089e29064f356bcdba83a21f7033dba",
+      "git_blob": "af9a1ad2d057c34bca78826b249f79476fdbedd1"
+    },
+    {
+      "path": ".github/workflows/mobile-backend-tests.yml",
+      "sha256": "6d6c9c2f9b750f49898118b1645fcf95778ee60192f45606ecef1351b8a900b6",
+      "git_blob": "d1a0653203a5f4ab1d9ffa74c9c49090aecca98c"
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "sha256": "349264dca87ac571ae508f130a9d79267e67ef18a0c1e52f640633d488e2c317",
+      "git_blob": "8b31ff1d325470cca87370b61dc000e4180139bd"
+    }
+  ],
+  "external_baseline_copy": {
+    "original": "C:/Users/HP/.codex/artifacts/edaratek-phase0-20261107/EDARATEK_MOBILE_BACKEND_AUDIT.md",
+    "portable": "docs/audits/EDARATEK_MOBILE_BACKEND_AUDIT.md",
+    "sha256": "95402d30296c68be3363ceb27a7fddafb05c813ff6827e9db483231d258aee60",
+    "byte_identical": true,
+    "existing_report_only": true
+  },
+  "intentionally_excluded_files": [
+    {
+      "path": "public/awstats-icon",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/awstatsicons",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/icon/mime/conf.png",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/icon/mime/csv.png",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/icon/mime/document.png",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/icon/mime/dtd.png",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/icon/mime/flv.png",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/icon/mime/fon.png",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/icon/mime/package.png",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/icon/mime/runtime.png",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/icon/mime/swf.png",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/icon/mime/vbs.png",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": "public/icon/mime/xsl.png",
+      "reason": "Unintended hosting/static deletion; not staged or restored."
+    },
+    {
+      "path": ".well-known/acme-challenge/.htaccess",
+      "reason": "Environment-specific ACME/server rule."
+    },
+    {
+      "path": ".specify/feature.json",
+      "reason": "Spec Kit ignored per-checkout feature pointer; exact reconstruction documented."
+    }
+  ],
+  "ignored_runtime_content": "No .env, credential/private-key/certificate/DB dump/upload/cache/vendor/node_modules contents added.",
+  "safety": {
+    "PUSH_TO_MAIN": "NO",
+    "MERGE_PERFORMED": "NO",
+    "DEPLOYMENT_PERFORMED": "NO",
+    "PRODUCTION_TOUCHED": "NO",
+    "REAL_FILES_MIGRATED": 0,
+    "REAL_WHATSAPP_SENDS": 0,
+    "PHASE_9_STARTED": "NO"
+  },
+  "verification_plan": "Stage only reviewed_commit_paths, compare every staged blob byte-for-byte with file hashes; push exact feature ref; verify all manifest/source files from a fresh origin clone. Documentation/path checks only; no Phase8 investigation."
+}

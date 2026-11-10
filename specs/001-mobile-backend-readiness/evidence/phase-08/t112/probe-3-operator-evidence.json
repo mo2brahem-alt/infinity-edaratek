@@ -1,0 +1,58 @@
+{
+  "provenance": "User-reported successful trusted SSH execution of server-readonly-h05-wiring.sh; accepted handler correction. Not an agent observation.",
+  "target": "test.edaratek.com",
+  "reported_date_africa_cairo": "2026-11-09",
+  "server_execution_timestamp": null,
+  "probe_execution_status": "SUCCESS",
+  "observations": {
+    "handler_in_both_virtualhost_blocks": "FCGIWrapper",
+    "configured_executable": "/bin/php-cgi8.3",
+    "kind": "CGI_WRAPPER_CONFIGURATION",
+    "wrapper_actual_path": "NOT_PROVIDED",
+    "linked_pools": [],
+    "proxy_pass_lines": {
+      "27": "PROXY_EXCLUSION_NOT_FPM_MAPPING",
+      "70": "PROXY_EXCLUSION_NOT_FPM_MAPPING"
+    }
+  },
+  "accepted_conclusions": {
+    "PHP_HANDLER": "CGI_WRAPPER",
+    "PHP_EXECUTABLE": "/bin/php-cgi8.3",
+    "FPM_NOT_APPLICABLE_FOR_THIS_VHOST": "YES",
+    "further_fpm_discovery": "STOPPED_NOT_REQUIRED_FOR_THIS_PATH"
+  },
+  "verdicts": {
+    "H01_STATUS": "BLOCKED_INDEPENDENT_PRIVATE_FILE_PROOF_GAP",
+    "H05_STATUS": "BLOCKED_CGI_EFFECTIVE_SETTINGS_AND_EQUIVALENT_DISCLOSURE_PROTECTION_UNPROVEN",
+    "T112_STATUS": "BLOCKED",
+    "APP_DEBUG_CACHED_VALUE": true,
+    "CGI_WRAPPER_PATH": "UNKNOWN",
+    "CGI_PHPRC": "UNKNOWN",
+    "CGI_PHP_INI_SCAN_DIR": "UNKNOWN",
+    "CGI_DISPLAY_ERRORS": "UNKNOWN",
+    "CGI_DISPLAY_STARTUP_ERRORS": "UNKNOWN",
+    "CGI_LOG_ERRORS": "UNKNOWN",
+    "CGI_ERROR_REPORTING": "UNKNOWN",
+    "RUNTIME_ERROR_DISCLOSURE_EVIDENCE": "UNAVAILABLE"
+  },
+  "fourth_probe": {
+    "name": "server-readonly-h05-cgi.sh",
+    "status": "PREPARED_NOT_RUN_ON_SERVER",
+    "scope": "Static target wrapper and only its literal PHPRC/scan-directory references; four error settings and related -d/environment mentions, no executable evaluation."
+  },
+  "safety": {
+    "NO_WRITES_ON_SERVER": "YES",
+    "NO_CONFIG_CHANGES": "YES",
+    "NO_APPLICATION_CHANGES": "YES",
+    "NO_PHP_EXECUTION": "YES",
+    "NO_LARAVEL_BOOT": "YES",
+    "NO_HTTP_OR_FCGI_REQUESTS": "YES",
+    "NO_SERVICE_RESTARTS": "YES",
+    "NO_ENV_DUMP": "YES",
+    "NO_DEPLOYMENT": "YES",
+    "PRODUCTION_TOUCHED": "NO",
+    "REAL_FILES_MIGRATED": 0,
+    "REAL_WHATSAPP_SENDS": 0,
+    "PHASE_9_STARTED": "NO"
+  }
+}

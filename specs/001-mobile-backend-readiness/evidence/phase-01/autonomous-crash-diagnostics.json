@@ -1,0 +1,360 @@
+{
+  "run_id": 42469219953,
+  "job_id": 128695816929,
+  "commit": "04ffdd1cc61d1ecd57c4c0fa7c93cbe1dcaa8119",
+  "records": [
+    {
+      "kind": "guard",
+      "mode": "preflight",
+      "status": "PASS",
+      "database": "edaratek_test_5217ee8d3dfd",
+      "mysql_version": "8.0.46",
+      "db_target": "ephemeral_internal_service",
+      "cache": "array",
+      "queue": "sync_without_workers",
+      "mail": "array_and_fakes",
+      "provider_credentials": "absent",
+      "vite_manifest": "generated_and_verified",
+      "laravel_boot": "NOT_RUN"
+    },
+    {
+      "kind": "platform",
+      "php_version": "8.2.35",
+      "extensions": [
+        "Core",
+        "PDO",
+        "Phar",
+        "Reflection",
+        "SPL",
+        "SimpleXML",
+        "Zend OPcache",
+        "bcmath",
+        "ctype",
+        "curl",
+        "date",
+        "dom",
+        "fileinfo",
+        "filter",
+        "gd",
+        "hash",
+        "iconv",
+        "intl",
+        "json",
+        "libxml",
+        "mbstring",
+        "mysqlnd",
+        "openssl",
+        "pcntl",
+        "pcre",
+        "pdo_mysql",
+        "pdo_sqlite",
+        "posix",
+        "random",
+        "readline",
+        "session",
+        "sodium",
+        "sqlite3",
+        "standard",
+        "tokenizer",
+        "xml",
+        "xmlreader",
+        "xmlwriter",
+        "zip",
+        "zlib"
+      ],
+      "pdo_drivers": [
+        "sqlite",
+        "mysql"
+      ],
+      "composer_version": "2.11.1",
+      "php_requirement": "^8.2",
+      "phpunit_version": "11.5.51",
+      "laravel_version": "v12.50.0",
+      "frontend_node_version": "22.23.4",
+      "composer_validate_exit": 0,
+      "composer_strict_exit": 0,
+      "composer_strict_warning_present": false,
+      "composer_platform_exit": 0,
+      "platform_requirements": [
+        {
+          "name": "composer-runtime-api",
+          "status": "success",
+          "version": "2.2.2"
+        },
+        {
+          "name": "ext-ctype",
+          "status": "success",
+          "version": ""
+        },
+        {
+          "name": "ext-dom",
+          "status": "success",
+          "version": "20031129"
+        },
+        {
+          "name": "ext-fileinfo",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-filter",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-hash",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-iconv",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-json",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-libxml",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-mbstring",
+          "status": "success",
+          "version": ""
+        },
+        {
+          "name": "ext-openssl",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-pcre",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-phar",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-session",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-tokenizer",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-xml",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "ext-xmlwriter",
+          "status": "success",
+          "version": "8.2.35"
+        },
+        {
+          "name": "lib-pcre",
+          "status": "success",
+          "version": "10.40"
+        },
+        {
+          "name": "php",
+          "status": "success",
+          "version": "8.2.35"
+        }
+      ],
+      "runtime_network": "internal_only",
+      "dependency_network": "build_only"
+    },
+    {
+      "kind": "guard",
+      "mode": "boot",
+      "status": "PASS",
+      "database": "edaratek_test_5217ee8d3dfd",
+      "mysql_version": "8.0.46",
+      "db_target": "ephemeral_internal_service",
+      "cache": "array",
+      "queue": "sync_without_workers",
+      "mail": "array_and_fakes",
+      "provider_credentials": "absent",
+      "vite_manifest": "generated_and_verified",
+      "laravel_boot": "PASS"
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "phpunit_process_profile",
+      "PHP_MEMORY_LIMIT": "128M",
+      "PHP_MAX_EXECUTION_TIME": 0,
+      "cgroup_memory_events_before": {
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      }
+    },
+    {
+      "kind": "infrastructure",
+      "status": "INFO",
+      "stage": "baseline_process_exit",
+      "TEST_EXIT_CODE": 255
+    },
+    {
+      "kind": "infrastructure",
+      "TEST_EXIT_CODE": 255,
+      "PHP_MEMORY_LIMIT": "128M",
+      "PHP_MAX_EXECUTION_TIME": 0,
+      "cgroup_memory_events_before": {
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_memory_events_after": {
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_oom_kill_increased": false,
+      "event_file_present": true,
+      "event_file_bytes": 1532667,
+      "phpunit_finished_event": false,
+      "finished_shell_exit_code": null,
+      "finished_event_count": 0,
+      "last_test_identity": {
+        "class": "Tests\\Feature\\WhatsAppIntegrationTest",
+        "method": "test_otp_verification_rate_limit_and_max_attempts_are_enforced"
+      },
+      "last_phpunit_event_types": [
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Errored",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Errored",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning"
+      ],
+      "execution_classification": "INCOMPLETE_TEST_EXECUTION",
+      "junit_file_present": true,
+      "junit_bytes": 0,
+      "junit_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "utf8_valid": true,
+      "xml_declaration_present": false,
+      "contains_doctype_or_entity": false,
+      "starts_with_expected_xml_structure": false,
+      "ends_with_plausible_xml_structure": false,
+      "testcase_token_count": 0,
+      "testcase_token_count_is_diagnostic_only": true,
+      "libxml_errors": [],
+      "libxml_error_count": 0,
+      "baseline_log_present": true,
+      "baseline_log_bytes": 1114,
+      "safe_phpunit_summary_lines": [],
+      "fatal_signature_categories": [
+        "PHP_MEMORY_EXHAUSTED",
+        "PHP_FATAL_ERROR"
+      ],
+      "fatal_signatures_are_observations_only": true,
+      "status": "INFO",
+      "stage": "baseline_report_metadata"
+    },
+    {
+      "kind": "infrastructure",
+      "TEST_EXIT_CODE": 255,
+      "PHP_MEMORY_LIMIT": "128M",
+      "PHP_MAX_EXECUTION_TIME": 0,
+      "cgroup_memory_events_before": {
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_memory_events_after": {
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cgroup_oom_kill_increased": false,
+      "event_file_present": true,
+      "event_file_bytes": 1532667,
+      "phpunit_finished_event": false,
+      "finished_shell_exit_code": null,
+      "finished_event_count": 0,
+      "last_test_identity": {
+        "class": "Tests\\Feature\\WhatsAppIntegrationTest",
+        "method": "test_otp_verification_rate_limit_and_max_attempts_are_enforced"
+      },
+      "last_phpunit_event_types": [
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Errored",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning",
+        "Before Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Errored",
+        "After Test Method Called",
+        "OTHER_PHPUNIT_EVENT",
+        "Test Preparation Started",
+        "Test Triggered PHP Warning"
+      ],
+      "execution_classification": "INCOMPLETE_TEST_EXECUTION",
+      "junit_file_present": true,
+      "junit_bytes": 0,
+      "junit_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "utf8_valid": true,
+      "xml_declaration_present": false,
+      "contains_doctype_or_entity": false,
+      "starts_with_expected_xml_structure": false,
+      "ends_with_plausible_xml_structure": false,
+      "testcase_token_count": 0,
+      "testcase_token_count_is_diagnostic_only": true,
+      "libxml_errors": [],
+      "libxml_error_count": 0,
+      "baseline_log_present": true,
+      "baseline_log_bytes": 1114,
+      "safe_phpunit_summary_lines": [],
+      "fatal_signature_categories": [
+        "PHP_MEMORY_EXHAUSTED",
+        "PHP_FATAL_ERROR"
+      ],
+      "fatal_signatures_are_observations_only": true,
+      "status": "FAIL",
+      "stage": "incomplete_test_execution",
+      "classification": "TEST_EXECUTION_INCOMPLETE",
+      "BASELINE_TEST_RESULTS_RECORDED": "FAIL"
+    },
+    {
+      "kind": "infrastructure",
+      "status": "FAIL",
+      "stage": "baseline_evidence"
+    }
+  ]
+}
