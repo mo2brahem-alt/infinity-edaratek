@@ -1,0 +1,638 @@
+PM AUTHORIZATION — CLOSE THE ONLY REMAINING TECHNICAL PHASE 9 BLOCKER
+
+Current Phase 9 review is accepted as accurate.
+
+Accepted status:
+
+```text
+T113=PASS
+CHK_EVALUATED=84/84
+CHK_RELEASE_SATISFIED=80/84
+
+T114=PASS
+P0_EVALUATED=12/12
+P0_PASS=12/12
+
+T115=PASS
+HIGH_EVALUATED=5/5
+H01=PASS
+H02=PASS
+H03=PASS
+H04=SUPERSEDED_SCOPE_RESOLVED
+H05=PASS
+
+T116=BLOCKED
+CONSTITUTION_PASS=13/14
+
+T117=BLOCKED
+FINAL_SOURCE_EVIDENCE_CONSISTENCY=BLOCKED
+
+T118=BLOCKED
+PROPOSE_MOBILE_BACKEND_READY=NO
+
+T119=AWAITING_PM_REVIEW
+T120=NOT_STARTED
+```
+
+The only technical blocker identified by the Phase 9 review is:
+
+`CHK008_PHP83_AUTOMATED_COMPATIBILITY_EVIDENCE=MISSING`
+
+Its downstream effects are:
+
+- CHK081
+- CHK083
+- Constitution principle IX / T116
+- source/runtime evidence consistency / T117
+- final readiness recommendation / T118
+
+CHK084 remains PM-owned and MUST remain pending until the PM reviews this new evidence.
+
+Do NOT reopen H01, H05 or T112.
+
+---
+
+# 1. Exact objective
+
+Run the already-approved isolated automated test harness against PHP 8.3 on the exact candidate source:
+
+`d57cf9831c3c7123534aedfd34021c7b649968c7`
+
+Use:
+
+- the same Composer lock;
+- the same test harness;
+- the same MySQL 8.0 test service;
+- the same isolation guards;
+- the same focused security/contract suites;
+- the same full Artisan lane;
+- the same explicit MySQL PHPUnit lane.
+
+This is compatibility evidence only.
+
+No application implementation.
+
+---
+
+# 2. Why this closes CHK008
+
+`composer.json` supports:
+
+`php: ^8.2`
+
+The accepted Phase 1 automated evidence used PHP 8.2.35.
+
+The actual approved test environment now uses the PHP 8.3 line.
+
+CHK008 requires compatibility evidence for the applicable newer supported PHP runtime rather than assuming PHP 8.2 evidence is sufficient.
+
+Therefore execute the same guarded automated suite on PHP 8.3.
+
+---
+
+# 3. Isolation — do NOT modify the repository Dockerfile
+
+Do not edit the tracked:
+
+`tools/testing/Dockerfile`
+
+for this evidence run.
+
+Do not change application/test source in the working repository.
+
+Instead create a disposable source export from the exact candidate using:
+
+`git archive`
+
+The disposable export must contain tracked files from exactly:
+
+`d57cf9831c3c7123534aedfd34021c7b649968c7`
+
+It must NOT copy:
+
+- `.env`
+- working-tree untracked files
+- Git metadata
+- server files
+- credentials
+- production/test-server runtime data
+
+Return:
+
+`PHP83_SOURCE_EXPORT_SHA=d57cf9831c3c7123534aedfd34021c7b649968c7`
+
+---
+
+# 4. Resolve a reproducible PHP 8.3 image
+
+Pull only the official isolated build dependency:
+
+`php:8.3-cli-bookworm`
+
+Record:
+
+- actual PHP version;
+- architecture;
+- resolved immutable RepoDigest.
+
+Do not rely on the mutable tag in the recorded evidence.
+
+Resolve the digest and use:
+
+`php:8.3-cli-bookworm@sha256:<resolved-digest>`
+
+in the DISPOSABLE Dockerfile copy only.
+
+No tracked Dockerfile mutation.
+
+Return:
+
+`PHP83_IMAGE_TAG=php:8.3-cli-bookworm`
+
+`PHP83_IMAGE_DIGEST=<sha256>`
+
+`PHP83_RUNTIME_VERSION=<actual version>`
+
+Require:
+
+`PHP_MAJOR_VERSION=8`
+
+`PHP_MINOR_VERSION=3`
+
+Otherwise STOP.
+
+---
+
+# 5. Disposable Dockerfile modification
+
+Inside the temporary `git archive` export only, replace the existing PHP 8.2 base:
+
+`php:8.2-cli-bookworm@...`
+
+with the resolved immutable PHP 8.3 image.
+
+Do not change:
+
+- required extensions;
+- Composer behavior;
+- Node version;
+- MySQL service;
+- test commands;
+- environment guards;
+- test selection;
+- memory limit;
+- source integrity probes.
+
+The only material runtime matrix change is PHP 8.2 → PHP 8.3.
+
+Return:
+
+`PHP83_MATRIX_ONLY_RUNTIME_CHANGED=YES`
+
+---
+
+# 6. Use the existing guarded harness
+
+Run the temporary export's existing:
+
+`tools/testing/run-tests.ps1`
+
+Do not invent a simplified PHPUnit command that bypasses its isolation checks.
+
+The harness must still prove:
+
+- disposable DB;
+- internal Docker network;
+- APP_ENV=testing;
+- APP_DEBUG=false;
+- synthetic APP_KEY;
+- isolated cache paths;
+- array cache/session;
+- sync queue;
+- array mail;
+- no provider credentials;
+- no real outbound provider traffic;
+- source integrity.
+
+Require:
+
+`PHP83_ISOLATION_GUARDS=PASS`
+
+---
+
+# 7. Composer/platform gates on PHP 8.3
+
+The existing harness must execute:
+
+- Composer validation;
+- Composer install from lock;
+- `composer check-platform-reqs`;
+- package discovery;
+- required PHP extension verification.
+
+Record:
+
+`PHP83_COMPOSER_VALIDATE=PASS|FAIL`
+
+`PHP83_COMPOSER_LOCK_INSTALL=PASS|FAIL`
+
+`PHP83_PLATFORM_REQUIREMENTS=PASS|FAIL`
+
+`PHP83_REQUIRED_EXTENSIONS=PASS|FAIL`
+
+Any PHP/platform incompatibility:
+
+STOP with:
+
+`CHK008=FAIL`
+
+Do not modify composer constraints or lockfile.
+
+---
+
+# 8. Database/migration probes
+
+Use only the disposable MySQL test container.
+
+Require existing migration/schema probes to pass, including the previously repaired migration path and:
+
+- native PAT migration probe;
+- private file migration probe.
+
+No shared/test-server DB.
+
+No server migration.
+
+Return:
+
+`PHP83_MIGRATION_PROBES=PASS|FAIL`
+
+---
+
+# 9. Focused suites
+
+Run the existing harness unchanged.
+
+Require all mandatory focused gates to remain passing, including:
+
+- Phase 2/native authentication;
+- Phase 3;
+- Phase 4;
+- Phase 5;
+- Phase 6 active notification scope;
+- Phase 7;
+- Phase 8 focused security/contract set.
+
+Do not restore retired WhatsApp tests.
+
+Return the actual counts.
+
+Require:
+
+`PHP83_FOCUSED_REQUIRED_FAILURES=0`
+
+`PHP83_FOCUSED_REQUIRED_ERRORS=0`
+
+`PHP83_FOCUSED_REQUIRED_SKIPS=0`
+
+---
+
+# 10. Authoritative full lanes
+
+Run BOTH existing authoritative full lanes:
+
+1. guarded:
+
+`php artisan test`
+
+2. explicit MySQL:
+
+`vendor/bin/phpunit -c phpunit.mysql.xml`
+
+Record separately:
+
+- tests;
+- passed;
+- failed;
+- errors;
+- skipped;
+- warnings where the existing evidence format supports them;
+- duration;
+- exit code.
+
+Do not collapse the two lanes.
+
+---
+
+# 11. Historical Excel failure
+
+The known historical Excel failure remains visible.
+
+Do NOT convert it to PASS.
+
+If the PHP 8.3 full run reproduces ONLY the same previously accepted, unchanged Excel failure, with:
+
+- no new failures;
+- zero errors;
+- zero mandatory skips;
+- all required P0/focused tests passing;
+
+classify:
+
+`PHP83_KNOWN_EXCEL_FAILURE=UNCHANGED_PREEXISTING_ACCEPTED_EXCEPTION`
+
+This may still satisfy CHK008 compatibility evidence.
+
+If the Excel failure changes materially or any additional failure/error/mandatory skip appears:
+
+`PHP83_COMPATIBILITY=FAIL`
+
+and STOP.
+
+---
+
+# 12. Comparison against PHP 8.2 evidence
+
+Explicitly compare the PHP 8.3 results against the accepted PHP 8.2.35 evidence.
+
+Return:
+
+`PHP82_REFERENCE_VERSION=8.2.35`
+
+`PHP83_RUNTIME_VERSION=<value>`
+
+`NEW_PHP83_ONLY_FAILURES=<n>`
+
+`NEW_PHP83_ONLY_ERRORS=<n>`
+
+`NEW_PHP83_ONLY_MANDATORY_SKIPS=<n>`
+
+Require all three to equal:
+
+`0`
+
+for compatibility PASS.
+
+---
+
+# 13. Cleanup
+
+After the run:
+
+- destroy disposable Docker containers;
+- destroy disposable volumes;
+- remove disposable project network;
+- delete temporary source export;
+- delete temporary PHP 8.3 Dockerfile copy;
+- remove transient synthetic credentials from process environment.
+
+Do NOT delete global/shared Docker images merely because they were pulled.
+
+Require:
+
+`PHP83_DISPOSABLE_RUNTIME_CLEANUP=PASS`
+
+---
+
+# 14. Repository preservation
+
+After cleanup verify the original repository.
+
+No application or harness source should have changed because of this run.
+
+Phase 9 evidence documents may be updated after successful evidence collection.
+
+Return:
+
+`APPLICATION_CODE_CHANGED=NO`
+
+`TEST_HARNESS_TRACKED_SOURCE_CHANGED=NO`
+
+Do not reset/checkout/stash user work.
+
+---
+
+# 15. CHK008 decision
+
+If:
+
+- PHP runtime is 8.3.x;
+- Composer/platform requirements pass;
+- migration probes pass;
+- mandatory focused suites pass;
+- both full lanes execute;
+- no PHP8.3-specific failure/error/mandatory skip appears;
+- only the already accepted unchanged Excel exception remains, if present;
+
+then record:
+
+`CHK008=PASS`
+
+`PHP83_AUTOMATED_COMPATIBILITY_EVIDENCE=PASS`
+
+Otherwise:
+
+`CHK008=FAIL|BLOCKED`
+
+and do not weaken the gate.
+
+---
+
+# 16. Re-evaluate only downstream Phase 9 gates
+
+After CHK008 PASS, re-evaluate ONLY:
+
+- CHK008
+- CHK081
+- CHK083
+- T116
+- T117
+- T118
+
+Do NOT redo the other 80 CHKs.
+
+Do NOT redo P0 12/12.
+
+Do NOT redo HIGH 5/5.
+
+Do NOT reopen Phase 8.
+
+Expected if PHP 8.3 succeeds:
+
+```text
+CHK008=PASS
+CHK081=PASS
+CHK083=PASS
+
+CHK_RELEASE_SATISFIED=83/84
+
+T116=PASS
+CONSTITUTION_EVALUATED=14/14
+CONSTITUTION_PASS=14/14
+
+T117=PASS
+FINAL_SOURCE_EVIDENCE_CONSISTENCY=PASS
+
+T118=PASS
+PROPOSE_MOBILE_BACKEND_READY=YES
+```
+
+CHK084 must remain:
+
+`AWAITING_PM_ACCEPTANCE`
+
+Therefore do NOT report 84/84 yet.
+
+---
+
+# 17. Update Phase 9 evidence only
+
+Update the existing Phase 9 package to include the PHP 8.3 run:
+
+- `checklist-review.md`
+- `constitution-review.md`
+- `evidence-manifest.md`
+- `readiness-report.md`
+- `pm-decision.md`
+
+Add a dedicated PHP 8.3 evidence file, for example:
+
+`evidence/phase-09/php83-compatibility.md`
+
+Record:
+
+- exact source SHA;
+- PHP image digest;
+- actual PHP version;
+- Composer/platform result;
+- MySQL version;
+- focused counts;
+- full-lane counts;
+- known Excel disposition;
+- PHP8.2 vs PHP8.3 delta;
+- cleanup result.
+
+No secrets or raw failed-response dumps.
+
+---
+
+# 18. T119 status
+
+After technical evidence closes successfully:
+
+do NOT self-approve PM review.
+
+Return:
+
+`T119=AWAITING_PM_REVIEW`
+
+`T120=NOT_STARTED`
+
+`CHK084=AWAITING_PM_ACCEPTANCE`
+
+`MOBILE_BACKEND_READY=AWAITING_PM_DECISION`
+
+`PHASE_9=CURRENTLY_OPEN`
+
+---
+
+# 19. Prohibited
+
+Do NOT:
+
+- SSH to production;
+- touch `edaratek.com`;
+- migrate any server DB;
+- deploy;
+- restart services;
+- modify `.env`;
+- change ACL;
+- modify Composer constraints;
+- run `composer update`;
+- change application behavior;
+- restore WhatsApp;
+- start Flutter;
+- commit;
+- push;
+- merge.
+
+---
+
+# 20. Final report
+
+Return exactly:
+
+```text
+PHP83_COMPATIBILITY_RUN_RESULT=PASS|FAIL|BLOCKED
+PHP83_SOURCE_EXPORT_SHA=<sha>
+PHP83_RUNTIME_VERSION=<version>
+PHP83_IMAGE_DIGEST=<digest>
+
+PHP83_ISOLATION_GUARDS=PASS|FAIL
+PHP83_COMPOSER_VALIDATE=PASS|FAIL
+PHP83_COMPOSER_LOCK_INSTALL=PASS|FAIL
+PHP83_PLATFORM_REQUIREMENTS=PASS|FAIL
+PHP83_REQUIRED_EXTENSIONS=PASS|FAIL
+PHP83_MIGRATION_PROBES=PASS|FAIL
+
+PHP83_FOCUSED_TESTS=<passed>/<total>
+PHP83_FOCUSED_REQUIRED_FAILURES=<n>
+PHP83_FOCUSED_REQUIRED_ERRORS=<n>
+PHP83_FOCUSED_REQUIRED_SKIPS=<n>
+
+PHP83_ARTISAN_TESTS=<passed>/<total>
+PHP83_ARTISAN_FAILURES=<n>
+PHP83_ARTISAN_ERRORS=<n>
+PHP83_ARTISAN_SKIPS=<n>
+PHP83_ARTISAN_EXIT=<n>
+
+PHP83_MYSQL_TESTS=<passed>/<total>
+PHP83_MYSQL_FAILURES=<n>
+PHP83_MYSQL_ERRORS=<n>
+PHP83_MYSQL_SKIPS=<n>
+PHP83_MYSQL_EXIT=<n>
+
+PHP83_KNOWN_EXCEL_FAILURE=<classification>
+NEW_PHP83_ONLY_FAILURES=<n>
+NEW_PHP83_ONLY_ERRORS=<n>
+NEW_PHP83_ONLY_MANDATORY_SKIPS=<n>
+
+PHP83_DISPOSABLE_RUNTIME_CLEANUP=PASS|FAIL
+
+CHK008=PASS|FAIL|BLOCKED
+CHK081=PASS|BLOCKED
+CHK083=PASS|BLOCKED
+CHK_RELEASE_SATISFIED=<n>/84
+
+T116=PASS|BLOCKED
+CONSTITUTION_PASS=<n>/14
+
+T117=PASS|BLOCKED
+FINAL_SOURCE_EVIDENCE_CONSISTENCY=PASS|BLOCKED
+
+T118=PASS|BLOCKED
+PROPOSE_MOBILE_BACKEND_READY=YES|NO
+
+CHK084=AWAITING_PM_ACCEPTANCE
+T119=AWAITING_PM_REVIEW
+T120=NOT_STARTED
+MOBILE_BACKEND_READY=AWAITING_PM_DECISION
+PHASE_9=CURRENTLY_OPEN
+```
+
+Also confirm:
+
+```text
+APPLICATION_CODE_CHANGED=NO
+DATABASE_CHANGED=NO
+SERVER_DATABASE_TOUCHED=NO
+PRODUCTION_TOUCHED=NO
+DEPLOYMENT_EXECUTED=NO
+ROOT_USED=NO
+COMMIT=NO
+PUSH=NO
+MERGE=NO
+FLUTTER_STARTED=NO
+```
+
+STOP for PM review.

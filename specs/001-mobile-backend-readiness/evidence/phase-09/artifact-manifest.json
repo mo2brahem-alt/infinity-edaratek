@@ -1,0 +1,1233 @@
+{
+  "review_date": "2026-11-17",
+  "candidate": "d57cf9831c3c7123534aedfd34021c7b649968c7",
+  "full_regression_source": "fbc63a4615f48ac0f832d91945d9652aeabef466",
+  "source_identity": "PASS",
+  "final_source_evidence_consistency": "PASS",
+  "blocker": null,
+  "historical_artifacts": [
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/acceptance.md",
+      "sha256": "f1d8ce1c211f0e799e83b73f717c1eeac08abe12c501e656df2dd4b7c7743a8c",
+      "bytes": 5557,
+      "review_current_sha256": "f1d8ce1c211f0e799e83b73f717c1eeac08abe12c501e656df2dd4b7c7743a8c",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/autonomous-crash-diagnostics.json",
+      "sha256": "2d48cc46b8f7e8285f86d4010a2fef880385186ad86966298e77ff5053a7328a",
+      "bytes": 9906,
+      "review_current_sha256": "2d48cc46b8f7e8285f86d4010a2fef880385186ad86966298e77ff5053a7328a",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/autonomous-execution-report.md",
+      "sha256": "ab5ffb9eb8af183ace693385144f9787841b4916f75b31ef6eee0d85538a9dea",
+      "bytes": 6899,
+      "review_current_sha256": "ab5ffb9eb8af183ace693385144f9787841b4916f75b31ef6eee0d85538a9dea",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/autonomous-final-baseline.json",
+      "sha256": "2f71183b4e37cf05e199d2fde0223b8de95061d62e110586e5630d89f31f744a",
+      "bytes": 56213,
+      "review_current_sha256": "2f71183b4e37cf05e199d2fde0223b8de95061d62e110586e5630d89f31f744a",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/baseline-blockers.md",
+      "sha256": "536c384fc6973e81b2f40685eba288c8df9838d76a25767ee0da8b01bcceafda",
+      "bytes": 3044,
+      "review_current_sha256": "536c384fc6973e81b2f40685eba288c8df9838d76a25767ee0da8b01bcceafda",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/baseline-results.md",
+      "sha256": "fa68cd441bbce5a3ff843e851189104471efd2e38d070487aa75f09791accc36",
+      "bytes": 2856,
+      "review_current_sha256": "fa68cd441bbce5a3ff843e851189104471efd2e38d070487aa75f09791accc36",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/checklist-evidence.md",
+      "sha256": "28dc25323d3ee56e47eb0bb52eb177f1678a68a8ddc8a8d044038d670eb87169",
+      "bytes": 3152,
+      "review_current_sha256": "28dc25323d3ee56e47eb0bb52eb177f1678a68a8ddc8a8d044038d670eb87169",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/ci-push-run-report.md",
+      "sha256": "f00ca96a81a5fdb0862d51c04a7bde7f83346116a781e071642e600a62463d98",
+      "bytes": 3942,
+      "review_current_sha256": "f00ca96a81a5fdb0862d51c04a7bde7f83346116a781e071642e600a62463d98",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/context-repair-baseline.json",
+      "sha256": "c7ef81b071ae3bb86d5ddc1426cd93f9a4a54dee22fb925a877444cae4184820",
+      "bytes": 24904,
+      "review_current_sha256": "c7ef81b071ae3bb86d5ddc1426cd93f9a4a54dee22fb925a877444cae4184820",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/fk-repair-schema-probe.json",
+      "sha256": "26ff3051805b15c5e655c5c7105a4ccfd87dc524c44a46c89961644758fdbdb9",
+      "bytes": 18546,
+      "review_current_sha256": "26ff3051805b15c5e655c5c7105a4ccfd87dc524c44a46c89961644758fdbdb9",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/formal-acceptance-after-repair.md",
+      "sha256": "369b8f2d285393899062f0b32c079e18ccc75e8c3ea1aa38450fc7cb2fbfe77c",
+      "bytes": 5586,
+      "review_current_sha256": "369b8f2d285393899062f0b32c079e18ccc75e8c3ea1aa38450fc7cb2fbfe77c",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/migration-identifier-repair-review.json",
+      "sha256": "8c0dff65400c193750c7228870039e9ebff241fab9adf64bd7fe923da999f1ee",
+      "bytes": 2559,
+      "review_current_sha256": "8c0dff65400c193750c7228870039e9ebff241fab9adf64bd7fe923da999f1ee",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/platform.md",
+      "sha256": "3092b05d31d7c68e14d600a77dd7adaec9eef2e4c5c5f0de91d6280328f2e759",
+      "bytes": 1796,
+      "review_current_sha256": "3092b05d31d7c68e14d600a77dd7adaec9eef2e4c5c5f0de91d6280328f2e759",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/runtime-matrix.md",
+      "sha256": "5e1bbcf7c2368375126deeb47c9c645c0be7a61f7e4220ab35186b378bae4961",
+      "bytes": 3824,
+      "review_current_sha256": "5e1bbcf7c2368375126deeb47c9c645c0be7a61f7e4220ab35186b378bae4961",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/schema-safety-and-interim-baseline.json",
+      "sha256": "f2956722f2ce531a168dbbfe81e54849a433c9d4e0341e82354a95711c0a5e3c",
+      "bytes": 27355,
+      "review_current_sha256": "f2956722f2ce531a168dbbfe81e54849a433c9d4e0341e82354a95711c0a5e3c",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/scope.md",
+      "sha256": "87a299941c7d19f82baafe3c56184481436f43878d2abbe2aa069762ce0b38ae",
+      "bytes": 2478,
+      "review_current_sha256": "87a299941c7d19f82baafe3c56184481436f43878d2abbe2aa069762ce0b38ae",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/second-ci-run-report.md",
+      "sha256": "c0efa6dcd07050383ae87950a689575bdcdfd39da48f3c1e5e897861e6b0719a",
+      "bytes": 5244,
+      "review_current_sha256": "c0efa6dcd07050383ae87950a689575bdcdfd39da48f3c1e5e897861e6b0719a",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/second-ci-runtime.json",
+      "sha256": "58f5cdf85a1b0f00d37a67261882aeb1ed4387ad95f0a4edd6be775c1c631aaa",
+      "bytes": 4937,
+      "review_current_sha256": "58f5cdf85a1b0f00d37a67261882aeb1ed4387ad95f0a4edd6be775c1c631aaa",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/source-after.json",
+      "sha256": "3982844d1420ef4d9838737852590b9f51dd36f54faea321e885a757368a7a1b",
+      "bytes": 2754,
+      "review_current_sha256": "3982844d1420ef4d9838737852590b9f51dd36f54faea321e885a757368a7a1b",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/source-before.json",
+      "sha256": "dbf675bf728629db5a97dc4c8af6d83f40eab75fba7ccfb0ad29e19348e4faba",
+      "bytes": 2754,
+      "review_current_sha256": "dbf675bf728629db5a97dc4c8af6d83f40eab75fba7ccfb0ad29e19348e4faba",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/startup.md",
+      "sha256": "6c5822db32245bf30bd1a064ae42958e7df30c95e789f59c8b32b65ddbb41b4d",
+      "bytes": 2317,
+      "review_current_sha256": "6c5822db32245bf30bd1a064ae42958e7df30c95e789f59c8b32b65ddbb41b4d",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/static-checks.json",
+      "sha256": "83aea2ccbcd343787c4a38b4e2cd8454650d7aee0556678fc80342b2cbf88907",
+      "bytes": 1026,
+      "review_current_sha256": "83aea2ccbcd343787c4a38b4e2cd8454650d7aee0556678fc80342b2cbf88907",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/systemic-database-probe.json",
+      "sha256": "064ac404b7f9209731b816a434e7cb139380808adaffbd7b92a2980dd08df664",
+      "bytes": 18999,
+      "review_current_sha256": "064ac404b7f9209731b816a434e7cb139380808adaffbd7b92a2980dd08df664",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/systemic-validation-report.md",
+      "sha256": "086cdcc8e1187ab02c81539577cc20906263b84703737bacfaf67432008273ee",
+      "bytes": 8174,
+      "review_current_sha256": "086cdcc8e1187ab02c81539577cc20906263b84703737bacfaf67432008273ee",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/third-ci-run-report.md",
+      "sha256": "6c9618f73b93acf1addcf58952fae46292303d90f8467a8789c2751ab800f4f1",
+      "bytes": 5733,
+      "review_current_sha256": "6c9618f73b93acf1addcf58952fae46292303d90f8467a8789c2751ab800f4f1",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/third-ci-runtime.json",
+      "sha256": "a7aef79825810709b114ee9e918a4dd938c423d5d411bf4474926ac03405b0cf",
+      "bytes": 7273,
+      "review_current_sha256": "a7aef79825810709b114ee9e918a4dd938c423d5d411bf4474926ac03405b0cf",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-01/validated-phase1-runtime.json",
+      "sha256": "63c2788aee646622952dd059f6c414729320da03dfe9c9779b419a6934d2cbd0",
+      "bytes": 24466,
+      "review_current_sha256": "63c2788aee646622952dd059f6c414729320da03dfe9c9779b419a6934d2cbd0",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-02/acceptance.md",
+      "sha256": "a93dce52215d666ee73932eca4411c409206178839b65b9dcaae046e3a18fdce",
+      "bytes": 2101,
+      "review_current_sha256": "a93dce52215d666ee73932eca4411c409206178839b65b9dcaae046e3a18fdce",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-02/auth-design.md",
+      "sha256": "3fa8a807ed98f5a3fe7d1899edc5cfc1a90469cb33763c4af6f0ad642fff65e9",
+      "bytes": 2421,
+      "review_current_sha256": "3fa8a807ed98f5a3fe7d1899edc5cfc1a90469cb33763c4af6f0ad642fff65e9",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-02/migration.md",
+      "sha256": "94a2d4a2cdbf9f5629dc068552ca7b0fc01c6f10fd11472f6e1fc324f1948775",
+      "bytes": 1001,
+      "review_current_sha256": "94a2d4a2cdbf9f5629dc068552ca7b0fc01c6f10fd11472f6e1fc324f1948775",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-02/results.md",
+      "sha256": "cccc3ea25f50fbc1cdfe57fde70b9ee2465e0d2fcd334fab52ce69460b3d1e92",
+      "bytes": 1203,
+      "review_current_sha256": "cccc3ea25f50fbc1cdfe57fde70b9ee2465e0d2fcd334fab52ce69460b3d1e92",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/acceptance.md",
+      "sha256": "1f6b263424cd4680699ff869ec58d2880fc326e34adc6daa1278bbda8c9f092f",
+      "bytes": 4551,
+      "review_current_sha256": "1f6b263424cd4680699ff869ec58d2880fc326e34adc6daa1278bbda8c9f092f",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/design.md",
+      "sha256": "6db6585c243440089bec9a6d30bd550b510bd16b35be262d15813565bb761e6d",
+      "bytes": 6688,
+      "review_current_sha256": "6db6585c243440089bec9a6d30bd550b510bd16b35be262d15813565bb761e6d",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/execution-report.md",
+      "sha256": "8edc00094f8c36b530ba82be9c230e85d27a71ea0de392085bfc3b4e22a9fe54",
+      "bytes": 9263,
+      "review_current_sha256": "8edc00094f8c36b530ba82be9c230e85d27a71ea0de392085bfc3b4e22a9fe54",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/results.md",
+      "sha256": "73ba734e81579d55e21f6dec5f67a0c6e72ed4532cbde974493037d6ef29d2bc",
+      "bytes": 5848,
+      "review_current_sha256": "73ba734e81579d55e21f6dec5f67a0c6e72ed4532cbde974493037d6ef29d2bc",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/run-01.json",
+      "sha256": "175780c3a89a38a01a12025b3507b5dc89dabf50fc59e9edb2b5424ca92e5c4c",
+      "bytes": 31813,
+      "review_current_sha256": "175780c3a89a38a01a12025b3507b5dc89dabf50fc59e9edb2b5424ca92e5c4c",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/run-02.json",
+      "sha256": "7c8952b58a2bcf777b12457ab53753f375c3f118936f1a422508dbabdb117a25",
+      "bytes": 32188,
+      "review_current_sha256": "7c8952b58a2bcf777b12457ab53753f375c3f118936f1a422508dbabdb117a25",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/scope.md",
+      "sha256": "af4cd013555a86a1775f72751ef63e8c1d99f526e97df2bc335a9fff7e147ebb",
+      "bytes": 1697,
+      "review_current_sha256": "af4cd013555a86a1775f72751ef63e8c1d99f526e97df2bc335a9fff7e147ebb",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/seeding.md",
+      "sha256": "0efa525dee2e26a76f11fc0cb646942f436cc78c26ae233bac5ee0a675a34bd5",
+      "bytes": 2299,
+      "review_current_sha256": "0efa525dee2e26a76f11fc0cb646942f436cc78c26ae233bac5ee0a675a34bd5",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/source-manifest.json",
+      "sha256": "d6722533a15d1e4815482d2b71f84c4f1948d1a23d6de4f611fc739c563e9035",
+      "bytes": 7791,
+      "review_current_sha256": "d6722533a15d1e4815482d2b71f84c4f1948d1a23d6de4f611fc739c563e9035",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-03/validated-runtime.json",
+      "sha256": "0f313816a61eecab0509d90494d82438ec2f3af2b9cc40417378b36b0309747b",
+      "bytes": 32233,
+      "review_current_sha256": "0f313816a61eecab0509d90494d82438ec2f3af2b9cc40417378b36b0309747b",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/acceptance.md",
+      "sha256": "dde696bb274b63a019c13362949695e2a88a4046921dc8e6ff39015d627dc015",
+      "bytes": 1943,
+      "review_current_sha256": "dde696bb274b63a019c13362949695e2a88a4046921dc8e6ff39015d627dc015",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/current-context.md",
+      "sha256": "042173fa423ffee9ae390e8611a7d07483cafcb338cc704a423e91e530f22747",
+      "bytes": 4934,
+      "review_current_sha256": "042173fa423ffee9ae390e8611a7d07483cafcb338cc704a423e91e530f22747",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/EDARATEK_PHASE_4_EXECUTION_REPORT.md",
+      "sha256": "03701fae41bdd6f106839df937b48575b72d4ba2e0526d911f444f8fb95a3fa2",
+      "bytes": 12377,
+      "review_current_sha256": "03701fae41bdd6f106839df937b48575b72d4ba2e0526d911f444f8fb95a3fa2",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/endpoint-matrix.md",
+      "sha256": "dea2c870c9971c54fa71a0b90871b675b7627c19b86236fcee9106d1bf478e6c",
+      "bytes": 4599,
+      "review_current_sha256": "dea2c870c9971c54fa71a0b90871b675b7627c19b86236fcee9106d1bf478e6c",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/isolation.md",
+      "sha256": "acc219db1f74981fa7dba990cdbe76da59f7d4f39ea962b98dd2661e234ad19e",
+      "bytes": 6713,
+      "review_current_sha256": "acc219db1f74981fa7dba990cdbe76da59f7d4f39ea962b98dd2661e234ad19e",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/results.md",
+      "sha256": "e660b1a22bb043bde1b7df18b4de6fd173c3aa4aa1d1fa71de8c793fb2d9e044",
+      "bytes": 7567,
+      "review_current_sha256": "e660b1a22bb043bde1b7df18b4de6fd173c3aa4aa1d1fa71de8c793fb2d9e044",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/source-manifest.json",
+      "sha256": "3a3ebd676b63b8283cd3eb4c5a56d07ac8c9e1af80f81ade8634a68beeb7ba2e",
+      "bytes": 5587,
+      "review_current_sha256": "3a3ebd676b63b8283cd3eb4c5a56d07ac8c9e1af80f81ade8634a68beeb7ba2e",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/task-traceability.md",
+      "sha256": "dadb0cc5f9d184fbfa3b6a6a34d28d9ca278b424d589b93b9c6a45a62c2dd916",
+      "bytes": 5125,
+      "review_current_sha256": "dadb0cc5f9d184fbfa3b6a6a34d28d9ca278b424d589b93b9c6a45a62c2dd916",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-04/validated-runtime.json",
+      "sha256": "1d3dfb9e0a6c916e96ad61daa07c9f8c1236372b50df701f5d7d8e9dc5e97261",
+      "bytes": 40241,
+      "review_current_sha256": "1d3dfb9e0a6c916e96ad61daa07c9f8c1236372b50df701f5d7d8e9dc5e97261",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/acceptance.md",
+      "sha256": "e95a084e76b61d7e3bc6f2ad8e04e7a07fb31d80db02fb4c0b4ea30b6e6edc74",
+      "bytes": 1971,
+      "review_current_sha256": "e95a084e76b61d7e3bc6f2ad8e04e7a07fb31d80db02fb4c0b4ea30b6e6edc74",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/checklist-evidence.md",
+      "sha256": "22168d4cf7b32cafbc4c2e67e948c2f5e07530b18d99b8affbb49bce3afcbb15",
+      "bytes": 5231,
+      "review_current_sha256": "22168d4cf7b32cafbc4c2e67e948c2f5e07530b18d99b8affbb49bce3afcbb15",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/download-design.md",
+      "sha256": "e1cc0a9a9e47fd682ae8ea463d889524e4487bca0dfb49a36dc0e37d8d17aa6b",
+      "bytes": 6770,
+      "review_current_sha256": "e1cc0a9a9e47fd682ae8ea463d889524e4487bca0dfb49a36dc0e37d8d17aa6b",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/EDARATEK_PHASE_5_EXECUTION_REPORT.md",
+      "sha256": "e677ac3896a40ce5a02981d7e0a18b9e92a34a7b138f6a367fb2d6ec2294da8c",
+      "bytes": 12594,
+      "review_current_sha256": "e677ac3896a40ce5a02981d7e0a18b9e92a34a7b138f6a367fb2d6ec2294da8c",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/inventory.md",
+      "sha256": "65d5bf764af8c78b3fbd5ae87501a0a4a19e0de5ade83aa841dfcc621276a3ee",
+      "bytes": 7446,
+      "review_current_sha256": "65d5bf764af8c78b3fbd5ae87501a0a4a19e0de5ade83aa841dfcc621276a3ee",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/migration-design.md",
+      "sha256": "34945707dd5c7f0f3993d63ba20b6bc9f948452ad77bdbf7e792212a3b45681f",
+      "bytes": 6421,
+      "review_current_sha256": "34945707dd5c7f0f3993d63ba20b6bc9f948452ad77bdbf7e792212a3b45681f",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/migration-results.md",
+      "sha256": "757b44866554f6b619dae3c929189ae3e008e8ca63565a6962191a5d6e1002be",
+      "bytes": 2240,
+      "review_current_sha256": "757b44866554f6b619dae3c929189ae3e008e8ca63565a6962191a5d6e1002be",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/operational-boundaries.md",
+      "sha256": "7b20606d808b8a7efec6dd6742cd23aaaf105aa313bc9c5a731d951cd64cf38f",
+      "bytes": 6456,
+      "review_current_sha256": "7b20606d808b8a7efec6dd6742cd23aaaf105aa313bc9c5a731d951cd64cf38f",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/results.md",
+      "sha256": "6050fa2f86bd7b7745e275506b596670feda733549c5c2b8a3319e34cfed9a07",
+      "bytes": 6000,
+      "review_current_sha256": "6050fa2f86bd7b7745e275506b596670feda733549c5c2b8a3319e34cfed9a07",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/source-manifest.json",
+      "sha256": "e13280c2a667045b993089c2eeca7678d541af1d4fa7d7c4f293cff4866e60a2",
+      "bytes": 6905,
+      "review_current_sha256": "e13280c2a667045b993089c2eeca7678d541af1d4fa7d7c4f293cff4866e60a2",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/static-results.md",
+      "sha256": "ae2e86791c21bc1004d5f0a617b784b9b4de8c0807fadbbf02246fee465a5de4",
+      "bytes": 2037,
+      "review_current_sha256": "ae2e86791c21bc1004d5f0a617b784b9b4de8c0807fadbbf02246fee465a5de4",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/task-traceability.md",
+      "sha256": "dd1a5f9314c683e2956f44652464e3f0b7ba1eab33d4a3bc8d0a09982658747f",
+      "bytes": 4655,
+      "review_current_sha256": "dd1a5f9314c683e2956f44652464e3f0b7ba1eab33d4a3bc8d0a09982658747f",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-05/validated-runtime.json",
+      "sha256": "cc96e02dc35699d0a6dcab1bf4fc17435f066e791fe34e561387c9e609cb3cd6",
+      "bytes": 47794,
+      "review_current_sha256": "cc96e02dc35699d0a6dcab1bf4fc17435f066e791fe34e561387c9e609cb3cd6",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/acceptance.md",
+      "sha256": "27fa78f85d9b7eb37d578df14761364e0028bb5a2f6ce69ad7efa76a7d026c44",
+      "bytes": 1956,
+      "review_current_sha256": "27fa78f85d9b7eb37d578df14761364e0028bb5a2f6ce69ad7efa76a7d026c44",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/admission-design.md",
+      "sha256": "d27b139f10f1223d4a606cc775663df6ea18148f9f782a6cbed38138a31fd0aa",
+      "bytes": 3401,
+      "review_current_sha256": "d27b139f10f1223d4a606cc775663df6ea18148f9f782a6cbed38138a31fd0aa",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/checklist-evidence.md",
+      "sha256": "575c55af49411f2bfe5fe58f9d21fb515b26d673c00b484b1c8d4fae06cc40cf",
+      "bytes": 3114,
+      "review_current_sha256": "575c55af49411f2bfe5fe58f9d21fb515b26d673c00b484b1c8d4fae06cc40cf",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/EDARATEK_PHASE_6_EXECUTION_REPORT.md",
+      "sha256": "9363e1c8e53afbd14098b0aa861994c87e1a4aad5ca81eaa5a1538219f950ed9",
+      "bytes": 11574,
+      "review_current_sha256": "9363e1c8e53afbd14098b0aa861994c87e1a4aad5ca81eaa5a1538219f950ed9",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/migration.md",
+      "sha256": "ab1fc3b5301cc9940dc32d2bb7399c0d99889645a12b1ce3f6f8bee5f8c85c15",
+      "bytes": 981,
+      "review_current_sha256": "ab1fc3b5301cc9940dc32d2bb7399c0d99889645a12b1ce3f6f8bee5f8c85c15",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/original-requirements.md",
+      "sha256": "053c06ca33facee437a672bf6d572d5fc4c4ae587eea3854f832477240f13662",
+      "bytes": 6942,
+      "review_current_sha256": "053c06ca33facee437a672bf6d572d5fc4c4ae587eea3854f832477240f13662",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/results.md",
+      "sha256": "cb8fdd9e9acebf5d9f5915e771aa00ffd8680e171285347de5ba0afcf98ff2ce",
+      "bytes": 6116,
+      "review_current_sha256": "cb8fdd9e9acebf5d9f5915e771aa00ffd8680e171285347de5ba0afcf98ff2ce",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/retired-test-inventory.json",
+      "sha256": "3c7cfe09f0ef05b3aec50cc1aec7c57ef0765f263cbeab73b42fd3d49fc9fc49",
+      "bytes": 2899,
+      "review_current_sha256": "3c7cfe09f0ef05b3aec50cc1aec7c57ef0765f263cbeab73b42fd3d49fc9fc49",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/scope-decision.md",
+      "sha256": "63d8e8e31eab6020c87d20eb8fe553b84275a05e0e55c6f36a24a7ed675d7115",
+      "bytes": 3993,
+      "review_current_sha256": "63d8e8e31eab6020c87d20eb8fe553b84275a05e0e55c6f36a24a7ed675d7115",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/source-manifest.json",
+      "sha256": "7cd1381e147bd93ea3257daaf0de1e5901422ac96f8cd39bf8e179cb7b31594b",
+      "bytes": 7677,
+      "review_current_sha256": "7cd1381e147bd93ea3257daaf0de1e5901422ac96f8cd39bf8e179cb7b31594b",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/task-traceability.md",
+      "sha256": "583b67a5b737754bf4f245ea80c9d468b767c19b291f84dac062e34f2061b193",
+      "bytes": 3188,
+      "review_current_sha256": "583b67a5b737754bf4f245ea80c9d468b767c19b291f84dac062e34f2061b193",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-06/validated-runtime.json",
+      "sha256": "83f8efebd9f2741f0128d849a86d01fd8e612b08b76897f961185b5eaabca218",
+      "bytes": 48130,
+      "review_current_sha256": "83f8efebd9f2741f0128d849a86d01fd8e612b08b76897f961185b5eaabca218",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/acceptance.md",
+      "sha256": "510776feb960087cd99bd5a85e71e2a7aa2728c30af730212f0607563624d56a",
+      "bytes": 2082,
+      "review_current_sha256": "510776feb960087cd99bd5a85e71e2a7aa2728c30af730212f0607563624d56a",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/checklist-evidence.md",
+      "sha256": "1ce0f998c025aca1b815d9d0c69dcb9bd417a3e2f604a4bb81887b123f36761f",
+      "bytes": 3815,
+      "review_current_sha256": "1ce0f998c025aca1b815d9d0c69dcb9bd417a3e2f604a4bb81887b123f36761f",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/compatibility.md",
+      "sha256": "3e1ac4c3805103cf8829815d98c2c5a6387f39b2f681806a861a9d37f6b77c51",
+      "bytes": 4038,
+      "review_current_sha256": "3e1ac4c3805103cf8829815d98c2c5a6387f39b2f681806a861a9d37f6b77c51",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/contract-inventory.md",
+      "sha256": "b5d6a3e6a99c26be53246579815fb8db95b1cc298bfc641672bab218e0e40f10",
+      "bytes": 4393,
+      "review_current_sha256": "b5d6a3e6a99c26be53246579815fb8db95b1cc298bfc641672bab218e0e40f10",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/EDARATEK_PHASE_7_EXECUTION_REPORT.md",
+      "sha256": "2f6572f20bb60ddfa1fc60fe5d0652305d3aeffe9572b06a83b2b1fb26c11f64",
+      "bytes": 22102,
+      "review_current_sha256": "2f6572f20bb60ddfa1fc60fe5d0652305d3aeffe9572b06a83b2b1fb26c11f64",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/implementation.md",
+      "sha256": "7e92a0346537ce3dcfd70ced08b74c16ac94bdf92c6795341be050b23dcc6a06",
+      "bytes": 5214,
+      "review_current_sha256": "7e92a0346537ce3dcfd70ced08b74c16ac94bdf92c6795341be050b23dcc6a06",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/pre-freeze-contract.md",
+      "sha256": "29966f35e6403871acd781bf666ecba758b4c81fa5a89a5fbb481c90cf940982",
+      "bytes": 11718,
+      "review_current_sha256": "29966f35e6403871acd781bf666ecba758b4c81fa5a89a5fbb481c90cf940982",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/results.md",
+      "sha256": "00e877c7c6a72fc97ee36792dcacfd14aa790502a0e8662c1df08be8dd981afb",
+      "bytes": 7962,
+      "review_current_sha256": "00e877c7c6a72fc97ee36792dcacfd14aa790502a0e8662c1df08be8dd981afb",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/source-manifest.json",
+      "sha256": "ac125231074d9eca91edc15f0e67fd227e83eaae3f25f7130d91fb56c6eeea4f",
+      "bytes": 15908,
+      "review_current_sha256": "ac125231074d9eca91edc15f0e67fd227e83eaae3f25f7130d91fb56c6eeea4f",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/task-traceability.md",
+      "sha256": "2832ba8d439f3122e89dc1d69d6263edb73f2f3c743ca299f5a86d3335343207",
+      "bytes": 3629,
+      "review_current_sha256": "2832ba8d439f3122e89dc1d69d6263edb73f2f3c743ca299f5a86d3335343207",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/validated-runtime.json",
+      "sha256": "7e2086eaf88861ad07a9ab78728535622146021139d082f57c2e5934ecaae03e",
+      "bytes": 52882,
+      "review_current_sha256": "7e2086eaf88861ad07a9ab78728535622146021139d082f57c2e5934ecaae03e",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-07/validation-history.json",
+      "sha256": "d5167617b450738d89c4e5dde19bc66c0b3e5ef6446b8d1048383a11373b43d0",
+      "bytes": 25547,
+      "review_current_sha256": "d5167617b450738d89c4e5dde19bc66c0b3e5ef6446b8d1048383a11373b43d0",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/acceptance.md",
+      "sha256": "07903de2ae9702011fdf5ade7bd660dd3e50ee8963ca60a0d5866c6bb4a41dd3",
+      "bytes": 5974,
+      "review_current_sha256": "e61dc5e0fff3d1d09f9689384a64110529ee374550d5e111f1b9eaaa1c18cc7a",
+      "changed_by_this_review": true
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/access-security.md",
+      "sha256": "9f03026cc1e3f30ed3ec6558dbbfeaec9727ab734c988c27064286fc1ed9a7e9",
+      "bytes": 2606,
+      "review_current_sha256": "9f03026cc1e3f30ed3ec6558dbbfeaec9727ab734c988c27064286fc1ed9a7e9",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/audit-closure.md",
+      "sha256": "2372b419243914b397e7fb20e51cc7055054de4360893ea8886706fcd3d2bf6e",
+      "bytes": 6184,
+      "review_current_sha256": "2372b419243914b397e7fb20e51cc7055054de4360893ea8886706fcd3d2bf6e",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/contracts-and-config.md",
+      "sha256": "5bfb5956a3d18740a0b875e21ba2faa3c79ca5957022118c05a51991919b67cd",
+      "bytes": 2788,
+      "review_current_sha256": "5bfb5956a3d18740a0b875e21ba2faa3c79ca5957022118c05a51991919b67cd",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/coverage.md",
+      "sha256": "e07c375fd11bfd88eb05053117831ce624860ed4333e59381e28728c7ab4ecd3",
+      "bytes": 38622,
+      "review_current_sha256": "e07c375fd11bfd88eb05053117831ce624860ed4333e59381e28728c7ab4ecd3",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+      "sha256": "e796be92eca497db958875ea2d315993f0f6f4f9b8a60c29aef62c9526d45a43",
+      "bytes": 17039,
+      "review_current_sha256": "e796be92eca497db958875ea2d315993f0f6f4f9b8a60c29aef62c9526d45a43",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/failure-register.md",
+      "sha256": "3efaf1e9798d219014ec4a4a04b157b44e401a97019215b736b56e0767089154",
+      "bytes": 3016,
+      "review_current_sha256": "3efaf1e9798d219014ec4a4a04b157b44e401a97019215b736b56e0767089154",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/file-security.md",
+      "sha256": "de6f17afdf4a8856d04cbcc9be22f272887f780b868a7260e00fed7b45f54346",
+      "bytes": 2264,
+      "review_current_sha256": "de6f17afdf4a8856d04cbcc9be22f272887f780b868a7260e00fed7b45f54346",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/full-results.md",
+      "sha256": "04d708ac583c25b97837ea20b1f78d4ce593b78d3d94b5cc2bb9163a70d266fc",
+      "bytes": 6752,
+      "review_current_sha256": "04d708ac583c25b97837ea20b1f78d4ce593b78d3d94b5cc2bb9163a70d266fc",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/queue-security.md",
+      "sha256": "f262436f05c7140fea25215e306d69da50cbcbd2e6587b9f99d9515f0aa88740",
+      "bytes": 2082,
+      "review_current_sha256": "f262436f05c7140fea25215e306d69da50cbcbd2e6587b9f99d9515f0aa88740",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/review.md",
+      "sha256": "0182234b44bc5aff38761372aab4f75af643c4fef30db187360c2e9f80b7f57a",
+      "bytes": 3323,
+      "review_current_sha256": "0182234b44bc5aff38761372aab4f75af643c4fef30db187360c2e9f80b7f57a",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/source-manifest.json",
+      "sha256": "1054df855fec3f047c6b8b648bbe90c6deaf7e57527b174e5a16fa136d09bf85",
+      "bytes": 39246,
+      "review_current_sha256": "1054df855fec3f047c6b8b648bbe90c6deaf7e57527b174e5a16fa136d09bf85",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance-before-probe2.md",
+      "sha256": "6fc4a4ca89b22fd2a607c03db153f4341d3d3dca291012767c04daa0a5963e5f",
+      "bytes": 4091,
+      "review_current_sha256": "6fc4a4ca89b22fd2a607c03db153f4341d3d3dca291012767c04daa0a5963e5f",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance-before-probe3.md",
+      "sha256": "10f1133371213204039ccc11e03f07c19287a1371d63b2917f0f1249dd391834",
+      "bytes": 4734,
+      "review_current_sha256": "10f1133371213204039ccc11e03f07c19287a1371d63b2917f0f1249dd391834",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance-before-probe4.md",
+      "sha256": "0aabdfbcc2b3eadb26de96b43ba835cccc159eecd69141b8ff48bcd2392275bf",
+      "bytes": 5278,
+      "review_current_sha256": "0aabdfbcc2b3eadb26de96b43ba835cccc159eecd69141b8ff48bcd2392275bf",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/acceptance.md",
+      "sha256": "8b11c49554effdb5e872a94cf1726636f5793f3f31f6c60272e24114be5da96a",
+      "bytes": 3281,
+      "review_current_sha256": "8b11c49554effdb5e872a94cf1726636f5793f3f31f6c60272e24114be5da96a",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT-before-probe2.md",
+      "sha256": "b4b52152dd68eaecca8fe09774bb4628879592a552a8b17d0d947e9407d21835",
+      "bytes": 12814,
+      "review_current_sha256": "b4b52152dd68eaecca8fe09774bb4628879592a552a8b17d0d947e9407d21835",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT-before-probe3.md",
+      "sha256": "bb5987ec11d432c40bf7bba0c081cead08b3127b22f87157543f0dbbfc713ea7",
+      "bytes": 14356,
+      "review_current_sha256": "bb5987ec11d432c40bf7bba0c081cead08b3127b22f87157543f0dbbfc713ea7",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT-before-probe4.md",
+      "sha256": "fc0bd88ef007916fef5fc973a31b5b8c8cea198c8571c748c911918bfe4f7374",
+      "bytes": 15734,
+      "review_current_sha256": "fc0bd88ef007916fef5fc973a31b5b8c8cea198c8571c748c911918bfe4f7374",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/EDARATEK_PHASE_8_EXECUTION_REPORT.md",
+      "sha256": "a11e549e7b009ced6cd77f579ee75a7b73234786c801012b1d0331d5728c2df0",
+      "bytes": 11142,
+      "review_current_sha256": "a11e549e7b009ced6cd77f579ee75a7b73234786c801012b1d0331d5728c2df0",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/reassessment-before-probe2.md",
+      "sha256": "f4a5036a38014af18318f4268ab6bed9cf258e277031a2f37c32f4478072fecd",
+      "bytes": 14462,
+      "review_current_sha256": "f4a5036a38014af18318f4268ab6bed9cf258e277031a2f37c32f4478072fecd",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/reassessment-before-probe3.md",
+      "sha256": "865f5fe67b9d315fa650d59df95a293c5278e4909ca0812d136112dcf3deb6c0",
+      "bytes": 19648,
+      "review_current_sha256": "865f5fe67b9d315fa650d59df95a293c5278e4909ca0812d136112dcf3deb6c0",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/reassessment-before-probe4.md",
+      "sha256": "93920d50d76a70871d099396a98e067536da27cf7afeb92ef6a5b19088ad70a8",
+      "bytes": 24916,
+      "review_current_sha256": "93920d50d76a70871d099396a98e067536da27cf7afeb92ef6a5b19088ad70a8",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks-before-probe2.md",
+      "sha256": "982ee64657acaf39fdba2c0356daa127156772fe316b223b1bbb8ed706b73e6d",
+      "bytes": 66492,
+      "review_current_sha256": "982ee64657acaf39fdba2c0356daa127156772fe316b223b1bbb8ed706b73e6d",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks-before-probe3.md",
+      "sha256": "817d8f0394de9f7ea5cf6c62998075152a90c5d776e48816526090effb72ce41",
+      "bytes": 66683,
+      "review_current_sha256": "817d8f0394de9f7ea5cf6c62998075152a90c5d776e48816526090effb72ce41",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks-before-probe4.md",
+      "sha256": "224b4872150395a1454e1654f2c7021b4a986df7d4c1e40b21132595073f33bd",
+      "bytes": 66926,
+      "review_current_sha256": "224b4872150395a1454e1654f2c7021b4a986df7d4c1e40b21132595073f33bd",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint/tasks.md",
+      "sha256": "4a1a625d400df566681254d03b87d4952fd45fde4b7ba6df660bfdbb6086fd4e",
+      "bytes": 65912,
+      "review_current_sha256": "4a1a625d400df566681254d03b87d4952fd45fde4b7ba6df660bfdbb6086fd4e",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/checkpoint-preservation.json",
+      "sha256": "6a0b605bd7997d712f0cc8d1e9ae8498bebf93eff559cdfc119adccad1bbb08e",
+      "bytes": 1422,
+      "review_current_sha256": "6a0b605bd7997d712f0cc8d1e9ae8498bebf93eff559cdfc119adccad1bbb08e",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/h05-review-manifest.json",
+      "sha256": "2b6051591f3ca104d27fa52ac7ac752e497006c36676c7ae79283b104b3b74c6",
+      "bytes": 2546,
+      "review_current_sha256": "2b6051591f3ca104d27fa52ac7ac752e497006c36676c7ae79283b104b3b74c6",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/http-observations.json",
+      "sha256": "9a9ca0894bfacd545882b3d111bb2758affc322912bc090bb48c225e5671fb3a",
+      "bytes": 4879,
+      "review_current_sha256": "9a9ca0894bfacd545882b3d111bb2758affc322912bc090bb48c225e5671fb3a",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/http-validation.mjs",
+      "sha256": "3f1ddc9f11b88602816ebd96dcf3ac07ea53795db06ff0de109a5572f6646ff4",
+      "bytes": 4910,
+      "review_current_sha256": "3f1ddc9f11b88602816ebd96dcf3ac07ea53795db06ff0de109a5572f6646ff4",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/operations-handoff.md",
+      "sha256": "f4f543b4cf3965915f6f25d1164e13df9daece653c3dacc8045fbec3399443e2",
+      "bytes": 5547,
+      "review_current_sha256": "f4f543b4cf3965915f6f25d1164e13df9daece653c3dacc8045fbec3399443e2",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/operator-evidence.json",
+      "sha256": "3d7c30971d9d1929c96167c17e607326293d1f3309fd36ecf5e4782e1b7262ec",
+      "bytes": 3214,
+      "review_current_sha256": "3d7c30971d9d1929c96167c17e607326293d1f3309fd36ecf5e4782e1b7262ec",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe-2-operator-evidence.json",
+      "sha256": "ec5bb26a508055cfd2805b6e6a77c01743bc0742dbd317cd294b231c1e44d3fd",
+      "bytes": 2047,
+      "review_current_sha256": "ec5bb26a508055cfd2805b6e6a77c01743bc0742dbd317cd294b231c1e44d3fd",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe-3-operator-evidence.json",
+      "sha256": "58a82eb4edad2e4fc8429392b681f6b49908346fed45a567aad8108d6ae42330",
+      "bytes": 2173,
+      "review_current_sha256": "58a82eb4edad2e4fc8429392b681f6b49908346fed45a567aad8108d6ae42330",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe-4-operator-evidence.json",
+      "sha256": "c4647dd6664eee4fde7791d87cb2ec2afec80a7f6a6694bc4c9e232a8c6c3e84",
+      "bytes": 3313,
+      "review_current_sha256": "c4647dd6664eee4fde7791d87cb2ec2afec80a7f6a6694bc4c9e232a8c6c3e84",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe2-checkpoint-preservation.json",
+      "sha256": "49517508f2e47a881bd1fff19a9b7dd9f78f7e38e64087235671a8da22354024",
+      "bytes": 1400,
+      "review_current_sha256": "49517508f2e47a881bd1fff19a9b7dd9f78f7e38e64087235671a8da22354024",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe2-review-manifest.json",
+      "sha256": "26b32cdf0970d40b61384460bce43e4b3bb913c675399f966993b63cf6fcb4e1",
+      "bytes": 2455,
+      "review_current_sha256": "26b32cdf0970d40b61384460bce43e4b3bb913c675399f966993b63cf6fcb4e1",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe3-checkpoint-preservation.json",
+      "sha256": "80d87d7d1886ddf67b55793163a3b502544bee14dd605cee624801f331637110",
+      "bytes": 1455,
+      "review_current_sha256": "80d87d7d1886ddf67b55793163a3b502544bee14dd605cee624801f331637110",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe3-review-manifest.json",
+      "sha256": "12455241ab0aa1803615395d77b4c2b8791712e703b93d3efa0fa1d7aeafd97b",
+      "bytes": 2773,
+      "review_current_sha256": "12455241ab0aa1803615395d77b4c2b8791712e703b93d3efa0fa1d7aeafd97b",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe4-checkpoint-preservation.json",
+      "sha256": "2d85e8b8b359cbb5d309ec539ebeff6ee17cffb6f030007ea078c158209d6aea",
+      "bytes": 1455,
+      "review_current_sha256": "2d85e8b8b359cbb5d309ec539ebeff6ee17cffb6f030007ea078c158209d6aea",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/probe4-review-manifest.json",
+      "sha256": "ab1864e6c0794a9d391338f0ce2ee0e6d04b76d2b73a0ea69144365c5fdeec89",
+      "bytes": 2947,
+      "review_current_sha256": "ab1864e6c0794a9d391338f0ce2ee0e6d04b76d2b73a0ea69144365c5fdeec89",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/reassessment.md",
+      "sha256": "6fca5b2ef3c583ab671f1edfdb37f6b49bd7a2bcd275aead9a149c19fb4063d8",
+      "bytes": 29440,
+      "review_current_sha256": "6fca5b2ef3c583ab671f1edfdb37f6b49bd7a2bcd275aead9a149c19fb4063d8",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05-cgi.sh",
+      "sha256": "a6ba20b88c6c2548582f866175d1024344ee1378d025150283179714987ee36b",
+      "bytes": 8687,
+      "review_current_sha256": "a6ba20b88c6c2548582f866175d1024344ee1378d025150283179714987ee36b",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05-wiring.sh",
+      "sha256": "532f4c8cf0473e61c756250670d2c1afe160d7f3e5d79b3c94361babda492766",
+      "bytes": 5489,
+      "review_current_sha256": "532f4c8cf0473e61c756250670d2c1afe160d7f3e5d79b3c94361babda492766",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly-h05.sh",
+      "sha256": "3f2f30b37e893bdfd6fdb7ab5506bb2c7bc797b08eaa877d99af8af70218c015",
+      "bytes": 8625,
+      "review_current_sha256": "3f2f30b37e893bdfd6fdb7ab5506bb2c7bc797b08eaa877d99af8af70218c015",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/server-readonly.sh",
+      "sha256": "99f0eee7bc40697f7353a93b6770d2f134718cc8b377973f9e006cd1f6380486",
+      "bytes": 9319,
+      "review_current_sha256": "99f0eee7bc40697f7353a93b6770d2f134718cc8b377973f9e006cd1f6380486",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/t112/validation-plan.md",
+      "sha256": "a343f12dce2e6e894c3b15b8b44a6af74233575c940af2805a1bf13ec153deff",
+      "bytes": 5218,
+      "review_current_sha256": "a343f12dce2e6e894c3b15b8b44a6af74233575c940af2805a1bf13ec153deff",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/task-traceability.md",
+      "sha256": "43aa1ae3b6005193d4e8ba1ab6f23037b4321789442b1694b1906ae880ac6a08",
+      "bytes": 3382,
+      "review_current_sha256": "43aa1ae3b6005193d4e8ba1ab6f23037b4321789442b1694b1906ae880ac6a08",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/test-inventory.json",
+      "sha256": "531c41e2262bc39d2907666fe7b5715685bb171e861f2be187383b8943d763b8",
+      "bytes": 77820,
+      "review_current_sha256": "531c41e2262bc39d2907666fe7b5715685bb171e861f2be187383b8943d763b8",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/validated-runtime.json",
+      "sha256": "f011269a88adcea821161cc909cfb454bbfe7e3644b7fea0edaa6afecf7f0cd0",
+      "bytes": 84091,
+      "review_current_sha256": "f011269a88adcea821161cc909cfb454bbfe7e3644b7fea0edaa6afecf7f0cd0",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/validation-history.json",
+      "sha256": "6e55f9abdd372aa24a7cd7fc4f6bfc9e10ddf21bb4af16f1f91a1e8164a57081",
+      "bytes": 2965,
+      "review_current_sha256": "6e55f9abdd372aa24a7cd7fc4f6bfc9e10ddf21bb4af16f1f91a1e8164a57081",
+      "changed_by_this_review": false
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-08/verification.json",
+      "sha256": "cbcbb3434fb496bb7bd13c86f288ceca8f4d29161e3034ee2b7a0fc869afdf42",
+      "bytes": 1356,
+      "review_current_sha256": "cbcbb3434fb496bb7bd13c86f288ceca8f4d29161e3034ee2b7a0fc869afdf42",
+      "changed_by_this_review": false
+    }
+  ],
+  "review_artifacts": [
+    {
+      "path": "specs/001-mobile-backend-readiness/spec.md",
+      "sha256": "7e6805e26b4cf070bcf3b8a68218a1afd01ce7bf02f23374e3195ce8ecef1025",
+      "bytes": 80206
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/plan.md",
+      "sha256": "467e69847a00ba1f8d101eb77f576b7f3043f831c291544d7350c33d452d7595",
+      "bytes": 24660
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/checklists/readiness-security.md",
+      "sha256": "7a84f3609ed8e83ee98fb10ab3f26e0bed5fed06065a0c3cd3ecb2df157e92f6",
+      "bytes": 47702
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/contracts/mobile-api.md",
+      "sha256": "61e779b104daf77e1b07f25176d335c22151686eed5c5081cee6c2c3ad6b871b",
+      "bytes": 13446
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/contracts/security-protocols.md",
+      "sha256": "77ff5be376e4f38924c4b457d30e1bdaf5dcd2665ba4f681a975250241c923d0",
+      "bytes": 7998
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "sha256": "1a5ecc00e7ecd9b607533262dd90607cf48d8b54de92080a712256054129e918",
+      "bytes": 20473
+    },
+    {
+      "path": "docs/mobile-api-v1.md",
+      "sha256": "b6af6078e34320536e553814d1bb4fd688e75891c753e8c1bd217954f33be836",
+      "bytes": 12803
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/tasks.md",
+      "sha256": "108d032e40ff4e8674579b5d6341fed53ce50b1aa8401a10223a495c21939614",
+      "bytes": 72115
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/accepted-operator-summary.json",
+      "sha256": "adaf431370cb1c69e7accc5f76ee344dc1de1517f3029626a79923d30993855a",
+      "bytes": 3162
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/checklist-review.md",
+      "sha256": "2ad6f10b03c1b870adbfcfb6163fc8e9b628f4e437d7bafced09d66a3a8fc7e8",
+      "bytes": 84816
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/constitution-review.md",
+      "sha256": "a18160c251143f5eb60c006ff2b5de7cb8a6cecd969bd13436317ffc0cd02a6e",
+      "bytes": 5412
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/evidence-manifest.md",
+      "sha256": "2eef1f232fa43583acf9d8b7c54214d720acc388bf0cf24a10d41c4274fd8482",
+      "bytes": 11400
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/high-findings.md",
+      "sha256": "31fa4be8228cc3d415e2ec9ce4329103b2afff6e6d7bb12ae8d288e4a89055eb",
+      "bytes": 3576
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/p0-closure.md",
+      "sha256": "f1ae4b7c970007c8497ad05fe70127d5bbe5069765a040e83f786504473a5b6b",
+      "bytes": 15193
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/pm-decision.md",
+      "sha256": "608ac09a852a44433b33a61efd30644cbe00aabbbb8a585ae5d73b04d268842c",
+      "bytes": 4555
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/pm-phase09-authorization.txt",
+      "sha256": "216fd0ee2746604f0fbe50f39625cefc6eef0122afddd4b51569d54b6eb3abcd",
+      "bytes": 13001
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/readiness-report.md",
+      "sha256": "06046fddb374fea04351c8cf293632926bad14cf28bc72774ac63e18b0ff958a",
+      "bytes": 40252
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/source-guard.json",
+      "sha256": "c38199916eb128563295de1f3792360c695c43786212e051da40dd68da5911b6",
+      "bytes": 90677
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/pm-php83-authorization.txt",
+      "sha256": "831612036cc966820fbcac0e668093e41e1782df53602126b84feface1ac8278",
+      "bytes": 11355
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/php83-runtime.json",
+      "sha256": "02e103c77e5a665708f39f8bafedf7e2a1c659c6a185bf2e013337aeda87cf04",
+      "bytes": 92053
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/php83-compatibility.md",
+      "sha256": "8ab73d1a83e0a0abfdb3a7945e9072165c9f62d79f4a2d296d09b83efaa05f87",
+      "bytes": 10356
+    },
+    {
+      "path": "specs/001-mobile-backend-readiness/evidence/phase-09/acceptance.md",
+      "sha256": "817f2c6651ab3df2a1c5c483b46b92cb51fd67bab71382ab97ff9b0df4afec87",
+      "bytes": 4087
+    }
+  ],
+  "baseline_lanes": [
+    {
+      "lane": "diagnostic_subset",
+      "total": 5,
+      "passed": 5,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 0
+    },
+    {
+      "lane": "diagnostic_subset",
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 0
+    },
+    {
+      "lane": "diagnostic_subset",
+      "total": 16,
+      "passed": 16,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 0
+    },
+    {
+      "lane": "phase8_focused",
+      "total": 462,
+      "passed": 462,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 0
+    },
+    {
+      "lane": "phase7_focused",
+      "total": 76,
+      "passed": 76,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 0
+    },
+    {
+      "lane": "phase6_focused",
+      "total": 20,
+      "passed": 20,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 0
+    },
+    {
+      "lane": "phase5_focused",
+      "total": 100,
+      "passed": 100,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 0
+    },
+    {
+      "lane": "phase4_focused",
+      "total": 65,
+      "passed": 65,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 0
+    },
+    {
+      "lane": "phase3_focused",
+      "total": 128,
+      "passed": 128,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 0
+    },
+    {
+      "lane": "phase2_regression",
+      "total": 16,
+      "passed": 16,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 0
+    },
+    {
+      "lane": "phase8_artisan_full",
+      "total": 725,
+      "passed": 724,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 1
+    },
+    {
+      "lane": "authoritative_full",
+      "total": 725,
+      "passed": 724,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 1
+    }
+  ],
+  "self_exclusions": [
+    "artifact-manifest.json",
+    "validation.json",
+    "php83-validation.json",
+    "closure-validation.json"
+  ],
+  "meaning": "Content-addressed review snapshot; not a cryptographic signature or a Git commit. No secrets/env/cache values hashed.",
+  "previous_review_snapshot": {
+    "sha256": "75eb567dd51479134d12a441d0ad9b4d19a95275bdad78fb155eb97b3fe82fa5",
+    "basis": "Prior blocked Phase9 review accepted by PM;only PHP8.3 downstream gates superseded"
+  },
+  "php83_runtime_sha256": "02e103c77e5a665708f39f8bafedf7e2a1c659c6a185bf2e013337aeda87cf04",
+  "php83_image_digest": "sha256:232331112d3a7c5b98edeeddc3b85f610172f99352c0635fe6b3e166e47062cb",
+  "pre_pm_acceptance_manifest_sha256": "2c56752a0bfc8adec4ca6aeef141545b9d4785a0f1f2ba23f0e3e51684de86a5",
+  "pm_phase_9_decision": "ACCEPTED",
+  "phase_9": "CLOSED",
+  "mobile_backend_ready": true,
+  "mobile_backend_readiness": "PASS",
+  "release_satisfied": "84/84",
+  "t119": "PASS",
+  "t120": "PASS"
+}

@@ -1,0 +1,82 @@
+{
+  "date": "2026-11-17",
+  "scope": "FINAL_PM_DOCUMENTATION_STATUS_CLOSURE_ONLY",
+  "source": "d57cf9831c3c7123534aedfd34021c7b649968c7",
+  "pm_phase_9_decision": "ACCEPTED",
+  "tests_executed": false,
+  "server_access": false,
+  "historical_execution_records_changed": false,
+  "protected_file_count": 156,
+  "immutable_source_count": 162,
+  "local_link_count": 697,
+  "check_count": 14,
+  "checks": [
+    {
+      "check": "HEAD_AND_BRANCH_UNCHANGED",
+      "result": "PASS"
+    },
+    {
+      "check": "IMMUTABLE_SOURCE_162_HASHES_UNCHANGED",
+      "result": "PASS"
+    },
+    {
+      "check": "HISTORICAL_PHASES_AND_EXECUTION_RECORDS_UNCHANGED",
+      "result": "PASS"
+    },
+    {
+      "check": "CHK_84_RELEASE_DISPOSITIONS",
+      "result": "PASS"
+    },
+    {
+      "check": "CHK_TECHNICAL_DISPOSITIONS_AND_OBLIGATIONS_RETAINED",
+      "result": "PASS"
+    },
+    {
+      "check": "PM_ACTUAL_DECISION_AND_ACCEPTANCE",
+      "result": "PASS"
+    },
+    {
+      "check": "T113_T120_CHECKED",
+      "result": "PASS"
+    },
+    {
+      "check": "REQUIREMENT_MATRICES_PRESERVED",
+      "result": "PASS"
+    },
+    {
+      "check": "EXCEL_REMAINS_ACCEPTED_FAILURE",
+      "result": "PASS"
+    },
+    {
+      "check": "MANIFEST_CONTENT_HASHES",
+      "result": "PASS"
+    },
+    {
+      "check": "LOCAL_DOCUMENT_LINKS_RESOLVE",
+      "result": "PASS"
+    },
+    {
+      "check": "NO_NEW_GIT_PATHS_OUTSIDE_AUTHORIZED_DOCUMENTATION",
+      "result": "PASS"
+    },
+    {
+      "check": "GIT_DIFF_WHITESPACE_CHECK",
+      "result": "PASS"
+    },
+    {
+      "check": "CURRENT_TASKS_HEADER_AND_FINAL_MANIFEST_RECHECK",
+      "result": "PASS"
+    }
+  ],
+  "result": "PASS",
+  "application_code_changed": false,
+  "database_changed": false,
+  "migrations_executed": false,
+  "deployment_executed": false,
+  "production_touched": false,
+  "root_used": false,
+  "commit": false,
+  "push": false,
+  "merge": false,
+  "flutter_started": false
+}

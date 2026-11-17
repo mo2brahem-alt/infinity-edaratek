@@ -1,3 +1,33 @@
+# Current authoritative T112 acceptance — PM closure retained 2026-11-17
+
+Latest PM decision formally accepts **H01=PASS, H05=PASS, T112=PASS, PHASE_8=CLOSED** on deployed candidate `d57cf9831c3c7123534aedfd34021c7b649968c7`. This supersedes the historical BLOCKED dispositions below; it does not rewrite their original observations or test results. Phase9 is now explicitly authorized for evidence/review only: [authorization](../phase-09/pm-phase09-authorization.txt).
+
+## Accepted final operator evidence
+
+- H01 code remediation deployed and private-storage permission fix PASS. Final certification: V2 private upload/physical metadata/no public copy; V3 authorized exact bytes; V4 anonymous/wrong-school/no-permission denial; V5 storage/media-files denial; V6 intended public branding **all PASS**. Setup6+validation8=14 HTTP requests. Captured-ID fixture cleanup and physical cleanup proof PASS; final maintenance OFF.
+- Historical reconciliation: canonical private root and public topology PASS; bounded legacy ticketing family absent; physical-copy risk PASS; storage/media-files exposure NO (two HEAD404); server-side historical exposure CLOSED; reconciliation PASS; HISTORICAL_COPY_RECONCILIATION_REQUIRED=NO. No file contents read,0 files deleted. This does not claim retraction of previously downloaded browser bytes.
+- H05 resource provenance PASS. Approved remediation changed only APP_DEBUG source to false preserving owner/mode, rebuilt configuration cache, then effective Laravel debug OFF. One actual HTTPS CGI forced-error response500: sentinel,exception class,stack trace,absolute path,fatal detail all undisclosed. Complete capture and temporary-probe cleanup PASS; H05_RUNTIME_DISCLOSURE=PASS. This is accepted equivalent non-disclosure under SR013, not a fabricated per-directive CGI INI measurement.
+- Final operator evidence reports no production access; all operations applied only to test.edaratek.com under their separate approvals. No operator action was repeated during Phase9.
+
+Portable sanitized fields and original artifact SHA256/provenance are retained in [accepted operator summary](../phase-09/accepted-operator-summary.json). Exact source/evidence relationship is reviewed in [T117](../phase-09/evidence-manifest.md).
+
+Original Phase8 run at `fbc63a4615f48ac0f832d91945d9652aeabef466`: focused462/462; each full runner724/725,known Excel failure only,errors0/skips0. The approved Excel exception remains a failure with exit1, never a green full suite. H01/H05 required operational gaps are now PM-closed; source/runtime qualification newly assessed inPhase9 does not reopen T112.
+
+```ini
+H01=PASS
+H05=PASS
+T112=PASS
+PHASE_8=CLOSED
+MOBILE_BACKEND_READINESS_PHASE_8=PASS
+PRODUCTION_TOUCHED=NO
+```
+
+Phase9 remains open pending its own technical review and actual PM decision. No T120 acceptance is recorded here.
+
+---
+
+## Preserved historical checkpoints (superseded for current acceptance only)
+
 # Latest T112 evidence disposition - 2026-11-10
 
 **Probe4 output and supplement received:** CGI wrapper /home/test/fcgi-bin/php8.3.fcgi is readable and uses /bin/php-cgi8.3. PHPRC remains unresolved; scan dir is not resolved from the wrapper; ini_sources/CLI/env mentions/findings are empty. No effective CGI setting or equivalent non-disclosure has been proven. H05 BLOCKED; cached APP_DEBUG=true finding retained. H01 independently BLOCKED for private-file authorization/old-serving/cache evidence. T112 remains unchecked. No fifth probe is created; no server changes or Phase9. [Complete evidence](t112/probe-4-operator-evidence.json), [assessment](t112/reassessment.md).

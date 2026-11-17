@@ -1,0 +1,88 @@
+{
+  "basis": "PM_ACCEPTED_OPERATOR_EVIDENCE_NO_REEXECUTION",
+  "candidate": "d57cf9831c3c7123534aedfd34021c7b649968c7",
+  "target": "test.edaratek.com",
+  "retained_on": "2026-11-17",
+  "artifacts": [
+    {
+      "id": "H01_FINAL_QA",
+      "local_provenance": "C:/Users/it/AppData/Local/Temp/edaratek-h01-cert-5b07a4de03754ca3b7a257e2077bfdeb/sanitized-result.json",
+      "sha256": "a987320a6f180d03ae04ffd4dfdd8a05c16da0c6ee2bce31565a0dc4b773c2fa",
+      "ssh_exit_code": 0,
+      "remote_output_safety": "PASS"
+    },
+    {
+      "id": "H01_HISTORICAL",
+      "local_provenance": "C:/Users/it/AppData/Local/Temp/edaratek-h01-historical-944a507cf1ce476681bbb4d83dd274dc/sanitized-result.json",
+      "sha256": "e95d93b86ea4ff876992eae3982df21df2b66cd9fc08ee9b0e1387de23c305fa",
+      "ssh_exit_code": 0,
+      "remote_output_safety": "PASS"
+    },
+    {
+      "id": "H05_FINAL_RUNTIME",
+      "local_provenance": "C:/Users/it/AppData/Local/Temp/edaratek-h05-final-cli-output-0f9c9a2a5c114677a9871d05ce824891/sanitized-result.json",
+      "sha256": "dac0dc073a5ebf2ad12af06dc00d2c792a879a90e8bf0882a560636e160308e9",
+      "ssh_exit_code": 0,
+      "remote_output_safety": "PASS"
+    }
+  ],
+  "H01_FINAL_QA": {
+    "FINAL_H01_QA_RESULT": "PASS",
+    "V2": "PASS",
+    "V2_PRIVATE_PHYSICAL_PROOF": "PASS",
+    "V3": "PASS",
+    "V4_ANONYMOUS": "PASS",
+    "V4_WRONG_SCHOOL": "PASS",
+    "V4_NO_PERMISSION": "PASS",
+    "V5_STORAGE": "PASS",
+    "V5_MEDIA_FILES": "PASS",
+    "V6": "PASS",
+    "QA_SETUP_HTTP_REQUESTS": 6,
+    "H01_VALIDATION_HTTP_REQUESTS": 8,
+    "QA_TOTAL_HTTP_REQUESTS": 14,
+    "CURRENT_QA_FIXTURE_CLEANUP": "PASS",
+    "CURRENT_QA_PHYSICAL_CLEANUP_PROOF": "PASS",
+    "H01_QA_PASS": "YES",
+    "FINAL_MAINTENANCE_STATE": "OFF",
+    "PRODUCTION_TOUCHED": "NO"
+  },
+  "H01_HISTORICAL": {
+    "CURRENT_PUBLIC_STORAGE_TOPOLOGY": "PASS",
+    "PRIVATE_ROOT_CANONICAL": "YES",
+    "LEGACY_PUBLIC_TICKETING_PATH_EXISTS": "NO",
+    "LEGACY_PHYSICAL_PUBLIC_COPY_RISK": "PASS",
+    "LEGACY_STORAGE_HTTP_EXPOSURE": "NO",
+    "LEGACY_MEDIA_FILES_HTTP_EXPOSURE": "NO",
+    "SERVER_SIDE_HISTORICAL_EXPOSURE_CLOSED": "YES",
+    "H01_HISTORICAL_RECONCILIATION": "PASS",
+    "HISTORICAL_COPY_RECONCILIATION_REQUIRED": "NO",
+    "HTTP_REQUEST_COUNT": 2,
+    "FILE_CONTENT_READ_COUNT": 0,
+    "FILES_DELETED": 0,
+    "BOUNDED_LEGACY_FAMILY_STABILITY": "PASS",
+    "H01": "PASS"
+  },
+  "H05_FINAL_RUNTIME": {
+    "LARAVEL_EFFECTIVE_APP_DEBUG": "OFF",
+    "APP_DEBUG_REMEDIATION_REQUIRED": "YES",
+    "APP_DEBUG_REMEDIATION": "PASS",
+    "CONFIG_CACHE_REBUILT": "YES",
+    "ENV_OWNER_MODE_PRESERVED": "YES",
+    "CGI_PROBE_HTTP_STATUS": 500,
+    "CGI_SENTINEL_DISCLOSED": "NO",
+    "CGI_EXCEPTION_CLASS_DISCLOSED": "NO",
+    "CGI_STACK_TRACE_DISCLOSED": "NO",
+    "CGI_ABSOLUTE_PATH_DISCLOSED": "NO",
+    "CGI_FATAL_ERROR_DETAIL_DISCLOSED": "NO",
+    "BODY_CAPTURE_COMPLETE": "YES",
+    "HTTP_REQUEST_COUNT": 1,
+    "H05_PROBE_CLEANUP": "PASS",
+    "H05_RESOURCE_PROVENANCE": "PASS",
+    "H05_RUNTIME_DISCLOSURE": "PASS",
+    "H05": "PASS",
+    "T112": "PASS",
+    "PHASE_8": "CLOSED",
+    "FINAL_MAINTENANCE_STATE": "OFF",
+    "PRODUCTION_TOUCHED": "NO"
+  }
+}

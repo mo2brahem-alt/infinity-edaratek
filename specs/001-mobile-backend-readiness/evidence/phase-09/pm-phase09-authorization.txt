@@ -1,0 +1,698 @@
+PM AUTHORIZATION — PHASE 9: MOBILE BACKEND READINESS VERIFICATION
+
+Phase 8 has been formally accepted and CLOSED.
+
+Authoritative prerequisite status:
+
+```text
+H01=PASS
+H05=PASS
+T112=PASS
+PHASE_8=CLOSED
+MOBILE_BACKEND_READINESS_PHASE_8=PASS
+```
+
+Approved deployed candidate:
+
+`d57cf9831c3c7123534aedfd34021c7b649968c7`
+
+Target feature:
+
+`001-mobile-backend-readiness`
+
+Phase 9 tasks:
+
+`T113–T120`
+
+This authorization starts Phase 9.
+
+---
+
+# 1. Execution policy
+
+Execute the authorized Phase 9 work in dependency order.
+
+This phase is:
+
+**EVIDENCE / REVIEW / READINESS VERIFICATION ONLY**
+
+Do NOT implement new application behavior.
+
+Do NOT repair blockers automatically.
+
+Do NOT weaken requirements to obtain readiness.
+
+Execute:
+
+`T113 → T114/T115/T116 → T117 → T118`
+
+Then prepare T119 for actual PM review and STOP.
+
+Do NOT self-approve T119.
+
+Do NOT mark T120 PASS.
+
+T120 requires a subsequent explicit PM decision after reviewing the Phase 9 report.
+
+---
+
+# 2. Phase 8 prerequisite is CLOSED
+
+Do NOT reopen:
+
+- H01 QA
+- V2–V6
+- ACL investigation
+- historical H01 reconciliation
+- H05 debug/runtime probe
+- H05 resource provenance
+- T112 operator diagnostics
+- deployment preflight
+
+Use the accepted final operator evidence.
+
+## H01 final accepted evidence
+
+```text
+H01_CODE_REMEDIATION_DEPLOYED=PASS
+PRIVATE_STORAGE_PERMISSION_FIX=PASS
+FINAL_H01_QA_RESULT=PASS
+V2=PASS
+V3=PASS
+V4_ANONYMOUS=PASS
+V4_WRONG_SCHOOL=PASS
+V4_NO_PERMISSION=PASS
+V5_STORAGE=PASS
+V5_MEDIA_FILES=PASS
+V6=PASS
+QA_SETUP_HTTP_REQUESTS=6
+H01_VALIDATION_HTTP_REQUESTS=8
+QA_TOTAL_HTTP_REQUESTS=14
+CURRENT_QA_FIXTURE_CLEANUP=PASS
+```
+
+Historical reconciliation:
+
+```text
+CURRENT_PUBLIC_STORAGE_TOPOLOGY=PASS
+LEGACY_PUBLIC_TICKETING_PATH_EXISTS=NO
+LEGACY_PHYSICAL_PUBLIC_COPY_RISK=PASS
+LEGACY_STORAGE_HTTP_EXPOSURE=NO
+LEGACY_MEDIA_FILES_HTTP_EXPOSURE=NO
+SERVER_SIDE_HISTORICAL_EXPOSURE_CLOSED=YES
+H01_HISTORICAL_RECONCILIATION=PASS
+HISTORICAL_COPY_RECONCILIATION_REQUIRED=NO
+H01=PASS
+```
+
+## H05 final accepted evidence
+
+```text
+LARAVEL_EFFECTIVE_APP_DEBUG=OFF
+APP_DEBUG_REMEDIATION_REQUIRED=YES
+APP_DEBUG_REMEDIATION=PASS
+CGI_PROBE_HTTP_STATUS=500
+CGI_SENTINEL_DISCLOSED=NO
+CGI_EXCEPTION_CLASS_DISCLOSED=NO
+CGI_STACK_TRACE_DISCLOSED=NO
+CGI_ABSOLUTE_PATH_DISCLOSED=NO
+CGI_FATAL_ERROR_DETAIL_DISCLOSED=NO
+H05_PROBE_CLEANUP=PASS
+H05_RESOURCE_PROVENANCE=PASS
+H05_RUNTIME_DISCLOSURE=PASS
+H05=PASS
+```
+
+Phase 8 final:
+
+```text
+T112=PASS
+PHASE_8=CLOSED
+PRODUCTION_TOUCHED=NO
+```
+
+Treat these PM-approved results as authoritative Phase 9 input.
+
+Do not repeat their HTTP probes.
+
+---
+
+# 3. Permanent notification scope decision
+
+WhatsApp is permanently removed from Edaratek scope.
+
+Do NOT restore:
+
+- WhatsApp delivery;
+- Meta/n8n;
+- OTP delivery;
+- provider credentials;
+- kill-switch delivery tests;
+- historical HMAC/claim/send behavior.
+
+Phase 6 active scope is:
+
+- in-app notifications;
+- web notifications;
+- previously accepted generic phone compatibility only.
+
+Historical WhatsApp requirements are:
+
+`SUPERSEDED_BY_PM_SCOPE_DECISION`
+
+Phase 9 must preserve this disposition.
+
+For old T0-12 / CHK43–50 references, reconcile them against the approved scope decision and active notification evidence.
+
+Do NOT convert superseded WhatsApp functionality back into a readiness requirement.
+
+---
+
+# 4. Initial source/evidence guard
+
+Before modifying Phase 9 evidence:
+
+record read-only:
+
+- current branch;
+- HEAD;
+- tracked Git status;
+- relevant evidence directories;
+- candidate/source fingerprint.
+
+Expected candidate source:
+
+`d57cf9831c3c7123534aedfd34021c7b649968c7`
+
+If local HEAD differs:
+
+do NOT checkout/reset/pull.
+
+Record the mismatch.
+
+Continue only where evidence remains source-independent; classify source-dependent readiness proof as BLOCKED.
+
+Do not silently substitute another SHA.
+
+---
+
+# 5. Phase 8 bookkeeping reconciliation
+
+If the repository documentation still shows historical:
+
+`T112 unchecked`
+
+or:
+
+`PHASE_8_BLOCKED`
+
+update the evidence/documentation only to reflect the already-approved PM decision.
+
+This is bookkeeping, NOT a reopening of Phase 8.
+
+Allowed documentation targets include:
+
+`specs/001-mobile-backend-readiness/evidence/phase-08/acceptance.md`
+
+and the corresponding Phase 8 task-status record in:
+
+`specs/001-mobile-backend-readiness/tasks.md`
+
+Record:
+
+```text
+H01=PASS
+H05=PASS
+T112=PASS
+PHASE_8=CLOSED
+```
+
+with the accepted operator-evidence summary.
+
+Do not modify application source while reconciling this documentation.
+
+---
+
+# 6. T113 — all 84 readiness/security gates
+
+Execute T113.
+
+Re-evaluate every CHK item:
+
+`CHK001–CHK084`
+
+from:
+
+`specs/001-mobile-backend-readiness/checklists/readiness-security.md`
+
+Create/update:
+
+`evidence/phase-09/checklist-review.md`
+
+Every CHK must include:
+
+- CHK ID;
+- PASS / FAIL / BLOCKED / SUPERSEDED where formally applicable;
+- actual evidence;
+- source/runtime SHA where relevant;
+- owning phase/task;
+- reviewer status;
+- remaining limitation.
+
+Requirements:
+
+`84/84 EVALUATED`
+
+No omitted row.
+
+No implied PASS.
+
+No auto-marking reviewer-owned checklist boxes merely because evidence exists.
+
+Use the permanent WhatsApp scope override where applicable.
+
+Return checkpoint:
+
+`T113_COMPLETE=YES`
+
+`CHK_EVALUATED=84/84`
+
+and counts by disposition.
+
+---
+
+# 7. T114 — final P0 12/12 closure
+
+Create/update:
+
+`evidence/phase-09/p0-closure.md`
+
+Evaluate all:
+
+`T0-01` through `T0-12`
+
+For each map:
+
+audit finding
+→ spec requirement
+→ plan
+→ implementation task
+→ actual source
+→ actual test
+→ executed result
+→ phase acceptance
+→ final disposition
+
+Do NOT close a P0 item from code review alone when executable proof is required.
+
+T0-10 must include final H01 V2–V6 and historical exposure closure.
+
+T0-11 must include safe-seeding evidence.
+
+T0-12 must honor the permanent WhatsApp scope decision and use accepted active app/web notification evidence rather than resurrecting removed provider behavior.
+
+Return:
+
+`P0_EVALUATED=12/12`
+
+and:
+
+`P0_PASS=<n>/12`
+
+Any genuinely unresolved required P0 keeps:
+
+`MOBILE_BACKEND_NOT_READY`
+
+---
+
+# 8. T115 — HIGH findings H01–H05
+
+Create/update:
+
+`evidence/phase-09/high-findings.md`
+
+Evaluate:
+
+`H01–H05`
+
+Expected current candidate based on accepted evidence:
+
+```text
+H01=PASS
+H02=<re-evaluate from accepted source/test evidence>
+H03=<re-evaluate from accepted source/test evidence>
+H04=<scope-adjusted accepted Phase6 result>
+H05=PASS
+```
+
+H01 must consume final deployed/private-file/historical evidence.
+
+H05 must consume final effective `APP_DEBUG=OFF` and CGI non-disclosure evidence.
+
+Do NOT perform more H01/H05 probes.
+
+Return:
+
+`HIGH_EVALUATED=5/5`
+
+and exact result for each.
+
+Any applicable unresolved HIGH blocks readiness.
+
+---
+
+# 9. T116 — Constitution 14/14
+
+Create/update:
+
+`evidence/phase-09/constitution-review.md`
+
+Map all 14 Constitution principles to actual evidence.
+
+Must include:
+
+1. security-first/P0
+2. Laravel server authority
+3. tenant isolation
+4. compatibility/regression protection
+5. API contracts
+6. authentication/current-state
+7. private file authorization
+8. notification scope disposition
+9. executed tests
+10. no production mutation
+11. phase review boundaries
+12. separate approval gates
+13. secret protection
+14. audit/traceability
+
+Return:
+
+`CONSTITUTION_EVALUATED=14/14`
+
+`CONSTITUTION_PASS=<n>/14`
+
+No invented exception.
+
+---
+
+# 10. T114/T115/T116 parallelism
+
+These evidence documents may be prepared independently after T113.
+
+Do not run concurrent destructive tests or shared DB operations.
+
+This phase should not require destructive fixture execution.
+
+---
+
+# 11. T117 — immutable evidence manifest and source consistency
+
+Create/update:
+
+`evidence/phase-09/evidence-manifest.md`
+
+Verify the final source/runtime/evidence relationship.
+
+At minimum reconcile:
+
+- Phase1 valid baseline;
+- Phase2 auth;
+- Phase3 approval/auth hardening;
+- Phase4 tenant/task isolation;
+- Phase5 private file security;
+- Phase6 approved app/web notification scope;
+- Phase7 v1 API contract;
+- Phase8 full security regression;
+- post-Phase8 H01 deployed remediation;
+- post-Phase8 H01 final QA;
+- H01 historical reconciliation;
+- H05 final runtime proof;
+- deployed candidate SHA.
+
+Important:
+
+Phase8 full regression reference included:
+
+`fbc63a4615f48ac0f832d91945d9652aeabef466`
+
+Final deployed candidate is:
+
+`d57cf9831c3c7123534aedfd34021c7b649968c7`
+
+Do NOT pretend these are the same source.
+
+Explicitly compare/reconcile the delta.
+
+Determine whether the existing candidate-specific tests and deployed H01/H05 evidence are sufficient for every changed area.
+
+If any source change after the last full regression invalidates required broader regression proof:
+
+record the exact blocker.
+
+Do NOT silently rerun or implement fixes unless the task already has a clearly approved evidence-only execution path.
+
+Do NOT alter expectations merely to obtain READY.
+
+Return:
+
+`FINAL_SOURCE_EVIDENCE_CONSISTENCY=PASS|BLOCKED`
+
+and exact reasoning.
+
+---
+
+# 12. Existing known full-suite exception
+
+Do not silently reinterpret the historical known Excel failure.
+
+Reconcile its previously accepted classification against final readiness requirements.
+
+If it is demonstrably unchanged, pre-existing, non-mobile-blocking and already PM-dispositioned, record that exact disposition.
+
+Do not label it PASS.
+
+Do not let it disappear from the manifest.
+
+---
+
+# 13. T118 — final readiness report
+
+Create/update:
+
+`evidence/phase-09/readiness-report.md`
+
+It must contain:
+
+- all FRs;
+- all SRs;
+- all 14 user stories;
+- all release-blocking CHKs;
+- P0 12/12;
+- HIGH 5/5;
+- Constitution 14/14;
+- phase acceptance history;
+- executed-test summary;
+- migration/recovery evidence;
+- contract evidence;
+- final deployed SHA;
+- runtime/environment evidence;
+- limitations;
+- remaining blockers, if any.
+
+Produce exactly one recommendation:
+
+`PROPOSE_MOBILE_BACKEND_READY=YES`
+
+or:
+
+`PROPOSE_MOBILE_BACKEND_READY=NO`
+
+YES is allowed only when:
+
+- no CRITICAL remains;
+- no applicable HIGH remains;
+- all mandatory P0 requirements close;
+- all mandatory release gates have accepted evidence;
+- source/evidence consistency is sufficient.
+
+No Flutter work starts from the proposal alone.
+
+---
+
+# 14. T119 — PM review package, not self-approval
+
+Prepare:
+
+`evidence/phase-09/pm-decision.md`
+
+but do NOT record PM acceptance yourself.
+
+Set:
+
+`PM_DECISION=AWAITING_PM_REVIEW`
+
+Present a concise PM review package containing:
+
+- readiness recommendation;
+- CHK result;
+- P0 result;
+- HIGH result;
+- Constitution result;
+- source/evidence consistency;
+- remaining blockers/limitations;
+- exact candidate SHA;
+- whether MOBILE_BACKEND_READY can be approved.
+
+This completes the technical work for T119 presentation.
+
+STOP here.
+
+Do NOT mark T119 `[x]` as PM accepted.
+
+Do NOT execute T120.
+
+---
+
+# 15. T120 is NOT authorized yet
+
+T120 requires the actual PM decision after I review your Phase 9 output.
+
+Do NOT write:
+
+`MOBILE_BACKEND_READY`
+
+as an accepted final state.
+
+Do NOT close Phase 9 automatically.
+
+Permitted interim state:
+
+```text
+PHASE_9_TECHNICAL_REVIEW_COMPLETE=YES
+T119=AWAITING_PM_REVIEW
+T120=NOT_STARTED
+MOBILE_BACKEND_READY=AWAITING_PM_DECISION
+```
+
+or, if technical evidence contains blockers:
+
+```text
+PHASE_9_TECHNICAL_REVIEW_COMPLETE=YES
+T119=AWAITING_PM_REVIEW
+T120=NOT_STARTED
+MOBILE_BACKEND_NOT_READY=YES
+```
+
+---
+
+# 16. No application changes
+
+Phase 9 does NOT authorize:
+
+- application source fixes;
+- new migrations;
+- DB mutation;
+- ACL changes;
+- environment remediation;
+- service restart;
+- deployment;
+- integration activation;
+- Flutter;
+- production.
+
+If a blocker is discovered:
+
+record it.
+
+Do not fix it.
+
+---
+
+# 17. Git boundaries
+
+Do not:
+
+- commit;
+- push;
+- merge;
+- rebase;
+- pull;
+- reset;
+- checkout another branch;
+- stash;
+- clean.
+
+Phase 9 evidence/document changes may remain uncommitted for PM review.
+
+Commit/push require separate explicit approval.
+
+---
+
+# 18. Final Phase 9 technical report
+
+Return:
+
+```text
+PHASE_9_EXECUTION_RESULT=PASS_FOR_PM_REVIEW|BLOCKED
+T113=PASS|BLOCKED
+CHK_EVALUATED=84/84
+CHK_RELEASE_SATISFIED=<n>/84
+
+T114=PASS|BLOCKED
+P0_EVALUATED=12/12
+P0_PASS=<n>/12
+
+T115=PASS|BLOCKED
+HIGH_EVALUATED=5/5
+H01=PASS|BLOCKED
+H02=PASS|BLOCKED
+H03=PASS|BLOCKED
+H04=PASS|SUPERSEDED_SCOPE_RESOLVED|BLOCKED
+H05=PASS|BLOCKED
+
+T116=PASS|BLOCKED
+CONSTITUTION_EVALUATED=14/14
+CONSTITUTION_PASS=<n>/14
+
+T117=PASS|BLOCKED
+FINAL_SOURCE_EVIDENCE_CONSISTENCY=PASS|BLOCKED
+
+T118=PASS|BLOCKED
+PROPOSE_MOBILE_BACKEND_READY=YES|NO
+
+T119=AWAITING_PM_REVIEW
+T120=NOT_STARTED
+
+MOBILE_BACKEND_READY=AWAITING_PM_DECISION
+PHASE_9=CURRENTLY_OPEN
+```
+
+If blockers exist, replace readiness status appropriately with:
+
+`MOBILE_BACKEND_NOT_READY=YES`
+
+Also return:
+
+- exact remaining blockers;
+- changed files;
+- commands/tests actually executed;
+- source SHA;
+- evidence paths created/updated.
+
+And confirm:
+
+```text
+APPLICATION_CODE_CHANGED=NO
+DATABASE_CHANGED=NO
+MIGRATIONS_EXECUTED=NO
+PRODUCTION_TOUCHED=NO
+DEPLOYMENT_EXECUTED=NO
+ROOT_USED=NO
+COMMIT=NO
+PUSH=NO
+MERGE=NO
+FLUTTER_STARTED=NO
+```
+
+STOP for PM review.

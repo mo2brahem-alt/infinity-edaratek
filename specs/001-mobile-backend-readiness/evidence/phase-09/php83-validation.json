@@ -1,0 +1,85 @@
+{
+  "date": "2026-11-17",
+  "status": "PASS",
+  "checks": [
+    {
+      "check": "exact_candidate_HEAD_branch",
+      "result": "PASS"
+    },
+    {
+      "check": "original_application_harness_and_prior_work_preserved",
+      "result": "PASS"
+    },
+    {
+      "check": "same_162_immutable_source_hashes",
+      "result": "PASS"
+    },
+    {
+      "check": "source_export_candidate_and_only_PHP_base_change",
+      "result": "PASS"
+    },
+    {
+      "check": "PHP83_official_immutable_runtime",
+      "result": "PASS"
+    },
+    {
+      "check": "composer_platform_and_all_migration_guards_pass",
+      "result": "PASS"
+    },
+    {
+      "check": "required_focused_and_both_full_lanes_pass_comparison",
+      "result": "PASS"
+    },
+    {
+      "check": "disposable_cleanup_complete",
+      "result": "PASS"
+    },
+    {
+      "check": "CHK_counts_74PASS_9SUPERSEDED_1PMpending",
+      "result": "PASS"
+    },
+    {
+      "check": "only_3_CHKs_reassessed_other81_rows_preserved",
+      "result": "PASS"
+    },
+    {
+      "check": "P0_HIGH_operator_and_phase8_records_unchanged",
+      "result": "PASS"
+    },
+    {
+      "check": "constitution_all14_PASS",
+      "result": "PASS"
+    },
+    {
+      "check": "source_consistency_and_recommendation_positive_only",
+      "result": "PASS"
+    },
+    {
+      "check": "FR36_SR24_US14_mapping_retained",
+      "result": "PASS"
+    },
+    {
+      "check": "T119_and_T120_not_self_approved",
+      "result": "PASS"
+    },
+    {
+      "check": "all_current_Phase9_links_resolve",
+      "result": "PASS"
+    },
+    {
+      "check": "content_addressed_manifest_matches_current_artifacts",
+      "result": "PASS"
+    },
+    {
+      "check": "no_unexpected_repository_changes",
+      "result": "PASS"
+    }
+  ],
+  "check_count": 18,
+  "relative_markdown_links_verified": 732,
+  "compatibility": "PASS",
+  "source": "d57cf9831c3c7123534aedfd34021c7b649968c7",
+  "CHK_release_satisfied": "83/84",
+  "PM_status": "AWAITING_PM_REVIEW",
+  "T120": "NOT_STARTED"
+}
