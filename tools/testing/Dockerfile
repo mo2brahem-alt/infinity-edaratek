@@ -54,6 +54,9 @@ RUN composer install --no-interaction --prefer-dist --no-progress --no-scripts -
     || { echo COMPOSER_INSTALL_FAILED; php /usr/local/bin/ci-composer-diagnostics.php install /tmp/install.log; exit 41; }
 RUN composer check-platform-reqs --no-interaction > /tmp/build-platform.log 2>&1 \
     || { echo COMPOSER_PLATFORM_FAILED; php /usr/local/bin/ci-composer-diagnostics.php platform /tmp/build-platform.log; exit 42; }
+ARG EDARATEK_AUDIT_NONCE=manual
+RUN test -n "$EDARATEK_AUDIT_NONCE" && composer audit --locked --no-interaction > /tmp/build-audit.log 2>&1 \
+    || { echo COMPOSER_AUDIT_FAILED; exit 45; }
 
 # Vite 7.3.1 / plugin-vue lock requirements: Node ^20.19.0 || >=22.12.0.
 # This immutable linux/amd64 image reports Node 22.23.4; no npm auth is supplied.

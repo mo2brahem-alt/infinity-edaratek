@@ -1,0 +1,39 @@
+name: Security candidate validation
+'on':
+  push:
+    branches: [ci/edaratek-google-linux-gate]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: security-validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  isolated_linux:
+    if: github.ref == 'refs/heads/ci/edaratek-google-linux-gate'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Linux concurrency, Google, native API, Excel, static-file protection and full suite
+        shell: pwsh
+        run: ./tools/testing/run-tests.ps1 -SecurityGate
+  frozen_phase8:
+    if: github.ref == 'refs/heads/ci/edaratek-google-linux-gate'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Authoritative frozen fingerprints (independent pending PM gate)
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm --network none --mount "type=bind,source=$PWD,target=/source,readonly" -w /source php:8.2-cli-bookworm@sha256:26b388d187a5e592ef5e02c14d0f92dd9c761894ff0a5fe338183196471c4b4e php tools/testing/check-frozen-baseline.php
+# Validation never deploys and has no environment/service secrets.
+# PM authorized this branch's single push and Ubuntu execution only.
+# Jobs are independent: frozen failure cannot skip functional execution.
+# No continue-on-error, deployment bridge, PR creation or main mutation.

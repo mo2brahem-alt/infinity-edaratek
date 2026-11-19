@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([switch]$SelfTest, [switch]$PrepareOnly, [switch]$ValidateOnly)
+param([switch]$SelfTest, [switch]$PrepareOnly, [switch]$ValidateOnly, [switch]$SecurityGate)
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
@@ -120,11 +120,14 @@ foreach ($key in @('EDARATEK_TEST_DB_NAME','EDARATEK_TEST_DB_PASSWORD','EDARATEK
 }
 try {
     New-Item -ItemType Directory -Path $scratch | Out-Null
-    foreach ($dir in @('app','bootstrap','config','database','lang','resources','routes','tests','tools/testing')) {
+    foreach ($dir in @('app','bootstrap','config','database','lang','resources','routes','tests','tools/testing','tools/release')) {
         Copy-SafeTree (Join-Path $repoRoot $dir) (Join-Path $scratch $dir)
     }
     # Passive, tracked reference files only; .github workflows are hashed, never executed here.
     $phase8References = @('.github/workflows/deploy.yml','.github/workflows/mobile-backend-tests.yml','docs/mobile-api-v1.md','docs/notification-policy.md')
+    if ($SecurityGate) {
+        $phase8References += @('.github/workflows/security-validation.yml','docs/mobile-google-auth-v1.md')
+    }
     foreach ($file in (@('.htaccess','artisan','composer.json','composer.lock','phpunit.xml','phpunit.mysql.xml','package.json','package-lock.json','vite.config.js','postcss.config.js','tailwind.config.js','jsconfig.json') + $phase8References)) {
         Copy-SafeTree (Join-Path $repoRoot $file) (Join-Path $scratch $file)
     }
@@ -173,7 +176,9 @@ try {
     if ($resolvedContext -cne [IO.Path]::GetFullPath($scratch)) { throw 'BUILD_CONTEXT_OUTSIDE_FILTERED_SCRATCH' }
     $composeArgs = @('compose','--project-directory',$composeDirectory,'--env-file',$emptyEnv,'-p',$project,'-f',$composeFile)
     # --progress is a Compose global option, before the build subcommand.
-    $buildLog = & docker @composeArgs --progress plain build --pull 2>&1
+    # A fresh nonsecret nonce invalidates only the audit layer and later layers.
+    # Dependency downloads remain cacheable; advisory metadata is checked each run.
+    $buildLog = & docker @composeArgs --progress plain build --pull --build-arg "EDARATEK_AUDIT_NONCE=$runId" 2>&1
     $buildExit = $LASTEXITCODE
     if ($buildExit -ne 0) {
         Write-Output "TEST_IMAGE_BUILD_FAILED: docker_exit=$buildExit"
@@ -187,7 +192,12 @@ try {
     if ($LASTEXITCODE -ne 0 -or [string]$internal -cne 'true') {
         Write-Output 'INTERNAL_NETWORK_REQUIRED'; exit 38
     }
-    $output = & docker @composeArgs run --rm --no-deps -T tests 2>&1
+    if ($SecurityGate) {
+        # Candidate validation is separate from frozen Phase8 acceptance.
+        $output = & docker @composeArgs run --rm --no-deps -T tests sh tools/testing/run-security-gate.sh 2>&1
+    } else {
+        $output = & docker @composeArgs run --rm --no-deps -T tests 2>&1
+    }
     $runExit = $LASTEXITCODE
     $seenPlatform = $false
     $seenBaseline = $false

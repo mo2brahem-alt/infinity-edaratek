@@ -1,0 +1,274 @@
+{
+    "schema_version":  1,
+    "provenance":  "Current PM local Google implementation and Security Remediation \u0026 Linux Gate authorization; candidate validation only",
+    "approval_status":  "PENDING_PM_REVIEW",
+    "approved_by":  "",
+    "frozen_checkpoint":  "8020e8b9363e1d100a1012c9b0a68d245169f2c1",
+    "frozen_manifest_sha256":  "5862f8395099ac4546ec5a4252443fb5b40ec1c76b978d0233d556702ac9df3d",
+    "reviewed_changes":  [
+                             {
+                                 "path":  ".github/workflows/deploy.yml",
+                                 "frozen_sha256":  "349264dca87ac571ae508f130a9d79267e67ef18a0c1e52f640633d488e2c317",
+                                 "candidate_sha256":  "2f3bbc1e7acfb1420847a78cbaec618d8c3b422c7362d059065c690d41b99a2f",
+                                 "reason":  "Current security-remediation authorization: remove automatic main push deployment; manual test-only validated source handoff"
+                             },
+                             {
+                                 "path":  "app/Providers/AppServiceProvider.php",
+                                 "frozen_sha256":  "3242e8d5fd52a47da33e1a2f6ff761e47e35422aec114ecf439d1f5b0d74823f",
+                                 "candidate_sha256":  "4eb4407ca4b2b8f8963ca6f1b9f304b3a43b65575d4bf7237c9125b7fd72c49f",
+                                 "reason":  "PM-authorized local Google verifier DI bindings; no existing provider removed"
+                             },
+                             {
+                                 "path":  "app/Services/Mobile/NativeRateLimiter.php",
+                                 "frozen_sha256":  "7fb53c630169d05f476b1ecca39e4715bb4c3a4e26b8872c4d03ca53dd89a62d",
+                                 "candidate_sha256":  "5843307ad0825ee5bc497655261c8841e04edaf7521b71e03a86172f15df1f17",
+                                 "reason":  "PM-authorized Google admission and shared account budgets; original assertions preserved"
+                             },
+                             {
+                                 "path":  "app/Support/ApiError.php",
+                                 "frozen_sha256":  "a537e33e7195c34255aaf8a6c248c38f55b31a8dd57ff9429dd4900644a4f9f3",
+                                 "candidate_sha256":  "33ab57126a97cc3ea60a9175c080fe9250b28635ec4e3819347624bf9c50c5f8",
+                                 "reason":  "PM-authorized six safe Google error codes; accepted native envelope retained"
+                             },
+                             {
+                                 "path":  "routes/api.php",
+                                 "frozen_sha256":  "5a8d29999684115f3f45042c87318dab5bf9793a430ddbc351dcc83256e0223a",
+                                 "candidate_sha256":  "c989d7aefe23829b5e5948017ada7bad0263c5f560f130cf23c1b36a33ef82c4",
+                                 "reason":  "PM-authorized four Google routes; existing password/session routes retained"
+                             },
+                             {
+                                 "path":  "app/Services/School/StudentImportService.php",
+                                 "frozen_sha256":  "fad0e59a9b87fde756bbb5b8d6caef5f8bdb7505cecb1d08f87a3272fbb69e36",
+                                 "candidate_sha256":  "08860e81c936f9d3b64b5ed7849c2437dd916ab24db5f713192ef7276a0e75fe",
+                                 "reason":  "Current PM Step1 authorizes the established one-line Excel fix: Query Builder whereKey incorrectly addresses schools.key; explicit where(id) preserves the school-row lock, transaction, authorization and original assertions. Additional sixth proposal only; no frozen baseline approval."
+                             }
+                         ],
+    "candidate_files":  [
+                            {
+                                "path":  ".github/workflows/deploy.yml",
+                                "sha256":  "2f3bbc1e7acfb1420847a78cbaec618d8c3b422c7362d059065c690d41b99a2f"
+                            },
+                            {
+                                "path":  ".github/workflows/security-validation.yml",
+                                "sha256":  "36af6a110718f3a571d38d4ee8004195e27bd921ccd789ebc83f9c72bca55ab4"
+                            },
+                            {
+                                "path":  "app/Http/Controllers/Mobile/GoogleSessionController.php",
+                                "sha256":  "070b6ccaa130f2370fc7b99dad787c11b0062747757ac0204cd0a122c99dc141"
+                            },
+                            {
+                                "path":  "app/Http/Middleware/GoogleAuthAdmission.php",
+                                "sha256":  "37e97b4897d2f3f0be547888b45c01dcef6fdb01c68bf70842db1d3baea4d704"
+                            },
+                            {
+                                "path":  "app/Http/Requests/Api/V1/GoogleLinkRequest.php",
+                                "sha256":  "6e262c1a8675637c25410784542804c6bfe953c14b3557c9b40841b72fec6b60"
+                            },
+                            {
+                                "path":  "app/Http/Requests/Api/V1/GoogleLoginRequest.php",
+                                "sha256":  "a4c7ec463ad88d2540b57db8545c2dc88554e866f49243bbdee4cce666fd3a39"
+                            },
+                            {
+                                "path":  "app/Http/Requests/Api/V1/GoogleUnlinkRequest.php",
+                                "sha256":  "c95dfcb456fd96117315767f4d2a784411fad5fa9852139a389697153fabc211"
+                            },
+                            {
+                                "path":  "app/Models/ExternalIdentity.php",
+                                "sha256":  "51b2606d2f9ed616db189a72de061fd0b7543c8d1493eb7b7526745d538dae01"
+                            },
+                            {
+                                "path":  "app/Providers/AppServiceProvider.php",
+                                "sha256":  "4eb4407ca4b2b8f8963ca6f1b9f304b3a43b65575d4bf7237c9125b7fd72c49f"
+                            },
+                            {
+                                "path":  "app/Services/Mobile/Google/FirebaseGateway.php",
+                                "sha256":  "e569f14523cbdeb0b91b496499973b3ea705dcbf7a5fbead557a2351039bfc7e"
+                            },
+                            {
+                                "path":  "app/Services/Mobile/Google/FirebaseIdentityVerifier.php",
+                                "sha256":  "c44c40b082f108e2c3b54b8432a29d84fccf6b27d92fc6fb71dae28c233e9ee3"
+                            },
+                            {
+                                "path":  "app/Services/Mobile/Google/FirebaseSigningKeys.php",
+                                "sha256":  "57158035743490b9907e7a04d04a074f6208184053edae971fc51b25e91cf922"
+                            },
+                            {
+                                "path":  "app/Services/Mobile/Google/GoogleAuthFailure.php",
+                                "sha256":  "83048e9ea77e5ca19d7913bf50a2b4c7e0ae7f7c48acec59973f97dd75f1b556"
+                            },
+                            {
+                                "path":  "app/Services/Mobile/Google/GoogleIdentityService.php",
+                                "sha256":  "9dcf6e78015ff3473f21a44a8b538bb666e98cc86843cb11065b91eea7a9887d"
+                            },
+                            {
+                                "path":  "app/Services/Mobile/Google/KreaitFirebaseGateway.php",
+                                "sha256":  "259438aeca0ab1e7dd3c51bd924457ffd3e752cae88a8c3ef2dff2278bc3412f"
+                            },
+                            {
+                                "path":  "app/Services/Mobile/Google/StrictFirebaseIdentityVerifier.php",
+                                "sha256":  "5329743706e83b9f1a0e7c4bebe9a6f7f9527f8ba596d670b6f5f58e72b53a6a"
+                            },
+                            {
+                                "path":  "app/Services/Mobile/Google/VerifiedGoogleIdentity.php",
+                                "sha256":  "3e1530bf9bfe684b7a468f2223979efd7591cd14d3f32b78e0acca575e4b348c"
+                            },
+                            {
+                                "path":  "app/Services/Mobile/NativeRateLimiter.php",
+                                "sha256":  "5843307ad0825ee5bc497655261c8841e04edaf7521b71e03a86172f15df1f17"
+                            },
+                            {
+                                "path":  "app/Services/School/StudentImportService.php",
+                                "sha256":  "08860e81c936f9d3b64b5ed7849c2437dd916ab24db5f713192ef7276a0e75fe"
+                            },
+                            {
+                                "path":  "app/Support/ApiError.php",
+                                "sha256":  "33ab57126a97cc3ea60a9175c080fe9250b28635ec4e3819347624bf9c50c5f8"
+                            },
+                            {
+                                "path":  "composer.json",
+                                "sha256":  "2a762a9e8a95d66abbd0ab2d5383ceae5d003bebd74b502346b560c3693e4379"
+                            },
+                            {
+                                "path":  "composer.lock",
+                                "sha256":  "9b209e30b5cc18f85309c9a2f782268221b20c8bdf7441182f020ea6a8cb66ae"
+                            },
+                            {
+                                "path":  "config/firebase_google.php",
+                                "sha256":  "94340f5f809bd3fcfd31df201e9629d36bf71ff9fb7a556f6ea650fdcc6443ea"
+                            },
+                            {
+                                "path":  "database/migrations/2026_11_19_140000_create_external_identities_table.php",
+                                "sha256":  "ea97c7180fef4c50c00d50fd7fd2c829f3a3a9d0d7d27978d968a158d1122e0e"
+                            },
+                            {
+                                "path":  "docs/mobile-google-auth-v1.md",
+                                "sha256":  "ec57d6bd8b6a136c37ab996b7cb7b951fd1bb104245a103b872053fad14a00a3"
+                            },
+                            {
+                                "path":  "routes/api.php",
+                                "sha256":  "c989d7aefe23829b5e5948017ada7bad0263c5f560f130cf23c1b36a33ef82c4"
+                            },
+                            {
+                                "path":  "tests/Feature/Mobile/GoogleIdentityConcurrencyTest.php",
+                                "sha256":  "3c04ae1d109f88100c9aa7f94c2f21f0180851c15c0504caeb3eb46bd65f7daa"
+                            },
+                            {
+                                "path":  "tests/Feature/Mobile/GoogleIdentityVerifierTest.php",
+                                "sha256":  "1258cc5dfb1396370d222684441bc286defbf3d4bdcb78c93652f4a3084f3e12"
+                            },
+                            {
+                                "path":  "tests/Feature/Mobile/GoogleSessionContractTest.php",
+                                "sha256":  "a051b3c2114cb2c1cb24b8e4f31f2f6be408fc380491d55d3568e81e94045688"
+                            },
+                            {
+                                "path":  "tests/Support/google_identity_worker.php",
+                                "sha256":  "19856e771ea73485af973bf314e2ff346cafaa62155adb5fd099d2aade973d80"
+                            },
+                            {
+                                "path":  "tests/Unit/DependencySecurityRegressionTest.php",
+                                "sha256":  "f8a8692fdf97c61b2f6773e5d2a910a590fa8ac167125ff5670371171a8ad4ed"
+                            },
+                            {
+                                "path":  "tools/release/review_bundle.py",
+                                "sha256":  "f7f873d0bb4e5ba7d7151162d693dd80d7d1cc227f075efcacff976fb7340adb"
+                            },
+                            {
+                                "path":  "tools/release/test_review_bundle.py",
+                                "sha256":  "4b6ea00ed8f358fd2e6d5c853a68997c8b7783ddbf3844f70634ce2bacdac582"
+                            },
+                            {
+                                "path":  "tools/testing/check-frozen-baseline.php",
+                                "sha256":  "6cb9d913405d56528b9ed6ff0e97d13c55d3f6b1aea504caccdf1abf4011e318"
+                            },
+                            {
+                                "path":  "tools/testing/Dockerfile",
+                                "sha256":  "332d80ba34a08a232c5fc93fd5a773db9e7b48615cfbcf73f66d8a7e79091913"
+                            },
+                            {
+                                "path":  "tools/testing/probe-linux-native.php",
+                                "sha256":  "f8c9d08bc347bcda7bdd8e01cfb5f6fd7df20da2ae57b6743e30db7e271462e4"
+                            },
+                            {
+                                "path":  "tools/testing/run-security-gate.sh",
+                                "sha256":  "b85b9736ec76cbffd9dc1ba7e9232db91f6bfacff2e1197ddb59b5aac1369179"
+                            },
+                            {
+                                "path":  "tools/testing/run-tests.ps1",
+                                "sha256":  "890c897f1e0f00fe671eb7fea1060a24e81e91358b903c54d04d720772c88f9a"
+                            },
+                            {
+                                "path":  "tools/testing/security-case-coverage.php",
+                                "sha256":  "aa9c99102e8c16589be17b74ddfcef3c40ebc53b06aa5016da3c6213a4dec9f5"
+                            },
+                            {
+                                "path":  "tools/testing/summarize-security-tests.php",
+                                "sha256":  "b59f8445cd0d1e449882f9f8344a9d28eaf2c7e801b0d479c557100064032789"
+                            },
+                            {
+                                "path":  "tools/testing/test-security-candidate.php",
+                                "sha256":  "8c08626c5b4c525915b6aca4a0ff352ebe7ed60a44a52d9faeb808b2fec1d463"
+                            },
+                            {
+                                "path":  "tools/testing/test-security-case-coverage.php",
+                                "sha256":  "10c65404367d24ccf8c55061bfc70ca75cbf31a67b8847f4d4fcd0314813f286"
+                            },
+                            {
+                                "path":  "tools/testing/test-security-summaries.php",
+                                "sha256":  "ea524a9680e87a417aafe3d12aa95f6d5927e1cd97bef4a2b2f8ad381b7dba46"
+                            },
+                            {
+                                "path":  "tools/testing/verify-security-candidate.php",
+                                "sha256":  "b593979af4858c20e8890dea6679fd367c73faa7386f0f3d98aa3ed1bad85997"
+                            }
+                        ],
+    "policy":  "Original frozen manifest and original tests remain unchanged. Candidate execution is not frozen-baseline acceptance. Release mode rejects this proposal until explicit PM approval is recorded.",
+    "linux_closure_provenance":  "Current PM Linux Release Gate Closure: one-line Excel Query Builder correction; original tests preserved; explicit Linux lanes, native prerequisite probe, mandatory case identities, fresh audit and feature-branch validation only",
+    "linux_closure_changes":  [
+                                  {
+                                      "path":  ".github/workflows/security-validation.yml",
+                                      "pre_closure_sha256":  "E2E703997867DEF3DDA7B40DA9745C9609636564FDA549BD413D8F207CD6C404",
+                                      "candidate_sha256":  "4d503c7ab71edb352e8a38caf5930faf4848c9f2e8f250e5a76381e3f24d7a24"
+                                  },
+                                  {
+                                      "path":  "tools/testing/Dockerfile",
+                                      "pre_closure_sha256":  "3BD0968AC89BF6E92A6A839AD35CC0CFCAC3DACBC25597FB276F59A1D27B9101",
+                                      "candidate_sha256":  "332d80ba34a08a232c5fc93fd5a773db9e7b48615cfbcf73f66d8a7e79091913"
+                                  },
+                                  {
+                                      "path":  "tools/testing/run-tests.ps1",
+                                      "pre_closure_sha256":  "8FB991429B9908ED4B498801D2C4189A0E02D6D2A3160B23BE3050CD5EE33EEA",
+                                      "candidate_sha256":  "890c897f1e0f00fe671eb7fea1060a24e81e91358b903c54d04d720772c88f9a"
+                                  },
+                                  {
+                                      "path":  "tools/testing/run-security-gate.sh",
+                                      "pre_closure_sha256":  "0E1CFD559605B44F0EB1FD64EC13C2AE5E22F89BDB5028FCF4B68EF1AFCA19FD",
+                                      "candidate_sha256":  "12cc097b1a1d194c1f9bb77c99e6d5af4528c423b760ba23927aa2b5e4acf0d2"
+                                  },
+                                  {
+                                      "path":  "tools/testing/summarize-security-tests.php",
+                                      "pre_closure_sha256":  "2F80CC8500626CADB9DB919C3AB1CD2A44A6729446627CEE0D8324A45CAF07CA",
+                                      "candidate_sha256":  "714be138d346d54fc5c8ea2e14d247fb322d6086cbfc6e74a219315ab7244894"
+                                  },
+                                  {
+                                      "path":  "app/Services/School/StudentImportService.php",
+                                      "pre_closure_sha256":  "FAD0E59A9B87FDE756BBB5B8D6CAEF5F8BDB7505CECB1D08F87A3272FBB69E36",
+                                      "candidate_sha256":  "08860e81c936f9d3b64b5ed7849c2437dd916ab24db5f713192ef7276a0e75fe"
+                                  },
+                                  {
+                                      "path":  "tools/testing/probe-linux-native.php",
+                                      "pre_closure_sha256":  null,
+                                      "candidate_sha256":  "f8c9d08bc347bcda7bdd8e01cfb5f6fd7df20da2ae57b6743e30db7e271462e4"
+                                  },
+                                  {
+                                      "path":  "tools/testing/security-case-coverage.php",
+                                      "pre_closure_sha256":  null,
+                                      "candidate_sha256":  "aa9c99102e8c16589be17b74ddfcef3c40ebc53b06aa5016da3c6213a4dec9f5"
+                                  },
+                                  {
+                                      "path":  "tools/testing/test-security-case-coverage.php",
+                                      "pre_closure_sha256":  null,
+                                      "candidate_sha256":  "10c65404367d24ccf8c55061bfc70ca75cbf31a67b8847f4d4fcd0314813f286"
+                                  }
+                              ],
+    "github_ci_authorization":  "Current PM authorizes reviewed backend commits and one push to ci/edaratek-google-linux-gate only. Independent functional Ubuntu job and unsuppressed failing authoritative fingerprint job; no baseline update, deployment, PR or further fix push."
+}
