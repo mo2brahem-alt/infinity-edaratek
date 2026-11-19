@@ -1,0 +1,18 @@
+Linux release gate closure: task-specific changes
+Modified relative to the preserved pre-task worktree:
+.github/workflows/security-validation.yml
+app/Services/School/StudentImportService.php
+tools/testing/Dockerfile
+tools/testing/run-security-gate.sh
+tools/testing/run-tests.ps1
+tools/testing/security-baseline-proposal.json
+tools/testing/summarize-security-tests.php
+
+Added by this task:
+docs/EDARATEK_LINUX_FROZEN_BASELINE_REVIEW.md
+docs/EDARATEK_LINUX_GATE_CLOSURE_REPORT.md
+docs/linux-gate-closure-source-files.txt
+tools/testing/probe-linux-native.php
+tools/testing/security-case-coverage.php
+tools/testing/test-security-case-coverage.php
+tools/testing/test-security-summaries.php

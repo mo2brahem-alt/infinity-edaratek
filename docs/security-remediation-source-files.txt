@@ -1,0 +1,21 @@
+EDARATEK security remediation task-specific files
+Modified relative to the preserved pre-task worktree:
+.github/workflows/deploy.yml
+composer.json
+composer.lock
+tools/testing/Dockerfile
+tools/testing/run-tests.ps1
+
+Added by this task:
+.github/workflows/security-validation.yml
+docs/EDARATEK_SECURITY_REMEDIATION.md
+docs/security-advisory-resolution.json
+docs/security-remediation-source-files.txt
+tests/Unit/DependencySecurityRegressionTest.php
+tools/release/review_bundle.py
+tools/release/test_review_bundle.py
+tools/testing/run-security-gate.sh
+tools/testing/security-baseline-proposal.json
+tools/testing/summarize-security-tests.php
+tools/testing/test-security-candidate.php
+tools/testing/verify-security-candidate.php
