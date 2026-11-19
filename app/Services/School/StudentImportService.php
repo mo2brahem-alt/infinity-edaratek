@@ -252,7 +252,7 @@ class StudentImportService
     private function persistRows(int $schoolId, array $rows): int
     {
         return DB::transaction(function () use ($schoolId, $rows): int {
-            DB::table('schools')->whereKey($schoolId)->lockForUpdate()->value('id');
+            DB::table('schools')->where('id', $schoolId)->lockForUpdate()->value('id');
 
             $usedCodes = SchoolStudent::query()
                 ->where('school_id', $schoolId)
