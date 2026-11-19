@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "checkpoint": "edaratek-google-successor-v1",
+  "historical_checkpoint": {
+    "commit_sha": "8020e8b9363e1d100a1012c9b0a68d245169f2c1",
+    "manifest_path": "tools/testing/phase8-scope.json",
+    "manifest_sha256": "5862f8395099ac4546ec5a4252443fb5b40ec1c76b978d0233d556702ac9df3d",
+    "checker_path": "tools/testing/check-frozen-baseline.php",
+    "checker_sha256": "6cb9d913405d56528b9ed6ff0e97d13c55d3f6b1aea504caccdf1abf4011e318",
+    "historical_source_bytes_identical": false
+  },
+  "candidate_commit_sha": "cec3e0797512a44b3f66325108d4619eea006984",
+  "approval": {
+    "status": "APPROVED_SUCCESSOR_ONLY",
+    "approved_on": "2026-11-19",
+    "authority": "PM user instruction in the current conversation",
+    "instruction_title": "EDARATEK — APPROVED SIX-FINGERPRINT SUCCESSOR GATE",
+    "github_human_approval_claimed": false,
+    "cryptographic_signature_claimed": false,
+    "scope": "Exactly six reviewed source deltas; immutable historical Phase 8 evidence; local successor tooling only; no commit, push or deployment"
+  },
+  "review_provenance": {
+    "proposal_path": "tools/testing/security-baseline-proposal.json",
+    "proposal_sha256": "788a7cfedc5cb081036f3ec49d2780956a26e5bd7e5e343527e0b5645200da95",
+    "review_path": "docs/EDARATEK_LINUX_FROZEN_BASELINE_REVIEW.md",
+    "review_sha256": "d7e980e31483ba20222ec344770f26e1f06c4c012efee026c01ddc6e951afb13",
+    "record_type": "Conversation authorization recorded by implementation; not a signed attestation or GitHub review"
+  },
+  "ci_evidence": {
+    "url": "https://github.com/mo2brahem-alt/infinity-edaratek/actions/runs/44535861202",
+    "candidate_commit_sha": "cec3e0797512a44b3f66325108d4619eea006984",
+    "functional_job_result": "PASS",
+    "full_suite_passed": 761,
+    "full_suite_assertions": 7254,
+    "overall_run_result": "FAILURE_HISTORICAL_FINGERPRINT_GATE",
+    "successor_github_execution": "NOT_EXECUTED"
+  },
+  "approved_deltas": [
+    {
+      "path": ".github/workflows/deploy.yml",
+      "frozen_sha256": "349264dca87ac571ae508f130a9d79267e67ef18a0c1e52f640633d488e2c317",
+      "candidate_sha256": "2f3bbc1e7acfb1420847a78cbaec618d8c3b422c7362d059065c690d41b99a2f",
+      "reason": "Current security-remediation authorization: remove automatic main push deployment; manual test-only validated source handoff"
+    },
+    {
+      "path": "app/Providers/AppServiceProvider.php",
+      "frozen_sha256": "3242e8d5fd52a47da33e1a2f6ff761e47e35422aec114ecf439d1f5b0d74823f",
+      "candidate_sha256": "4eb4407ca4b2b8f8963ca6f1b9f304b3a43b65575d4bf7237c9125b7fd72c49f",
+      "reason": "PM-authorized local Google verifier DI bindings; no existing provider removed"
+    },
+    {
+      "path": "app/Services/Mobile/NativeRateLimiter.php",
+      "frozen_sha256": "7fb53c630169d05f476b1ecca39e4715bb4c3a4e26b8872c4d03ca53dd89a62d",
+      "candidate_sha256": "5843307ad0825ee5bc497655261c8841e04edaf7521b71e03a86172f15df1f17",
+      "reason": "PM-authorized Google admission and shared account budgets; original assertions preserved"
+    },
+    {
+      "path": "app/Support/ApiError.php",
+      "frozen_sha256": "a537e33e7195c34255aaf8a6c248c38f55b31a8dd57ff9429dd4900644a4f9f3",
+      "candidate_sha256": "33ab57126a97cc3ea60a9175c080fe9250b28635ec4e3819347624bf9c50c5f8",
+      "reason": "PM-authorized six safe Google error codes; accepted native envelope retained"
+    },
+    {
+      "path": "routes/api.php",
+      "frozen_sha256": "5a8d29999684115f3f45042c87318dab5bf9793a430ddbc351dcc83256e0223a",
+      "candidate_sha256": "c989d7aefe23829b5e5948017ada7bad0263c5f560f130cf23c1b36a33ef82c4",
+      "reason": "PM-authorized four Google routes; existing password/session routes retained"
+    },
+    {
+      "path": "app/Services/School/StudentImportService.php",
+      "frozen_sha256": "fad0e59a9b87fde756bbb5b8d6caef5f8bdb7505cecb1d08f87a3272fbb69e36",
+      "candidate_sha256": "08860e81c936f9d3b64b5ed7849c2437dd916ab24db5f713192ef7276a0e75fe",
+      "reason": "Current PM Step1 authorizes the established one-line Excel fix: Query Builder whereKey incorrectly addresses schools.key; explicit where(id) preserves the school-row lock, transaction, authorization and original assertions. Additional sixth proposal only; no frozen baseline approval."
+    }
+  ],
+  "candidate_inventory": {
+    "path": "tools/testing/successor-source-inventory-v1.json",
+    "sha256": "d07dca0602ff4db34d8ddc165c8cf6b8c49baad92836b406bd4bf10fe91c1361",
+    "base_source_count": 777,
+    "proposal_candidate_count": 44,
+    "manifest_self_hash": "Excluded to avoid circular hashing; strict schema, fixed approval and anchored references are verified"
+  },
+  "gate_infrastructure_updates": [
+    {
+      "path": ".github/workflows/security-validation.yml",
+      "candidate_sha256": "36af6a110718f3a571d38d4ee8004195e27bd921ccd789ebc83f9c72bca55ab4",
+      "successor_sha256": "be169ae4c212839d1c56c7d7feb0519f800e4a6194b4cb9a46056025b4735c0b",
+      "reason": "Keep independent functional job; frozen_phase8 now labels and executes successor v1 and its negative tests; historical checker remains available."
+    },
+    {
+      "path": "tools/testing/run-security-gate.sh",
+      "candidate_sha256": "b85b9736ec76cbffd9dc1ba7e9232db91f6bfacff2e1197ddb59b5aac1369179",
+      "successor_sha256": "89aea56e218025b6e6c4c7eebf79cfcda32f92354d736912cc432e253564ef74",
+      "reason": "Use strict successor source validation before and after the unchanged functional lanes; add successor negative self-tests."
+    },
+    {
+      "path": "tools/testing/run-tests.ps1",
+      "candidate_sha256": "890c897f1e0f00fe671eb7fea1060a24e81e91358b903c54d04d720772c88f9a",
+      "successor_sha256": "e11ab8c6f258819b60d3a842c8c486b1ebc9910fabf6e1d8eac91492ac5bb782",
+      "reason": "Copy the unchanged historical review document into the disposable filtered context for pinned provenance verification."
+    }
+  ],
+  "gate_files": [
+    {
+      "path": "tools/testing/check-successor-baseline.php",
+      "sha256": "f7d776d14976c4b03024c59490d15b724beeb509537e9f7b6d89b36a42c00826"
+    },
+    {
+      "path": "tools/testing/test-successor-baseline.php",
+      "sha256": "efff0839a3969ffabc16607e13707f444873de8f56ae2b5a044324fd09489405"
+    }
+  ]
+}

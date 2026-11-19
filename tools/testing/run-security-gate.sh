@@ -2,7 +2,8 @@
 set -eu
 # Original Linux concurrency assertions and isolation guard are unchanged.
 fail() { printf '{"kind":"infrastructure","stage":"%s","status":"FAIL"}\n' "$1"; exit 29; }
-php tools/testing/verify-security-candidate.php candidate || fail candidate_sources
+php tools/testing/check-successor-baseline.php /app image || fail successor_sources
+php tools/testing/test-successor-baseline.php || fail successor_guard_self_test
 php tools/testing/test-security-candidate.php || fail source_guard_self_test
 php tools/testing/test-security-case-coverage.php || fail case_coverage_self_test
 php tools/testing/test-security-summaries.php || fail summary_guard_self_test
@@ -46,5 +47,5 @@ code=0
 # No Excel/Windows/concurrency failure is allowlisted or filtered here.
 php -d memory_limit=512M vendor/bin/phpunit -c phpunit.mysql.xml --colors=never --fail-on-warning --fail-on-risky --fail-on-skipped --log-junit=/tmp/security-full.xml >/tmp/security-full.log 2>&1 || code=$?
 php tools/testing/summarize-security-tests.php full "$code" || result=29
-php tools/testing/verify-security-candidate.php candidate || result=29
+php tools/testing/check-successor-baseline.php /app image || result=29
 exit "$result"

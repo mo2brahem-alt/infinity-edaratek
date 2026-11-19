@@ -10,6 +10,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   isolated_linux:
+    name: LINUX_FUNCTIONAL_VALIDATION
     if: github.ref == 'refs/heads/ci/edaratek-google-linux-gate'
     runs-on: ubuntu-24.04
     timeout-minutes: 90
@@ -21,6 +22,7 @@ jobs:
         shell: pwsh
         run: ./tools/testing/run-tests.ps1 -SecurityGate
   frozen_phase8:
+    name: SUCCESSOR_BASELINE_ACCEPTANCE (historical Phase 8 preserved)
     if: github.ref == 'refs/heads/ci/edaratek-google-linux-gate'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -28,12 +30,28 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
-      - name: Authoritative frozen fingerprints (independent pending PM gate)
+      - name: HISTORICAL_PHASE8_INTEGRITY (manifest and checker only)
         shell: bash
         run: |
           set -euo pipefail
-          docker run --rm --network none --mount "type=bind,source=$PWD,target=/source,readonly" -w /source php:8.2-cli-bookworm@sha256:26b388d187a5e592ef5e02c14d0f92dd9c761894ff0a5fe338183196471c4b4e php tools/testing/check-frozen-baseline.php
+          sha256sum --strict --check <<'PHASE8'
+          5862f8395099ac4546ec5a4252443fb5b40ec1c76b978d0233d556702ac9df3d  tools/testing/phase8-scope.json
+          6cb9d913405d56528b9ed6ff0e97d13c55d3f6b1aea504caccdf1abf4011e318  tools/testing/check-frozen-baseline.php
+          PHASE8
+      - name: Successor gate negative tests (source-only, no services)
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm --network none --mount "type=bind,source=$PWD,target=/source,readonly" -w /source php:8.2-cli-bookworm@sha256:26b388d187a5e592ef5e02c14d0f92dd9c761894ff0a5fe338183196471c4b4e php tools/testing/test-successor-baseline.php
+      - name: SUCCESSOR_BASELINE_ACCEPTANCE (exactly six approved source differences)
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm --network none --mount "type=bind,source=$PWD,target=/source,readonly" -w /source php:8.2-cli-bookworm@sha256:26b388d187a5e592ef5e02c14d0f92dd9c761894ff0a5fe338183196471c4b4e php tools/testing/check-successor-baseline.php
 # Validation never deploys and has no environment/service secrets.
-# PM authorized this branch's single push and Ubuntu execution only.
-# Jobs are independent: frozen failure cannot skip functional execution.
+# Historical phase8-scope.json and check-frozen-baseline.php remain unchanged.
+# PM approved exactly six differences as successor v1, never identical history.
+# Current PM authorizes one additional reviewed commit/push on this feature branch.
+# This validation authorizes no deployment, main change, PR or subsequent fix push.
+# Jobs remain independent: successor acceptance cannot skip functional execution.
 # No continue-on-error, deployment bridge, PR creation or main mutation.

@@ -127,6 +127,7 @@ try {
     $phase8References = @('.github/workflows/deploy.yml','.github/workflows/mobile-backend-tests.yml','docs/mobile-api-v1.md','docs/notification-policy.md')
     if ($SecurityGate) {
         $phase8References += @('.github/workflows/security-validation.yml','docs/mobile-google-auth-v1.md')
+        $phase8References += @('docs/EDARATEK_LINUX_FROZEN_BASELINE_REVIEW.md')
     }
     foreach ($file in (@('.htaccess','artisan','composer.json','composer.lock','phpunit.xml','phpunit.mysql.xml','package.json','package-lock.json','vite.config.js','postcss.config.js','tailwind.config.js','jsconfig.json') + $phase8References)) {
         Copy-SafeTree (Join-Path $repoRoot $file) (Join-Path $scratch $file)
@@ -167,7 +168,9 @@ try {
     $rng.GetBytes($keyBytes); $rng.Dispose()
     $env:EDARATEK_TEST_APP_KEY = 'base64:'+ [Convert]::ToBase64String($keyBytes)
     $composeFile = Join-Path $scratch 'tools/testing/compose.yaml'
-    $emptyEnv = Join-Path $scratch 'tools/testing/empty.env'
+    # Root .env.* is excluded by the existing Docker ignore rules. Keep this
+    # empty Compose input out of the strict source inventory/image entirely.
+    $emptyEnv = Join-Path $scratch '.env.runner-empty'
     [IO.File]::WriteAllText($emptyEnv,'')
     # Compose resolves build.context relative to its project directory. The
     # existing ../.. context must resolve from tools/testing, not scratch root.
