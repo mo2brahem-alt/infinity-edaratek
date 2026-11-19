@@ -20,16 +20,25 @@ final class ApiError extends HttpException
     public static function requestId(?Request $request = null): string
     {
         $request ??= app()->bound('request') ? request() : null;
-        if (! $request) { return (string) Str::uuid(); }
+        if (! $request) {
+            return (string) Str::uuid();
+        }
         if (! $request->attributes->has('_native_request_id')) {
             $request->attributes->set('_native_request_id', (string) Str::uuid());
         }
+
         return $request->attributes->get('_native_request_id');
     }
 
     public static function response(string $code, int $status, ?array $errors = null, array $headers = []): JsonResponse
     {
         $messages = [
+            'GOOGLE_IDENTITY_INVALID' => 'تعذر التحقق من هوية Google.',
+            'GOOGLE_ACCOUNT_NOT_LINKED' => 'حساب Google غير مرتبط بحساب إدارتك.',
+            'REAUTHENTICATION_FAILED' => 'تعذر تأكيد كلمة المرور الحالية.',
+            'IDENTITY_REAUTHENTICATION_REQUIRED' => 'يرجى إعادة تسجيل الدخول إلى Google.',
+            'IDENTITY_LINK_CONFLICT' => 'تعذر ربط هذه الهوية. تحقق من الربط الحالي.',
+            'AUTH_PROVIDER_UNAVAILABLE' => 'خدمة التحقق غير متاحة مؤقتاً. حاول لاحقاً.',
             'INVALID_CREDENTIALS' => 'بيانات الدخول غير صحيحة.', 'UNAUTHENTICATED' => 'يلزم تسجيل الدخول.',
             'ACCOUNT_PENDING_APPROVAL' => 'الحساب قيد الموافقة.', 'ACCOUNT_REJECTED' => 'لم تتم الموافقة على الحساب.',
             'ACCOUNT_DISABLED' => 'الحساب غير نشط.', 'FORBIDDEN' => 'لا تملك صلاحية هذه العملية.',
@@ -48,7 +57,9 @@ final class ApiError extends HttpException
                     $safe[$field] = ['قيمة هذا الحقل غير صالحة.'];
                 }
             }
-            if ($safe) { $payload['errors'] = $safe; }
+            if ($safe) {
+                $payload['errors'] = $safe;
+            }
         }
         $safeHeaders = ['Cache-Control' => 'private, no-store'];
         if ($code === 'RATE_LIMITED') {
@@ -59,6 +70,7 @@ final class ApiError extends HttpException
         if ($status === 405 && isset($headers['Allow']) && preg_match('/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)(, ?(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS))*$/D', $headers['Allow'])) {
             $safeHeaders['Allow'] = $headers['Allow'];
         }
+
         return response()->json($payload, $status, $safeHeaders);
     }
 }

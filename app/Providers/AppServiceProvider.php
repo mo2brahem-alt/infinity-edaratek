@@ -25,7 +25,8 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->singleton(\App\Services\Mobile\Google\FirebaseGateway::class, \App\Services\Mobile\Google\KreaitFirebaseGateway::class);
+        $this->app->bind(\App\Services\Mobile\Google\FirebaseIdentityVerifier::class, \App\Services\Mobile\Google\StrictFirebaseIdentityVerifier::class);
     }
 
     public function boot(): void

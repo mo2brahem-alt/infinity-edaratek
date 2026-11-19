@@ -5,6 +5,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function (): void {
     Route::post('/auth/login', [NativeSessionController::class, 'login']);
+    Route::post('/auth/google/login', [\App\Http\Controllers\Mobile\GoogleSessionController::class, 'login'])
+        ->middleware(\App\Http\Middleware\GoogleAuthAdmission::class.':login');
+
+    Route::middleware(['native.bearer', 'native.throttle:read', 'native.account'])->get('/auth/google/link', [\App\Http\Controllers\Mobile\GoogleSessionController::class, 'status']);
+    Route::middleware(['native.bearer', 'native.throttle:session', 'native.account', \App\Http\Middleware\GoogleAuthAdmission::class.':reauth'])->group(function (): void {
+        Route::put('/auth/google/link', [\App\Http\Controllers\Mobile\GoogleSessionController::class, 'link']);
+        Route::delete('/auth/google/link', [\App\Http\Controllers\Mobile\GoogleSessionController::class, 'unlink']);
+    });
 
     Route::middleware(['native.bearer', 'native.throttle:session'])->group(function (): void {
         // Logout remains available for a valid current token after an account

@@ -20,15 +20,47 @@ final class NativeRateLimiter
         if ($account !== null) {
             $limits[] = [$this->key('login-account', (string) $account->getKey()), (int) config('mobile.login_attempts_per_minute'), 60];
         }
+
         return $this->consume($limits);
     }
 
     public function consumeRequest(Request $request, User $user, string $kind): ?int
     {
-        if (! in_array($kind, ['read', 'session'], true)) { throw new \InvalidArgumentException('Unknown limiter'); }
+        if (! in_array($kind, ['read', 'session'], true)) {
+            throw new \InvalidArgumentException('Unknown limiter');
+        }
+
         return $this->consume([
             [$this->key($kind.'-account', (string) $user->getKey()), (int) config("mobile.native_{$kind}_attempts_per_minute"), 60],
             [$this->key($kind.'-ip', (string) $request->ip()), (int) config("mobile.native_{$kind}_ip_attempts_per_minute"), 60],
+        ]);
+    }
+
+    public function consumeGoogleIp(Request $request): ?int
+    {
+        return $this->consume([[$this->key('login-ip', (string) $request->ip()), (int) config('mobile.login_ip_attempts_per_minute'), 60]]);
+    }
+
+    public function consumeGoogleIdentity(string $project, string $uid, ?int $userId): ?int
+    {
+        $limits = [[$this->key('google-identity', $project.'|'.$uid), (int) config('mobile.login_attempts_per_minute'), 60]];
+        if ($userId !== null) {
+            $limits[] = [$this->key('login-account', (string) $userId), (int) config('mobile.login_attempts_per_minute'), 60];
+        }
+
+        return $this->consume($limits);
+    }
+
+    public function consumeGoogleProof(string $project, string $uid): ?int
+    {
+        return $this->consume([[$this->key('google-proof', $project.'|'.$uid), 5, 60]]);
+    }
+
+    public function consumeGoogleReauthentication(Request $request, User $user): ?int
+    {
+        return $this->consume([
+            [$this->key('google-reauth-account', (string) $user->id), 5, 60],
+            [$this->key('google-reauth-ip', (string) $request->ip()), 30, 60],
         ]);
     }
 
@@ -36,6 +68,7 @@ final class NativeRateLimiter
     {
         $email = $request->input('email');
         $identity = is_string($email) ? mb_strtolower(trim($email)) : 'invalid';
+
         return $this->consume([
             [$this->key('reset-identity', $identity), (int) config('mobile.password_reset_identifier_per_hour'), 3600],
             [$this->key('reset-ip', (string) $request->ip()), (int) config('mobile.password_reset_ip_per_hour'), 3600],
@@ -62,12 +95,17 @@ final class NativeRateLimiter
                     return max(1, $limiter->availableIn($key));
                 }
             }
-            foreach ($limits as [$key, , $window]) { $limiter->hit($key, $window); }
+            foreach ($limits as [$key, , $window]) {
+                $limiter->hit($key, $window);
+            }
+
             return null;
         } catch (LockTimeoutException) {
             return 1;
         } finally {
-            foreach (array_reverse($locks) as $lock) { $lock->release(); }
+            foreach (array_reverse($locks) as $lock) {
+                $lock->release();
+            }
         }
     }
 
